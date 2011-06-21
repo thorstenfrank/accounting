@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperTemplate PUBLIC "-//JasperReports//DTD Template//EN" "http://jasperreports.sourceforge.net/dtds/jaspertemplate.dtd">
+
+<jasperTemplate>
+	<style name="INVOICE_TX_08" markup="styled" fontSize="8" pdfFontName="fonts/TitilliumMaps29L.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_10" markup="styled" fontSize="10" pdfFontName="fonts/TitilliumMaps29L.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_12" markup="styled" fontSize="12" pdfFontName="fonts/TitilliumMaps29L.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_12B" markup="styled" fontSize="12" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_18B" markup="styled" fontSize="18" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
+</jasperTemplate>

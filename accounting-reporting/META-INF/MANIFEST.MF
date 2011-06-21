@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: accounting-reporting
+Bundle-SymbolicName: de.togginho.accounting.reporting
+Bundle-Version: 1.0.0
+Bundle-Activator: de.togginho.accounting.ReportingPlugin
+Bundle-Vendor: Thorsten Frank
+Require-Bundle: org.eclipse.core.runtime,
+ de.togginho.accounting.core;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
+ lib/commons-digester-1.7.jar,
+ lib/iText-2.1.7.jar,
+ lib/jasperreports-4.0.2.jar,
+ .
+Export-Package: de.togginho.accounting

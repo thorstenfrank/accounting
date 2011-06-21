@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreport_invoice_positions" pageWidth="459" pageHeight="200" columnWidth="459" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.callouts" value="##Mon Aug 23 13:32:06 CEST 2010"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
+	<queryString language="xPath">
+		<![CDATA[]]>
+	</queryString>
+	<field name="quantity" class="java.lang.String">
+		<fieldDescription><![CDATA[quantity]]></fieldDescription>
+	</field>
+	<field name="unit" class="java.lang.String">
+		<fieldDescription><![CDATA[unit]]></fieldDescription>
+	</field>
+	<field name="description" class="java.lang.String">
+		<fieldDescription><![CDATA[description]]></fieldDescription>
+	</field>
+	<field name="pricePerUnit" class="java.lang.String">
+		<fieldDescription><![CDATA[pricePerUnit]]></fieldDescription>
+	</field>
+	<field name="totalPriceNet" class="java.lang.String">
+		<fieldDescription><![CDATA[totalPriceNet]]></fieldDescription>
+	</field>
+	<field name="taxRate" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{REPORT_COUNT} <= 10]]></printWhenExpression>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<elementGroup>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="334" y="0" width="75" height="30"/>
+					<textElement textAlignment="Right">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{totalPriceNet}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="55" y="0" width="55" height="30"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{unit}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="0" y="0" width="55" height="30"/>
+					<textElement textAlignment="Left">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{quantity}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="259" y="0" width="75" height="30"/>
+					<textElement textAlignment="Right">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{pricePerUnit}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="110" y="0" width="149" height="30"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="409" y="0" width="50" height="30"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{taxRate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
