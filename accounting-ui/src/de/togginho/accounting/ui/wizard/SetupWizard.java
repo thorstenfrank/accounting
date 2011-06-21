@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.ui.wizard;
 
+import java.io.File;
+
 import org.eclipse.jface.wizard.Wizard;
 
 import de.togginho.accounting.model.User;
@@ -83,6 +85,18 @@ public class SetupWizard extends Wizard {
 		configuredUser.setBankAccount(bankAccountPage.getBankAccount());
 		
 		dbFileLocation = basicInfoPage.getDbFileLocation();
+		
+		// check if the file location path actually exists
+		File dbFile = new File(dbFileLocation);
+		
+		if (dbFile.exists()) {
+			// TODO maybe warn the user that the file exists?
+		} else {
+			File parentLocation = dbFile.getParentFile();
+			if (!parentLocation.exists()) {
+				parentLocation.mkdirs();
+			}
+		}
 		
 		return true;
 	}
