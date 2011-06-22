@@ -15,15 +15,18 @@
  */
 package de.togginho.accounting;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,18 +35,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
 import com.db4o.config.Configuration;
 import com.db4o.config.ObjectClass;
 import com.db4o.config.ObjectField;
 import com.db4o.constraints.UniqueFieldValueConstraint;
-import com.db4o.ext.ExtObjectSet;
+import com.db4o.ext.DatabaseClosedException;
+import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.internal.encoding.UTF8StringEncoding;
 import com.db4o.osgi.Db4oService;
-import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;
 
 /**
@@ -144,6 +147,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	@After
 	public void tearDown() throws Exception {
 		verify(initMocks);
+		verify(ocMock);
 	}
 	
 	/**
@@ -175,8 +179,6 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		} catch (Exception e) {
 			fail("Service should not have done anything!");
 		}
-	
-		verify(ocMock);
 	}
 	
 	/**
@@ -196,45 +198,195 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		// subsequent calls to shutDown() shouldn't do anything
 		serviceUnderTest.shutDown();
-		
-		verify(ocMock);
 	}
 	
 	/**
-	 * Test method for {@link AccountingService#getCurrentUser()} and {@link AccountingService#saveCurrentUser(User)}.
+	 * Test method for {@link AccountingService#saveCurrentUser(User)}.
 	 */
 	@Test
-	public void testUser() {
-		expect(ocMock.query(anyObject(FindCurrentUserPredicate.class))).andReturn(new UserObjectSet());
+	public void testSaveUser() {
+		serviceUnderTest.init(getTestContext());
+		
+		setupMockForEntitySave(getTestUser());
+		
 		replay(ocMock);
+		
+		// null save - nothing should happen
+		assertNull(serviceUnderTest.saveCurrentUser(null));
+		
+		User user = getTestUser();
+		assertEquals(user, serviceUnderTest.saveCurrentUser(user));
+		
+		// call save twice, to test both exceptions
+		saveUserWithException();
+		saveUserWithException();
+	}
+		
+	/**
+	 * Test method for {@link AccountingService#saveInvoice(Invoice)}.
+	 */
+	@Test
+	public void testSaveInvoice() {
+		Invoice invoice = new Invoice();
 		
 		serviceUnderTest.init(getTestContext());
 		
-		assertNull(serviceUnderTest.getCurrentUser());
+		setupMockForEntitySave(invoice);
 		
-//		serviceUnderTest.saveCurrentUser(getTestUser());
-//		
-//		User fromDB = serviceUnderTest.getCurrentUser();
-//		
-//		assertEquals(getTestUser(), fromDB);
+		replay(ocMock);
 		
-		verify(ocMock);
+		// make sure nothing happens if trying to save [null]
+		assertNull(serviceUnderTest.saveInvoice(null));
+		
+		// test empty invoice number
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice without number should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+		
+		invoice.setNumber("");
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice without number should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+		
+		invoice.setNumber("JUnitInvoiceNo");
+		
+		// test empty user
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice without user should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+		
+		// test unknown user
+		invoice.setUser(new User());
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice with unknown user should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+		
+		invoice.getUser().setName("SomeBogusName");
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice with unknown user should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+		
+		// test checks regarding Invoice State
+		invoice.setSentDate(new Date());
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice with state [SENT] should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+		
+		invoice.setCancelledDate(new Date());
+		try {
+	        serviceUnderTest.saveInvoice(invoice);
+	        fail("Invoice with state [CANCELLED] should not have been saved properly");
+        } catch (AccountingException e) {
+	        // this is what we want	
+        }
+
+		// reset values to make the Invoice saveable
+		invoice.setSentDate(null);
+		invoice.setCancelledDate(null);
+		invoice.setUser(getTestUser());
+		
+		// try a normal save
+		Invoice saved = serviceUnderTest.saveInvoice(invoice);
+		assertEquals(InvoiceState.CREATED, saved.getState());
+		
+		// try saves with exceptions
+		saveInvoiceWithException(invoice);
+		saveInvoiceWithException(invoice);
+	} 
+
+	/**
+	 * Test method for {@link AccountingService#deleteInvoice(Invoice)}.
+	 */
+	@Test
+	public void testDeleteInvoice() {
+		// test data
+		Invoice invoice = new Invoice();
+		invoice.setNumber("JUnitInvoiceNo");
+		
+		// mocks
+		serviceUnderTest.init(getTestContext());
+		replay(ocMock);
+		
+		// try deleting [null]
+		serviceUnderTest.deleteInvoice(null);
+		
+		// try deleting an unsaved invoice
+		serviceUnderTest.deleteInvoice(invoice);
+		
+		// try deleting an invoice in an advanced state
+		invoice.setCreationDate(new Date());
+		invoice.setSentDate(new Date());
+		invoice.setDueDate(new Date());
+		
+		try {
+	        serviceUnderTest.deleteInvoice(invoice);
+	        fail("Trying to delete an invoice in state SENT, should have caught exception");
+        } catch (AccountingException e) {
+	        // this is what we want
+        }
 	}
 	
 	/**
 	 * 
 	 */
-	private class UserObjectSet extends ArrayList<User> implements ObjectSet<User> {
-		@Override
-		public ExtObjectSet ext() { return null;}
+	private void saveUserWithException() {
+		try {
+			serviceUnderTest.saveCurrentUser(getTestUser());
+			fail("Should have caught AccountingException");
+		} catch (AccountingException e) {
+			// this is what we want
+		} catch (Exception e) {
+			fail("Unexpected exception: " + e.toString());
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void saveInvoiceWithException(Invoice invoice) {
+		try {
+			serviceUnderTest.saveInvoice(invoice);
+			fail("Should have caught AccountingException");
+		} catch (AccountingException e) {
+			// this is what we want
+		} catch (Exception e) {
+			fail("Unexpected exception: " + e.toString());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param entity
+	 */
+	private void setupMockForEntitySave(Object entity) {
+		ocMock.store(entity);
+		ocMock.commit();
 
-		@Override
-		public boolean hasNext() { return false; }
-
-		@Override
-		public User next() { return null; }
+		// throw DB closed exception
+		ocMock.store(entity);
+		expectLastCall().andThrow(new DatabaseClosedException());
+		ocMock.rollback();
 		
-		@Override
-		public void reset() { }
+		ocMock.store(entity);
+		expectLastCall().andThrow(new DatabaseReadOnlyException());
+		ocMock.rollback();
 	}
 }

@@ -85,6 +85,17 @@ public class SetupWizard extends Wizard {
 		configuredUser.setBankAccount(bankAccountPage.getBankAccount());
 		
 		dbFileLocation = basicInfoPage.getDbFileLocation();
+				
+		// if the path to the db file doesn't exist, create it
+		File dbFile = new File(dbFileLocation);
+		if (dbFile.exists()) {
+			// TODO the file already exists - maybe do something?
+		} else {
+			File parent = dbFile.getParentFile();
+			if (!parent.exists()) {
+				parent.mkdirs();
+			}
+		}
 		
 		// check if the file location path actually exists
 		File dbFile = new File(dbFileLocation);

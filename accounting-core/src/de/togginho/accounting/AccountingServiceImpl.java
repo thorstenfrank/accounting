@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
 import com.db4o.config.Configuration;
 import com.db4o.config.ObjectClass;
 import com.db4o.config.ObjectField;
@@ -136,7 +137,7 @@ class AccountingServiceImpl implements AccountingService {
 	 * Propery shuts down the service.
 	 */
 	protected void shutDown() {
-		LOG.info("shutDown");
+		LOG.info("shutDown"); //$NON-NLS-1$
 		
 		if (!initialised) {
 			return;
@@ -145,7 +146,7 @@ class AccountingServiceImpl implements AccountingService {
 		try {
 			objectContainer.close();
 		} catch (Db4oIOException e) {
-			LOG.warn("Error closing DB file", e);
+			LOG.warn("Error closing DB file", e); //$NON-NLS-1$
 		} finally {
 			initialised = false;
 		}
@@ -157,7 +158,7 @@ class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public User saveCurrentUser(User user) {
-		LOG.debug("saveCurrentUser");
+		LOG.debug("saveCurrentUser"); //$NON-NLS-1$
 		doStoreEntity(user);
 		return user;
 	}
@@ -169,15 +170,15 @@ class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public User getCurrentUser() {
-		LOG.debug("getCurrentUser");
+		LOG.debug("getCurrentUser"); //$NON-NLS-1$
 		User user = null;
 		
 		try {
-			List<User> userList = objectContainer.query(new FindCurrentUserPredicate(context));
+			ObjectSet<User> userList = objectContainer.query(new FindCurrentUserPredicate(context));
 			if (userList != null && userList.size() == 1) {
 				user = userList.get(0);
 			} else {
-				LOG.warn("Cannot identify current user, list size is " + userList.size());
+				LOG.warn("Cannot identify current user, list size is " + userList.size()); //$NON-NLS-1$
 			}
 		} catch (Db4oIOException e) {
 			throwAccountingException(Messages.AccountingService_errorIO, e);
@@ -194,7 +195,11 @@ class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Invoice saveInvoice(Invoice invoice) {
-		LOG.debug("saveInvoice: " + invoice.getNumber());
+		if (invoice == null) {
+			LOG.warn("Trying to save Invoice [null]"); //$NON-NLS-1$
+			return null;
+		}
+		LOG.debug("saveInvoice: " + invoice.getNumber()); //$NON-NLS-1$
 		
 		if (invoice.getNumber() == null || invoice.getNumber().isEmpty()) {
 			throwAccountingException(Messages.AccountingService_errorMissingInvoiceNumber, null);
@@ -207,13 +212,13 @@ class AccountingServiceImpl implements AccountingService {
 		}
 		
 		if (invoice.getCreationDate() == null) {
-			LOG.info("Saving invoice for the first time: " + invoice.getNumber());
+			LOG.info("Saving invoice for the first time: " + invoice.getNumber()); //$NON-NLS-1$
 			invoice.setCreationDate(new Date());
 		}
 		
 		doStoreEntity(invoice);
 		
-		return getInvoice(invoice.getNumber());
+		return invoice;
 	}
 	
 	/**
@@ -222,7 +227,7 @@ class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Invoice sendInvoice(Invoice invoice) {
-		LOG.debug("sendInvoice: " + invoice.getNumber());
+		LOG.debug("sendInvoice: " + invoice.getNumber()); //$NON-NLS-1$
 		final Date today = new Date();
 		
 		if (invoice.getCancelledDate() != null) {
@@ -242,7 +247,7 @@ class AccountingServiceImpl implements AccountingService {
 		invoice.setSentDate(new Date());
 		doStoreEntity(invoice);
 		
-		return getInvoice(invoice.getNumber());
+		return invoice;
 	}
 
 	/**
@@ -251,11 +256,23 @@ class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public void deleteInvoice(Invoice invoice) {
-		LOG.debug("Delete invoice: " + invoice.getNumber());
+		if (invoice == null) {
+			LOG.warn("Trying to delete an invoice [null]!"); //$NON-NLS-1$
+			return;
+		}
+		
+		LOG.debug("Delete invoice: " + invoice.getNumber()); //$NON-NLS-1$
+		
+		InvoiceState state = invoice.getState();
+		
+		if (InvoiceState.UNSAVED.equals(state)) {
+			LOG.info(String.format("Don't have to delete an invoice in state [%s]", state.name())); //$NON-NLS-1$
+			return;
+		}
 		
 		// Invoice is in an advanced state and cannot be deleted
-		if (!InvoiceState.CREATED.equals(invoice.getState())) {
-			final Object[] params = {invoice.getNumber(), invoice.getState()};
+		if (!InvoiceState.CREATED.equals(state)) {
+			final Object[] params = {invoice.getNumber(), state};
 			
 			LOG.error(String.format("Invoice [%s] is in state [%s] and cannot be deleted", params));
 			throw new AccountingException(Messages.bind(Messages.AccountingService_errorInvoiceCannotBeDeleted, params));
@@ -339,6 +356,10 @@ class AccountingServiceImpl implements AccountingService {
 	 * @throws AccountingPersistenceException
 	 */
 	private void doStoreEntity(Object entity) {
+		if (entity == null) {
+			LOG.warn("Call to doStoreEntity with param [null]!");
+			return;
+		}
 		try {
 			objectContainer.store(entity);
 			objectContainer.commit();
