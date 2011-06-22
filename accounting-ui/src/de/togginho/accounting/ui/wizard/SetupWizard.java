@@ -97,18 +97,6 @@ public class SetupWizard extends Wizard {
 			}
 		}
 		
-		// check if the file location path actually exists
-		File dbFile = new File(dbFileLocation);
-		
-		if (dbFile.exists()) {
-			// TODO maybe warn the user that the file exists?
-		} else {
-			File parentLocation = dbFile.getParentFile();
-			if (!parentLocation.exists()) {
-				parentLocation.mkdirs();
-			}
-		}
-		
 		return true;
 	}
 	
