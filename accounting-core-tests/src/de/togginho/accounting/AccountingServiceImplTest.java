@@ -22,16 +22,15 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.db4o.ObjectContainer;
@@ -41,8 +40,10 @@ import com.db4o.config.ObjectField;
 import com.db4o.constraints.UniqueFieldValueConstraint;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseReadOnlyException;
+import com.db4o.ext.Db4oIOException;
 import com.db4o.internal.encoding.UTF8StringEncoding;
 import com.db4o.osgi.Db4oService;
+import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
@@ -50,46 +51,24 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;
 
 /**
+ * Tests for {@link AccountingServiceImpl}. This test includes only mocked behavior of the DB4o object container, and
+ * as such contains mostly exception handling and business rule testing. The actual persistence part of the service is
+ * tested in {@link AccountingServiceImplPersistenceTest}.
+ * 
  * @author thorsten
  *
  */
 public class AccountingServiceImplTest extends BaseTestFixture {
 
+	/** DB4o mock. */
 	private ObjectContainer ocMock;
 	
+	/** Mocks for config objects used during init. */
 	private Object[] initMocks;
 	
+	/** The service instance being tested. */
 	private AccountingServiceImpl serviceUnderTest;
 	
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		File daFile = new File(TEST_DB_FILE);
-		if (daFile.exists()) {
-			System.out.println("deleting existing test db file");
-			daFile.delete();
-		} else {
-			System.out.println("Using db file: " + daFile.getAbsolutePath());
-		}
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		File daFile = new File(TEST_DB_FILE);
-		if (!daFile.exists()) {
-			System.out.println("Fuckit");
-		} else {
-			daFile.delete();
-			System.out.println("Deleting");
-		}
-	}
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -313,6 +292,124 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	} 
 
 	/**
+	 * Test method for {@link AccountingServiceImpl#sendInvoice(Invoice)}.
+	 */
+	@Test
+	public void testSendInvoice() {
+		Invoice invoice = new Invoice();
+		invoice.setNumber("JUnitTestInvoiceNo");
+		
+		ocMock.store(invoice);
+		expectLastCall().times(2); 
+		ocMock.commit();
+		expectLastCall().times(2);
+		// since the invoice wasn't saved before, expect to have it saved once initially and again with the sent date set
+		
+		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
+		
+		// nothing should happen
+		assertNull(serviceUnderTest.sendInvoice(null));
+		
+		// try to send a cancelled invoice - should yield an exception
+		invoice.setCancelledDate(new Date());
+		
+		try {
+			serviceUnderTest.sendInvoice(invoice);
+			fail("Cancelled invoice cannot be sent again");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		// try so send an invoie without a due date
+		invoice.setCancelledDate(null);
+		try {
+			serviceUnderTest.sendInvoice(invoice);
+			fail("Sending an invoice without a due date should not be possible");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		// try to send an invoice with a due date in the past
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 1);
+		invoice.setDueDate(cal.getTime());
+		try {
+			serviceUnderTest.sendInvoice(invoice);
+			fail("Sending an invoice with a past due date should not be possible");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		// prepare the invoice for a proper save
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 2);
+		invoice.setDueDate(cal.getTime());
+		invoice.setUser(getTestUser());
+		
+		Invoice saved = serviceUnderTest.sendInvoice(invoice);
+		assertNotNull(saved.getCreationDate());
+		assertNotNull(saved.getSentDate());
+	}
+	
+	/**
+	 * Tests {@link AccountingServiceImpl#getInvoice(String)}.
+	 */
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testGetInvoiceExceptionHandling() {
+		serviceUnderTest.init(getTestContext());
+				
+		expect(ocMock.query(anyObject(Predicate.class))).andThrow(new Db4oIOException());
+		expect(ocMock.query(anyObject(Predicate.class))).andThrow(new DatabaseClosedException());
+		
+		replay(ocMock);
+		
+		final String testInvoiceNo = "JUnitTestInvoiceNo";
+		
+		try {
+			serviceUnderTest.getInvoice(testInvoiceNo);
+			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		try {
+			serviceUnderTest.getInvoice(testInvoiceNo);
+			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+	}
+	
+	/**
+	 * Tests {@link AccountingServiceImpl#findInvoices(User, InvoiceState...)}.
+	 */
+	@Test
+	public void testFindInvoicesExceptionHandling() {
+		serviceUnderTest.init(getTestContext());
+		
+		expect(ocMock.query(anyObject(FindInvoicesPredicate.class))).andThrow(new Db4oIOException());
+		expect(ocMock.query(anyObject(FindInvoicesPredicate.class))).andThrow(new DatabaseClosedException());
+		
+		replay(ocMock);
+		
+		try {
+			serviceUnderTest.findInvoices(getTestUser(), InvoiceState.CREATED, InvoiceState.SENT);
+			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		try {
+			serviceUnderTest.findInvoices(getTestUser(), InvoiceState.CREATED, InvoiceState.SENT);
+			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+	}
+	
+	/**
 	 * Test method for {@link AccountingService#deleteInvoice(Invoice)}.
 	 */
 	@Test
@@ -323,6 +420,25 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		// mocks
 		serviceUnderTest.init(getTestContext());
+		
+		ocMock.delete(invoice);
+		expectLastCall().once();
+		ocMock.commit();
+		expectLastCall().once();
+		
+		// exception tests
+		ocMock.delete(invoice);
+		expectLastCall().andThrow(new Db4oIOException());
+		expectLastCall().once();
+
+		ocMock.delete(invoice);
+		expectLastCall().andThrow(new DatabaseClosedException());
+		expectLastCall().once();
+		
+		ocMock.delete(invoice);
+		expectLastCall().andThrow(new DatabaseReadOnlyException());
+		expectLastCall().once();
+		
 		replay(ocMock);
 		
 		// try deleting [null]
@@ -342,6 +458,67 @@ public class AccountingServiceImplTest extends BaseTestFixture {
         } catch (AccountingException e) {
 	        // this is what we want
         }
+		
+		// reset the invoice so it can be deleted properly (from a business point of view)
+		invoice.setSentDate(null);
+		
+		// try normal delete, check proper service call
+		try {
+			serviceUnderTest.deleteInvoice(invoice);
+		} catch (AccountingException e) {
+			fail("Caught exception but expected proper delete of invoice");
+		}
+		
+		// now test exception handling
+		// Step1 - DB4oIOException -> see mock behavior recording 
+		try {
+			serviceUnderTest.deleteInvoice(invoice);
+			fail("Mock service threw exception, didn't expect to get through cleanly");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+
+		// Step2 - DatabaseClosedException -> see mock behavior recording 
+		try {
+			serviceUnderTest.deleteInvoice(invoice);
+			fail("Mock service threw exception, didn't expect to get through cleanly");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		// Step3 - DatabaseReadOnlyException -> see mock behavior recording 
+		try {
+			serviceUnderTest.deleteInvoice(invoice);
+			fail("Mock service threw exception, didn't expect to get through cleanly");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+	}
+	
+	/**
+	 * Test method for {@link AccountingServiceImpl#getCurrentUser()} exception handling.
+	 */
+	@Test
+	public void testGetCurrentUserExceptionHandling() {
+		serviceUnderTest.init(getTestContext());
+		expect(ocMock.query(anyObject(FindCurrentUserPredicate.class))).andThrow(new Db4oIOException());
+		expect(ocMock.query(anyObject(FindCurrentUserPredicate.class))).andThrow(new DatabaseClosedException());
+		
+		replay(ocMock);
+		
+		try {
+			serviceUnderTest.getCurrentUser();
+			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
+		
+		try {
+			serviceUnderTest.getCurrentUser();
+			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
 	}
 	
 	/**
@@ -383,10 +560,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		// throw DB closed exception
 		ocMock.store(entity);
 		expectLastCall().andThrow(new DatabaseClosedException());
-		ocMock.rollback();
 		
 		ocMock.store(entity);
 		expectLastCall().andThrow(new DatabaseReadOnlyException());
-		ocMock.rollback();
 	}
 }

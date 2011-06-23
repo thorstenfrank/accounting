@@ -25,6 +25,8 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;
 
 /**
+ * A predicate to search for invoices belonging to a user.
+ * 
  * @author thorsten
  *
  */
@@ -35,14 +37,21 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 	 */
 	private static final long serialVersionUID = -1990476393693145937L;
 
+	/**
+	 * The user to match.
+	 */
 	private User user;
 	
+	/**
+	 * All invoice states to match - may be <code>null</code> or empty.
+	 */
 	private Set<InvoiceState> states;
 	
 	/**
+	 * Creates a new predicate.
 	 * 
-	 * @param user
-	 * @param states
+	 * @param user the {@link User} whose invoices are matched
+	 * @param states all invoice states to match - may be <code>null</code>
 	 */
 	FindInvoicesPredicate(User user, InvoiceState... states) {
 		this.user = user;

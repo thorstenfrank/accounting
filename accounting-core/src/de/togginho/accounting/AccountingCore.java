@@ -43,7 +43,7 @@ public class AccountingCore implements BundleActivator {
 	/** Bundle context. */
 	private static BundleContext context;
 
-	private AccountingServiceImpl accountingServiceImpl;
+	private static AccountingServiceImpl accountingServiceImpl;
 	
 	/**
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -78,5 +78,13 @@ public class AccountingCore implements BundleActivator {
 			accountingServiceImpl.shutDown();
 		}
 		AccountingCore.context = null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected static AccountingService getAccountingService() {
+		return accountingServiceImpl;
 	}
 }

@@ -20,8 +20,9 @@ import com.db4o.query.Predicate;
 import de.togginho.accounting.model.User;
 
 /**
+ * A predicate to search for the {@link User} defined through {@link AccountingContext#getUserName()}.
+ * 
  * @author thorsten
- *
  */
 class FindCurrentUserPredicate extends Predicate<User> {
 
@@ -34,7 +35,9 @@ class FindCurrentUserPredicate extends Predicate<User> {
 	private AccountingContext context;
 	
 	/**
-	 * @param context the context
+	 * Creates a new predicate.
+	 * 
+	 * @param context the context containing the user name
 	 */
 	FindCurrentUserPredicate(AccountingContext context) {
 		this.context = context;
@@ -46,7 +49,11 @@ class FindCurrentUserPredicate extends Predicate<User> {
 	 */
 	@Override
 	public boolean match(User candidate) {
-		return candidate.getName().equals(context.getUserName());
+		if (candidate == null) {
+			return false;
+		}
+		
+		return context.getUserName().equals(candidate.getName());
 	}
 
 }

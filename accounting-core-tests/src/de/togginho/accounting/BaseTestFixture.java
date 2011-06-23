@@ -21,7 +21,7 @@ import de.togginho.accounting.model.User;
  * @author thorsten
  *
  */
-public abstract class BaseTestFixture {
+abstract class BaseTestFixture {
 
 	protected static final String TEST_USER_NAME = "JUnitTestUser";
 	
@@ -29,26 +29,22 @@ public abstract class BaseTestFixture {
 	
 	private static User testUser;
 	
-	private AccountingContext testContext;
-	
-	/**
-	 * 
-	 */
-	@SuppressWarnings("serial")
-	protected BaseTestFixture() {
-		testContext = new AccountingContext() {
-			@Override
-			public String getUserName() { return TEST_USER_NAME;}
-			
-			@Override
-			public String getDbFileName() { return TEST_DB_FILE;}
-		};
-	}
+	private static AccountingContext testContext;
 
 	/**
 	 * @return the testContext
 	 */
-	protected AccountingContext getTestContext() {
+	@SuppressWarnings("serial")
+	protected static AccountingContext getTestContext() {
+		if (testContext == null) {
+			testContext = new AccountingContext() {
+				@Override
+				public String getUserName() { return TEST_USER_NAME;}
+				
+				@Override
+				public String getDbFileName() { return TEST_DB_FILE;}
+			};			
+		}
 		return testContext;
 	}
 	
@@ -56,7 +52,7 @@ public abstract class BaseTestFixture {
 	 * 
 	 * @return test user instance
 	 */
-	protected User getTestUser() {
+	protected static User getTestUser() {
 		if (testUser == null) {
 			testUser = new User();
 			testUser.setName(TEST_USER_NAME);
