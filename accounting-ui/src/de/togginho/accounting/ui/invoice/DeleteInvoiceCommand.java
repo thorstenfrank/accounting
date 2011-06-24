@@ -22,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.IDs;
@@ -41,32 +40,21 @@ public class DeleteInvoiceCommand extends AbstractInvoiceCommand {
 	/**
 	 * 
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.invoice.AbstractInvoiceCommand#handleInvoice(de.togginho.accounting.model.Invoice, org.eclipse.core.commands.ExecutionEvent)
+	 * @see AbstractInvoiceCommand#handleInvoice(Invoice, ExecutionEvent)
 	 */
 	@Override
 	protected void handleInvoice(Invoice invoice, ExecutionEvent event) throws ExecutionException {
 		LOG.info("Deleting invoice + " + invoice.getNumber()); //$NON-NLS-1$
 		
-		if (areYouSure(invoice)) {
+		if (areYouSure(invoice, event)) {
+			// do the actual work
 			ModelHelper.deleteInvoice(invoice);
-			removeOpenEditorForInvoice(invoice);
+			
+			// close any open editors for the deleted invoice
+			removeOpenEditorForInvoice(invoice, event);
 		} else {
-			LOG.info("Delete was cancelled"); //$NON-NLS-1$
+			LOG.info("Delete was cancelled by user"); //$NON-NLS-1$
 		}
-	}
-
-	/**
-	 * 
-	 * @param invoice
-	 * @return
-	 */
-	private boolean areYouSure(Invoice invoice) {
-		MessageBox msgBox = new MessageBox(
-				getActivePage().getWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-		msgBox.setMessage(Messages.bind(Messages.DeleteInvoiceCommand_confirmMessage, invoice.getNumber()));
-		msgBox.setText(Messages.DeleteInvoiceCommand_confirmText);
-		
-		return (msgBox.open() == SWT.OK);
 	}
 	
 	/**
@@ -77,13 +65,30 @@ public class DeleteInvoiceCommand extends AbstractInvoiceCommand {
 	protected Logger getLogger() {
 		return LOG;
 	}
+
+	/**
+	 * 
+	 * @param invoice
+	 * @param event
+	 * @return
+	 */
+	private boolean areYouSure(Invoice invoice, ExecutionEvent event) {
+		MessageBox msgBox = new MessageBox(
+				getShell(event), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+		msgBox.setMessage(Messages.bind(Messages.DeleteInvoiceCommand_confirmMessage, invoice.getNumber()));
+		msgBox.setText(Messages.DeleteInvoiceCommand_confirmText);
+		
+		return (msgBox.open() == SWT.OK);
+	}
 	
 	/**
+	 * 
 	 * @param toBeDeleted
+	 * @param event
 	 */
-	private void removeOpenEditorForInvoice(Invoice toBeDeleted) {
+	private void removeOpenEditorForInvoice(Invoice toBeDeleted, ExecutionEvent event) {
 		LOG.debug("Checking for open editors for invoice " + toBeDeleted.getNumber()); //$NON-NLS-1$
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IWorkbenchPage page = getActivePage(event);
 		
 		for (IEditorReference editorRef : page.findEditors(null, IDs.EDIT_INVOIDCE_ID, IWorkbenchPage.MATCH_ID)) {
 			if (editorRef.getName().equals(toBeDeleted.getNumber())) {

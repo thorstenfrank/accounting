@@ -17,8 +17,6 @@ package de.togginho.accounting.ui.client;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -27,67 +25,65 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.Messages;
 
 /**
+ * Abstract base class for command handlers for {@link Client} entities.
+ * 
+ * <p>The {@link #doExecute(ExecutionEvent)} method will retrieve all clients from the current selection provider and
+ * call {@link #handleClient(Client, ExecutionEvent)} for each of these selected client objects.</p>
+ * 
  * @author thorsten
  *
  */
-abstract class AbstractClientHandler extends AbstractHandler {
-
-	private static final Logger LOG = Logger.getLogger(AbstractClientHandler.class);
-	
-	private IWorkbenchPage activePage;
+abstract class AbstractClientHandler extends AbstractAccountingHandler {
 	
 	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		LOG.debug("Opening client editor"); //$NON-NLS-1$
-
-		activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		IWorkbenchPart part = activePage.getActivePart();
-		
-		LOG.debug("Active part: " + part.getTitle()); //$NON-NLS-1$
-		
-		ISelectionProvider selectionProvider = part.getSite().getSelectionProvider();
-		
+    @Override
+    protected void doExecute(ExecutionEvent event) throws ExecutionException {
+	    IWorkbenchPage activePage = getActivePage(event);
+	    
+	    IWorkbenchPart part = activePage.getActivePart();
+	    
+	    ISelectionProvider selectionProvider = part.getSite().getSelectionProvider();
+	    
 		if (selectionProvider != null) {
-			LOG.debug("Selection provider found, now querying for active selection"); //$NON-NLS-1$
-			
 			if (selectionProvider.getSelection().isEmpty()) {
-				LOG.debug("No selection"); //$NON-NLS-1$
-				MessageBox msgBox = 
-					new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OK);
+				getLogger().warn("No active selection, cannot run command"); //$NON-NLS-1$
+				MessageBox msgBox = new MessageBox(getShell(event), SWT.ICON_WARNING | SWT.OK);
 				msgBox.setMessage(Messages.AbstractClientHandler_message);
 				msgBox.setText(Messages.AbstractClientHandler_text);
 				msgBox.open();
 			} else if (selectionProvider.getSelection() instanceof IStructuredSelection) {
-
 				IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-				
 				for (Iterator<Object> iter = structuredSelection.iterator(); iter.hasNext(); ){
 					Object selected = iter.next();
 					if (selected instanceof Client) {						
-						handleClient((Client) selected);
+						handleClient((Client) selected, event);
 					}
 				}
 			}
 		} else {
-			LOG.debug("No selection provider found."); //$NON-NLS-1$
+			getLogger().warn("No selection provider found, ignoring this command request"); //$NON-NLS-1$
 		}
-		return null;
-	}
+    }
 
-	protected abstract void handleClient(Client client) throws ExecutionException ;
-	
-	protected IWorkbenchPage getActivePage() {
-		return activePage;
-	}
+	/**
+	 * Called to start actual processing of a command for the supplied client.
+	 * 
+	 * <p>Implementations should throw any exceptions that occur, the superclass will catch them and display an
+	 * appropriate error message box to the user.</p>
+	 * 
+	 * @param client the {@link Client} to process the command for
+	 * @param event the event this command was executed with
+	 * @throws ExecutionException if an error occurs during processing
+	 */
+	protected abstract void handleClient(Client client, ExecutionEvent event) throws ExecutionException;
 }

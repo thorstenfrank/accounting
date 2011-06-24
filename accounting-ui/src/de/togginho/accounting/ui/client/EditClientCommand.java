@@ -16,11 +16,13 @@
 package de.togginho.accounting.ui.client;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PartInitException;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.ui.IDs;
+import de.togginho.accounting.ui.Messages;
 
 /**
  * @author thorsten
@@ -30,23 +32,31 @@ public class EditClientCommand extends AbstractClientHandler {
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(EditClientCommand.class);
-
-	private static final String ERROR_MSG = "Error opening client editor for client [%s]"; //$NON-NLS-1$
 	
 	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.rcp.client.AbstractClientHandler#handleClient(de.togginho.accounting.model.Client)
+	 * 
+	 * {@inheritDoc}.
+	 * @see AbstractClientHandler#handleClient(Client, ExecutionEvent)
 	 */
 	@Override
-	protected void handleClient(Client client) throws ExecutionException {
+    protected void handleClient(Client client, ExecutionEvent event) throws ExecutionException {
 		ClientEditorInput input = new ClientEditorInput(client);
 		
 		try {
-			getActivePage().openEditor(input, IDs.EDIT_CLIENT_ID);
-		} catch (PartInitException e) {
-			final String msg = String.format(ERROR_MSG, client);
-			LOG.error(msg, e);
-			throw new ExecutionException(msg, e);
-		}
-	}
+	        getActivePage(event).openEditor(input, IDs.EDIT_CLIENT_ID);
+        } catch (PartInitException e) {
+        	LOG.error("Error opening client editor for client " + client.getName(), e);
+        	throw new ExecutionException(Messages.bind(Messages.EditClientCommand_errorOpeningEditor, client), e);
+        }
+    }
+
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
+	 */
+	@Override
+    protected Logger getLogger() {
+	    return LOG;
+    }
 }

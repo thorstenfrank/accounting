@@ -46,15 +46,24 @@ public class Messages extends NLS {
 	public static String DeleteInvoiceCommand_confirmMessage;
 	public static String DeleteInvoiceCommand_confirmText;
 	
+	public static String EditClientCommand_errorOpeningEditor;
+	
+	public static String EditInvoiceCommand_errorOpeningEditor;
+	
 	public static String InvoiceEditor_details;
 	public static String InvoiceEditor_header;
 	public static String InvoiceEditor_overview;
-	public static String InvoiceToPdfCommand_labelPdfFiles;
 
 	public static String InvoicePositionWizard_editTitle;
 	public static String InvoicePositionWizard_editDesc;
 	public static String InvoicePositionWizard_newTitle;
 	public static String InvoicePositionWizard_newDesc;
+	
+	public static String InvoiceToPdfCommand_errorGeneratingInvoice;
+	public static String InvoiceToPdfCommand_errorNoReportingService;
+	public static String InvoiceToPdfCommand_labelPdfFiles;
+	public static String InvoiceToPdfCommand_successMsg;
+	public static String InvoiceToPdfCommand_successText;
 	
 	public static String InvoiceView_number;
 	public static String InvoiceView_state;
@@ -105,6 +114,7 @@ public class Messages extends NLS {
 	public static String labelClientName;
 	public static String labelDescription;
 	public static String labelEmail;
+	public static String labelError;
 	public static String labelFax;
 	public static String labelInvoiceDate;
 	public static String labelInvoiceDueDate;

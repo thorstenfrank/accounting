@@ -20,8 +20,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Invoice;
@@ -46,10 +46,7 @@ public class InvoiceToPdfCommand extends AbstractInvoiceCommand {
 	protected void handleInvoice(Invoice invoice, ExecutionEvent event) throws ExecutionException {
 		ReportingService reportingService = AccountingUI.getDefault().getReportingService();
 		if (reportingService != null) {
-			Shell shell = HandlerUtil.getActiveShell(event);
-			if (shell == null) {
-				shell = getActivePage().getWorkbenchWindow().getShell();
-			}
+			Shell shell = getShell(event);
 			FileDialog fd = new FileDialog(shell, SWT.SAVE);
 			fd.setFileName(invoice.getNumber());
 			fd.setFilterExtensions(new String[]{"*.pdf"}); //$NON-NLS-1$
@@ -60,20 +57,31 @@ public class InvoiceToPdfCommand extends AbstractInvoiceCommand {
 			
 			if (selected != null) {
 				try {
+					// TODO progress monitor dialog...
+					LOG.info("Starting PDF generation to file " + selected); //$NON-NLS-1$
 					reportingService.generateInvoiceToPdf(invoice, selected);
 				} catch (Exception e) {
 					LOG.error("Error creating PDF", e); //$NON-NLS-1$
+					throw new ExecutionException(Messages.InvoiceToPdfCommand_errorGeneratingInvoice, e);
 				}
+				
+				// show some success message.
+				MessageBox msgBox = new MessageBox(shell, SWT.ICON_INFORMATION | SWT.OK);
+				msgBox.setMessage(Messages.bind(Messages.InvoiceToPdfCommand_successMsg, selected));
+				msgBox.setText(Messages.InvoiceToPdfCommand_successText);
+				msgBox.open();
 			}
 		} else {
 			LOG.error("No reporting service!"); //$NON-NLS-1$
+			throw new ExecutionException(Messages.InvoiceToPdfCommand_errorNoReportingService);
 		}
 		
 	}
-	
+
 	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.rcp.invoice.AbstractInvoiceCommand#getLogger()
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
 	 */
 	@Override
 	protected Logger getLogger() {

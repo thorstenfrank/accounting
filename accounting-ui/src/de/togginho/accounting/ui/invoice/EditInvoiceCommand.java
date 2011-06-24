@@ -22,6 +22,7 @@ import org.eclipse.ui.PartInitException;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.IDs;
+import de.togginho.accounting.ui.Messages;
 
 /**
  * @author thorsten
@@ -42,15 +43,17 @@ public class EditInvoiceCommand extends AbstractInvoiceCommand {
 		InvoiceEditorInput input = new InvoiceEditorInput(invoice);
 		
 		try {
-			getActivePage().openEditor(input, IDs.EDIT_INVOIDCE_ID);
+			getActivePage(event).openEditor(input, IDs.EDIT_INVOIDCE_ID);
 		} catch (PartInitException e) {
-			LOG.error("Error opening invoice editor", e); //$NON-NLS-1$
+			LOG.error("Error opening editor for invoice " + invoice.getNumber(), e); //$NON-NLS-1$
+			throw new ExecutionException(Messages.bind(Messages.EditInvoiceCommand_errorOpeningEditor, invoice), e);
 		}
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.rcp.invoice.AbstractInvoiceCommand#getLogger()
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
 	 */
 	@Override
 	protected Logger getLogger() {

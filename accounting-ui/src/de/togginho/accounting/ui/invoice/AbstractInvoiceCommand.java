@@ -15,22 +15,15 @@
  */
 package de.togginho.accounting.ui.invoice;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 
-import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.IDs;
 
 /**
@@ -43,19 +36,20 @@ import de.togginho.accounting.ui.IDs;
  * @author thorsten
  *
  */
-abstract class AbstractInvoiceCommand extends AbstractHandler {
+abstract class AbstractInvoiceCommand extends AbstractAccountingHandler {
 
-	private IWorkbenchPage activePage;
+	
 	
 	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		getLogger().debug("Getting invoice from current selection"); //$NON-NLS-1$
-		this.activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    protected void doExecute(ExecutionEvent event) throws ExecutionException {
+    	getLogger().debug("Getting invoice from current selection"); //$NON-NLS-1$
+    	
+    	IWorkbenchPage activePage = getActivePage(event);
+	    
 		IWorkbenchPart part = activePage.getActivePart();
 		ISelectionProvider selectionProvider = part.getSite().getSelectionProvider();
 		
@@ -77,50 +71,18 @@ abstract class AbstractInvoiceCommand extends AbstractHandler {
 				theInvoice = input.getInvoice();
 			} else {
 				getLogger().warn("No invoice in selection or active editor - cannot run this command!");  //$NON-NLS-1$
-				return null;
+				return;
 			}
 		}
 		
 		if (theInvoice != null) {
-			getLogger().info(String.format("Now running command [%s] for invoice [%s].", getClass().getSimpleName(), theInvoice.getNumber())); //$NON-NLS-1$
+			getLogger().info(String.format("Now running command [%s] for invoice [%s].",  //$NON-NLS-1$
+					getClass().getSimpleName(), theInvoice.getNumber()));
 			
-			try {
-				handleInvoice(theInvoice, event);
-			} catch (AccountingException e) {
-				MessageBox msgBox = new MessageBox(getShell(event), SWT.ICON_ERROR | SWT.OK);
-				msgBox.setText("Error");
-				msgBox.setMessage(e.getLocalizedMessage());
-				msgBox.open();
-			} catch (Exception e) {
-				getLogger().error("Unknown exception", e);
-			}
+			handleInvoice(theInvoice, event);
 		}
-
-		
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param event
-	 * @return
-	 */
-	protected Shell getShell(ExecutionEvent event) {
-		Shell shell = HandlerUtil.getActiveShell(event);
-		if (shell == null) {
-			shell = getActivePage().getWorkbenchWindow().getShell();
-		}
-		return shell;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected IWorkbenchPage getActivePage() {
-		return activePage;
-	}
-	
+    }
+    
 	/**
 	 * 
 	 * @param invoice
@@ -128,10 +90,5 @@ abstract class AbstractInvoiceCommand extends AbstractHandler {
 	 * @throws ExecutionException
 	 */
 	protected abstract void handleInvoice(Invoice invoice, ExecutionEvent event) throws ExecutionException;
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected abstract Logger getLogger();
+
 }

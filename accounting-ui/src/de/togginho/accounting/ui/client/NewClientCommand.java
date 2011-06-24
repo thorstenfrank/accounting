@@ -16,44 +16,42 @@
 package de.togginho.accounting.ui.client;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
+import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.wizard.NewClientWizard;
 
 /**
  * @author thorsten
  *
  */
-public class NewClientCommand extends AbstractHandler {
+public class NewClientCommand extends AbstractAccountingHandler {
 
+	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(NewClientCommand.class);
 	
 	/**
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		LOG.debug("Running new client wizard"); //$NON-NLS-1$
 		
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		NewClientWizard wizard = new NewClientWizard();
-		
-		WizardDialog dialog = new WizardDialog(shell, wizard);
-		
-		int returnCode = dialog.open();
-		
-		if (returnCode == WizardDialog.CANCEL) {
-			LOG.debug("NewClientWizard was cancelled"); //$NON-NLS-1$
-		} else {
-			LOG.debug("NewClientWizard finished successfully"); //$NON-NLS-1$
-		}
-		
-		return null;
-	}
-
+    	NewClientWizard wizard = new NewClientWizard();
+    	WizardDialog dialog = new WizardDialog(getShell(event), wizard);
+    	
+		dialog.open();
+    }
+    
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
+     */
+    @Override
+    protected Logger getLogger() {
+	    return LOG;
+    }
 }

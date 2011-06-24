@@ -18,6 +18,7 @@ package de.togginho.accounting.ui.client;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
@@ -25,7 +26,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.User;
@@ -44,62 +44,69 @@ public class DeleteClientCommand extends AbstractClientHandler {
 	private static final Logger LOG = Logger.getLogger(DeleteClientCommand.class);
 	
 	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.rcp.client.AbstractClientHandler#handleClient(de.togginho.accounting.model.Client)
+	 * 
+	 * {@inheritDoc}.
+	 * @see AbstractClientHandler#handleClient(Client, ExecutionEvent)
 	 */
 	@Override
-	protected void handleClient(Client client) throws ExecutionException {
-		deleteClientFromCurrentUser(client);
-	}
-	
-	/**
-	 * Does the actual work.
-	 * @param toBeDeleted
-	 */
-	private void deleteClientFromCurrentUser(Client toBeDeleted) {
-		MessageBox messageBox = new MessageBox(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-				SWT.ICON_WARNING | SWT.YES | SWT.NO);
-		LOG.debug("Confirming deletion of client " + toBeDeleted.getName()); //$NON-NLS-1$
-		messageBox.setMessage(Messages.bind(Messages.DeleteClientCommand_confirmMessage, toBeDeleted.getName()));
+	protected void handleClient(Client client, ExecutionEvent event) throws ExecutionException {
+		MessageBox messageBox = new MessageBox(getShell(event), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+		
+		LOG.debug("Confirming deletion of client " + client.getName()); //$NON-NLS-1$
+		
+		messageBox.setMessage(Messages.bind(Messages.DeleteClientCommand_confirmMessage, client.getName()));
 		messageBox.setText(Messages.DeleteClientCommand_confirmText);
 		
 		if (messageBox.open() == SWT.YES) {
 			User currentUser = ModelHelper.getCurrentUser();
 			
 			LOG.debug(String.format("Removing client [%s] from user [%s]",  //$NON-NLS-1$
-					toBeDeleted.getName(), currentUser.getName()));
+					client.getName(), currentUser.getName()));
 			
 			Iterator<Client> iter = currentUser.getClients().iterator();
 			while (iter.hasNext()) {
-				Client client = iter.next();
-				if (client.equals(toBeDeleted)) {
-					LOG.debug("Found client, now removing"); //$NON-NLS-1$
+				Client toBeDeleted = iter.next();
+				if (toBeDeleted.equals(client)) {
+					LOG.debug("Found client in user, now removing"); //$NON-NLS-1$
 					iter.remove();
 					break;
 				}
 			}
 			
+			// save the current user
 			ModelHelper.saveCurrentUser();
 			
-			removeOpenEditorForClient(toBeDeleted);
+			// close open editors for the deleted client, if open
+			removeOpenEditorForClient(client, event);
 		} else {
-			LOG.debug(String.format("Deleting client [%s] was cancelled.", toBeDeleted.getName())); //$NON-NLS-1$
+			LOG.debug(String.format("Deleting client [%s] was cancelled.", client.getName())); //$NON-NLS-1$
 		}
 	}
 	
 	/**
-	 * @param toBeDeleted
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
 	 */
-	private void removeOpenEditorForClient(Client toBeDeleted) {
-		LOG.debug("Checking for open editors for client " + toBeDeleted.getName()); //$NON-NLS-1$
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+	@Override
+    protected Logger getLogger() {
+	    return LOG;
+    }
+	
+	/**
+	 * @param deletedClient
+	 */
+	private void removeOpenEditorForClient(Client deletedClient, ExecutionEvent event) {
+		LOG.debug("Checking for open editors for client " + deletedClient.getName()); //$NON-NLS-1$
+		IWorkbenchPage page = getActivePage(event);
 		
 		for (IEditorReference editorRef : page.findEditors(null, IDs.EDIT_CLIENT_ID, IWorkbenchPage.MATCH_ID)) {
-			if (editorRef.getName().equals(toBeDeleted.getName())) {
+			if (editorRef.getName().equals(deletedClient.getName())) {
 				LOG.debug("Closing editor for deleted client: " + editorRef.getName()); //$NON-NLS-1$
 				page.closeEditor(editorRef.getEditor(false), false);
 			}
 		}		
 	}
+	
+	
 }
