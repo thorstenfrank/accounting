@@ -131,7 +131,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	public void testFindInvoices() {
 		Set<Invoice> invoices = null;
         try {
-	        invoices = serviceUnderTest.findInvoices(getTestUser());
+	        invoices = serviceUnderTest.findInvoices();
         } catch (Exception e) {
         	LOG.error("Error getting invoices from service", e);
         	fail("Error getting invoices from service");

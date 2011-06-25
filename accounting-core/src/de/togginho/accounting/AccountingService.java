@@ -15,8 +15,10 @@
  */
 package de.togginho.accounting;
 
+import java.util.Date;
 import java.util.Set;
 
+import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;
@@ -55,12 +57,16 @@ public interface AccountingService {
 	void init(AccountingContext context);
 	
 	/**
+	 * Returns the {@link User} denoted by the name contained in the {@link AccountingContext} that was used to
+	 * initialize this service.
 	 * 
-	 * @return
+	 * @return the current session's user, or <code>null</code> if none exists in persistence
+	 * @throws AccountingException if a technical error occurred while accessing persistence
 	 */
 	User getCurrentUser();
 	
 	/**
+	 * Saves the current user. Saving includes the user's clients, configured tax rates, bank account and address.
 	 * 
 	 * @param user
 	 * @return
@@ -68,37 +74,87 @@ public interface AccountingService {
 	User saveCurrentUser(User user);
 	
 	/**
+	 * Saves an {@link Invoice} to persistence.
 	 * 
-	 * @param invoice
-	 * @return
+	 * <p>Note that invoices may only be saved through this method until they have been sent, i.e. only while they are
+	 * either in state {@link InvoiceState#UNSAVED} or {@link InvoiceState#CREATED}. Any attempt to save an invoice
+	 * afterwards will result in an {@link AccountingException}.</p>
+	 * 
+	 * @param invoice the {@link Invoice} to save
+	 * @return the saved invoice
+	 * @throws AccountingException if this invoice cannot be saved due to being in an invalid state, or if a technical
+	 * 		   error happens during persisting operations
+	 * @see #sendInvoice(Invoice)
+	 * @see #markAsPaid(Invoice, Date)
 	 */
 	Invoice saveInvoice(Invoice invoice);
 	
 	/**
+	 * Flags the supplied invoice as having been sent to its {@link Client}. After an invoice has been sent, it cannot
+	 * be edited or saved, only marked as paid or cancelled.
 	 * 
-	 * @param invoice
-	 * @return
+	 * <p>An invoice cannot be re-sent if is has been cancelled, does not have a due date, or if the due date is in the
+	 * past.</p>
+	 * 
+	 * @param invoice the invoice sent to its client
+	 * @return the sent invoice
+	 * @throws AccountingException if the invoice cannot be sent due to business rules, or if a technical error happens
+	 * @see InvoiceState#CANCELLED
+	 * @see Invoice#getDueDate() 
 	 */
 	Invoice sendInvoice(Invoice invoice);
 	
 	/**
+	 * Assigns the payment date to the invoice and saves it. Afterwards, the invoice will be in state
+	 * {@link InvoiceState#PAID}.
 	 * 
-	 * @param invoice
+	 * <p>An invoice can only be marked as paid while in state {@link InvoiceState#SENT} or
+	 * {@link InvoiceState#OVERDUE}.</p>
+	 * 
+	 * @param invoice the {@link Invoice} that was paid
+	 * @param paymentDate the {@link Date} the invoice was paid
+	 * @return the saved invoice, now in state {@link InvoiceState#PAID}
+	 * @throws AccountingException if the invoice cannot be marked as paid
+	 * @see Invoice#getPaymentDate()
+	 * @see Invoice#canBePaid()
+	 */
+	Invoice markAsPaid(Invoice invoice, Date paymentDate);
+	
+	/**
+	 * Deletes the invoice permanently. An invoice may only be deleted while it hasn't been sent yet, i.e. while it is
+	 * in state {@link InvoiceState#CREATED}. All attempts to delete an invoice in a state beyond that will result in
+	 * an {@link AccountingException} being thrown. 
+	 * 
+	 * <p>Requests to delete invoices in state {@link InvoiceState#UNSAVED} will be ignored.</p>
+	 * 
+	 * @param invoice the {@link Invoice} to delete
+	 * @throws AccountingException if the invoice cannot be deleted or if an error occurred during deletion
 	 */
 	void deleteInvoice(Invoice invoice);
 	
 	/**
+	 * Attempts to retrieve a specific {@link Invoice} from persistence.
 	 * 
-	 * @param invoiceNumber
-	 * @return
+	 * @param invoiceNumber the {@link Invoice#getNumber()} to search for
+	 * @return the {@link Invoice} with the supplied number, or <code>null</code> if there is no such invoice
+	 * @throws AccountingException if a technical error occurred while accessing persistence
 	 */
 	Invoice getInvoice(String invoiceNumber);
 	
 	/**
+	 * Finds all invoices for the current user that match the specified states.
 	 * 
-	 * @param user
-	 * @param states
-	 * @return
+	 * <p>The current user is the user denoted by the user name in the {@link AccountingContext} that this service was
+	 * initialized with.</p>
+	 * 
+	 * <p>No states have to be specified, in which case all invoices for the current user will be returned.</p>
+	 * 
+	 * <p>This method will never return <code>null</code>, if there were no invoices found for the specified arguments,
+	 * an empty {@link Set} is returned.</p>
+	 * 
+	 * @param states an arbitrary number of {@link InvoiceState}s that the returned invoices must match
+	 * @return a {@link Set} of {@link Invoice} instances for the current user matching the supplied states
+	 * @throws AccountingException if a technical error occurred while accessing persistence
 	 */
-	Set<Invoice> findInvoices(User user, InvoiceState... states);
+	Set<Invoice> findInvoices(InvoiceState... states);
 }

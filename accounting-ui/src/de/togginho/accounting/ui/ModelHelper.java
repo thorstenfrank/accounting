@@ -17,6 +17,7 @@ package de.togginho.accounting.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Date;
 import java.util.Set;
 
 import de.togginho.accounting.AccountingContext;
@@ -101,7 +102,7 @@ public final class ModelHelper {
 	 * @return
 	 */
 	public static Set<Invoice> getOpenInvoices() {
-		return INSTANCE.accountingService.findInvoices(getCurrentUser(), InvoiceState.CREATED, InvoiceState.SENT);
+		return INSTANCE.accountingService.findInvoices(InvoiceState.CREATED, InvoiceState.SENT);
 	}
 	
 	/**
@@ -134,6 +135,18 @@ public final class ModelHelper {
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, sent);
 		return sent;
 	}
+
+	/**
+     * @param invoice
+     * @param paymentDate
+     * @return
+     * @see de.togginho.accounting.AccountingService#markAsPaid(de.togginho.accounting.model.Invoice, java.util.Date)
+     */
+    public static Invoice markAsPaid(Invoice invoice, Date paymentDate) {
+	    Invoice paid = INSTANCE.accountingService.markAsPaid(invoice, paymentDate);
+	    INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, paid);
+	    return paid;
+    }
 
 	/**
 	 * 

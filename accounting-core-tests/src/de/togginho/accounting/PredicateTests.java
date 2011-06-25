@@ -60,7 +60,7 @@ public class PredicateTests extends BaseTestFixture {
 	 */
 	@Test
 	public void testFindInvoicesPredicate() {
-		FindInvoicesPredicate predicate = new FindInvoicesPredicate(getTestUser());
+		FindInvoicesPredicate predicate = new FindInvoicesPredicate(getTestContext());
 		
 		Invoice candidate = new Invoice();
 		
@@ -76,7 +76,7 @@ public class PredicateTests extends BaseTestFixture {
 		candidate.setDueDate(dueDate.getTime());
 		assertTrue(predicate.match(candidate));
 		
-		predicate = new FindInvoicesPredicate(getTestUser(), InvoiceState.CREATED, InvoiceState.SENT);
+		predicate = new FindInvoicesPredicate(getTestContext(), InvoiceState.CREATED, InvoiceState.SENT);
 		
 		assertTrue(predicate.match(candidate));
 		

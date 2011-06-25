@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.expressions.PropertyTester;
 
 import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.model.InvoiceState;
 
 /**
  * @author thorsten
@@ -46,13 +45,13 @@ public class InvoicePropertyTester extends PropertyTester {
 		Invoice invoice = (Invoice) receiver;
 		boolean result = false;
 		if (CAN_BE_DELETED.equals(property)) {
-			result = InvoiceState.CREATED.equals(invoice.getState());
+			result = invoice.canBeDeleted();
 		} else if (CAN_BE_CANCELLED.equals(property)) {
-			result = (InvoiceState.PAID.equals(invoice.getState()) || InvoiceState.SENT.equals(invoice.getState()));
+			result = invoice.canBeCancelled();
 		} else if (CAN_BE_PAID.equals(property)) {
-			result = InvoiceState.SENT.equals(invoice.getState());
+			result = invoice.canBePaid();
 		} else if (CAN_BE_EXPORTED.equals(property)) {
-			result = (invoice.getUser() != null && invoice.getInvoicePositions() != null && invoice.getInvoicePositions().size() > 0);
+			result = invoice.canBeExported();
 		}
 	
 		LOG.debug(String.format("Property [%s] on Invoice [%s] was tested [%s]", property, invoice.getNumber(), result)); //$NON-NLS-1$

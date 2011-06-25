@@ -214,6 +214,89 @@ public class Invoice implements Serializable {
 	}
 
 	/**
+	 * Returns whether this invoice may still be edited, which is only possible while in state 
+	 * {@link InvoiceState#UNSAVED} or {@link InvoiceState#CREATED}.
+	 * 
+	 * @return	<code>true</code> if this invoice is editable, <code>false</code> if not
+	 */
+	public boolean canBeEdited() {
+		switch (getState()) {
+		case CREATED:
+		case UNSAVED:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns whether this invoice may be deleted, which is only possible while in state {@link InvoiceState#CREATED}.
+	 * 
+	 * <p>Once an invoice is {@link InvoiceState#SENT}, it may only be cancelled.</p>
+	 * 
+	 * @return <code>true</code> if this invoice may be deleted
+	 */
+	public boolean canBeDeleted() {
+		return InvoiceState.CREATED.equals(getState());
+	}
+	
+	/**
+	 * Returns whether tihs invoice may be cancelled, which is only possible after it has been sent.
+	 * 
+	 * <p>More precisely, an invoice may be cancelled if it is in one of the following states:
+	 * <ul>
+	 * <li>{@link InvoiceState#SENT}</li>
+	 * <li>{@link InvoiceState#PAID}</li>
+	 * <li>{@link InvoiceState#OVERDUE}</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @return <code>true</code> if this invoice may be cancelled
+	 */
+	public boolean canBeCancelled() {
+		switch (getState()) {
+		case SENT:
+		case PAID:
+		case OVERDUE:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns whether this invoice may be marked as paid, which is only possible if in state {@link InvoiceState#SENT}
+	 * or {@link InvoiceState#OVERDUE}.
+	 * 
+	 * @return <code>true</code> if this invoice may be marked as paid
+	 */
+	public boolean canBePaid() {
+		switch (getState()) {
+		case SENT:
+		case OVERDUE:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns whether this invoice can be exported.
+	 * 
+	 * <p>An invoice may be exported an arbitrary number of times, regardless of its state, but it must belong to a user
+	 * and it must contain at least a single {@link InvoicePosition}. Additionally, it must be addressed to a 
+	 * {@link Client} that has a valid {@link Address}.</p>
+	 * 
+	 * @return
+	 */
+	public boolean canBeExported() {
+		if (getUser() != null && getClient() != null && getClient().getAddress() != null) {
+			return getInvoicePositions() != null && getInvoicePositions().size() > 0;
+		}
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see java.lang.Object#hashCode()
 	 */

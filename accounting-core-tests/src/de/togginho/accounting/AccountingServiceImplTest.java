@@ -353,6 +353,47 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	}
 	
 	/**
+	 * Tests {@link AccountingServiceImpl#markAsPaid(Invoice, Date)}.
+	 */
+	@Test
+	public void testMarkInvoiceAsPaid() {
+		serviceUnderTest.init(getTestContext());
+		
+		assertNull(serviceUnderTest.markAsPaid(null, null));
+		
+		Invoice invoice = new Invoice();
+		invoice.setUser(getTestUser());
+		invoice.setClient(new Client());
+		invoice.setCreationDate(new Date());
+		invoice.setDueDate(new Date());
+		
+		serviceUnderTest.markAsPaid(invoice, null);
+		assertNull(invoice.getPaymentDate());
+		
+		final Date paymentDate = new Date();
+		
+		try {
+	        serviceUnderTest.markAsPaid(invoice, paymentDate);
+	        fail("Trying to mark an unsent invoice as paid should have resulted in exception");
+        } catch (AccountingException e) {
+	        // this is what we want
+        }
+		
+		invoice.setSentDate(new Date());
+		
+		// mock behavior
+		ocMock.store(invoice);
+		expectLastCall().once();
+		ocMock.commit();
+		expectLastCall().once();
+		replay(ocMock);
+		
+		Invoice paid = serviceUnderTest.markAsPaid(invoice, paymentDate);
+		assertEquals(invoice, paid);
+		assertEquals(paymentDate, paid.getPaymentDate());
+	}
+	
+	/**
 	 * Tests {@link AccountingServiceImpl#getInvoice(String)}.
 	 */
 	@SuppressWarnings("unchecked")
@@ -395,14 +436,14 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		replay(ocMock);
 		
 		try {
-			serviceUnderTest.findInvoices(getTestUser(), InvoiceState.CREATED, InvoiceState.SENT);
+			serviceUnderTest.findInvoices(InvoiceState.CREATED, InvoiceState.SENT);
 			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
 		} catch (AccountingException e) {
 			// this is what we want
 		}
 		
 		try {
-			serviceUnderTest.findInvoices(getTestUser(), InvoiceState.CREATED, InvoiceState.SENT);
+			serviceUnderTest.findInvoices(InvoiceState.CREATED, InvoiceState.SENT);
 			fail("Mocked ObjectContainer threw exception, didn't expect to get through clean");
 		} catch (AccountingException e) {
 			// this is what we want

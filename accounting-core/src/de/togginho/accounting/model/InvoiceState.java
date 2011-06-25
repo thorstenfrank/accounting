@@ -20,26 +20,52 @@ import java.io.Serializable;
 import de.togginho.accounting.Messages;
 
 /**
+ * The state of an invoice denoting that invoices current point in its life cycle.
+ * 
+ * <p>The state of an invoice is never set directly, but rather computed through a series of rules regarding its
+ * various dates, such as the creation date, sent date, due date, cancelled date, and so on.</p>
+ * 
  * @author thorsten
- *
+ * @see Invoice#getState()
  */
 public enum InvoiceState implements Serializable {
 
+	/**
+	 * An invoice that is fresh, i.e. has just been instantiated but never saved to persistence.
+	 */
 	UNSAVED,
 	
+	/**
+	 * An invoice that has been saved to persistence, but not been sent.
+	 */
 	CREATED,
 	
+	/**
+	 * An invoice that has been sent to its client.
+	 */
 	SENT,
 	
+	/**
+	 * An invoice that was sent but has a due date in the past.
+	 */
 	OVERDUE,
 	
+	/**
+	 * An invoice that has been sent and then cancelled. This is a terminal state.
+	 */
 	CANCELLED,
 	
+	/**
+	 * An invoice that was sent and then paid, regardless of whether the payment was made within the legal time frame
+	 * or after it has already become overdue. This is a terminal state.
+	 */
 	PAID;
 	
 	/**
+	 * Returns a translated String describing this state. The locale used is the default locale derived from the
+	 * framework.
 	 * 
-	 * @return
+	 * @return a locale-sensitive string representation of this invoice state
 	 */
 	public String getTranslatedString() {
 		switch (this) {

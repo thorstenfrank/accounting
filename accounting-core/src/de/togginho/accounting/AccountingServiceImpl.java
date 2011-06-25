@@ -280,6 +280,32 @@ class AccountingServiceImpl implements AccountingService {
 
 		return invoice;
 	}
+	
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#markAsPaid(de.togginho.accounting.model.Invoice, java.util.Date)
+     */
+    @Override
+    public Invoice markAsPaid(Invoice invoice, Date paymentDate) {
+    	if (invoice == null) {
+    		LOG.warn("Trying to mark invoice [null] as paid, ignoring this service call"); //$NON-NLS-1$
+    		return null;
+    	} else if (paymentDate == null) {
+    		LOG.warn(String.format("Trying to mark invoice [%s] as paid with date [null], aborting...", //$NON-NLS-1$
+    				invoice.getNumber()));
+    		return invoice;
+    	}
+    	
+    	if (!invoice.canBePaid()) {
+    		LOG.error("Cannot mark this invoice as paid!");
+    		throw new AccountingException(Messages.AccountingService_errorCannotMarkInvoiceAsPaid);
+    	}
+    	
+    	invoice.setPaymentDate(paymentDate);
+    	doStoreEntity(invoice);
+    	
+	    return invoice;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -359,13 +385,12 @@ class AccountingServiceImpl implements AccountingService {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see de.togginho.accounting.AccountingService#findInvoices(de.togginho.accounting.model.User,
-	 *      de.togginho.accounting.model.InvoiceState[])
+	 * @see AccountingService#findInvoices(InvoiceState...)
 	 */
 	@Override
-	public Set<Invoice> findInvoices(User user, InvoiceState... states) {
+	public Set<Invoice> findInvoices(InvoiceState... states) {
 		StringBuilder sb = new StringBuilder("findInvoices for user"); //$NON-NLS-1$
-		sb.append(" [").append(user.getName()).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
+		sb.append(" [").append(context.getUserName()).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (states != null) {
 			sb.append(" in state "); //$NON-NLS-1$
 			for (InvoiceState state : states) {
@@ -377,7 +402,7 @@ class AccountingServiceImpl implements AccountingService {
 		Set<Invoice> invoices = new HashSet<Invoice>();
 
 		try {
-			invoices.addAll(objectContainer.query(new FindInvoicesPredicate(user, states)));
+			invoices.addAll(objectContainer.query(new FindInvoicesPredicate(context, states)));
 		} catch (Db4oIOException e) {
 			throwDb4oIoException(e);
 		} catch (DatabaseClosedException e) {

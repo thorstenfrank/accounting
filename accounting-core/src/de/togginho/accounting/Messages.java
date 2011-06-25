@@ -18,6 +18,8 @@ package de.togginho.accounting;
 import org.eclipse.osgi.util.NLS;
 
 /**
+ * Localized message resources for the accounting core.
+ * 
  * @author thorsten
  *
  */
@@ -42,6 +44,7 @@ public class Messages extends NLS {
 	public static String AccountingService_errorMissingInvoiceNumber;
 	public static String AccountingService_errorUnknownUser;
 	public static String AccountingService_errorInvoiceCannotBeDeleted;
+	public static String AccountingService_errorCannotMarkInvoiceAsPaid;
 	public static String AccountingService_errorCannotSaveInvoice;
 	public static String AccountingService_errorCannotSendCancelledInvoice;
 	public static String AccountingService_errorCannotSendInvoiceWithoutDueDate;

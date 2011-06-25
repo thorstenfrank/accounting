@@ -38,9 +38,9 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 	private static final long serialVersionUID = -1990476393693145937L;
 
 	/**
-	 * The user to match.
+	 * The context for this predicate.
 	 */
-	private User user;
+	private AccountingContext context;
 	
 	/**
 	 * All invoice states to match - may be <code>null</code> or empty.
@@ -53,8 +53,8 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 	 * @param user the {@link User} whose invoices are matched
 	 * @param states all invoice states to match - may be <code>null</code>
 	 */
-	FindInvoicesPredicate(User user, InvoiceState... states) {
-		this.user = user;
+	FindInvoicesPredicate(AccountingContext context, InvoiceState... states) {
+		this.context = context;
 		if (states != null) {
 			this.states = new HashSet<InvoiceState>();
 			for (InvoiceState state : states) {
@@ -69,7 +69,11 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 	 */
 	@Override
 	public boolean match(Invoice invoice) {
-		if (user.equals(invoice.getUser())) {
+		if (invoice.getUser() == null) {
+			return false;
+		}
+		
+		if (context.getUserName().equals(invoice.getUser().getName())) {
 			if (states == null || states.isEmpty()) {
 				return true;
 			} else {
