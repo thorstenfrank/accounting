@@ -37,8 +37,7 @@ public class CancelInvoiceCommand extends AbstractInvoiceCommand {
 	 */
 	@Override
 	protected void handleInvoice(Invoice invoice, ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
-		
+		throw new ExecutionException("Not yet implemented!");
 	}
 
 	/**
