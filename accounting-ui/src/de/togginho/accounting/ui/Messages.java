@@ -68,6 +68,12 @@ public class Messages extends NLS {
 	public static String InvoiceView_number;
 	public static String InvoiceView_state;
 	
+	public static String MarkInvoiceAsPaidCommand_errorPaymentDateBeforeSentDate;
+	public static String MarkInvoiceAsPaidCommand_errorPaymentDateInTheFuture;
+	public static String MarkInvoiceAsPaidCommand_message;
+	public static String MarkInvoiceAsPaidCommand_paymentDateLabel;
+	public static String MarkInvoiceAsPaidCommand_title;
+	
 	public static String NewClientWizard_windowTitle;
 	public static String NewClientWizard_alreadyExistsMsg;
 	public static String NewClientWizard_alreadyExistsText;
@@ -145,7 +151,7 @@ public class Messages extends NLS {
 	public static String iconsInvoiceToPdf;
 	public static String iconsMarkInvoiceAsPaid;
 	public static String iconsSendInvoice;
-	
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
