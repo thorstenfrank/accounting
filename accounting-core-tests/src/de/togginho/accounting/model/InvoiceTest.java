@@ -41,20 +41,25 @@ public class InvoiceTest {
 		Invoice invoice = new Invoice();
 		
 		assertFalse(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setUser(new User());
 		invoice.setClient(new Client());
 		assertFalse(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setInvoicePositions(new ArrayList<InvoicePosition>());
 		assertFalse(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		InvoicePosition ip = new InvoicePosition();
 		invoice.getInvoicePositions().add(ip);
 		assertFalse(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.getClient().setAddress(new Address());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		assertEquals(InvoiceState.UNSAVED, invoice.getState());
 		assertTrue(invoice.canBeEdited());
@@ -62,6 +67,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeCancelled());
 		assertFalse(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setCreationDate(new Date());
 		assertEquals(InvoiceState.CREATED, invoice.getState());
@@ -70,6 +76,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeCancelled());
 		assertFalse(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertTrue(invoice.canBeSent());
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 1);
@@ -82,6 +89,7 @@ public class InvoiceTest {
 		assertTrue(invoice.canBeCancelled());
 		assertTrue(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setCancelledDate(new Date());
 		assertEquals(InvoiceState.CANCELLED, invoice.getState());
@@ -90,6 +98,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeCancelled());
 		assertFalse(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setCancelledDate(null);
 		invoice.setPaymentDate(new Date());
@@ -99,6 +108,7 @@ public class InvoiceTest {
 		assertTrue(invoice.canBeCancelled());
 		assertFalse(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		// this should never happen since a cancelled invoice cannot be marked as paid, but stil...
 		invoice.setCancelledDate(new Date());
@@ -108,6 +118,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeCancelled());
 		assertFalse(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setCancelledDate(null);
 		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 3);
@@ -121,6 +132,7 @@ public class InvoiceTest {
 		assertTrue(invoice.canBeCancelled());
 		assertTrue(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 		
 		invoice.setCancelledDate(new Date());
 		assertEquals(InvoiceState.CANCELLED, invoice.getState());
@@ -129,6 +141,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeCancelled());
 		assertFalse(invoice.canBePaid());
 		assertTrue(invoice.canBeExported());
+		assertFalse(invoice.canBeSent());
 	}
 	
 	/**

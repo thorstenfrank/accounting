@@ -508,7 +508,7 @@
             class="de.togginho.accounting.ui.invoice.InvoicePropertyTester"
             id="de.togginho.accounting.ui.invoice.invoicePropertyTester"
             namespace="de.togginho.accounting.ui.invoice"
-            properties="canBeDeleted, canBeCancelled, canBePaid, canBeExported"
+            properties="canBeDeleted, canBeCancelled, canBePaid, canBeExported, canBeSent"
             type="de.togginho.accounting.model.Invoice">
       </propertyTester>
    </extension>
@@ -567,7 +567,7 @@
          <enabledWhen>
            <iterate>
               <test
-                    property="de.togginho.accounting.ui.invoice.canBeExported">
+                    property="de.togginho.accounting.ui.invoice.canBeSent">
               </test>
            </iterate>
          </enabledWhen>

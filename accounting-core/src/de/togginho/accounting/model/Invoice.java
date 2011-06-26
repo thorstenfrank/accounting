@@ -297,6 +297,19 @@ public class Invoice implements Serializable {
 	}
 	
 	/**
+	 * Returns whether this invoice may be sent.
+	 * 
+	 * @return <code>true</code> if this invoice can be sent
+	 */
+	public boolean canBeSent() {
+		if (InvoiceState.CREATED.equals(getState())) {
+			return canBeExported(); // logic is the same - must have user, client and client address
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see java.lang.Object#hashCode()
 	 */

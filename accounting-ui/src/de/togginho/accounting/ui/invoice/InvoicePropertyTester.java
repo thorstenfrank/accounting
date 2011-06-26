@@ -36,6 +36,8 @@ public class InvoicePropertyTester extends PropertyTester {
 	
 	private static final String CAN_BE_EXPORTED = "canBeExported"; //$NON-NLS-1$
 	
+	private static final String CAN_BE_SENT = "canBeSent"; //$NON-NLS-1$
+	
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
@@ -52,6 +54,8 @@ public class InvoicePropertyTester extends PropertyTester {
 			result = invoice.canBePaid();
 		} else if (CAN_BE_EXPORTED.equals(property)) {
 			result = invoice.canBeExported();
+		} else if (CAN_BE_SENT.equals(property)) {
+			result = invoice.canBeSent();
 		}
 	
 		LOG.debug(String.format("Property [%s] on Invoice [%s] was tested [%s]", property, invoice.getNumber(), result)); //$NON-NLS-1$
