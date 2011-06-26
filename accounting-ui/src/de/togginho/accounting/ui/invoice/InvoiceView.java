@@ -61,6 +61,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	@Override
 	public void createPartControl(Composite parent) {
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
+		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
 		
 		tableViewer = new TableViewer(parent, SWT.FULL_SELECTION);
 		getSite().setSelectionProvider(tableViewer);
@@ -117,7 +118,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		
 		tableViewer.addDoubleClickListener(this);
 		
-		Set<Invoice> invoices = ModelHelper.getOpenInvoices();
+		Set<Invoice> invoices = ModelHelper.findInvoices();
 		LOG.debug("adding open invoices: " + invoices.size()); //$NON-NLS-1$
 		
 		tableViewer.setInput(invoices);
@@ -143,6 +144,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	@Override
 	public void dispose() {
 		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
+		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
 		super.dispose();
 	}
 	
@@ -170,7 +172,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		LOG.info("Refreshing open invoices..."); //$NON-NLS-1$
-		Set<Invoice> invoices = ModelHelper.getOpenInvoices();
+		Set<Invoice> invoices = ModelHelper.findInvoices();
 
 		LOG.debug("Number of invoices: " + invoices.size()); //$NON-NLS-1$
 		

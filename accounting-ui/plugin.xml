@@ -248,6 +248,14 @@
          </command>
       </menuContribution>
       <menuContribution
+            locationURI="menu:de.togginho.accounting.ui.invoice.InvoiceView">
+         <command
+               commandId="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+               icon="icons/page_gear.png"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
             locationURI="toolbar:de.togginho.accounting.ui.invoice.InvoiceView">
          <command
                commandId="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
@@ -408,6 +416,11 @@
             categoryId="de.togginho.accounting.ui.invoice"
             id="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
             name="%command.invoice.cancel.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+            id="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+            name="%command.change.invoice.filter">
       </command>
    </extension>
    <extension

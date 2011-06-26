@@ -18,6 +18,8 @@ package de.togginho.accounting.ui;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import de.togginho.accounting.AccountingContext;
@@ -42,6 +44,9 @@ public final class ModelHelper {
 	public static final String MODEL_INVOICES = "model.invoices"; //$NON-NLS-1$
 	
 	/** */
+	public static final String MODEL_INVOICE_FILTER = "model.invoice.filter"; //$NON-NLS-1$
+	
+	/** */
 	private AccountingContext context;
 	
 	/** */
@@ -51,11 +56,17 @@ public final class ModelHelper {
 	
 	private User currentUser;
 	
+	private Set<InvoiceState> invoiceFilter;
+	
 	/**
 	 * Singleton -> private.
 	 */
 	private ModelHelper() {
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
+		invoiceFilter = new HashSet<InvoiceState>();
+		invoiceFilter.add(InvoiceState.CREATED);
+		invoiceFilter.add(InvoiceState.SENT);
+		invoiceFilter.add(InvoiceState.OVERDUE);
 	}
 	
 	/**
@@ -101,8 +112,44 @@ public final class ModelHelper {
 	 * 
 	 * @return
 	 */
-	public static Set<Invoice> getOpenInvoices() {
-		return INSTANCE.accountingService.findInvoices(InvoiceState.CREATED, InvoiceState.SENT);
+	public static Set<Invoice> findInvoices() {
+		return INSTANCE.doFindInvoices();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private Set<Invoice> doFindInvoices() {
+		if (invoiceFilter == null || invoiceFilter.isEmpty()) {
+			return accountingService.findInvoices();
+		}
+		final InvoiceState[] states = new InvoiceState[invoiceFilter.size()];
+		Iterator<InvoiceState> iter = invoiceFilter.iterator();
+		int counter = 0;
+		while (iter.hasNext()) {
+			states[counter] = iter.next();
+			counter++;
+		}
+		
+		return accountingService.findInvoices(states);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Set<InvoiceState> getInvoiceFilter() {
+		return INSTANCE.invoiceFilter;
+	}
+	
+	/**
+	 * 
+	 * @param filter
+	 */
+	public static void setInvoiceFilter(Set<InvoiceState> filter) {
+		INSTANCE.invoiceFilter = filter;
+		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICE_FILTER, null, INSTANCE.invoiceFilter);
 	}
 	
 	/**
