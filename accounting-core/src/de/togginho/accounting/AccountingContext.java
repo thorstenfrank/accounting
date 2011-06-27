@@ -40,7 +40,7 @@ public interface AccountingContext extends Serializable {
 	 * 
 	 * @see	User#getName()
 	 */
-	public String getUserName();
+	String getUserName();
 
 	/**
 	 * Full path to the db file.
@@ -49,5 +49,5 @@ public interface AccountingContext extends Serializable {
 	 * 
 	 * @return full path to the db file
 	 */
-	public String getDbFileName();
+	String getDbFileName();
 }
