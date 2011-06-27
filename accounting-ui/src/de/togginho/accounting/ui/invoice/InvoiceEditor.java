@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.ui.invoice;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +26,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -49,11 +52,12 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.menus.IMenuService;
+import org.eclipse.ui.menus.MenuUtil;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Address;
@@ -65,7 +69,6 @@ import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
-import de.togginho.accounting.ui.SimpleCommandCallingAction;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -73,7 +76,7 @@ import de.togginho.accounting.util.FormatUtil;
  * @author thorsten
  *
  */
-public class InvoiceEditor extends AbstractAccountingEditor implements Constants {
+public class InvoiceEditor extends AbstractAccountingEditor implements Constants, PropertyChangeListener {
 
 	private static final Logger LOG = Logger.getLogger(InvoiceEditor.class);
 	
@@ -145,11 +148,25 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		// calculate the prices for display
 		calculateTotals();
 		
-		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_DELETE_INVOICE, Messages.iconsDeleteInvoice));
-		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_INVOICE_TO_PDF, Messages.iconsInvoiceToPdf));
-		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_SEND_INVOICE, Messages.iconsSendInvoice));
-		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_MARK_INVOICE_AS_PAID, Messages.iconsMarkInvoiceAsPaid));
-		form.getToolBarManager().add(ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
+//		CommandContributionItemParameter deleteInvoiceParam = new CommandContributionItemParameter(
+//				getSite().getWorkbenchWindow(), 
+//				"de.togginho.accounting.ui.invoice.DeleteInvoiceCommandItem", 
+//				IDs.CMD_DELETE_INVOICE, 
+//				CommandContributionItem.STYLE_PUSH);
+//		deleteInvoiceParam.icon = AccountingUI.getImageDescriptor(Messages.iconsDeleteInvoice);
+//		CommandContributionItem deleteInvoice = new CommandContributionItem(deleteInvoiceParam);
+//		deleteInvoice.isEnabled();
+//		form.getToolBarManager().add(deleteInvoice);
+		
+		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
+		menuService.populateContributionManager((ToolBarManager) form.getToolBarManager(), MenuUtil.toolbarUri(IDs.EDIT_INVOIDCE_ID));
+		
+//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_DELETE_INVOICE, Messages.iconsDeleteInvoice));
+//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_INVOICE_TO_PDF, Messages.iconsInvoiceToPdf));
+//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_SEND_INVOICE, Messages.iconsSendInvoice));
+//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_MARK_INVOICE_AS_PAID, Messages.iconsMarkInvoiceAsPaid));
+		
+//		form.getToolBarManager().add(ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
 		form.getToolBarManager().update(true);
 		
 		toolkit.decorateFormHeading(form.getForm());
@@ -609,14 +626,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		section.setClient(sectionClient);
 	}
 	
-	/**
-	 * 
-	 */
-	private void refreshInvoicePositionsAndFireDirty() {
-		refreshInvoicePositions();
-		setIsDirty(true);
-		firePropertyChange(IEditorPart.PROP_DIRTY);		
-	}
+
 	
 	/**
 	 * {@inheritDoc}
@@ -643,6 +653,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 
 	/**
 	 * 
+	 * {@inheritDoc}.
+	 * @see org.eclipse.ui.part.EditorPart#getEditorInput()
 	 */
 	@Override
 	public InvoiceEditorInput getEditorInput() {
@@ -651,10 +663,30 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	
 	/**
 	 * 
+	 * {@inheritDoc}.
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	@Override
+    public void propertyChange(PropertyChangeEvent evt) {
+		refreshInvoicePositions();
+		getForm().getToolBarManager().update(true);
+    }
+
+	/**
+	 * 
 	 */
 	private void refreshInvoicePositions() {
 		invoicePositionViewer.refresh();
 		calculateTotals();
+	}
+	
+	/**
+	 * 
+	 */
+	private void refreshInvoicePositionsAndFireDirty() {
+		refreshInvoicePositions();
+		setIsDirty(true);
+		firePropertyChange(IEditorPart.PROP_DIRTY);		
 	}
 	
 	/**

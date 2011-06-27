@@ -44,8 +44,34 @@ public class InvoicePropertyTester extends PropertyTester {
 	 */
 	@Override
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-		Invoice invoice = (Invoice) receiver;
+		Invoice invoice = null;
+		
+		if (receiver instanceof Invoice) {
+			invoice = (Invoice) receiver;
+		} else if (receiver instanceof InvoiceEditorInput) {
+			LOG.debug("testing from editor input");
+			invoice = ((InvoiceEditorInput) receiver).getInvoice();
+		} else {
+			LOG.warn("Unknown receiver type: " + receiver.getClass().getName());
+		}
+		
+		return doTest(invoice, property);
+	}
+
+	/**
+	 * 
+	 * @param invoice
+	 * @param property
+	 * @return
+	 */
+	private boolean doTest(Invoice invoice, String property) {
 		boolean result = false;
+		
+		if (invoice == null) {
+			LOG.warn("Invoice was [null]!"); //$NON-NLS-1$
+			return result;
+		}
+		
 		if (CAN_BE_DELETED.equals(property)) {
 			result = invoice.canBeDeleted();
 		} else if (CAN_BE_CANCELLED.equals(property)) {
@@ -57,9 +83,8 @@ public class InvoicePropertyTester extends PropertyTester {
 		} else if (CAN_BE_SENT.equals(property)) {
 			result = invoice.canBeSent();
 		}
-	
-		LOG.debug(String.format("Property [%s] on Invoice [%s] was tested [%s]", property, invoice.getNumber(), result)); //$NON-NLS-1$
+		LOG.debug(String.format("Property [%s] on Invoice [%s] was tested [%s]",  //$NON-NLS-1$
+				property, invoice.getNumber(), result));
 		return result;
 	}
-
 }
