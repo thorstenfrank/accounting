@@ -154,8 +154,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 //				IDs.CMD_DELETE_INVOICE, 
 //				CommandContributionItem.STYLE_PUSH);
 //		deleteInvoiceParam.icon = AccountingUI.getImageDescriptor(Messages.iconsDeleteInvoice);
+		//deleteInvoiceParam.visibleEnabled = true;
 //		CommandContributionItem deleteInvoice = new CommandContributionItem(deleteInvoiceParam);
-//		deleteInvoice.isEnabled();
 //		form.getToolBarManager().add(deleteInvoice);
 		
 		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
@@ -648,6 +648,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	 */
 	@Override
 	public void setFocus() {
+		form.getToolBarManager().update(true);
 		form.getBody().setFocus();
 	}
 

@@ -56,7 +56,7 @@ public interface IDs {
 		
 	public static final String CMD_DELETE_INVOICE = "de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"; //$NON-NLS-1$
 	
-	public static final String CMD_INVOICE_TO_PDF = "de.togginho.accounting.ui.invoice.InvoiceToPdfCommand"; //$NON-NLS-1$
+	public static final String CMD_INVOICE_TO_PDF = "de.togginho.accounting.ui.invoice.ExportInvoiceCommand"; //$NON-NLS-1$
 	
 	public static final String CMD_SEND_INVOICE = "de.togginho.accounting.ui.invoice.SendInvoiceCommand"; //$NON-NLS-1$
 	

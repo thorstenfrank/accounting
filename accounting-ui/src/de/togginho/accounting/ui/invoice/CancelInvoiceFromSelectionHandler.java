@@ -19,33 +19,31 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.togginho.accounting.model.Invoice;
-
 /**
  * @author thorsten
  *
  */
-public class CopyInvoiceCommand extends AbstractInvoiceCommand {
-	
+public class CancelInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
+
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(CopyInvoiceCommand.class);
+	private static final Logger LOG = Logger.getLogger(CancelInvoiceFromSelectionHandler.class);
 	
 	/**
 	 * 
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.invoice.AbstractInvoiceCommand#handleInvoice(de.togginho.accounting.model.Invoice, org.eclipse.core.commands.ExecutionEvent)
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
-	protected void handleInvoice(Invoice invoice, ExecutionEvent event) throws ExecutionException {
-		throw new ExecutionException("Not yet implemented!");	
+	protected void doExecute(ExecutionEvent event) throws ExecutionException {
+		throw new ExecutionException("Not yet implemented!");
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.rcp.invoice.AbstractInvoiceCommand#getLogger()
+	 * @see de.togginho.accounting.ui.AbstractInvoiceHandler.invoice.AbstractInvoiceCommand#getLogger()
 	 */
 	@Override
 	protected Logger getLogger() {
 		return LOG;
-	}
+	}	
 }

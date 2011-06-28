@@ -289,7 +289,7 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.invoice.InvoiceToPdfCommand"
+               commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand"
                icon="icons/page_white_acrobat.png"
                style="push">
          </command>
@@ -321,33 +321,13 @@
       <menuContribution
             locationURI="toolbar:de.togginho.accounting.ui.invoice.InvoiceEditor">
          <command
-               commandId="de.togginho.accounting.ui.invoice.InvoiceToPdfCommand"
-               icon="icons/page_white_acrobat.png"
-               style="push">
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
-               icon="icons/page_go.png"
-               style="push">
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
-               icon="icons/money.png"
-               style="push">
-         </command>
-         <command
-               commandId="org.eclipse.ui.file.save"
-               label="%command.save.label"
-               style="push">
-         </command>
-         <command
                commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
                icon="icons/page_delete.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
-               icon="icons/cancel.png"
+               commandId="org.eclipse.ui.file.save"
+               label="%command.save.label"
                style="push">
          </command>
       </menuContribution>
@@ -400,6 +380,10 @@
             id="de.togginho.accounting.ui.client.DeleteClientCommand"
             name="%command.deleteClient.name">
       </command>
+      <category
+            id="de.togginho.accounting.ui.invoice"
+            name="%commandCategory.invoice.name">
+      </category>
       <command
             categoryId="de.togginho.accounting.ui.invoice"
             defaultHandler="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
@@ -410,16 +394,7 @@
             categoryId="de.togginho.accounting.ui.invoice"
             id="de.togginho.accounting.ui.invoice.EditInvoiceCommand"
             name="%command.invoice.edit">
-         <commandParameter
-               id="invoiceNumber"
-               name="%command.invoice.edit.param"
-               optional="true">
-         </commandParameter>
       </command>
-      <category
-            id="de.togginho.accounting.ui.invoice"
-            name="%commandCategory.invoice.name">
-      </category>
       <command
             categoryId="de.togginho.accounting.ui.invoice"
             id="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
@@ -427,7 +402,7 @@
       </command>
       <command
             categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.InvoiceToPdfCommand"
+            id="de.togginho.accounting.ui.invoice.ExportInvoiceCommand"
             name="%command.invoice.toPdf.name">
       </command>
       <command
@@ -505,16 +480,18 @@
          point="org.eclipse.core.expressions.definitions">
       <definition
             id="selectionIsInvoice">
-         <iterate
-               ifEmpty="false">
-            <instanceof
-                  value="de.togginho.accounting.model.Invoice">
-            </instanceof>
-         </iterate>
+            <and>
+                <with variable="activePartId">
+                    <equals value="de.togginho.accounting.ui.invoice.InvoiceView" />
+                </with>
+                <iterate ifEmpty="false">
+                    <instanceof value="de.togginho.accounting.model.Invoice" />
+                </iterate>
+            </and>
       </definition>
       <definition
             id="invoiceIsActiveEditor">
-            <with variable="activePart">
+            <with variable="activePartId">
                 <equals value="de.togginho.accounting.ui.invoice.InvoiceEditor" />
             </with>
       </definition>
@@ -566,43 +543,80 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+            class="de.togginho.accounting.ui.invoice.DeleteInvoiceFromSelectionHandler"
             commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand">
          <activeWhen>
-            <reference definitionId="selectionIsInvoice" />
+            <reference
+                  definitionId="selectionIsInvoice">
+            </reference>
          </activeWhen>
          <enabledWhen>
-              <iterate>
+            <with variable="selection">
+              <iterate ifEmpty="false">
                  <test property="de.togginho.accounting.ui.invoice.canBeDeleted" />
               </iterate>
+           </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+            class="de.togginho.accounting.ui.invoice.DeleteInvoiceFromEditorHandler"
             commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand">
          <activeWhen>
-            <reference definitionId="invoiceIsActiveEditor" />
+            <reference
+                  definitionId="invoiceIsActiveEditor">
+            </reference>
          </activeWhen>
          <enabledWhen>
             <with variable="activeEditorInput">
                <test property="de.togginho.accounting.ui.invoiceEditor.canBeDeleted" />
             </with>
          </enabledWhen>
-      </handler>      
+      </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.InvoiceToPdfCommand"
-            commandId="de.togginho.accounting.ui.invoice.InvoiceToPdfCommand">
+            class="de.togginho.accounting.ui.invoice.PayInvoiceFromSelectionHandler"
+            commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
+         <activeWhen>
+            <reference
+                  definitionId="selectionIsInvoice">
+            </reference>
+         </activeWhen>
+         <enabledWhen>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                 <test property="de.togginho.accounting.ui.invoice.canBeDeleted" />
+              </iterate>
+           </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.invoice.PayInvoiceFromEditorHandler"
+            commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
+         <activeWhen>
+            <reference
+                  definitionId="invoiceIsActiveEditor">
+            </reference>
+         </activeWhen>
+         <enabledWhen>
+            <with variable="activeEditorInput">
+               <test property="de.togginho.accounting.ui.invoiceEditor.canBeDeleted" />
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.invoice.ExportInvoiceFromSelectionHandler"
+            commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand">
          <activeWhen>
             <reference definitionId="selectionIsInvoice" />
          </activeWhen>
          <enabledWhen>
-              <iterate>
+              <iterate
+                    ifEmpty="false">
                  <test property="de.togginho.accounting.ui.invoice.canBeExported" />
               </iterate>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.EditInvoiceCommand"
+            class="de.togginho.accounting.ui.invoice.EditInvoiceHandler"
             commandId="de.togginho.accounting.ui.invoice.EditInvoiceCommand">
          <enabledWhen>
             <reference
@@ -611,21 +625,37 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+            class="de.togginho.accounting.ui.invoice.SendInvoiceFromSelectionHandler"
             commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand">
          <activeWhen>
-            <reference definitionId="selectionIsInvoice" />
+            <reference
+                  definitionId="selectionIsInvoice">
+            </reference>
          </activeWhen>
          <enabledWhen>
-           <iterate>
-              <test
-                    property="de.togginho.accounting.ui.invoice.canBeSent">
-              </test>
-           </iterate>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                 <test property="de.togginho.accounting.ui.invoice.canBeSent" />
+              </iterate>
+           </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.CopyInvoiceCommand"
+            class="de.togginho.accounting.ui.invoice.SendInvoiceFromEditorHandler"
+            commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand">
+         <activeWhen>
+            <reference
+                  definitionId="invoiceIsActiveEditor">
+            </reference>
+         </activeWhen>
+         <enabledWhen>
+            <with variable="activeEditorInput">
+               <test property="de.togginho.accounting.ui.invoice.canBeSent" />
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.invoice.CopyInvoiceFromSelectionHandler"
             commandId="de.togginho.accounting.ui.invoice.CopyInvoiceCommand">
          <enabledWhen>
             <reference
@@ -634,21 +664,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
-            commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
-         <activeWhen>
-            <reference definitionId="selectionIsInvoice" />
-         </activeWhen>
-         <enabledWhen>
-           <iterate>
-              <test
-                    property="de.togginho.accounting.ui.invoice.canBePaid">
-              </test>
-           </iterate>
-         </enabledWhen>
-      </handler>
-      <handler
-            class="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
+            class="de.togginho.accounting.ui.invoice.CancelInvoiceFromSelectionHandler"
             commandId="de.togginho.accounting.ui.invoice.CancelInvoiceCommand">
          <activeWhen>
             <reference definitionId="selectionIsInvoice" />

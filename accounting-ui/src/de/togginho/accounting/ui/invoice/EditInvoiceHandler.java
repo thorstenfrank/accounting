@@ -25,30 +25,32 @@ import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 
 /**
+ * Opens the selected invoice in its own editor.
  * @author thorsten
  *
  */
-public class EditInvoiceCommand extends AbstractInvoiceCommand {
+public class EditInvoiceHandler extends AbstractInvoiceHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(EditInvoiceCommand.class);
-		
+	private static final Logger LOG = Logger.getLogger(EditInvoiceHandler.class);
+	
 	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.rcp.invoice.AbstractInvoiceCommand#handleInvoice(de.togginho.accounting.model.Invoice)
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.invoice.AbstractInvoiceHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
-	protected void handleInvoice(Invoice invoice, ExecutionEvent event) throws ExecutionException {
-		LOG.debug("Opening invoice " + invoice.getNumber()); //$NON-NLS-1$
+    protected void doExecute(ExecutionEvent event) throws ExecutionException {
+		Invoice invoice = getInvoiceFromSelection(event);
+		getLogger().debug("Opening invoice " + invoice.getNumber()); //$NON-NLS-1$
 		InvoiceEditorInput input = new InvoiceEditorInput(invoice);
-		
 		try {
 			getActivePage(event).openEditor(input, IDs.EDIT_INVOIDCE_ID);
 		} catch (PartInitException e) {
-			LOG.error("Error opening editor for invoice " + invoice.getNumber(), e); //$NON-NLS-1$
+			getLogger().error("Error opening editor for invoice " + invoice.getNumber(), e); //$NON-NLS-1$
 			throw new ExecutionException(Messages.bind(Messages.EditInvoiceCommand_errorOpeningEditor, invoice), e);
 		}
-	}
+    }
 	
 	/**
 	 * 
