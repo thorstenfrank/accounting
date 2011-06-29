@@ -187,7 +187,7 @@ public final class ModelHelper {
      * @param invoice
      * @param paymentDate
      * @return
-     * @see de.togginho.accounting.AccountingService#markAsPaid(de.togginho.accounting.model.Invoice, java.util.Date)
+     * @see AccountingService#markAsPaid(Invoice, Date)
      */
     public static Invoice markAsPaid(Invoice invoice, Date paymentDate) {
 	    Invoice paid = INSTANCE.accountingService.markAsPaid(invoice, paymentDate);
@@ -204,6 +204,18 @@ public final class ModelHelper {
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, invoice, null);
 	}
 
+	/**
+	 * 
+	 * @param invoice
+	 * @return
+	 * @see AccountingService#cancelInvoice(Invoice)
+	 */
+	public static Invoice cancelInvoice(Invoice invoice) {
+		Invoice cancelled = INSTANCE.accountingService.cancelInvoice(invoice);
+	    INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, cancelled);
+	    return cancelled;
+	}
+	
 	/**
 	 * @see PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
 	 */

@@ -394,6 +394,34 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	}
 	
 	/**
+	 * Test for {@link AccountingServiceImpl#cancelInvoice(Invoice)}.
+	 */
+	@Test
+	public void testCancelInvoice() {
+		serviceUnderTest.init(getTestContext());
+		
+		assertNull(serviceUnderTest.cancelInvoice(null));
+		
+		Invoice invoice = new Invoice();
+		invoice.setCreationDate(new Date());
+		invoice.setSentDate(new Date());
+		invoice.setDueDate(new Date());
+		
+		ocMock.store(invoice);
+		expectLastCall().once();
+		ocMock.commit();
+		expectLastCall().once();
+		replay(ocMock);
+		
+		try {
+	        Invoice cancelled = serviceUnderTest.cancelInvoice(invoice);
+	        assertEquals(InvoiceState.CANCELLED, cancelled.getState());
+        } catch (AccountingException e) {
+        	fail(e.toString());
+        }
+	}
+	
+	/**
 	 * Tests {@link AccountingServiceImpl#getInvoice(String)}.
 	 */
 	@SuppressWarnings("unchecked")

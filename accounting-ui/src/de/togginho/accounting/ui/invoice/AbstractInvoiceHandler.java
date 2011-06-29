@@ -111,6 +111,8 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 				Messages.DeleteInvoiceCommand_confirmText);
 				
 		if (areYouSure) {
+			getLogger().info("Deleting invoice " + invoice.getNumber()); //$NON-NLS-1$
+			
 			// do the actual work
 			ModelHelper.deleteInvoice(invoice);
 			
@@ -118,6 +120,27 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 			removeOpenEditorForInvoice(invoice, event);
 		} else {
 			getLogger().info("Delete was cancelled by user"); //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * 
+	 * @param invoice
+	 * @param event
+	 */
+	protected void cancelInvoice(Invoice invoice, ExecutionEvent event) {
+		final boolean areYouSure = showWarningMessage(
+				invoice, 
+				event, 
+				Messages.bind(Messages.CancelInvoiceCommand_confirmMessage, invoice.getNumber()), 
+				Messages.CancelInvoiceCommand_confirmText);
+		
+		if (areYouSure) {
+			getLogger().info("Cancelling invoice " + invoice.getNumber());
+			// do the actual work
+			ModelHelper.cancelInvoice(invoice);
+		} else {
+			getLogger().info("CancelInvoice was cancelled by user"); //$NON-NLS-1$
 		}
 	}
 	

@@ -19,9 +19,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import de.togginho.accounting.ui.ModelHelper;
+
 /**
+ * Cancels the currently selected invoice.
+ * 
  * @author thorsten
- *
+ * @see ModelHelper#cancelInvoice(de.togginho.accounting.model.Invoice)
  */
 public class CancelInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 
@@ -31,16 +35,16 @@ public class CancelInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 	/**
 	 * 
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		throw new ExecutionException("Not yet implemented!");
+		cancelInvoice(getInvoiceFromSelection(event), event);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.AbstractInvoiceHandler.invoice.AbstractInvoiceCommand#getLogger()
+	 * @see AbstractInvoiceHandler.invoice.AbstractInvoiceCommand#getLogger()
 	 */
 	@Override
 	protected Logger getLogger() {

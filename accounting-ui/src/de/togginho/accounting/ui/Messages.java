@@ -35,6 +35,9 @@ public class Messages extends NLS {
 	public static String AddressWizardPage_desc;
 	public static String AddressWizardPage_title;
 
+	public static String CancelInvoiceCommand_confirmMessage;
+	public static String CancelInvoiceCommand_confirmText;
+	
 	public static String ChangeInvoicesFilterCommand_message;
 	public static String ChangeInvoicesFilterCommand_title;
 

@@ -121,6 +121,24 @@ public interface AccountingService {
 	Invoice markAsPaid(Invoice invoice, Date paymentDate);
 	
 	/**
+	 * Cancels the supplied invoice and saves it. The returned invoice will be in state {@link InvoiceState#CANCELLED}.
+	 * Note that no further life-cycle actions are possible after cancelling an invoice.
+	 * 
+	 * <p>An invoice can only be cancelled while in one of the following states:
+	 * <ul>
+	 * <li>{@link InvoiceState#SENT}</li>
+	 * <li>{@link InvoiceState#OVERDUE}</li>
+	 * <li>{@link InvoiceState#PAID}</li>
+	 * </ul>
+	 * </p> 
+	 * 
+	 * @param invoice the invoice to cancel
+	 * @return the cancelled and saved invoice
+	 * @see Invoice#canBeCancelled()
+	 */
+	Invoice cancelInvoice(Invoice invoice);
+	
+	/**
 	 * Deletes the invoice permanently. An invoice may only be deleted while it hasn't been sent yet, i.e. while it is
 	 * in state {@link InvoiceState#CREATED}. All attempts to delete an invoice in a state beyond that will result in
 	 * an {@link AccountingException} being thrown. 

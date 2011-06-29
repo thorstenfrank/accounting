@@ -158,8 +158,10 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 //		CommandContributionItem deleteInvoice = new CommandContributionItem(deleteInvoiceParam);
 //		form.getToolBarManager().add(deleteInvoice);
 		
+		// build the toolbar
 		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
-		menuService.populateContributionManager((ToolBarManager) form.getToolBarManager(), MenuUtil.toolbarUri(IDs.EDIT_INVOIDCE_ID));
+		menuService.populateContributionManager(
+				(ToolBarManager) form.getToolBarManager(), MenuUtil.toolbarUri(IDs.EDIT_INVOIDCE_ID));
 		
 //		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_DELETE_INVOICE, Messages.iconsDeleteInvoice));
 //		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_INVOICE_TO_PDF, Messages.iconsInvoiceToPdf));

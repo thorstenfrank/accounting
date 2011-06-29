@@ -308,6 +308,30 @@ class AccountingServiceImpl implements AccountingService {
     }
 
 	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#cancelInvoice(de.togginho.accounting.model.Invoice)
+     */
+    @Override
+    public Invoice cancelInvoice(Invoice invoice) {
+    	if (invoice == null) {
+    		LOG.warn("Trying to cancel invoice [null], ignoring this service call"); //$NON-NLS-1$
+    		return null;
+    	}
+    	
+    	if (!invoice.canBeCancelled()) {
+    		LOG.error(String.format("Cannot cancel Invoice [%s], since it is in state [%s]", //$NON-NLS-1$
+    				invoice.getNumber(), invoice.getState()));
+    		
+    		throw new AccountingException("This invoice cannot be cancelled");
+    	}
+    	
+    	invoice.setCancelledDate(new Date());
+    	doStoreEntity(invoice);
+    	
+	    return invoice;
+    }
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see de.togginho.accounting.AccountingService#deleteInvoice(de.togginho.accounting.model.Invoice)

@@ -45,7 +45,7 @@ public class InvoicePropertyTester extends PropertyTester {
 	@Override
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 		Invoice invoice = null;
-		
+		LOG.debug("PROPERTY: " + property);
 		if (receiver instanceof Invoice) {
 			invoice = (Invoice) receiver;
 		} else if (receiver instanceof InvoiceEditorInput) {

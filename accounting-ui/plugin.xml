@@ -326,6 +326,16 @@
                style="push">
          </command>
          <command
+               commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+               icon="icons/page_go.png"
+               style="push">
+         </command>
+         <command
+               commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
+               icon="icons/money.png"
+               style="push">
+         </command>
+         <command
                commandId="org.eclipse.ui.file.save"
                label="%command.save.label"
                style="push">
@@ -583,7 +593,7 @@
          <enabledWhen>
             <with variable="selection">
               <iterate ifEmpty="false">
-                 <test property="de.togginho.accounting.ui.invoice.canBeDeleted" />
+                 <test property="de.togginho.accounting.ui.invoice.canBePaid" />
               </iterate>
            </with>
          </enabledWhen>
@@ -598,7 +608,7 @@
          </activeWhen>
          <enabledWhen>
             <with variable="activeEditorInput">
-               <test property="de.togginho.accounting.ui.invoiceEditor.canBeDeleted" />
+               <test property="de.togginho.accounting.ui.invoiceEditor.canBePaid" />
             </with>
          </enabledWhen>
       </handler>
@@ -628,9 +638,7 @@
             class="de.togginho.accounting.ui.invoice.SendInvoiceFromSelectionHandler"
             commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand">
          <activeWhen>
-            <reference
-                  definitionId="selectionIsInvoice">
-            </reference>
+            <reference definitionId="selectionIsInvoice" />
          </activeWhen>
          <enabledWhen>
             <with variable="selection">
@@ -644,13 +652,14 @@
             class="de.togginho.accounting.ui.invoice.SendInvoiceFromEditorHandler"
             commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand">
          <activeWhen>
-            <reference
-                  definitionId="invoiceIsActiveEditor">
-            </reference>
+            <reference definitionId="invoiceIsActiveEditor" />
          </activeWhen>
          <enabledWhen>
-            <with variable="activeEditorInput">
-               <test property="de.togginho.accounting.ui.invoice.canBeSent" />
+            <with
+                  variable="activeEditorInput">
+               <test
+                     property="de.togginho.accounting.ui.invoiceEditor.canBeSent">
+               </test>
             </with>
          </enabledWhen>
       </handler>
