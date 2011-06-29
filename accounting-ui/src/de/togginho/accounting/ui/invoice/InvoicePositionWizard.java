@@ -142,10 +142,13 @@ class InvoicePositionWizard extends Wizard implements Constants {
 		public void createControl(Composite parent) {
 			Composite composite = new Composite(parent, SWT.NULL);
 			composite.setLayout(new GridLayout(2, false));
-						
+			
+			final boolean editable = invoice.canBeEdited();
+			
 			// QUANTITY
 			WidgetHelper.createLabel(composite, Messages.labelQuantity);
 			Text quantity = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			quantity.setEnabled(editable);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(quantity);
 			
 			IObservableValue quantityWidgetObservable = SWTObservables.observeText(quantity, SWT.Modify);
@@ -160,6 +163,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			// UNIT
 			WidgetHelper.createLabel(composite, Messages.labelUnit);
 			Text unit = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			unit.setEnabled(editable);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(unit);
 			IObservableValue unitWidgetObservable = SWTObservables.observeText(unit, SWT.Modify);
 			bindingContext.bindValue(
@@ -170,6 +174,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			// PRICE PER UNIT
 			WidgetHelper.createLabel(composite, Messages.labelPricePerUnit);
 			Text pricePerUnit = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			pricePerUnit.setEnabled(editable);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(pricePerUnit);
 			
 			IObservableValue priceWidgetObservable = SWTObservables.observeText(pricePerUnit, SWT.Modify);
@@ -184,6 +189,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			// TAX RATE
 			WidgetHelper.createLabel(composite, Messages.labelTaxRate);
 			Combo taxRate = new Combo(composite, SWT.READ_ONLY);
+			taxRate.setEnabled(editable);
 			taxRate.add(EMPTY_STRING);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(taxRate);
 			
@@ -220,6 +226,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			// DESCRIPTION
 			WidgetHelper.createLabel(composite, Messages.labelDescription);
 			Text description = new Text(composite, SWT.MULTI | SWT.BORDER);
+			description.setEnabled(editable);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(description);
 			IObservableValue descriptionWidgetObservable = SWTObservables.observeText(description, SWT.Modify);
 			bindingContext.bindValue(

@@ -95,6 +95,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 
 	private Text totalGross;
 	
+	private boolean invoiceCanBeEdited;
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.rcp.AbstractAccountingEditor#getToolkit()
@@ -121,12 +123,17 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	public void createPartControl(Composite parent) {
 		LOG.debug("Creating editor"); //$NON-NLS-1$
 		
+		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
+		
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
 		form.setText(Messages.InvoiceEditor_header);
 		form.getBody().setLayout(new GridLayout(2, true));
 		
 		Invoice invoice = getEditorInput().getInvoice();
+		
+		this.invoiceCanBeEdited = invoice.canBeEdited();
+		
 		Set<TaxRate> taxRates = invoice.getUser().getTaxRates();
 		if (taxRates != null && !taxRates.isEmpty()) {
 			shortStringToTaxRateMap = new HashMap<String, TaxRate>();
@@ -175,6 +182,16 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		form.reflow(true);
 	}
 
+	/**
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.ui.AbstractAccountingEditor#dispose()
+	 */
+	@Override
+	public void dispose() {
+		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
+	    super.dispose();
+	}
+	
 	/**
 	 * 
 	 */
@@ -233,7 +250,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			}
 			
 		});
-		//date.setLayoutData(WidgetHelper.FILL_GRID_DATA);
+		invoiceDate.setEnabled(invoiceCanBeEdited);
 
 		if (invoice.getDueDate() == null) {
 			// add 30 days per default
@@ -243,6 +260,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			cal.setTime(invoice.getDueDate());
 		}
 		toolkit.createLabel(left, Messages.labelInvoiceDueDate);
+		
 		DateTime dueDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN);
 		dueDate.setDay(cal.get(Calendar.DAY_OF_MONTH));
 		dueDate.setMonth(cal.get(Calendar.MONTH));
@@ -269,6 +287,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			}
 			
 		});
+		dueDate.setEnabled(invoiceCanBeEdited);
 		
 		Composite right = toolkit.createComposite(sectionClient);
 		right.setLayout(new GridLayout(2, false));
@@ -321,6 +340,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		toolkit.createLabel(sectionClient, Messages.labelClientName);
 		Combo clientCombo = new Combo(sectionClient, SWT.READ_ONLY);
+		clientCombo.setEnabled(invoiceCanBeEdited);
+		
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clientCombo);
 
 		Address address = theClient != null ? theClient.getAddress() : null;
@@ -599,6 +620,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		buttons.setLayout(new FillLayout(SWT.VERTICAL));
 		
 		Button add = toolkit.createButton(buttons, Messages.labelAdd, SWT.PUSH);
+		add.setEnabled(invoiceCanBeEdited);
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -612,6 +634,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		});
 		
 		Button remove = toolkit.createButton(buttons, Messages.labelRemove, SWT.PUSH);
+		remove.setEnabled(invoiceCanBeEdited);
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -672,6 +695,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	@Override
     public void propertyChange(PropertyChangeEvent evt) {
 		refreshInvoicePositions();
+		getForm().getToolBarManager().markDirty();
 		getForm().getToolBarManager().update(true);
     }
 

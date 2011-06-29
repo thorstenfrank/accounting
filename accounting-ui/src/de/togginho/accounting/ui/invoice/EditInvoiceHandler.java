@@ -18,6 +18,8 @@ package de.togginho.accounting.ui.invoice;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PartInitException;
 
 import de.togginho.accounting.model.Invoice;
@@ -46,6 +48,12 @@ public class EditInvoiceHandler extends AbstractInvoiceHandler {
 		InvoiceEditorInput input = new InvoiceEditorInput(invoice);
 		try {
 			getActivePage(event).openEditor(input, IDs.EDIT_INVOIDCE_ID);
+			
+			MessageBox box = new MessageBox(getShell(event), SWT.ICON_INFORMATION | SWT.OK);
+			box.setMessage("This invoice cannot be edited anymore");
+			box.setText("Uneditable");
+			box.open();
+			
 		} catch (PartInitException e) {
 			getLogger().error("Error opening editor for invoice " + invoice.getNumber(), e); //$NON-NLS-1$
 			throw new ExecutionException(Messages.bind(Messages.EditInvoiceCommand_errorOpeningEditor, invoice), e);
