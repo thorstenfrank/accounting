@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     30.06.2011 15:23:41                                                        
+
+     togginho-accounting-reporting    
+     compiles Jasper reports
+                   
+     tfrank1                                                                
+     ====================================================================== -->
+<project name="togginho-accounting-reporting" default="default">
+    <description>
+            description
+    </description>
+	
+	<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+		<classpath>
+			<fileset dir="./lib">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="../accounting-core/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="../accounting-core/bin" />
+		</classpath>
+	</taskdef>
+	
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default">
+    	<jrc srcdir="./jasperreports" destdir="./bin" keepjava="true">
+    		<classpath>
+    			<fileset dir="./lib">
+    				<include name="**/*.jar"/>
+    			</fileset>
+    			<fileset dir="../accounting-core/lib">
+    				<include name="**/*.jar"/>
+    			</fileset>
+    			<fileset dir="../accounting-core/bin" />
+    			<fileset dir="../bin" />
+    		</classpath>
+    		<include name="**/*.jrxml" />
+    	</jrc>
+    </target>
+
+</project>
