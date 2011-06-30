@@ -218,7 +218,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		number.setEditable(false);
 
 		toolkit.createLabel(left, Messages.labelInvoiceDate);		
-		DateTime invoiceDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN);
+		DateTime invoiceDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
 		
 		if (invoice.getInvoiceDate() == null) {
 			invoice.setInvoiceDate(new Date());
@@ -261,7 +261,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		}
 		toolkit.createLabel(left, Messages.labelInvoiceDueDate);
 		
-		DateTime dueDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN);
+		DateTime dueDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
 		dueDate.setDay(cal.get(Calendar.DAY_OF_MONTH));
 		dueDate.setMonth(cal.get(Calendar.MONTH));
 		dueDate.setYear(cal.get(Calendar.YEAR));

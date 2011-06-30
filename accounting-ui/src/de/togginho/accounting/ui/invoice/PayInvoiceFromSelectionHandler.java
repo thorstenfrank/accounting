@@ -144,7 +144,7 @@ public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
         	final Label dateLabel = WidgetHelper.createLabel(composite, Messages.MarkInvoiceAsPaidCommand_paymentDateLabel);
         	GridDataFactory.fillDefaults().indent(5, 5).applyTo(dateLabel);
         	
-        	dateTime = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN);
+        	dateTime = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
         	
     		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
     		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
