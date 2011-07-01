@@ -136,7 +136,7 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 				Messages.CancelInvoiceCommand_confirmText);
 		
 		if (areYouSure) {
-			getLogger().info("Cancelling invoice " + invoice.getNumber());
+			getLogger().info("Cancelling invoice " + invoice.getNumber()); //$NON-NLS-1$
 			// do the actual work
 			ModelHelper.cancelInvoice(invoice);
 		} else {
