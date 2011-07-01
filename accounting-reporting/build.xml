@@ -50,6 +50,12 @@ limitations under the License.
             <classpath refid="classpath" />
             <include name="**/*.jrxml" />
         </jrc>
+    	
+    	<copy todir="${reporting}/bin" overwrite="true">
+    		<fileset dir="${reports}">
+    			<include name="**/*.jasper"/>
+    		</fileset>
+    	</copy>
     </target>
 
     <target name="clean">
