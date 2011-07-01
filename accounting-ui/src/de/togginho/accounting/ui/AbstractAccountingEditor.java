@@ -211,7 +211,7 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	 * @return the {@link Text}
 	 */
 	protected Text createText(Composite parent, String text) {
-		Text textField = getToolkit().createText(parent, text);
+		Text textField = getToolkit().createText(parent, text, SWT.SINGLE | SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(textField);
 		return textField;
 	}

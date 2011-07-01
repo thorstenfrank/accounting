@@ -31,8 +31,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -163,7 +163,7 @@ public class UserEditor extends AbstractAccountingEditor {
 		createText(basicSectionClient, user.getTaxNumber(), user, User.FIELD_TAX_NUMBER);
 		
 		toolkit.createLabel(basicSectionClient, Messages.labelDescription);
-		Text description = toolkit.createText(basicSectionClient, user.getDescription(), SWT.MULTI);
+		Text description = toolkit.createText(basicSectionClient, user.getDescription(), SWT.MULTI | SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(description);
 		createBindings(description, user, User.FIELD_DESCRIPTION);
 		
@@ -295,8 +295,7 @@ public class UserEditor extends AbstractAccountingEditor {
 		
 		Button add = toolkit.createButton(buttons, Messages.labelAdd, SWT.PUSH);
 		//add.addSelectionListener(new SimpleCommandCallingSelectionListener(IDs.CMD_NEW_TAX_RATE));
-		add.addSelectionListener(new SelectionListener() {
-			
+		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				NewTaxRateWizard wizard = new NewTaxRateWizard();
@@ -310,12 +309,6 @@ public class UserEditor extends AbstractAccountingEditor {
 					taxRateViewer.getTable().setRedraw(true);
 					setIsDirty(true);
 				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		
