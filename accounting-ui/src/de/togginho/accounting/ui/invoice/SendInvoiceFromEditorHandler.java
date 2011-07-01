@@ -17,7 +17,6 @@ package de.togginho.accounting.ui.invoice;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.ModelHelper;
@@ -30,21 +29,22 @@ import de.togginho.accounting.ui.ModelHelper;
  * @see SendInvoiceFromSelectionHandler
  * @see ModelHelper#sendInvoice(Invoice)
  */
-public class SendInvoiceFromEditorHandler extends AbstractInvoiceHandler {
+public class SendInvoiceFromEditorHandler extends SendInvoiceFromSelectionHandler {
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(SendInvoiceFromEditorHandler.class);
 	
-	/**
-	 * 
-	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.invoice.AbstractInvoiceHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-    protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		ModelHelper.sendInvoice(getInvoiceFromEditor(event));
-    }
 	
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.invoice.SendInvoiceFromSelectionHandler#getInvoice(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    protected Invoice getInvoice(ExecutionEvent event) {
+	    return getInvoiceFromEditor(event);
+    }
+
+
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.AbstractInvoiceHandler.invoice.AbstractInvoiceCommand#getLogger()

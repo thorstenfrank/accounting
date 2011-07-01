@@ -49,13 +49,22 @@ public class SendInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 		box.setMessage(Messages.SendInvoiceCommand_confirmMessage);
 		box.setText(Messages.SendInvoiceCommand_confirmText);
 		if (box.open() == SWT.OK) {
-			ModelHelper.sendInvoice(getInvoiceFromSelection(event));
+			ModelHelper.sendInvoice(getInvoice(event));
 		} else {
 			getLogger().debug("Sending invoice was cancelled by user"); //$NON-NLS-1$
 		}
 		
 		
     }
+	
+	/**
+	 * 
+	 * @param event
+	 * @return
+	 */
+	protected Invoice getInvoice(ExecutionEvent event) {
+		return getInvoiceFromSelection(event);
+	}
 	
 	/**
 	 * {@inheritDoc}
