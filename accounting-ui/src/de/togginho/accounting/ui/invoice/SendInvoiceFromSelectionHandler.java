@@ -18,8 +18,11 @@ package de.togginho.accounting.ui.invoice;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
 
 /**
@@ -42,7 +45,16 @@ public class SendInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 	 */
 	@Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		ModelHelper.sendInvoice(getInvoiceFromSelection(event));
+		MessageBox box = new MessageBox(getShell(event), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+		box.setMessage(Messages.SendInvoiceCommand_confirmMessage);
+		box.setText(Messages.SendInvoiceCommand_confirmText);
+		if (box.open() == SWT.OK) {
+			ModelHelper.sendInvoice(getInvoiceFromSelection(event));
+		} else {
+			getLogger().debug("Sending invoice was cancelled by user"); //$NON-NLS-1$
+		}
+		
+		
     }
 	
 	/**

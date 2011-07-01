@@ -99,6 +99,9 @@ public class Messages extends NLS {
 	public static String NewTaxRateWizard_rate;
 	public static String NewTaxRateWizard_windowTitle;
 	
+	public static String SendInvoiceCommand_confirmMessage;
+	public static String SendInvoiceCommand_confirmText;
+	
 	public static String SetupWizard_windowTitle;
 	public static String SetupBankAccountWizardPage_desc;
 	public static String SetupBasicInfoWizardPage_dataFile;

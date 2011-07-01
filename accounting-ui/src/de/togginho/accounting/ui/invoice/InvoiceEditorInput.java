@@ -36,7 +36,6 @@ public class InvoiceEditorInput implements IEditorInput {
 	 * @param invoice
 	 */
 	public InvoiceEditorInput(Invoice invoice) {
-		super();
 		this.invoice = invoice;
 	}
 	
