@@ -85,7 +85,7 @@ public class InvoicePositionWrapper implements Constants {
      */
     public String getTaxRate() {
         if (invoicePosition.isTaxApplicable()) {
-            return FormatUtil.formatPercentValue(invoicePosition.getTaxRate().getRate());
+            return invoicePosition.getTaxRate().toShortString();
         }
 
         return Constants.HYPHEN;

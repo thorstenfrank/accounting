@@ -56,6 +56,7 @@ public class InvoiceDataSource extends AbstractReportDataSource {
 		fieldMap.put("position.header.description", Messages.InvoiceDataSource_positionHeaderDescription); //$NON-NLS-1$
 		fieldMap.put("position.header.pricePerUnit", Messages.InvoiceDataSource_positionHeaderPricePerUnit); //$NON-NLS-1$
 		fieldMap.put("position.header.totalPrice", Messages.InvoiceDataSource_positionHeaderPrice); //$NON-NLS-1$
+		fieldMap.put("position.header.tax", Messages.InvoiceDataSource_positionHeaderTax); //$NON-NLS-1$
 		fieldMap.put("user.bank.title", Messages.InvoiceDataSource_userBankTitle); //$NON-NLS-1$
 		fieldMap.put("user.bank.account.title", Messages.InvoiceDataSource_userBankAccountTitle); //$NON-NLS-1$
 		fieldMap.put("user.bank.code.title", Messages.InvoiceDataSource_userBankCodeTitle); //$NON-NLS-1$

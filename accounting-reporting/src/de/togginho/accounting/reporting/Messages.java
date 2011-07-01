@@ -37,6 +37,7 @@ public class Messages extends NLS {
 	public static String InvoiceDataSource_positionHeaderPrice;
 	public static String InvoiceDataSource_positionHeaderPricePerUnit;
 	public static String InvoiceDataSource_positionHeaderQuantity;
+	public static String InvoiceDataSource_positionHeaderTax;
 	public static String InvoiceDataSource_positionHeaderUnit;
 	public static String InvoiceDataSource_totalGrossTitle;
 	public static String InvoiceDataSource_totalNetTitle;
