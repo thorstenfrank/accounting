@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -38,11 +37,6 @@ public class RevenueReportDataSource extends AbstractReportDataSource {
 	 */
 	public RevenueReportDataSource(RevenueWrapper wrapper) {
 		this.wrapper = wrapper;
-	}
-
-	@Override
-	protected Locale getLocaleForReport() {
-		return wrapper.getLocale();
 	}
 
 	@Override

@@ -1,46 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ====================================================================== 
-     30.06.2011 15:23:41                                                        
 
-     togginho-accounting-reporting    
-     compiles Jasper reports
-                   
-     tfrank1                                                                
-     ====================================================================== -->
-<project name="togginho-accounting-reporting" default="default">
+<!-- ====================================================================== 
+Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.                                                              
+====================================================================== -->
+
+<!-- 
+    This buildfile is for pre-compiling jasper reports.
+-->
+
+<project name="togginho-accounting-reporting" default="compile.reports" basedir=".">
     <description>
             description
     </description>
-	
-	<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-		<classpath>
-			<fileset dir="./lib">
-				<include name="**/*.jar"/>
-			</fileset>
-			<fileset dir="../accounting-core/lib">
-				<include name="**/*.jar"/>
-			</fileset>
-			<fileset dir="../accounting-core/bin" />
-		</classpath>
-	</taskdef>
-	
-    <!-- ================================= 
-          target: default              
-         ================================= -->
-    <target name="default">
-    	<jrc srcdir="./jasperreports" destdir="./bin" keepjava="true">
-    		<classpath>
-    			<fileset dir="./lib">
-    				<include name="**/*.jar"/>
-    			</fileset>
-    			<fileset dir="../accounting-core/lib">
-    				<include name="**/*.jar"/>
-    			</fileset>
-    			<fileset dir="../accounting-core/bin" />
-    			<fileset dir="../bin" />
-    		</classpath>
-    		<include name="**/*.jrxml" />
-    	</jrc>
+    
+    <property name="reporting" location="${basedir}" />
+    <property name="reports" location="${reporting}/jasperreports" />
+    <property name="core" location="${reporting}/../accounting-core" />
+    
+    <path id="classpath">
+        <pathelement location="${reporting}/bin"/>
+        <pathelement location="${core}/bin"/>
+        <fileset dir="${reporting}/lib">
+            <include name="**/*.jar" />
+        </fileset>
+        <fileset dir="${core}/lib">
+            <include name="**/*.jar" />
+        </fileset>      
+    </path>
+    
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+        <classpath refid="classpath" />
+    </taskdef>
+
+    <target name="compile.reports" depends="clean">
+        <echo message="Basedir: ${basedir}" />
+        <jrc srcdir="${reports}" destdir="${reports}" tempdir="${reports}" keepjava="false">
+            <classpath refid="classpath" />
+            <include name="**/*.jrxml" />
+        </jrc>
     </target>
 
+    <target name="clean">
+        <delete dir="${reports}">
+            <include name="**/*.jasper"/>
+            <include name="**/*.java" />
+        </delete>
+    </target>
 </project>

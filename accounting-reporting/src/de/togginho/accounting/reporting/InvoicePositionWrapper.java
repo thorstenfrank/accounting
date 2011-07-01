@@ -15,8 +15,7 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.Locale;
-
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -27,20 +26,17 @@ import de.togginho.accounting.util.FormatUtil;
  *
  * @author thorsten frank
  */
-public class InvoicePositionWrapper {
+public class InvoicePositionWrapper implements Constants {
 
     private InvoicePosition invoicePosition;
-    private Locale locale;
     
     /**
      * Creates a new invoice position wrapper.
      *
      * @param invoicePosition   the invoice position to wrap
-     * @param locale the {@link Locale} to use for formatting values
      */
-    public InvoicePositionWrapper(InvoicePosition invoicePosition, Locale locale) {
+    public InvoicePositionWrapper(InvoicePosition invoicePosition) {
         this.invoicePosition = invoicePosition;
-        this.locale = locale;
     }
     
     /**
@@ -48,7 +44,7 @@ public class InvoicePositionWrapper {
      * @return {@link InvoicePosition#getQuantity()}, formatted
      */
     public String getQuantity() {
-        return FormatUtil.formatDecimalValue(locale, invoicePosition.getQuantity());
+        return FormatUtil.formatDecimalValue(invoicePosition.getQuantity());
     }
 
     /**
@@ -72,7 +68,7 @@ public class InvoicePositionWrapper {
      * @return {@link InvoicePosition#getPricePerUnit()}, formatted
      */
     public String getPricePerUnit() {
-        return FormatUtil.formatCurrency(locale, invoicePosition.getPricePerUnit());
+        return FormatUtil.formatCurrency(invoicePosition.getPricePerUnit());
     }
 
     /**
@@ -80,7 +76,7 @@ public class InvoicePositionWrapper {
      * @return {@link CalculationUtil#calculateNetPrice(InvoicePosition)}
      */
     public String getTotalPriceNet() {
-        return FormatUtil.formatCurrency(locale, CalculationUtil.calculateNetPrice(invoicePosition));
+        return FormatUtil.formatCurrency(CalculationUtil.calculateNetPrice(invoicePosition));
     }
 
     /**
@@ -89,7 +85,7 @@ public class InvoicePositionWrapper {
      */
     public String getTaxRate() {
         if (invoicePosition.isTaxApplicable()) {
-            return FormatUtil.formatPercentValue(locale, invoicePosition.getTaxRate().getRate());
+            return FormatUtil.formatPercentValue(invoicePosition.getTaxRate().getRate());
         }
 
         return Constants.HYPHEN;

@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.Locale;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -46,10 +45,9 @@ public class InvoiceGenerator extends AbstractReportGenerator {
     
     /**
 	 * @param invoice
-	 * @param locale
 	 */
-	public InvoiceGenerator(Invoice invoice, Locale locale) {
-		this.wrapper = new InvoiceWrapper(invoice, locale);
+	public InvoiceGenerator(Invoice invoice) {
+		this.wrapper = new InvoiceWrapper(invoice);
 	}
 
 	@Override

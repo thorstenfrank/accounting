@@ -15,11 +15,8 @@
  */
 package de.togginho.accounting;
 
-import java.util.Locale;
-
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.reporting.InvoiceGenerator;
-import de.togginho.accounting.reporting.ReportingException;
 
 /**
  * @author thorsten
@@ -32,16 +29,9 @@ class ReportingServiceImpl implements ReportingService {
 	 * @see de.togginho.accounting.ReportingService#generateInvoiceToPdf(de.togginho.accounting.model.Invoice, java.lang.String)
 	 */
 	@Override
-	public void generateInvoiceToPdf(Invoice invoice, String fileLocation) {
-		InvoiceGenerator gen = new InvoiceGenerator(invoice, Locale.getDefault());
-		
-		try {
-			gen.generateReportToFile(fileLocation);
-		} catch (ReportingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void generateInvoiceToPdf(Invoice invoice, String fileLocation, ReportGenerationMonitor monitor) {
+		InvoiceGenerator gen = new InvoiceGenerator(invoice);
+		gen.generateReportToFile(fileLocation, monitor);
 	}
 
-	
 }

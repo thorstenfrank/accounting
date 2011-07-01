@@ -17,6 +17,7 @@ package de.togginho.accounting.reporting;
 
 import java.util.Locale;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -26,7 +27,7 @@ import de.togginho.accounting.util.FormatUtil;
  * @author thorsten frank
  *
  */
-public class RevenueDetailWrapper {
+public class RevenueDetailWrapper implements Constants {
 
 	private Invoice invoice;
 

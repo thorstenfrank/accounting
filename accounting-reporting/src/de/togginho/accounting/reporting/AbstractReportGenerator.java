@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -26,6 +27,9 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import org.apache.log4j.Logger;
+
+import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.ReportGenerationMonitor;
 
 /**
  * Abstract base class of report generators, taking care of the actual Jasper calls. This class is currently only
@@ -63,80 +67,118 @@ public abstract class AbstractReportGenerator {
 	 * 
 	 * @throws ReportingException if an error occurs during report generation
 	 */
-	public void generateReportToFile(String fileName) throws ReportingException {
-		LOG.info(String.format("Starting report generation: [%s]", this.getClass().getName()));
+	public void generateReportToFile(String fileName, ReportGenerationMonitor monitor) {
+		LOG.info(String.format("Starting report generation: [%s]", this.getClass().getName())); //$NON-NLS-1$
 		
-		if (fileName == null || fileName.length() < 1) {
-			LOG.error("No destination file name was specified");
-			throw new ReportingException(ReportingException.REPORT_FILE_NAME_NULL);
-		}
+		monitor.startingReportGeneration();
 		
-		Class<? extends AbstractReportGenerator> genClass = getClass();
-		
-		LOG.debug(String.format("Searching template for class [%s]", genClass.getName()));
-		
-		ClassLoader loader = genClass.getClassLoader();
-		
-		LOG.debug(String.format("Using ClassLoader [%s]", loader.toString()));
-		
-		final String templatePath = getReportTemplatePath();
-		
-		if (templatePath == null) {
-			LOG.error(String.format("Could not find template: [%s]", templatePath));
-			throw new ReportingException(ReportingException.TEMPLATE_NOT_FOUND, templatePath);
-		}
-		
-		LOG.debug(String.format("Now attempting to load template [%s]", templatePath));
-		
-		URL url = loader.getResource(getReportTemplatePath());
-		
-		if (url != null) {
-			LOG.debug(String.format("Found template at URL [%s]", url.toString()));
-		}
-		
-		InputStream in = loader.getResourceAsStream(templatePath); 
-		
+		monitor.loadingTemplate();
+		InputStream in = getTemplateAsStream();
 		if (in == null) {
-			LOG.error(String.format("Could not load template: [%s]", templatePath));
-			throw new ReportingException(ReportingException.TEMPLATE_NOT_FOUND, templatePath);
+			LOG.error(String.format("Could not load template: [%s]", getReportTemplatePath())); //$NON-NLS-1$
+			throw new AccountingException(
+					Messages.bind(Messages.AbstractReportGenerator_errorTemplateNotFound, getReportTemplatePath()));
 		}
 		
+		monitor.addingReportParameters();		
 		// add report params
 		Map<Object, Object> params = new HashMap<Object, Object>();
 		addReportParameters(params);
 		
+		monitor.fillingReport();
+		JasperPrint print = null;
+        try {
+	        print = fillReport(in, params);
+        } catch (JRException e) {
+        	LOG.error("Error filling report", e); //$NON-NLS-1$
+        	closeInputStream(in);
+        	throw new AccountingException(
+        			Messages.bind(Messages.AbstractReportGenerator_errorFillingReport, getReportTemplatePath()), e);
+        }
+		
 		try {
-			
-			JasperPrint print = null;
-			
-			AbstractReportDataSource dataSource = getReportDataSource();
-			if (dataSource != null) {
-				LOG.debug(String.format("Found data source and will now init: [%s]", dataSource.getClass().getName()));
-				
-				dataSource.init();
-				
-				LOG.debug("Filling report with data");
-				
-				print = JasperFillManager.fillReport(in, params, dataSource);
-				
-			} else {
-				LOG.debug("Generator is not using a datasource, will only use param map");
-				
-				print = JasperFillManager.fillReport(in, params);
-			}
-			
+			monitor.exportingReport();
 			LOG.debug(String.format("Exporting report to file [%s]", fileName));
-			
+//			JRPdfExporter exporter = new JRPdfExporter();
+//			exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+//			exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, fileName);
+//			exporter.setParameter(JRExporterParameter.PROGRESS_MONITOR, new AccountingScriptlet());
+//			exporter.exportReport();
 			JasperExportManager.exportReportToPdfFile(print, fileName);
 			
 		} catch (JRException e) {
 			LOG.error("Error occured during report generation", e);
-			throw new ReportingException(ReportingException.REPORT_GENERATION_FAILED, e);
+			closeInputStream(in);
+			throw new AccountingException(Messages.bind(
+					Messages.AbstractReportGenerator_errorCreatingReport, getReportTemplatePath()), e);
 		}
 		
 		LOG.info("Report generation finished successfully");
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	private InputStream getTemplateAsStream() {
+		final Class<? extends AbstractReportGenerator> genClass = getClass();
+		LOG.debug(String.format("Searching template for class [%s]", genClass.getName()));
+
+		ClassLoader loader = genClass.getClassLoader();		
+		LOG.debug(String.format("Using ClassLoader [%s]", loader.toString()));
+		
+		final String templatePath = getReportTemplatePath();
+		LOG.debug(String.format("Now attempting to load template [%s]", templatePath));
+		
+		final URL url = loader.getResource(templatePath);
+		if (url != null) {
+			LOG.debug(String.format("Found template at URL [%s]", url.toString()));
+		} else {
+			LOG.error("Template URL not found: " + templatePath);
+			throw new AccountingException(
+					Messages.bind(Messages.AbstractReportGenerator_errorTemplateNotFound, templatePath));
+		}
+		
+		return loader.getResourceAsStream(templatePath); 
+	}
+	
+	/**
+	 * 
+	 * @param in
+	 * @param params
+	 * @return
+	 * @throws JRException
+	 */
+	private JasperPrint fillReport(InputStream in, Map<Object, Object> params) throws JRException {
+		AbstractReportDataSource dataSource = getReportDataSource();
+		if (dataSource != null) {
+			LOG.debug(String.format("Found data source and will now init: [%s]", dataSource.getClass().getName()));
+			
+			dataSource.init();
+			
+			LOG.debug("Filling report with data");
+			
+			return JasperFillManager.fillReport(in, params, dataSource);
+			
+		} else {
+			LOG.debug("Generator is not using a datasource, will only use param map");
+			
+			return JasperFillManager.fillReport(in, params);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param in
+	 */
+	private void closeInputStream(final InputStream in) {
+		try {
+	        in.close();
+        } catch (IOException e) {
+        	LOG.warn("Error closing input stream, will ignore", e); //$NON-NLS-1$
+        }
+	}
+	
 	/**
 	 * Implementations should use this optional method to add any needed parameters to the supplied map, which will be 
 	 * passed to the reporting engine.

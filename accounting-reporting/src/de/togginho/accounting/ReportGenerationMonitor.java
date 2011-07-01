@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,14 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting;
+package de.togginho.accounting;
 
 /**
- * @author thorsten frank
+ * @author thorsten
  *
  */
-final class Constants {
+public interface ReportGenerationMonitor {
+
+	void startingReportGeneration();
 	
-	protected static final String HYPHEN = " - ";
+	void loadingTemplate();
 	
+	void addingReportParameters();
+	
+	void fillingReport();
+	
+	void exportingReport();
 }

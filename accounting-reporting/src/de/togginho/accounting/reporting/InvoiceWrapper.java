@@ -18,8 +18,8 @@ package de.togginho.accounting.reporting;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
@@ -33,10 +33,9 @@ import de.togginho.accounting.util.FormatUtil;
  * 
  * @author thorsten frank
  */
-public class InvoiceWrapper {
+public class InvoiceWrapper implements Constants {
 
     private Invoice invoice;
-    private Locale locale;
     private BigDecimal totalNet = BigDecimal.ZERO;
     private BigDecimal totalTax = BigDecimal.ZERO;
     private BigDecimal totalGross = BigDecimal.ZERO;
@@ -45,16 +44,14 @@ public class InvoiceWrapper {
     /**
      * Creates a new wrapper around an {@link Invoice}.
      * @param invoice the invoice to wrap
-     * @param locale the {@link Locale} to use for formatting
      */
-    public InvoiceWrapper(Invoice invoice, Locale locale) {
+    public InvoiceWrapper(Invoice invoice) {
         this.invoice = invoice;
-        this.locale = locale;
 
         this.positions = new ArrayList<InvoicePositionWrapper>();
 
         for (InvoicePosition pos : invoice.getInvoicePositions()) {
-            positions.add(new InvoicePositionWrapper(pos, locale));
+            positions.add(new InvoicePositionWrapper(pos));
         }
 
         this.totalNet = CalculationUtil.calculateTotalNetPrice(invoice);
@@ -67,7 +64,7 @@ public class InvoiceWrapper {
      * @return the formatted {@link Invoice#getInvoiceDate()}
      */
     public String getInvoiceDate() {
-    	return FormatUtil.formatDate(locale, invoice.getInvoiceDate());
+    	return FormatUtil.formatDate(invoice.getInvoiceDate());
     }
 
     /**
@@ -231,7 +228,7 @@ public class InvoiceWrapper {
      * @return {@link CalculationUtil#calculateTotalNetPrice(Invoice)}
      */
     public String getTotalNet() {
-        return FormatUtil.formatCurrency(locale, totalNet);
+        return FormatUtil.formatCurrency(totalNet);
     }
 
     /**
@@ -239,7 +236,7 @@ public class InvoiceWrapper {
      * @return {@link CalculationUtil#calculateTotalTaxAmount(Invoice)}
      */
     public String getTotalTaxAmount() {
-        return FormatUtil.formatCurrency(locale, totalTax);
+        return FormatUtil.formatCurrency(totalTax);
     }
 
     /**
@@ -247,15 +244,7 @@ public class InvoiceWrapper {
      * @return {@link CalculationUtil#calculateTotalGrossPrice(Invoice)}
      */
     public String getTotalGross() {
-        return FormatUtil.formatCurrency(locale, totalGross);
-    }
-
-    /**
-     * 
-     * @return the {@link Locale} used by this wrapper for formatting
-     */
-    public Locale getLocale() {
-        return locale;
+        return FormatUtil.formatCurrency(totalGross);
     }
 
     /**

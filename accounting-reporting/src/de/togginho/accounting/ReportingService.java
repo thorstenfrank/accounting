@@ -23,5 +23,5 @@ import de.togginho.accounting.model.Invoice;
  */
 public interface ReportingService {
 	
-	void generateInvoiceToPdf(Invoice invoice, String fileLocation);
+	void generateInvoiceToPdf(Invoice invoice, String fileLocation, ReportGenerationMonitor monitor);
 }

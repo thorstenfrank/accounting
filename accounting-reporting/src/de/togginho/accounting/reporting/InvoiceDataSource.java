@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -27,8 +26,8 @@ public class InvoiceDataSource extends AbstractReportDataSource {
 
     //private final static Log LOG = LogFactory.getLog(InvoiceDataSource.class);
 
-    private static final String INVOICE_KEY = "invoice";
-    
+    private static final String INVOICE_KEY = "invoice"; //$NON-NLS-1$
+        
 	private InvoiceWrapper wrapper;
     
     /**
@@ -39,11 +38,6 @@ public class InvoiceDataSource extends AbstractReportDataSource {
     public InvoiceDataSource(InvoiceWrapper wrapper) {
     	this.wrapper = wrapper;
     }
-    	
-	@Override
-	protected Locale getLocaleForReport() {
-		return wrapper.getLocale();
-	}
 
 	/**
 	 * Adds the {@link InvoiceWrapper} that holds dynamic information about the invoice being produced.
@@ -53,5 +47,22 @@ public class InvoiceDataSource extends AbstractReportDataSource {
 	@Override
 	protected void addFieldsToMap(Map<String, Object> fieldMap) {
 		fieldMap.put(INVOICE_KEY, wrapper);
+		
+		fieldMap.put("invoice.title", Messages.InvoiceDataSource_invoiceTitle); //$NON-NLS-1$
+		fieldMap.put("invoice.number.title", Messages.InvoiceDataSource_invoiceNumberTitle); //$NON-NLS-1$
+		fieldMap.put("invoice.date.title", Messages.InvoiceDataSource_invoiceDateTitle); //$NON-NLS-1$
+		fieldMap.put("position.header.quantity", Messages.InvoiceDataSource_positionHeaderQuantity); //$NON-NLS-1$
+		fieldMap.put("position.header.unit", Messages.InvoiceDataSource_positionHeaderUnit); //$NON-NLS-1$
+		fieldMap.put("position.header.description", Messages.InvoiceDataSource_positionHeaderDescription); //$NON-NLS-1$
+		fieldMap.put("position.header.pricePerUnit", Messages.InvoiceDataSource_positionHeaderPricePerUnit); //$NON-NLS-1$
+		fieldMap.put("position.header.totalPrice", Messages.InvoiceDataSource_positionHeaderPrice); //$NON-NLS-1$
+		fieldMap.put("user.bank.title", Messages.InvoiceDataSource_userBankTitle); //$NON-NLS-1$
+		fieldMap.put("user.bank.account.title", Messages.InvoiceDataSource_userBankAccountTitle); //$NON-NLS-1$
+		fieldMap.put("user.bank.code.title", Messages.InvoiceDataSource_userBankCodeTitle); //$NON-NLS-1$
+		fieldMap.put("total.net.title", Messages.InvoiceDataSource_totalNetTitle); //$NON-NLS-1$
+		fieldMap.put("total.tax.amount.title", Messages.InvoiceDataSource_totalTaxAmountTitle); //$NON-NLS-1$
+		fieldMap.put("total.gross.title", Messages.InvoiceDataSource_totalGrossTitle); //$NON-NLS-1$
+		fieldMap.put("user.taxNumber.header", Messages.InvoiceDataSource_userTaxNumberHeader); //$NON-NLS-1$
+		fieldMap.put("paymentConditionText", Messages.InvoiceDataSource_paymentConditionText); //$NON-NLS-1$
 	}
 }
