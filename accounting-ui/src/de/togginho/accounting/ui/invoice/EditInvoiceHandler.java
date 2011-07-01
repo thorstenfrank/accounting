@@ -49,11 +49,12 @@ public class EditInvoiceHandler extends AbstractInvoiceHandler {
 		try {
 			getActivePage(event).openEditor(input, IDs.EDIT_INVOIDCE_ID);
 			
-			MessageBox box = new MessageBox(getShell(event), SWT.ICON_INFORMATION | SWT.OK);
-			box.setMessage(Messages.EditInvoiceCommand_uneditableMessage);
-			box.setText(Messages.EditInvoiceCommand_uneditableText);
-			box.open();
-			
+			if (!invoice.canBeEdited()) {
+				MessageBox box = new MessageBox(getShell(event), SWT.ICON_INFORMATION | SWT.OK);
+				box.setMessage(Messages.EditInvoiceCommand_uneditableMessage);
+				box.setText(Messages.EditInvoiceCommand_uneditableText);
+				box.open();				
+			}
 		} catch (PartInitException e) {
 			getLogger().error("Error opening editor for invoice " + invoice.getNumber(), e); //$NON-NLS-1$
 			throw new ExecutionException(Messages.bind(Messages.EditInvoiceCommand_errorOpeningEditor, invoice), e);
