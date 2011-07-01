@@ -79,7 +79,7 @@
 			</elementGroup>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="409" y="0" width="50" height="30"/>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{taxRate}]]></textFieldExpression>

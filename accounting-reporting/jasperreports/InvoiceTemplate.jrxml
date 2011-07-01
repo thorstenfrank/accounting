@@ -37,6 +37,11 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserHeaderInformation()]]></textFieldExpression>
 			</textField>
 			<textField>
+				<reportElement style="INVOICE_TX_08" x="0" y="55" width="241" height="11"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserCompactAddress()]]></textFieldExpression>
+			</textField>
+			<textField>
 				<reportElement style="INVOICE_TX_12" x="0" y="69" width="241" height="16"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getClientName()]]></textFieldExpression>
@@ -50,11 +55,6 @@
 				<reportElement style="INVOICE_TX_12" x="0" y="105" width="241" height="16"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getClientPostcodeAndCity()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_08" x="0" y="55" width="241" height="11"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserCompactAddress()]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -93,7 +93,7 @@
 				<reportElement x="0" y="5" width="459" height="1"/>
 			</line>
 			<textField pattern="">
-				<reportElement style="INVOICE_TX_10B" x="0" y="6" width="55" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="0" y="5" width="55" height="30"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{position.header.quantity}]]></textFieldExpression>
 			</textField>
@@ -117,25 +117,28 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{position.header.totalPrice}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="0" y="36" width="459" height="1"/>
-			</line>
 			<textField>
-				<reportElement style="INVOICE_TX_10B" x="409" y="8" width="50" height="30"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<reportElement style="INVOICE_TX_10B" x="409" y="5" width="50" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{position.header.tax}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="35" width="459" height="1"/>
+			</line>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="60" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<subreport>
-				<reportElement x="0" y="0" width="459" height="57"/>
+				<reportElement x="0" y="0" width="459" height="30"/>
 				<dataSourceExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}.get("INVOICE_POSITION_DATASOURCE")]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA["InvoicePositionTemplate.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="111">
+			<line>
+				<reportElement x="0" y="0" width="457" height="1"/>
+			</line>
 			<textField>
 				<reportElement style="INVOICE_TX_10B" x="220" y="3" width="120" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
@@ -146,9 +149,6 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{total.tax.amount.title}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="0" y="0" width="457" height="1"/>
-			</line>
 			<textField>
 				<reportElement style="INVOICE_TX_12B" x="220" y="43" width="120" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
@@ -215,24 +215,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserBankCode()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="28" width="178" height="13"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserPostcodeAndCity()]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="2" width="178" height="13"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserName()]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="67" width="178" height="13" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserEmail()]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="41" width="178" height="13" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserPhone()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="15" width="178" height="13"/>
@@ -240,18 +225,33 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserStreet()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="89" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="28" width="178" height="13"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserTaxNumberFormatted()]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserPostcodeAndCity()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="41" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserPhone()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="54" width="178" height="13" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserMobile()]]></textFieldExpression>
 			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="67" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserEmail()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="89" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserTaxNumberFormatted()]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="6" splitType="Stretch"/>
+		<band height="1" splitType="Stretch"/>
 	</summary>
 </jasperReport>
