@@ -45,7 +45,7 @@ public class EditClientCommand extends AbstractClientHandler {
 		try {
 	        getActivePage(event).openEditor(input, IDs.EDIT_CLIENT_ID);
         } catch (PartInitException e) {
-        	LOG.error("Error opening client editor for client " + client.getName(), e);
+        	LOG.error("Error opening client editor for client " + client.getName(), e); //$NON-NLS-1$
         	throw new ExecutionException(Messages.bind(Messages.EditClientCommand_errorOpeningEditor, client), e);
         }
     }

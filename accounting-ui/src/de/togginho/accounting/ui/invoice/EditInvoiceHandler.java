@@ -50,8 +50,8 @@ public class EditInvoiceHandler extends AbstractInvoiceHandler {
 			getActivePage(event).openEditor(input, IDs.EDIT_INVOIDCE_ID);
 			
 			MessageBox box = new MessageBox(getShell(event), SWT.ICON_INFORMATION | SWT.OK);
-			box.setMessage("This invoice cannot be edited anymore");
-			box.setText("Uneditable");
+			box.setMessage(Messages.EditInvoiceCommand_uneditableMessage);
+			box.setText(Messages.EditInvoiceCommand_uneditableText);
 			box.open();
 			
 		} catch (PartInitException e) {

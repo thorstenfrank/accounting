@@ -43,9 +43,9 @@ public class AccountingUI extends AbstractUIPlugin {
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingUI.class);
 	
-	private static final String KEY_USER_NAME = "accounting.user.name";
+	private static final String KEY_USER_NAME = "accounting.user.name"; //$NON-NLS-1$
 	
-	private static final String KEY_USER_DB_FILE = "accounting.db.file";
+	private static final String KEY_USER_DB_FILE = "accounting.db.file"; //$NON-NLS-1$
 	
 	/** Application context. */
 	private AccountingContext accountingContext;

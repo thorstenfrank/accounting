@@ -55,7 +55,15 @@ public class Messages extends NLS {
 	public static String EditClientCommand_errorOpeningEditor;
 	
 	public static String EditInvoiceCommand_errorOpeningEditor;
+	public static String EditInvoiceCommand_uneditableMessage;
+	public static String EditInvoiceCommand_uneditableText;
 	
+	public static String ExportInvoiceCommand_addingReportParameters;
+	public static String ExportInvoiceCommand_exportingReportToFile;
+	public static String ExportInvoiceCommand_fillingReport;
+	public static String ExportInvoiceCommand_loadingTemplate;
+	public static String ExportInvoiceCommand_startingReportGeneration;
+
 	public static String InvoiceEditor_details;
 	public static String InvoiceEditor_header;
 	public static String InvoiceEditor_overview;
