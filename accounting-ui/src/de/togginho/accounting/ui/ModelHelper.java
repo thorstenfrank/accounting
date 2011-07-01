@@ -217,6 +217,17 @@ public final class ModelHelper {
 	}
 	
 	/**
+	 * 
+	 * @param invoice
+	 * @param newInvoiceNumber
+	 * @return
+	 * @see AccountingService#copyInvoice(Invoice, String)
+	 */
+	public static Invoice copyInvoice(Invoice invoice, String newInvoiceNumber) {
+		return INSTANCE.accountingService.copyInvoice(invoice, newInvoiceNumber);
+	}
+	
+	/**
 	 * @see PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
 	 */
 	public static void addPropertyChangeListener(PropertyChangeListener listener) {

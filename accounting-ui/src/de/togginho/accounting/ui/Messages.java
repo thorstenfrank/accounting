@@ -46,6 +46,12 @@ public class Messages extends NLS {
 	public static String ClientNameWizardPage_title;
 	public static String ClientNameWizardPage_desc;
 	
+	public static String CopyInvoiceCommand_dialogMessage;
+	public static String CopyInvoiceCommand_dialogTitle;
+	public static String CopyInvoiceCommand_errorEmptyInvoiceNumber;
+	public static String CopyInvoiceCommand_errorExistingInvoice;
+	public static String CopyInvoiceCommand_errorOpeningEditor;
+
 	public static String DeleteClientCommand_confirmMessage;
 	public static String DeleteClientCommand_confirmText;
 	

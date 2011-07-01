@@ -33,6 +33,9 @@ public class User implements Serializable {
 	 */
 	private static final long serialVersionUID = 5026076582008704143L;
 	
+	/** Default payment terms. */
+	public static final int DEFAULT_PAYMENT_TERMS = 30;
+	
 	public static final String FIELD_NAME = "name";
 	public static final String FIELD_DESCRIPTION = "description";
 	public static final String FIELD_ADDRESS = "address";
@@ -206,6 +209,15 @@ public class User implements Serializable {
 		if (taxRates != null) {
 			taxRates.remove(taxRate);
 		}
+	}
+	
+	/**
+	 * Returns the number of days that are the default payment terms of this user.
+	 * TODO make this changeable
+	 * @return the number of days that are the default payment terms for this user
+	 */
+	public int getDefaultPaymentTerms() {
+		return DEFAULT_PAYMENT_TERMS;
 	}
 	
 	/**
