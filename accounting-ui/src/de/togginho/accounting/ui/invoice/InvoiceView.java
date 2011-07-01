@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -46,7 +47,7 @@ import de.togginho.accounting.ui.ModelHelper;
  * @author thorsten
  *
  */
-public class InvoiceView extends ViewPart implements IDoubleClickListener, PropertyChangeListener {
+public class InvoiceView extends ViewPart implements IDoubleClickListener, PropertyChangeListener, Constants {
 	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(InvoiceView.class);
@@ -111,7 +112,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 				if (invoice.getClient() != null) {
 					cell.setText(invoice.getClient().getName());
 				} else {
-					cell.setText(" - "); //$NON-NLS-1$
+					cell.setText(HYPHEN); //$NON-NLS-1$
 				}
 			}
 		});
