@@ -17,6 +17,8 @@ package de.togginho.accounting;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +45,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -476,6 +479,40 @@ class AccountingServiceImpl implements AccountingService {
 
 		return invoices;
 	}
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#getRevenue(java.util.Date, java.util.Date)
+     */
+    @Override
+    public Revenue getRevenue(Date from, Date until) {
+    	Revenue revenue = new Revenue();
+    	revenue.setFrom(from);
+    	revenue.setUntil(until);
+    	
+    	try {
+    		List<Invoice> invoices = new ArrayList<Invoice>(
+    				objectContainer.query(new FindInvoicesForRevenuePredicate(from, until)));
+    		Collections.sort(invoices, new Comparator<Invoice>() {
+    				/**
+                     * {@inheritDoc}.
+                     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+                     */
+                    @Override
+                    public int compare(Invoice o1, Invoice o2) {
+    	                return o1.getPaymentDate().compareTo(o2.getPaymentDate());
+                    }
+    	        	
+    			});
+	        revenue.setInvoices(invoices);
+        } catch (Db4oIOException e) {
+        	throwDb4oIoException(e);
+        } catch (DatabaseClosedException e) {
+        	throwDbClosedException(e);
+        }
+    	
+	    return revenue;
+    }
 
 	/**
 	 * 

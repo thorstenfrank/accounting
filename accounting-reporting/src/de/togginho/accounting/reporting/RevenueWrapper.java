@@ -15,14 +15,12 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -48,15 +46,6 @@ public class RevenueWrapper {
 	 * a list of wrappers around the specific invoices that make up the revenue
 	 */
 	private List<RevenueDetailWrapper> revenueDetails;
-
-	/** Total net revenue. */
-	private BigDecimal totalNet = BigDecimal.ZERO;
-	
-	/** Total gross revenue. */
-	private BigDecimal totalGross = BigDecimal.ZERO;
-	
-	/** Total sales tax. */
-	private BigDecimal totalTax = BigDecimal.ZERO;
 	
 	/**
 	 * Creates a new revenue wrapper.
@@ -72,12 +61,7 @@ public class RevenueWrapper {
 		revenueDetails = new ArrayList<RevenueDetailWrapper>(revenue.getInvoices().size());
 
 		for (Invoice invoice : revenue.getInvoices()) {
-			RevenueDetailWrapper detail = new RevenueDetailWrapper(invoice, locale);
-			
-			totalNet = totalNet.add(CalculationUtil.calculateTotalNetPrice(invoice));
-			totalGross = totalGross.add(CalculationUtil.calculateTotalGrossPrice(invoice));
-			totalTax = totalTax.add(CalculationUtil.calculateTotalTaxAmount(invoice));
-			
+			RevenueDetailWrapper detail = new RevenueDetailWrapper(invoice, locale);			
 			revenueDetails.add(detail);
 		}
 	}
@@ -107,21 +91,21 @@ public class RevenueWrapper {
 	 * @return
 	 */
 	public String getTotalGross() {
-		return FormatUtil.formatCurrency(locale, totalGross);
+		return FormatUtil.formatCurrency(locale, revenue.getRevenueGross());
 	}
 
 	/**
 	 * @return
 	 */
 	public String getTotalNet() {
-		return FormatUtil.formatCurrency(locale, totalNet);
+		return FormatUtil.formatCurrency(locale, revenue.getRevenueNet());
 	}
 
 	/**
 	 * @return
 	 */
 	public String getTotalTaxAmount() {
-		return FormatUtil.formatCurrency(locale, totalTax);
+		return FormatUtil.formatCurrency(locale, revenue.getRevenueTax());
 	}
 
 	/**

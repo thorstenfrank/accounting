@@ -26,6 +26,7 @@ import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 
 /**
@@ -216,6 +217,16 @@ public final class ModelHelper {
 	    return cancelled;
 	}
 	
+	/**
+     * @param from
+     * @param until
+     * @return
+     * @see de.togginho.accounting.AccountingService#getRevenue(java.util.Date, java.util.Date)
+     */
+    public static Revenue getRevenue(Date from, Date until) {
+	    return INSTANCE.accountingService.getRevenue(from, until);
+    }
+
 	/**
 	 * 
 	 * @param invoice

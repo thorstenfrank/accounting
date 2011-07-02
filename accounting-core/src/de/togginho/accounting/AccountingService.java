@@ -22,6 +22,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 
 /**
@@ -210,4 +211,15 @@ public interface AccountingService {
 	 * @throws AccountingException if a technical error occurred while accessing persistence
 	 */
 	Set<Invoice> findInvoices(InvoiceState... states);
+	
+	/**
+	 * Finds and returns revenue for the given timeframe.
+	 * 
+	 * <p>Revenue considers all invoices that have a payment date within the given timeframe and are not cancelled.</p>
+	 * 
+	 * @param from  starting date for the revenue, inclusive
+	 * @param until end date for the revenue, invlusive
+	 * @return a {@link Revenue} instance that contains all paid invoices within the given timeframe
+	 */
+	Revenue getRevenue(Date from, Date until);
 }
