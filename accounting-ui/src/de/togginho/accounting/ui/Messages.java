@@ -81,6 +81,7 @@ public class Messages extends NLS {
 	
 	public static String InvoiceView_number;
 	public static String InvoiceView_state;
+	public static String InvoiceView_dueDate;
 	
 	public static String MarkInvoiceAsPaidCommand_errorPaymentDateBeforeSentDate;
 	public static String MarkInvoiceAsPaidCommand_errorPaymentDateInTheFuture;
