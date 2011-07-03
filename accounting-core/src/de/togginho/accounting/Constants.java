@@ -29,7 +29,7 @@ public interface Constants {
 	public static final String EMPTY_STRING = "";
 	
 	/** A hyphen (-). */
-	public static final String HYPHEN = "-";
+	public static final String HYPHEN = " - ";
 	
 	/** The percentage sign (%). */
 	public static final String PERCENTAGE_SIGN = "%";
