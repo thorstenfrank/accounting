@@ -13,30 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.ui.reports;
 
-import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.ReportGenerationMonitor;
+import de.togginho.accounting.ReportingService;
 
 /**
  * @author thorsten
  *
  */
-public interface ReportingService {
+public interface ReportGenerationHandler {
+
+	/**
+	 * 
+	 * @return
+	 */
+	String getTargetFileNameSuggestion();
 	
 	/**
 	 * 
-	 * @param invoice
-	 * @param fileLocation
+	 * @param reportingService
+	 * @param targetFileName
 	 * @param monitor
 	 */
-	void generateInvoiceToPdf(Invoice invoice, String fileLocation, ReportGenerationMonitor monitor);
-	
-	/**
-	 * 
-	 * @param revenue
-	 * @param fileLocation
-	 * @param monitor
-	 */
-	void generateRevenueToPdf(Revenue revenue, String fileLocation, ReportGenerationMonitor monitor);
+	void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor);
 }

@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.Locale;
-
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.util.CalculationUtil;
@@ -31,47 +29,80 @@ public class RevenueDetailWrapper implements Constants {
 
 	private Invoice invoice;
 
-	private Locale locale;
-
-	public RevenueDetailWrapper(Invoice invoice, Locale locale) {
+	/**
+	 * 
+	 * @param invoice
+	 */
+	public RevenueDetailWrapper(Invoice invoice) {
 		super();
 		this.invoice = invoice;
-		this.locale = locale;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getInvoiceDate() {
-		return FormatUtil.formatDate(locale, invoice.getInvoiceDate());
+		return FormatUtil.formatDate(invoice.getInvoiceDate());
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getInvoiceNumber() {
 		return invoice.getNumber();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getPaymentDate() {
 		if (invoice.getPaymentDate() != null) {
-			return FormatUtil.formatDate(locale, invoice.getPaymentDate());
+			return FormatUtil.formatDate(invoice.getPaymentDate());
 		}
 		
 		return Constants.HYPHEN;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getNetPrice() {
-		return FormatUtil.formatCurrency(locale, CalculationUtil.calculateTotalNetPrice(invoice));
+		return FormatUtil.formatCurrency(CalculationUtil.calculateTotalNetPrice(invoice));
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getTaxRate() {
 		// FIXME get this from the invoice somehow
 		return "19%";
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getTaxAmount() {
-		return FormatUtil.formatCurrency(locale, CalculationUtil.calculateTotalTaxAmount(invoice));
+		return FormatUtil.formatCurrency(CalculationUtil.calculateTotalTaxAmount(invoice));
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getGrossPrice() {
-		return FormatUtil.formatCurrency(locale, CalculationUtil.calculateTotalGrossPrice(invoice));
+		return FormatUtil.formatCurrency(CalculationUtil.calculateTotalGrossPrice(invoice));
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getClientName() {
 		return invoice.getClient().getName();
 	}

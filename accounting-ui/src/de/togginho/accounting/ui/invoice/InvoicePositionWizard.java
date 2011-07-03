@@ -43,7 +43,6 @@ import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
-import de.togginho.accounting.ui.conversion.CurrencyToStringConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
 
 /**
@@ -182,7 +181,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			UpdateValueStrategy toPrice = new UpdateValueStrategy();
 			toPrice.setConverter(StringToBigDecimalConverter.getInstance());
 			UpdateValueStrategy fromPrice = new UpdateValueStrategy();
-			fromPrice.setConverter(CurrencyToStringConverter.getInstance());// BigDecimalToStringConverter.getInstance());
+			fromPrice.setConverter(BigDecimalToStringConverter.getInstance()); //CurrencyToStringConverter.getInstance());
 			bindingContext.bindValue(priceWidgetObservable, pricePojoObservable, toPrice, fromPrice);
 			priceWidgetObservable.addValueChangeListener(this);
 			

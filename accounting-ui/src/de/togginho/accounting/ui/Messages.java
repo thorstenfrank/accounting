@@ -27,7 +27,7 @@ public class Messages extends NLS {
 	
 	public static String AbstractClientHandler_message;
 	public static String AbstractClientHandler_text;
-	
+		
 	public static String AccountingSplashHandler_reuseDataMsg;
 	public static String AccountingSplashHandler_reuseDataText;
 	public static String AccountingSplashHandler_setupDialogCancelledMsg;
@@ -79,12 +79,6 @@ public class Messages extends NLS {
 	public static String InvoicePositionWizard_newTitle;
 	public static String InvoicePositionWizard_newDesc;
 	
-	public static String InvoiceToPdfCommand_errorGeneratingInvoice;
-	public static String InvoiceToPdfCommand_errorNoReportingService;
-	public static String InvoiceToPdfCommand_labelPdfFiles;
-	public static String InvoiceToPdfCommand_successMsg;
-	public static String InvoiceToPdfCommand_successText;
-	
 	public static String InvoiceView_number;
 	public static String InvoiceView_state;
 	
@@ -112,6 +106,28 @@ public class Messages extends NLS {
 	public static String NewTaxRateWizard_pageTitle;
 	public static String NewTaxRateWizard_rate;
 	public static String NewTaxRateWizard_windowTitle;
+	
+	public static String ReportGenerationUtil_errorGeneratingInvoice;
+	public static String ReportGenerationUtil_errorNoReportingService;
+	public static String ReportGenerationUtil_labelPdfFiles;
+	public static String ReportGenerationUtil_successMsg;
+	public static String ReportGenerationUtil_successText;
+	
+	public static String RevenueDialog_client;
+	public static String RevenueDialog_defaultFilename;
+	public static String RevenueDialog_export;
+	public static String RevenueDialog_from;
+	public static String RevenueDialog_gross;
+	public static String RevenueDialog_invoiceDate;
+	public static String RevenueDialog_invoiceNo;
+	public static String RevenueDialog_invoices;
+	public static String RevenueDialog_net;
+	public static String RevenueDialog_paymentDate;
+	public static String RevenueDialog_revenueTimeframe;
+	public static String RevenueDialog_search;
+	public static String RevenueDialog_tax;
+	public static String RevenueDialog_totals;
+	public static String RevenueDialog_until;
 	
 	public static String SendInvoiceCommand_confirmMessage;
 	public static String SendInvoiceCommand_confirmText;
@@ -171,7 +187,7 @@ public class Messages extends NLS {
 	public static String iconsUserEdit;
 	public static String iconsInvoiceEdit;
 	public static String iconsDeleteInvoice;
-	public static String iconsInvoiceToPdf;
+	public static String iconsExportToPdf;
 	public static String iconsMarkInvoiceAsPaid;
 	public static String iconsSendInvoice;
 

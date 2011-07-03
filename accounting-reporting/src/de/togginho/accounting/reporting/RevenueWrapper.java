@@ -17,7 +17,6 @@ package de.togginho.accounting.reporting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
@@ -33,11 +32,6 @@ import de.togginho.accounting.util.FormatUtil;
 public class RevenueWrapper {
 
 	/**
-	 * the locale used by this wrapper for formatting
-	 */
-	private Locale locale;
-
-	/**
 	 * the wrapped revenue object
 	 */
 	private Revenue revenue;
@@ -50,18 +44,16 @@ public class RevenueWrapper {
 	/**
 	 * Creates a new revenue wrapper.
 	 * 
-	 * @param locale the locale to use for formatting
 	 * @param revenue the {@link Revenue} to wrap
 	 */
-	public RevenueWrapper(Locale locale, Revenue revenue) {
+	public RevenueWrapper(Revenue revenue) {
 		super();
-		this.locale = locale;
 		this.revenue = revenue;
 
 		revenueDetails = new ArrayList<RevenueDetailWrapper>(revenue.getInvoices().size());
 
 		for (Invoice invoice : revenue.getInvoices()) {
-			RevenueDetailWrapper detail = new RevenueDetailWrapper(invoice, locale);			
+			RevenueDetailWrapper detail = new RevenueDetailWrapper(invoice);			
 			revenueDetails.add(detail);
 		}
 	}
@@ -70,14 +62,7 @@ public class RevenueWrapper {
 	 * @return
 	 */
 	public String getFromDate() {
-		return FormatUtil.formatDate(locale, revenue.getFrom());
-	}
-
-	/**
-	 * @return
-	 */
-	public Locale getLocale() {
-		return locale;
+		return FormatUtil.formatDate(revenue.getFrom());
 	}
 
 	/**
@@ -91,34 +76,27 @@ public class RevenueWrapper {
 	 * @return
 	 */
 	public String getTotalGross() {
-		return FormatUtil.formatCurrency(locale, revenue.getRevenueGross());
+		return FormatUtil.formatCurrency(revenue.getRevenueGross());
 	}
 
 	/**
 	 * @return
 	 */
 	public String getTotalNet() {
-		return FormatUtil.formatCurrency(locale, revenue.getRevenueNet());
+		return FormatUtil.formatCurrency(revenue.getRevenueNet());
 	}
 
 	/**
 	 * @return
 	 */
 	public String getTotalTaxAmount() {
-		return FormatUtil.formatCurrency(locale, revenue.getRevenueTax());
+		return FormatUtil.formatCurrency(revenue.getRevenueTax());
 	}
 
 	/**
 	 * @return
 	 */
 	public String getUntilDate() {
-		return FormatUtil.formatDate(locale, revenue.getUntil());
-	}
-
-	/**
-	 * @param locale
-	 */
-	public void setLocale(Locale locale) {
-		this.locale = locale;
+		return FormatUtil.formatDate(revenue.getUntil());
 	}
 }

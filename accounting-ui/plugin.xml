@@ -130,6 +130,12 @@
                      value="de.togginho.accounting.ui.invoice.InvoiceView">
                </parameter>
             </command>
+            <command
+                  commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+                  icon="icons/money_add.png"
+                  label="Revenue"
+                  style="push">
+            </command>
          </menu>
          <menu
                label="%menu.help.label"
@@ -179,6 +185,12 @@
                      name="org.eclipse.ui.views.showView.viewId"
                      value="de.togginho.accounting.ui.invoice.InvoiceView">
                </parameter>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+                  icon="icons/money_add.png"
+                  label="Revenue"
+                  style="push">
             </command>
          </toolbar>
          <separator
@@ -439,6 +451,11 @@
             defaultHandler="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
             id="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
             name="%command.change.invoice.filter">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
+            id="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+            name="Revenue">
       </command>
    </extension>
    <extension
