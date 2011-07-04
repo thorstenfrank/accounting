@@ -16,7 +16,6 @@
 package de.togginho.accounting.ui.user;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -46,6 +45,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.TaxRate;
@@ -64,10 +64,12 @@ public class UserEditor extends AbstractAccountingEditor {
 
 	private static final Logger LOG = Logger.getLogger(UserEditor.class);
 	
+	private static final int COLUMN_TAX_RATE_ABBREVIATION = 0;
+	private static final int COLUMN_TAX_RATE_NAME = 1;
+	private static final int COLUMN_TAX_RATE = 2;
+
 	private FormToolkit toolkit;
-	
 	private ScrolledForm form;
-	
 	private TableViewer taxRateViewer;
 	
 	/**
@@ -238,48 +240,25 @@ public class UserEditor extends AbstractAccountingEditor {
 		taxRateViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
 		//taxRateViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 		taxRateViewer.setContentProvider(ArrayContentProvider.getInstance());
+		taxRateViewer.setLabelProvider(new TaxRateCellLabelProvider());
 		
 		Table table = taxRateViewer.getTable();
 		table.setHeaderVisible(true);
 		
-		TableViewerColumn col1 = new TableViewerColumn(taxRateViewer, SWT.NONE);
+		TableViewerColumn col1 = new TableViewerColumn(taxRateViewer, SWT.NONE, COLUMN_TAX_RATE_ABBREVIATION);
 		col1.getColumn().setText(Messages.UserEditor_taxRateAbbreviation);
 		col1.getColumn().setAlignment(SWT.CENTER);
 		tableLayout.setColumnData(col1.getColumn(), new ColumnWeightData(30));
-		col1.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				TaxRate tr = (TaxRate) cell.getElement();
-				cell.setText(tr.getShortName());
-			}
-		});
 		
-		TableViewerColumn col2 = new TableViewerColumn(taxRateViewer, SWT.NONE);
+		TableViewerColumn col2 = new TableViewerColumn(taxRateViewer, SWT.NONE, COLUMN_TAX_RATE_NAME);
 		col2.getColumn().setText(Messages.UserEditor_taxRateName);
 		col2.getColumn().setAlignment(SWT.CENTER);
 		tableLayout.setColumnData(col2.getColumn(), new ColumnWeightData(50));
-		col2.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				TaxRate tr = (TaxRate) cell.getElement();
-				cell.setText(tr.getLongName());
-			}
-		});
 		
-		TableViewerColumn col3 = new TableViewerColumn(taxRateViewer, SWT.NONE);
+		TableViewerColumn col3 = new TableViewerColumn(taxRateViewer, SWT.NONE, COLUMN_TAX_RATE);
 		col3.getColumn().setText(Messages.UserEditor_taxRate);
 		col3.getColumn().setAlignment(SWT.CENTER);
 		tableLayout.setColumnData(col3.getColumn(), new ColumnWeightData(20));
-		col3.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				TaxRate tr = (TaxRate) cell.getElement();
-				cell.setText(FormatUtil.formatPercentValue(Locale.GERMAN, tr.getRate()));
-			}
-		});
 		
 		Set<TaxRate> taxRates = getEditorInput().getUser().getTaxRates();
 		if (taxRates == null) {
@@ -339,5 +318,36 @@ public class UserEditor extends AbstractAccountingEditor {
 	@Override
 	public UserEditorInput getEditorInput() {
 		return (UserEditorInput) super.getEditorInput();
+	}
+	
+	/**
+	 *
+	 */
+	private class TaxRateCellLabelProvider extends CellLabelProvider {
+		/**
+         * {@inheritDoc}.
+         * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+         */
+        @Override
+        public void update(ViewerCell cell) {
+        	String text = Constants.EMPTY_STRING;
+        	TaxRate tr = (TaxRate) cell.getElement();
+        	switch (cell.getColumnIndex()) {
+			case COLUMN_TAX_RATE_ABBREVIATION:
+				text = tr.getShortName();
+				break;
+			case COLUMN_TAX_RATE_NAME:
+				text = tr.getLongName();
+				break;
+			case COLUMN_TAX_RATE:
+				text = FormatUtil.formatPercentValue(tr.getRate());
+				break;
+
+			default:
+				break;
+			}
+        	
+        	cell.setText(text);
+        }
 	}
 }
