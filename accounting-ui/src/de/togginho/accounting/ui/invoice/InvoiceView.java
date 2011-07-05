@@ -17,20 +17,23 @@ package de.togginho.accounting.ui.invoice;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -41,6 +44,8 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
@@ -55,6 +60,17 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(InvoiceView.class);
 	
+	/**
+	 * 
+	 */
+	private static final Map<InvoiceState, Image> INVOICE_STATE_TO_IMAGE_MAP = new HashMap<InvoiceState, Image>();
+	
+	// column indices
+	private static final int COL_INDEX_INVOICE_NUMBER = 0;
+	private static final int COL_INDEX_INVOICE_STATE = 1;
+	private static final int COL_INDEX_CLIENT = 2;
+	private static final int COL_INDEX_DUE_DATE = 3;
+	
 	/** The viewer. */
 	private TableViewer tableViewer;
 	
@@ -64,6 +80,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		initInvoiceStateImageMap();
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
 		
@@ -78,36 +95,34 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-		InvoiceLabelProvider labelProvider = new InvoiceLabelProvider();
-		
-		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE);
+		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_NUMBER);
 		col1.getColumn().setText(Messages.InvoiceView_number);
-		col1.setLabelProvider(labelProvider);
 		tcl.setColumnData(col1.getColumn(), new ColumnWeightData(10, true));
 		
-		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE);
+		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_STATE);
 		col2.getColumn().setText(Messages.InvoiceView_state);
 		col2.getColumn().setAlignment(SWT.CENTER);
-		col2.setLabelProvider(labelProvider);
 		tcl.setColumnData(col2.getColumn(), new ColumnWeightData(10, true));
 		
-		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE);
+		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_CLIENT);
 		col3.getColumn().setText(Messages.labelClient);
-		col3.setLabelProvider(labelProvider);
 		tcl.setColumnData(col3.getColumn(), new ColumnWeightData(15, true));
 		
-		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE);
+		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_DUE_DATE);
 		col4.getColumn().setText(Messages.InvoiceView_dueDate);
-		col4.setLabelProvider(labelProvider);
 		tcl.setColumnData(col4.getColumn(), new ColumnWeightData(10, true));
 		
-		tableViewer.addDoubleClickListener(this);
+		// get the invoices to display
+		final Set<Invoice> invoices = ModelHelper.findInvoices();
 		
-		Set<Invoice> invoices = ModelHelper.findInvoices();
-		
+		tableViewer.setLabelProvider(new InvoiceLabelProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setInput(invoices);
 		
+		// make sure double-clicks are processed
+		tableViewer.addDoubleClickListener(this);
+		
+		// create the view menu
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(tableViewer.getControl());
 		tableViewer.getControl().setMenu(menu);
@@ -130,6 +145,13 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	public void dispose() {
 		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
 		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
+		
+		for (InvoiceState state : INVOICE_STATE_TO_IMAGE_MAP.keySet()) {
+			INVOICE_STATE_TO_IMAGE_MAP.get(state).dispose();
+		}
+		
+		INVOICE_STATE_TO_IMAGE_MAP.clear();
+		
 		super.dispose();
 	}
 	
@@ -165,39 +187,67 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		tableViewer.setInput(invoices);
 		tableViewer.refresh();
 	}
+
+	/**
+	 * 
+	 */
+	private void initInvoiceStateImageMap() {
+		if (INVOICE_STATE_TO_IMAGE_MAP.isEmpty()) {
+			INVOICE_STATE_TO_IMAGE_MAP.put(InvoiceState.CANCELLED, 
+					AccountingUI.getImageDescriptor(Messages.iconsInvoiceCancelled).createImage());
+			INVOICE_STATE_TO_IMAGE_MAP.put(InvoiceState.CREATED, 
+					AccountingUI.getImageDescriptor(Messages.iconsInvoiceCreated).createImage());
+			INVOICE_STATE_TO_IMAGE_MAP.put(InvoiceState.OVERDUE, 
+					AccountingUI.getImageDescriptor(Messages.iconsInvoiceOverdue).createImage());
+			INVOICE_STATE_TO_IMAGE_MAP.put(InvoiceState.PAID,
+					AccountingUI.getImageDescriptor(Messages.iconsInvoicePaid).createImage());
+			INVOICE_STATE_TO_IMAGE_MAP.put(InvoiceState.SENT, 
+					AccountingUI.getImageDescriptor(Messages.iconsInvoiceSend).createImage());			
+		}
+	}
 	
 	/**
 	 *
 	 */
-	private class InvoiceLabelProvider extends CellLabelProvider {
+	private class InvoiceLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
 
 		/**
          * {@inheritDoc}.
-         * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
          */
         @Override
-        public void update(ViewerCell cell) {
-        	String text = Constants.HYPHEN;
-        	final Invoice invoice = (Invoice) cell.getElement();
-        	switch (cell.getColumnIndex()) {
-			case 0:
-				text = invoice.getNumber();
-				break;
-			case 1:
-				text = invoice.getState().getTranslatedString();
-				break;
-			case 2:
-				text = invoice.getClient() != null ? invoice.getClient().getName() : Constants.HYPHEN;
-				break;
-			case 3:
-				text = invoice.getDueDate() != null ? FormatUtil.formatDate(invoice.getDueDate()) : Constants.HYPHEN;
-				break;
-			default:
-				break;
-			}
+        public Image getColumnImage(Object element, int columnIndex) {
+        	if (columnIndex == COL_INDEX_INVOICE_STATE) {
+        		final Invoice invoice = (Invoice) element;
+        		return INVOICE_STATE_TO_IMAGE_MAP.get(invoice.getState());
+        	}
         	
-        	cell.setText(text);
+	        return null;
         }
-		
+        
+		/**
+         * {@inheritDoc}.
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+         */
+        @Override
+        public String getColumnText(Object element, int columnIndex) {
+        	if (element == null || !(element instanceof Invoice)) {
+        		return HYPHEN;
+        	}
+        	
+        	final Invoice invoice = (Invoice) element;
+        	switch (columnIndex) {
+			case COL_INDEX_INVOICE_NUMBER:
+				return invoice.getNumber();
+			case COL_INDEX_INVOICE_STATE:
+				return invoice.getState().getTranslatedString();
+			case COL_INDEX_CLIENT:
+				return invoice.getClient() != null ? invoice.getClient().getName() : Constants.HYPHEN;
+			case COL_INDEX_DUE_DATE:
+				return invoice.getDueDate() != null ? FormatUtil.formatDate(invoice.getDueDate()) : Constants.HYPHEN;
+			default:
+				return HYPHEN;
+			}
+        }
 	}
 }

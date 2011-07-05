@@ -30,18 +30,19 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -70,6 +71,7 @@ import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -80,20 +82,29 @@ import de.togginho.accounting.util.FormatUtil;
 public class InvoiceEditor extends AbstractAccountingEditor implements Constants, PropertyChangeListener {
 
 	private static final Logger LOG = Logger.getLogger(InvoiceEditor.class);
+
+	// Column indices for the invoice position table
+	private static final int COLUMN_INDEX_QUANTITY = 0;
+	private static final int COLUMN_INDEX_UNIT = 1;
+	private static final int COLUMN_INDEX_DESCRIPTION = 2;
+	private static final int COLUMN_INDEX_PRICE_PER_UNIT = 3;
+	private static final int COLUMN_INDEX_TAX_RATE = 4;
+	private static final int COLUMN_INDEX_NET_PRICE = 5;
 	
+	// form 
 	private FormToolkit toolkit;
-	
 	private ScrolledForm form;
 
+	// invoice position table
 	private TableViewer invoicePositionViewer;
 
+	// tax rate map...
 	private Map<String, TaxRate> shortStringToTaxRateMap;
 	private String[] taxRateShortNames;
 
+	// totals (read-only)
 	private Text totalNet;
-
 	private Text totalTax;
-
 	private Text totalGross;
 	
 	private boolean invoiceCanBeEdited;
@@ -216,85 +227,56 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		Composite left = toolkit.createComposite(sectionClient);
 		left.setLayout(new GridLayout(2, false));
-		//left.setLayoutData(WidgetHelper.FILL_GRID_DATA);
 		
+		// INVOICE NUMBER
 		toolkit.createLabel(left, Messages.labelInvoiceNo);
 		Text number = getToolkit().createText(left, invoice.getNumber(), SWT.SINGLE | SWT.BORDER);
 		grabHorizontal.applyTo(number);
 		number.setEnabled(false);
 		number.setEditable(false);
 
-		toolkit.createLabel(left, Messages.labelInvoiceDate);		
-		DateTime invoiceDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
-		
+		// INVOICE DATE
 		if (invoice.getInvoiceDate() == null) {
 			invoice.setInvoiceDate(new Date());
 		}
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(invoice.getInvoiceDate());
-		invoiceDate.setDay(cal.get(Calendar.DAY_OF_MONTH));
-		invoiceDate.setMonth(cal.get(Calendar.MONTH));
-		invoiceDate.setYear(cal.get(Calendar.YEAR));
-
+		toolkit.createLabel(left, Messages.labelInvoiceDate);
+		DateTime invoiceDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
+		WidgetHelper.dateToWidget(invoice.getInvoiceDate(), invoiceDate);
+		invoiceDate.setEnabled(invoiceCanBeEdited);
 		invoiceDate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				DateTime dateTime = (DateTime) e.getSource();
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
-				cal.set(Calendar.MONTH, dateTime.getMonth());
-				cal.set(Calendar.YEAR, dateTime.getYear());
-				
-				Invoice invoice = getEditorInput().getInvoice();
-				Date currentInvoiceDate = invoice.getInvoiceDate();
-				
-				invoice.setInvoiceDate(cal.getTime());
-				
-				if (invoice.getInvoiceDate().compareTo(currentInvoiceDate) != 0) {
+				final Date newInvoiceDate = WidgetHelper.widgetToDate((DateTime) e.getSource());
+				Invoice invoice = getEditorInput().getInvoice();								
+				if (invoice.getInvoiceDate().compareTo(newInvoiceDate) != 0) {
+					invoice.setInvoiceDate(newInvoiceDate);
 					setIsDirty(true);
-					firePropertyChange(IEditorPart.PROP_DIRTY);
 				}
 			}
-			
 		});
-		invoiceDate.setEnabled(invoiceCanBeEdited);
-
+		
+		// DUE DATE
 		if (invoice.getDueDate() == null) {
-			// add 30 days per default
+			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, invoice.getUser().getDefaultPaymentTerms());
 			invoice.setDueDate(cal.getTime());
-		} else {
-			cal.setTime(invoice.getDueDate());
 		}
 		toolkit.createLabel(left, Messages.labelInvoiceDueDate);
-		
 		DateTime dueDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
-		dueDate.setDay(cal.get(Calendar.DAY_OF_MONTH));
-		dueDate.setMonth(cal.get(Calendar.MONTH));
-		dueDate.setYear(cal.get(Calendar.YEAR));
-		
+		dueDate.setEnabled(invoiceCanBeEdited);
+		WidgetHelper.dateToWidget(invoice.getDueDate(), dueDate);
 		dueDate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				DateTime dateTime = (DateTime) e.getSource();
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
-				cal.set(Calendar.MONTH, dateTime.getMonth());
-				cal.set(Calendar.YEAR, dateTime.getYear());
-				
+				final Date newDueDate = WidgetHelper.widgetToDate((DateTime) e.getSource());
 				Invoice invoice = getEditorInput().getInvoice();
-				Date currentDueDate = invoice.getInvoiceDate();
-				
-				invoice.setDueDate(cal.getTime());
-				
-				if (invoice.getDueDate().compareTo(currentDueDate) != 0) {
+				if (invoice.getDueDate().compareTo(newDueDate) != 0) {
+					invoice.setDueDate(newDueDate);
 					setIsDirty(true);
-					firePropertyChange(IEditorPart.PROP_DIRTY);
 				}
 			}
-			
 		});
-		dueDate.setEnabled(invoiceCanBeEdited);
+		
 		
 		Composite right = toolkit.createComposite(sectionClient);
 		right.setLayout(new GridLayout(2, false));
@@ -425,7 +407,16 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 	}
 	
+	/**
+	 * Invoice position table
+	 */
 	private void createInvoicePositionsSection() {
+		Invoice invoice = getEditorInput().getInvoice();
+		
+		if (invoice.getInvoicePositions() == null) {
+			invoice.setInvoicePositions(new ArrayList<InvoicePosition>());
+		}		
+		
 		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
 		section.setText(Messages.InvoiceEditor_details);
 		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(section);
@@ -437,176 +428,48 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
 		
-		invoicePositionViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
-		invoicePositionViewer.setContentProvider(ArrayContentProvider.getInstance());
-		Table table = invoicePositionViewer.getTable();
+		invoicePositionViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);		
+		final Table table = invoicePositionViewer.getTable();
 		table.setHeaderVisible(true);
-				
-		TableViewerColumn quantityCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE);
-		quantityCol.getColumn().setText(Messages.labelQuantity);
-		tableLayout.setColumnData(quantityCol.getColumn(), new ColumnWeightData(15));
-		quantityCol.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				InvoicePosition pos = (InvoicePosition) cell.getElement();
-				cell.setText(FormatUtil.formatDecimalValue(pos.getQuantity()));
-			}
-		});
+		table.setLinesVisible(true);
 
-		TableViewerColumn unitCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE);
+		final int defaultWidth = 15;
+		
+		// QUANTITY
+		TableViewerColumn quantityCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_QUANTITY);
+		quantityCol.getColumn().setText(Messages.labelQuantity);
+		quantityCol.getColumn().setAlignment(SWT.CENTER);
+		tableLayout.setColumnData(quantityCol.getColumn(), new ColumnWeightData(defaultWidth));
+
+		// UNIT
+		TableViewerColumn unitCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_UNIT);
 		unitCol.getColumn().setText(Messages.labelUnit);
-		tableLayout.setColumnData(unitCol.getColumn(), new ColumnWeightData(15));
-		unitCol.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				InvoicePosition pos = (InvoicePosition) cell.getElement();
-				cell.setText(pos.getUnit());
-			}
-		});
-//		unitCol.setEditingSupport(new EditingSupport(invoicePositionViewer) {
-//			@Override
-//			protected void setValue(Object element, Object value) {
-//				String theValue = null;
-//				if (value != null) {
-//					theValue = value.toString();
-//					if (theValue.isEmpty())
-//						theValue = null;
-//				}
-//				
-//				((InvoicePosition) element).setUnit(theValue);
-//				invoicePositionViewer.refresh();
-//			}
-//			
-//			@Override
-//			protected Object getValue(Object element) {
-//				return ((InvoicePosition) element).getUnit();
-//			}
-//			
-//			@Override
-//			protected CellEditor getCellEditor(Object element) {
-//				return new TextCellEditor(invoicePositionViewer.getTable());
-//			}
-//			
-//			@Override
-//			protected boolean canEdit(Object element) {
-//				return true;
-//			}
-//		});
+		unitCol.getColumn().setAlignment(SWT.CENTER);
+		tableLayout.setColumnData(unitCol.getColumn(), new ColumnWeightData(defaultWidth));
 		
-		TableViewerColumn descCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE);
+		// DESCRIPTION
+		TableViewerColumn descCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_DESCRIPTION);
 		descCol.getColumn().setText(Messages.labelDescription);
+		descCol.getColumn().setAlignment(SWT.CENTER);
 		tableLayout.setColumnData(descCol.getColumn(), new ColumnWeightData(25));
-		descCol.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				InvoicePosition pos = (InvoicePosition) cell.getElement();
-				cell.setText(pos.getDescription());
-			}
-		});
-//		descCol.setEditingSupport(new EditingSupport(invoicePositionViewer) {
-//			
-//			@Override
-//			protected void setValue(Object element, Object value) {
-//				((InvoicePosition) element).setDescription(String.valueOf(value));
-//			}
-//			
-//			@Override
-//			protected Object getValue(Object element) {
-//				return ((InvoicePosition) element).getDescription();
-//			}
-//			
-//			@Override
-//			protected CellEditor getCellEditor(Object element) {
-//				return new TextCellEditor(invoicePositionViewer.getTable(), SWT.MULTI);
-//			}
-//			
-//			@Override
-//			protected boolean canEdit(Object element) {
-//				return true;
-//			}
-//		});
-		
-		TableViewerColumn priceCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE);
+
+		// PRICE PER UNIT
+		TableViewerColumn priceCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_PRICE_PER_UNIT);
 		priceCol.getColumn().setText(Messages.labelPricePerUnit);
-		tableLayout.setColumnData(priceCol.getColumn(), new ColumnWeightData(15));
-		priceCol.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				InvoicePosition pos = (InvoicePosition) cell.getElement();
-				cell.setText(FormatUtil.formatCurrency(pos.getPricePerUnit()));
-			}
-		});		
+		priceCol.getColumn().setAlignment(SWT.RIGHT);
+		tableLayout.setColumnData(priceCol.getColumn(), new ColumnWeightData(defaultWidth));
 		
-		TableViewerColumn taxRateCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE);
+		// TAX RATE
+		TableViewerColumn taxRateCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_TAX_RATE);
 		taxRateCol.getColumn().setText(Messages.labelTaxRate);
-		tableLayout.setColumnData(taxRateCol.getColumn(), new ColumnWeightData(15));
-		taxRateCol.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				InvoicePosition pos = (InvoicePosition) cell.getElement();
-				if (pos.isTaxApplicable()) {
-					cell.setText(pos.getTaxRate().toShortString());
-				} else {
-					cell.setText(HYPHEN);
-				}
-//				InvoicePosition pos = (InvoicePosition) cell.getElement();
-//				if (pos.isTaxApplicable()) {
-//					cell.setText(FormatUtil.formatPercentValue(ModelHelper.getLocale(), pos.getTaxRate().getRate()));
-//				} 
-//				else {
-//					cell.setText("-");
-//				}
-				
-			}
-		});
-//		taxRateCol.setEditingSupport(new EditingSupport(invoicePositionViewer) {
-//			
-//			@Override
-//			protected void setValue(Object element, Object value) {
-//				System.out.println("setValue: " + element.toString() + " | " + value.toString());
-//			}
-//			
-//			@Override
-//			protected Object getValue(Object element) {
-//				System.out.println("getValue: " + element.toString());
-//				return new Integer(1);
-//			}
-//			
-//			@Override
-//			protected CellEditor getCellEditor(Object element) {
-//				return new ComboBoxCellEditor(invoicePositionViewer.getTable(), taxRateShortNames, SWT.READ_ONLY);
-//			}
-//			
-//			@Override
-//			protected boolean canEdit(Object element) {
-//				return shortStringToTaxRateMap != null;
-//			}
-//		});
+		taxRateCol.getColumn().setAlignment(SWT.CENTER);
+		tableLayout.setColumnData(taxRateCol.getColumn(), new ColumnWeightData(defaultWidth));
 		
-		TableViewerColumn netCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE);
+		// NET PRICE
+		TableViewerColumn netCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_NET_PRICE);
 		netCol.getColumn().setText(Messages.labelSubtotal);
-		tableLayout.setColumnData(netCol.getColumn(), new ColumnWeightData(15));
-		netCol.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				InvoicePosition pos = (InvoicePosition) cell.getElement();
-				cell.setText(FormatUtil.formatCurrency(CalculationUtil.calculateNetPrice(pos)));
-			}
-		});
-		
-		Invoice invoice = getEditorInput().getInvoice();
-		
-		if (invoice.getInvoicePositions() == null) {
-			invoice.setInvoicePositions(new ArrayList<InvoicePosition>());
-		}
-		
-		invoicePositionViewer.setInput(invoice.getInvoicePositions());
+		netCol.getColumn().setAlignment(SWT.RIGHT);
+		tableLayout.setColumnData(netCol.getColumn(), new ColumnWeightData(defaultWidth));
 		
 		invoicePositionViewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
@@ -622,6 +485,11 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			}
 		});
 		
+		invoicePositionViewer.setLabelProvider(new InvoicePositionCellLabelProvider());
+		invoicePositionViewer.setContentProvider(ArrayContentProvider.getInstance());
+		invoicePositionViewer.setInput(invoice.getInvoicePositions());
+		
+		// buttons for adding / removing invoice positions
 		Composite buttons = toolkit.createComposite(sectionClient);
 		buttons.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		buttons.setLayout(new FillLayout(SWT.VERTICAL));
@@ -658,8 +526,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		section.setClient(sectionClient);
 	}
 	
-
-	
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
@@ -668,10 +534,10 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	public void doSave(IProgressMonitor monitor) {
 		Invoice invoice = getEditorInput().getInvoice();
 		
+		// TODO exception handling
 		ModelHelper.saveInvoice(invoice);
 		
 		setIsDirty(false);
-		firePropertyChange(PROP_DIRTY);
 	}
 	
 	/**
@@ -680,7 +546,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	 */
 	@Override
 	public void setFocus() {
-		form.getToolBarManager().update(true);
 		form.getBody().setFocus();
 	}
 
@@ -702,8 +567,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	@Override
     public void propertyChange(PropertyChangeEvent evt) {
 		refreshInvoicePositions();
-		getForm().getToolBarManager().markDirty();
-		getForm().getToolBarManager().update(true);
     }
 
 	/**
@@ -719,8 +582,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	 */
 	private void refreshInvoicePositionsAndFireDirty() {
 		refreshInvoicePositions();
-		setIsDirty(true);
-		firePropertyChange(IEditorPart.PROP_DIRTY);		
+		setIsDirty(true);		
 	}
 	
 	/**
@@ -731,5 +593,51 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		totalNet.setText(FormatUtil.formatCurrency(CalculationUtil.calculateTotalNetPrice(invoice)));
 		totalTax.setText(FormatUtil.formatCurrency(CalculationUtil.calculateTotalTaxAmount(invoice)));
 		totalGross.setText(FormatUtil.formatCurrency(CalculationUtil.calculateTotalGrossPrice(invoice)));
+	}
+	
+	/**
+	 *
+	 */
+	private class InvoicePositionCellLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
+		
+        /**
+         * {@inheritDoc}.
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+         */
+        @Override
+        public Image getColumnImage(Object element, int columnIndex) {
+	        return null;
+        }
+
+		/**
+         * {@inheritDoc}.
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+         */
+        @Override
+        public String getColumnText(Object element, int columnIndex) {
+        	if (element == null) {
+        		return HYPHEN;
+        	}
+        	InvoicePosition pos = (InvoicePosition) element;
+        	switch (columnIndex) {
+			case COLUMN_INDEX_QUANTITY:
+				return FormatUtil.formatDecimalValue(pos.getQuantity());
+			case COLUMN_INDEX_UNIT:
+				return pos.getUnit();
+			case COLUMN_INDEX_DESCRIPTION:
+				return pos.getDescription();
+			case COLUMN_INDEX_PRICE_PER_UNIT:
+				 return FormatUtil.formatCurrency(pos.getPricePerUnit());
+			case COLUMN_INDEX_TAX_RATE:
+				 return pos.isTaxApplicable() ? pos.getTaxRate().toShortString() : HYPHEN;
+			case COLUMN_INDEX_NET_PRICE:
+				 return FormatUtil.formatCurrency(CalculationUtil.calculateNetPrice(pos));
+				
+			default:
+				break;
+			}
+        	
+	        return HYPHEN;
+        }
 	}
 }

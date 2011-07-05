@@ -23,15 +23,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -238,9 +239,6 @@ public class UserEditor extends AbstractAccountingEditor {
 		tableComposite.setLayout(tableLayout);
 		
 		taxRateViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
-		//taxRateViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-		taxRateViewer.setContentProvider(ArrayContentProvider.getInstance());
-		taxRateViewer.setLabelProvider(new TaxRateCellLabelProvider());
 		
 		Table table = taxRateViewer.getTable();
 		table.setHeaderVisible(true);
@@ -265,7 +263,9 @@ public class UserEditor extends AbstractAccountingEditor {
 			taxRates = new HashSet<TaxRate>();
 			getEditorInput().getUser().setTaxRates(taxRates);
 		}
-		
+
+		taxRateViewer.setLabelProvider(new TaxRateCellLabelProvider());
+		taxRateViewer.setContentProvider(ArrayContentProvider.getInstance());
 		taxRateViewer.setInput(taxRates);
 		
 		Composite buttons = toolkit.createComposite(client);
@@ -323,31 +323,31 @@ public class UserEditor extends AbstractAccountingEditor {
 	/**
 	 *
 	 */
-	private class TaxRateCellLabelProvider extends CellLabelProvider {
-		/**
-         * {@inheritDoc}.
-         * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
-         */
+	private class TaxRateCellLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
+		
         @Override
-        public void update(ViewerCell cell) {
-        	String text = Constants.EMPTY_STRING;
-        	TaxRate tr = (TaxRate) cell.getElement();
-        	switch (cell.getColumnIndex()) {
-			case COLUMN_TAX_RATE_ABBREVIATION:
-				text = tr.getShortName();
-				break;
-			case COLUMN_TAX_RATE_NAME:
-				text = tr.getLongName();
-				break;
-			case COLUMN_TAX_RATE:
-				text = FormatUtil.formatPercentValue(tr.getRate());
-				break;
+        public Image getColumnImage(Object element, int columnIndex) {
+	        return null;
+        }
 
-			default:
-				break;
-			}
+        @Override
+        public String getColumnText(Object element, int columnIndex) {
+        	if (element == null || !(element instanceof TaxRate)) {
+        		return Constants.HYPHEN;
+        	}
         	
-        	cell.setText(text);
+        	final TaxRate tr = (TaxRate) element;
+
+        	switch (columnIndex) {
+			case COLUMN_TAX_RATE_ABBREVIATION:
+				return tr.getShortName();
+			case COLUMN_TAX_RATE_NAME:
+				return tr.getLongName();
+			case COLUMN_TAX_RATE:
+				return FormatUtil.formatPercentValue(tr.getRate());
+			default:
+				return Constants.HYPHEN;
+			}
         }
 	}
 }
