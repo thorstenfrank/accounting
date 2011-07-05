@@ -15,8 +15,12 @@
  */
 package de.togginho.accounting.ui;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -39,7 +43,7 @@ public class WidgetHelper {
 	 * 
 	 * @param parent parent
 	 * @param text text to display, may be <code>null</code>
-	 * @return the finished label
+	 * @return the {@link Label}
 	 */
 	public static Label createLabel(Composite parent, String text) {
 		Label label = new Label(parent, SWT.NULL);
@@ -50,10 +54,11 @@ public class WidgetHelper {
 	}
 		
 	/**
+	 * Creates a simple text field with styles {@link SWT#SINGLE} and {@link SWT#BORDER}.
 	 * 
-	 * @param parent
-	 * @param text
-	 * @return
+	 * @param parent parent composite
+	 * @param text text for the widget, may be <code>null</code>
+	 * @return the {@link Text}
 	 */
 	public static Text createSingleBorderText(Composite parent, String text) {
 		Text theText = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -62,4 +67,51 @@ public class WidgetHelper {
 		}
 		return theText;
 	}
+
+	/**
+	 * Transforms the contents of the supplied {@link DateTime} widget to a {@link Date}.
+	 * All fields except for the day, month and year are nullified.
+	 * 
+	 * @param dateTime source
+	 * @return the {@link Date} that 
+	 */
+	public static Date widgetToDate(DateTime dateTime) {
+		Calendar cal = Calendar.getInstance();
+		
+		cal.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
+		cal.set(Calendar.MONTH, dateTime.getMonth());
+		cal.set(Calendar.YEAR, dateTime.getYear());
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		
+		return cal.getTime();
+	}
+	
+	/**
+	 * Applies the day, month and year of the supplied {@link Date} to the supplied {@link DateTime} widget.
+	 * 
+	 * @param date		source
+	 * @param dateTime  target
+	 */
+	public static void dateToWidget(Date date, DateTime dateTime) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		dateToWidget(cal, dateTime);
+	}
+	
+	/**
+	 * Applies the day, month and year of the supplied {@link Calendar} to the supplied {@link DateTime} widget.
+	 * 
+	 * @param cal		source
+	 * @param dateTime  target
+	 */
+	public static void dateToWidget(Calendar cal, DateTime dateTime) {
+		dateTime.setDay(cal.get(Calendar.DAY_OF_MONTH));
+		dateTime.setMonth(cal.get(Calendar.MONTH));
+		dateTime.setYear(cal.get(Calendar.YEAR));
+	}
+	
+
 }
