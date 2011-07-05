@@ -16,7 +16,9 @@
 package de.togginho.accounting;
 
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.reporting.InvoiceGenerator;
+import de.togginho.accounting.reporting.RevenueReportGenerator;
 
 /**
  * @author thorsten
@@ -26,12 +28,23 @@ class ReportingServiceImpl implements ReportingService {
 
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ReportingService#generateInvoiceToPdf(de.togginho.accounting.model.Invoice, java.lang.String)
+	 * @see ReportingService#generateInvoiceToPdf(Invoice, java.lang.String, ReportGenerationMonitor)
 	 */
 	@Override
 	public void generateInvoiceToPdf(Invoice invoice, String fileLocation, ReportGenerationMonitor monitor) {
-		InvoiceGenerator gen = new InvoiceGenerator(invoice);
-		gen.generateReportToFile(fileLocation, monitor);
+		InvoiceGenerator generator = new InvoiceGenerator(invoice);
+		generator.generateReportToFile(fileLocation, monitor);
 	}
 
+	/**
+     * {@inheritDoc}.
+     * @see ReportingService#generateRevenueToPdf(Revenue, java.lang.String, ReportGenerationMonitor)
+     */
+    @Override
+    public void generateRevenueToPdf(Revenue revenue, String fileLocation, ReportGenerationMonitor monitor) {
+	    RevenueReportGenerator generator = new RevenueReportGenerator(revenue);
+	    generator.generateReportToFile(fileLocation, monitor);
+    }
+
+	
 }

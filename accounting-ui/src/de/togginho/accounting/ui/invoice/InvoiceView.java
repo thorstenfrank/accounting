@@ -21,8 +21,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
@@ -42,6 +44,7 @@ import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -64,7 +67,11 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
 		
-		tableViewer = new TableViewer(parent, SWT.FULL_SELECTION);
+		Composite tableComposite = new Composite(parent, SWT.NONE);
+		TableColumnLayout tcl = new TableColumnLayout();
+		tableComposite.setLayout(tcl);
+		
+		tableViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
 		getSite().setSelectionProvider(tableViewer);
 		
 		Table table = tableViewer.getTable();
@@ -72,55 +79,32 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		table.setLinesVisible(true);
 		
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		InvoiceLabelProvider labelProvider = new InvoiceLabelProvider();
 		
 		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE);
 		col1.getColumn().setText(Messages.InvoiceView_number);
-		col1.getColumn().setWidth(100);
-		col1.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				Invoice invoice = (Invoice) cell.getElement();
-				cell.setText(invoice.getNumber());
-			}
-		});
+		col1.setLabelProvider(labelProvider);
+		tcl.setColumnData(col1.getColumn(), new ColumnWeightData(10, true));
 		
 		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE);
 		col2.getColumn().setText(Messages.InvoiceView_state);
-		col2.getColumn().setWidth(75);
 		col2.getColumn().setAlignment(SWT.CENTER);
-		col2.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				Invoice invoice = (Invoice) cell.getElement();
-				cell.setText(invoice.getState().getTranslatedString());
-//				if (invoice.getState() == InvoiceState.CREATED) {
-//					cell.setImage(createdImage);
-//				}
-			}
-		});
+		col2.setLabelProvider(labelProvider);
+		tcl.setColumnData(col2.getColumn(), new ColumnWeightData(10, true));
 		
 		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE);
 		col3.getColumn().setText(Messages.labelClient);
-		col3.getColumn().setWidth(200);
-		col3.setLabelProvider(new CellLabelProvider() {
-			
-			@Override
-			public void update(ViewerCell cell) {
-				Invoice invoice = (Invoice) cell.getElement();
-				if (invoice.getClient() != null) {
-					cell.setText(invoice.getClient().getName());
-				} else {
-					cell.setText(HYPHEN); //$NON-NLS-1$
-				}
-			}
-		});
+		col3.setLabelProvider(labelProvider);
+		tcl.setColumnData(col3.getColumn(), new ColumnWeightData(15, true));
+		
+		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE);
+		col4.getColumn().setText(Messages.InvoiceView_dueDate);
+		col4.setLabelProvider(labelProvider);
+		tcl.setColumnData(col4.getColumn(), new ColumnWeightData(10, true));
 		
 		tableViewer.addDoubleClickListener(this);
 		
 		Set<Invoice> invoices = ModelHelper.findInvoices();
-		LOG.debug("adding open invoices: " + invoices.size()); //$NON-NLS-1$
 		
 		tableViewer.setInput(invoices);
 		
@@ -172,7 +156,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		LOG.info("Refreshing open invoices..."); //$NON-NLS-1$
+		LOG.info("Refreshing invoices..."); //$NON-NLS-1$
 		Set<Invoice> invoices = ModelHelper.findInvoices();
 
 		LOG.debug("Number of invoices: " + invoices.size()); //$NON-NLS-1$
@@ -180,5 +164,40 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		// reload open invoices
 		tableViewer.setInput(invoices);
 		tableViewer.refresh();
+	}
+	
+	/**
+	 *
+	 */
+	private class InvoiceLabelProvider extends CellLabelProvider {
+
+		/**
+         * {@inheritDoc}.
+         * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+         */
+        @Override
+        public void update(ViewerCell cell) {
+        	String text = Constants.HYPHEN;
+        	final Invoice invoice = (Invoice) cell.getElement();
+        	switch (cell.getColumnIndex()) {
+			case 0:
+				text = invoice.getNumber();
+				break;
+			case 1:
+				text = invoice.getState().getTranslatedString();
+				break;
+			case 2:
+				text = invoice.getClient() != null ? invoice.getClient().getName() : Constants.HYPHEN;
+				break;
+			case 3:
+				text = invoice.getDueDate() != null ? FormatUtil.formatDate(invoice.getDueDate()) : Constants.HYPHEN;
+				break;
+			default:
+				break;
+			}
+        	
+        	cell.setText(text);
+        }
+		
 	}
 }

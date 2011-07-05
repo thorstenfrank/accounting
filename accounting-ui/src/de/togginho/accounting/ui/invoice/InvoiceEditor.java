@@ -64,6 +64,7 @@ import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.IDs;
@@ -180,6 +181,12 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		toolkit.decorateFormHeading(form.getForm());
 		form.reflow(true);
+		
+		// if this invoice isn't saved yet, mark myself as dirty
+		if (InvoiceState.UNSAVED.equals(invoice.getState())) {
+			setIsDirty(true);
+			firePropertyChange(IEditorPart.PROP_DIRTY);
+		}
 	}
 
 	/**
@@ -254,7 +261,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 
 		if (invoice.getDueDate() == null) {
 			// add 30 days per default
-			cal.add(Calendar.DAY_OF_MONTH, 30);
+			cal.add(Calendar.DAY_OF_MONTH, invoice.getUser().getDefaultPaymentTerms());
 			invoice.setDueDate(cal.getTime());
 		} else {
 			cal.setTime(invoice.getDueDate());

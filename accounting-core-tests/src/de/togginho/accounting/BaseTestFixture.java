@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting;
 
+import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.User;
 
 /**
@@ -28,6 +29,8 @@ abstract class BaseTestFixture {
 	protected static final String TEST_DB_FILE = "JUnitTestDbFile";
 	
 	private static User testUser;
+	
+	private static Client testClient;
 	
 	private static AccountingContext testContext;
 
@@ -58,5 +61,17 @@ abstract class BaseTestFixture {
 			testUser.setName(TEST_USER_NAME);
 		}
 		return testUser;
+	}
+	
+	/**
+	 * 
+	 * @return the test client instance
+	 */
+	protected static Client getTestClient() {
+		if (testClient == null) {
+			testClient = new Client();
+			testClient.setName("JUnitTestClientName");
+		}
+		return testClient;
 	}
 }

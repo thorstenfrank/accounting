@@ -20,7 +20,9 @@ import java.util.Set;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 
 /**
@@ -160,6 +162,40 @@ public interface AccountingService {
 	Invoice getInvoice(String invoiceNumber);
 	
 	/**
+	 * Creates a copy of the supplied {@link Invoice}.
+	 * 
+	 * <p>The copied invoice will contain most of the properties and references of the original with some exceptions:
+	 * the copy will be in state {@link InvoiceState#UNSAVED}, and all state-related dates will be set to 
+	 * <code>null</code>, namely:
+	 * <ul>
+	 * <li>{@link Invoice#getCreationDate()}</li>
+	 * <li>{@link Invoice#getCancelledDate()}</li>
+	 * <li>{@link Invoice#getPaymentDate()}</li>
+	 * <li>{@link Invoice#getSentDate()}</li>
+	 * </ul>
+	 * 
+	 * The copied invoice's number will be the supplied one.
+	 * </p>
+	 * 
+	 * <p>Both {@link Invoice#getInvoiceDate()} and {@link Invoice#getDueDate()} will be reset to reflect the current
+	 * date and the configured default payment terms, respectively.</p>
+	 * 
+	 * <p>The copy will contain unique new instances of any {@link InvoicePosition}s the original may contain, but it
+	 * will only contain references to the user and client.</p>
+	 * 
+	 * <p>The aforementioned changes to the new copy will be made regardless of the state of the original, meaning that
+	 * the mentioned fields will be reset no matter if the original contains this information, or if it is valid. As
+	 * such, any invoice in any kind of state may be copied during any time of its life cycle.</p>
+	 * 
+	 * <p>Copying an invoice does not change the original in any way.</p>
+	 * 
+	 * @param invoice		the {@link Invoice} to copy
+	 * @param invoiceNumber the {@link Invoice#getNumber()} of the copy, may not be <code>null</code>
+	 * @return the copied invoice
+	 */
+	Invoice copyInvoice(Invoice invoice, String invoiceNumber);
+	
+	/**
 	 * Finds all invoices for the current user that match the specified states.
 	 * 
 	 * <p>The current user is the user denoted by the user name in the {@link AccountingContext} that this service was
@@ -175,4 +211,15 @@ public interface AccountingService {
 	 * @throws AccountingException if a technical error occurred while accessing persistence
 	 */
 	Set<Invoice> findInvoices(InvoiceState... states);
+	
+	/**
+	 * Finds and returns revenue for the given timeframe.
+	 * 
+	 * <p>Revenue considers all invoices that have a payment date within the given timeframe and are not cancelled.</p>
+	 * 
+	 * @param from  starting date for the revenue, inclusive
+	 * @param until end date for the revenue, invlusive
+	 * @return a {@link Revenue} instance that contains all paid invoices within the given timeframe
+	 */
+	Revenue getRevenue(Date from, Date until);
 }

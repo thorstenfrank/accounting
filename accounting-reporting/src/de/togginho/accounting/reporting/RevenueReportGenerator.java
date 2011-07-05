@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.Locale;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -46,35 +45,36 @@ public class RevenueReportGenerator extends AbstractReportGenerator {
 	/**
 	 * 
 	 * @param revenue
-	 * @param locale
 	 */
-	public RevenueReportGenerator(Revenue revenue, Locale locale) {
-		this.wrapper = new RevenueWrapper(locale, revenue);
+	public RevenueReportGenerator(Revenue revenue) {
+		this.wrapper = new RevenueWrapper(revenue);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#addReportParameters(java.util.Map)
+	 */
 	@Override
 	protected void addReportParameters(Map<Object, Object> params) {
 		params.put(REVENUE_DETAILS_DATASOURCE, new JRBeanCollectionDataSource(wrapper.getRevenueDetails()));
-		
-		params.put("revenue.title", Messages.RevenueReportGenerator_revenueTitle); //$NON-NLS-1$
-		params.put("from.title", Messages.RevenueReportGenerator_fromTitle); //$NON-NLS-1$
-		params.put("until.title", Messages.RevenueReportGenerator_untilTitle); //$NON-NLS-1$
-		params.put("invoice.date.title", Messages.RevenueReportGenerator_invoiceDate); //$NON-NLS-1$
-		params.put("invoice.no.title", Messages.RevenueReportGenerator_invoiceNumberTitle); //$NON-NLS-1$
-		params.put("client.name.title", Messages.RevenueReportGenerator_clientTitle); //$NON-NLS-1$
-		params.put("payment.date.title", Messages.RevenueReportGenerator_paymentDateTitle); //$NON-NLS-1$
-		params.put("net.price.title", Messages.RevenueReportGenerator_netPriceTitle); //$NON-NLS-1$
-		params.put("taxRate.title", Messages.RevenueReportGenerator_taxRateTitle); //$NON-NLS-1$
-		params.put("tax.amount.title", Messages.RevenueReportGenerator_taxAmountTitle); //$NON-NLS-1$
-		params.put("gross.price.title", Messages.RevenueReportGenerator_grossPriceTitle); //$NON-NLS-1$
-		params.put("sum.title", Messages.RevenueReportGenerator_sumTitle); //$NON-NLS-1$
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#getReportTemplatePath()
+	 */
 	@Override
 	protected String getReportTemplatePath() {
 		return JASPER_PATH;
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#getReportDataSource()
+	 */
 	@Override
 	protected AbstractReportDataSource getReportDataSource() {
 		return new RevenueReportDataSource(wrapper);

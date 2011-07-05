@@ -15,10 +15,16 @@
  */
 package de.togginho.accounting;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
 import com.db4o.ObjectContainer;
@@ -37,7 +43,9 @@ import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -405,6 +413,42 @@ class AccountingServiceImpl implements AccountingService {
 
 		return invoice;
 	}
+	
+	/**
+     * {@inheritDoc}.
+     * @see AccountingService#copyInvoice(Invoice, String)
+     */
+    @Override
+    public Invoice copyInvoice(Invoice invoice, String invoiceNumber) {
+    	Invoice copy = new Invoice();
+    	copy.setNumber(invoiceNumber);
+    	copy.setClient(invoice.getClient());
+    	copy.setInvoiceDate(new Date());
+    	
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(copy.getInvoiceDate());
+		cal.add(Calendar.MONTH, invoice.getUser() != null ? invoice.getUser().getDefaultPaymentTerms()
+		        : User.DEFAULT_PAYMENT_TERMS);
+    	copy.setDueDate(cal.getTime());
+    	copy.setUser(invoice.getUser());
+    	
+    	if (invoice.getInvoicePositions() != null) {
+    		List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
+    		
+    		for (InvoicePosition origIP : invoice.getInvoicePositions()) {
+    			try {
+	                InvoicePosition copiedIP = (InvoicePosition) BeanUtils.cloneBean(origIP);
+	                positions.add(copiedIP);
+                } catch (Exception e) {
+                	LOG.error("Error while cloning invoice position", e);
+                }
+    		}
+    		
+    		copy.setInvoicePositions(positions);
+    	}
+    	
+	    return copy;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -435,6 +479,40 @@ class AccountingServiceImpl implements AccountingService {
 
 		return invoices;
 	}
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#getRevenue(java.util.Date, java.util.Date)
+     */
+    @Override
+    public Revenue getRevenue(Date from, Date until) {
+    	Revenue revenue = new Revenue();
+    	revenue.setFrom(from);
+    	revenue.setUntil(until);
+    	
+    	try {
+    		List<Invoice> invoices = new ArrayList<Invoice>(
+    				objectContainer.query(new FindInvoicesForRevenuePredicate(from, until)));
+    		Collections.sort(invoices, new Comparator<Invoice>() {
+    				/**
+                     * {@inheritDoc}.
+                     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+                     */
+                    @Override
+                    public int compare(Invoice o1, Invoice o2) {
+    	                return o1.getPaymentDate().compareTo(o2.getPaymentDate());
+                    }
+    	        	
+    			});
+	        revenue.setInvoices(invoices);
+        } catch (Db4oIOException e) {
+        	throwDb4oIoException(e);
+        } catch (DatabaseClosedException e) {
+        	throwDbClosedException(e);
+        }
+    	
+	    return revenue;
+    }
 
 	/**
 	 * 

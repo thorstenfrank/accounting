@@ -16,8 +16,11 @@
 package de.togginho.accounting.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import de.togginho.accounting.util.CalculationUtil;
 
 /**
  * A container for paid invoices within a specific time period.
@@ -37,6 +40,12 @@ public class Revenue implements Serializable {
 
 	private List<Invoice> invoices;
 
+	private BigDecimal revenueNet = BigDecimal.ZERO;
+	
+	private BigDecimal revenueTax = BigDecimal.ZERO;
+	
+	private BigDecimal revenueGross = BigDecimal.ZERO;
+	
 	/**
 	 * @return the from
 	 */
@@ -77,5 +86,36 @@ public class Revenue implements Serializable {
 	 */
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
+		
+		revenueGross = BigDecimal.ZERO;
+		revenueNet = BigDecimal.ZERO;
+		revenueTax = BigDecimal.ZERO;
+		
+		for (Invoice invoice : invoices) {
+			revenueGross = revenueGross.add(CalculationUtil.calculateTotalGrossPrice(invoice));
+			revenueNet = revenueNet.add(CalculationUtil.calculateTotalNetPrice(invoice));
+			revenueTax = revenueTax.add(CalculationUtil.calculateTotalTaxAmount(invoice));
+		}
 	}
+
+	/**
+     * @return the revenueNet
+     */
+    public BigDecimal getRevenueNet() {
+    	return revenueNet;
+    }
+
+	/**
+     * @return the revenueTax
+     */
+    public BigDecimal getRevenueTax() {
+    	return revenueTax;
+    }
+
+	/**
+     * @return the revenueGross
+     */
+    public BigDecimal getRevenueGross() {
+    	return revenueGross;
+    }
 }
