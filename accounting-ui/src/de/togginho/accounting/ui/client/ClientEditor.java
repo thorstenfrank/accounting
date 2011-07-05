@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -70,7 +71,9 @@ public class ClientEditor extends AbstractAccountingEditor {
 		basicSectionClient.setLayout(new GridLayout(2, false));
 		
 		toolkit.createLabel(basicSectionClient, Messages.labelName);
-		createText(basicSectionClient, client.getName(), client, Client.FIELD_NAME);
+		final Text clientName = createText(basicSectionClient, client.getName());
+		clientName.setEditable(false);
+		clientName.setEnabled(false);
 		
 		if (client.getAddress() == null) {
 			client.setAddress(new Address());
