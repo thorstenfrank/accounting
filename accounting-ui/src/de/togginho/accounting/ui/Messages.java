@@ -186,11 +186,13 @@ public class Messages extends NLS {
 	// ICONS
 	public static String iconsGroupEdit;
 	public static String iconsUserEdit;
-	public static String iconsInvoiceEdit;
-	public static String iconsDeleteInvoice;
 	public static String iconsExportToPdf;
-	public static String iconsMarkInvoiceAsPaid;
-	public static String iconsSendInvoice;
+	public static String iconsInvoiceCancelled;
+	public static String iconsInvoiceCreated;
+	public static String iconsInvoiceEdit;
+	public static String iconsInvoiceOverdue;
+	public static String iconsInvoicePaid;
+	public static String iconsInvoiceSend;
 
 	static {
 		// initialize resource bundle
