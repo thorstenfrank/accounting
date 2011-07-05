@@ -136,7 +136,7 @@ public class AccountingUI extends AbstractUIPlugin {
 		
 		LOG.info("Initialising AccountingContext"); //$NON-NLS-1$
 		
-		IEclipsePreferences prefs = new InstanceScope().getNode(getBundle().getSymbolicName());
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(getBundle().getSymbolicName());
 		
 		if (prefs != null) {
 			final String userName = prefs.get(KEY_USER_NAME, null);
@@ -192,7 +192,7 @@ public class AccountingUI extends AbstractUIPlugin {
 			LOG.info("Saving context to preferences..."); //$NON-NLS-1$
 		}
 		
-		IEclipsePreferences prefs = new InstanceScope().getNode(getBundle().getSymbolicName());
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(getBundle().getSymbolicName());
 		if (prefs == null) {
 			LOG.warn("Preferences not found: " + getBundle().getSymbolicName()); //$NON-NLS-1$
 			return;
