@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="user" type="user"/>
+
+    <xs:complexType name="user">
+    	<xs:sequence>
+    		<xs:element name="address" type="address" maxOccurs="1" />
+    		<xs:element name="taxRates" type="taxRates" maxOccurs="1" />
+    		<xs:element name="clients" type="clients" maxOccurs="1" />
+    		<xs:element name="invoices" type="invoices" maxOccurs="1" />
+    	</xs:sequence>
+    	<xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="address">
+        <xs:sequence>
+            <xs:element name="street" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="postalCode" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="city" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="phone" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="mobile" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fax" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="taxRates">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="taxRate" type="taxRate" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="taxRate">
+        <xs:sequence>
+            <xs:element name="abbreviation" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="rate" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="clients">
+        <xs:sequence>
+            <xs:element name="client" type="client" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="client">
+    	<xs:sequence>
+    		<xs:element name="address" type="address" maxOccurs="1" />
+    	</xs:sequence>
+    	<xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="invoices">
+        <xs:sequence>
+            <xs:element name="invoice" type="invoice" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="invoice">
+    	<xs:sequence>
+    		<xs:element name="creationDate" type="xs:date" minOccurs="1" maxOccurs="1" />
+    		<xs:element name="invoiceDate" type="xs:date" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="dueDate" type="xs:date" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="sentDate" type="xs:date" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="cancelledDate" type="xs:date" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="paymentDate" type="xs:date" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="client" type="xs:string"/>
+    		<xs:element name="invoicePositions" type="invoicePositions" maxOccurs="1"/>
+    	</xs:sequence>
+    	<xs:attribute name="number" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="invoicePositions">
+        <xs:sequence>
+            <xs:element name="invoicePosition" type="invoicePosition" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="invoicePosition">
+        <xs:sequence>
+            <xs:element name="quantity" type="xs:decimal"/>
+            <xs:element name="pricePerUnit" type="xs:decimal"/>
+            <xs:element name="taxRate" type="taxRate"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="unit" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
