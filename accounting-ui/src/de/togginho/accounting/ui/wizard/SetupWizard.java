@@ -20,6 +20,7 @@ import java.io.File;
 import org.eclipse.jface.wizard.Wizard;
 
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 
 /**
@@ -28,6 +29,8 @@ import de.togginho.accounting.ui.Messages;
  */
 public class SetupWizard extends Wizard {
 
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".SetupWizard";
+	
 	private SetupBasicInfoWizardPage basicInfoPage;
 	private AddressWizardPage userAddressPage;
 	private SetupBankAccountWizardPage bankAccountPage;
@@ -43,6 +46,7 @@ public class SetupWizard extends Wizard {
 	public SetupWizard() {
 		setNeedsProgressMonitor(false);
 		setWindowTitle(Messages.SetupWizard_windowTitle);
+		setHelpAvailable(true);
 	}
 	
 	/**
@@ -51,7 +55,7 @@ public class SetupWizard extends Wizard {
 	@Override
 	public void addPages() {
 		basicInfoPage = new SetupBasicInfoWizardPage();
-		userAddressPage = new AddressWizardPage();
+		userAddressPage = new AddressWizardPage(HELP_CONTEXT_ID);
 		bankAccountPage = new SetupBankAccountWizardPage();
 		
 		addPage(basicInfoPage);

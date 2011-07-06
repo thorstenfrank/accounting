@@ -30,6 +30,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
@@ -40,12 +41,18 @@ import de.togginho.accounting.ui.invoice.InvoiceEditorInput;
  *
  */
 public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
-
+	
+	/**
+	 * 
+	 */
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewInvoiceWizard";
+	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(NewInvoiceWizard.class);
 	
-	private Invoice newInvoice;
-
+	/**
+	 * 
+	 */
 	private NewInvoiceWizardPage invoiceNumberPage;
 	
 	/**
@@ -54,16 +61,12 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	public NewInvoiceWizard() {
 		setNeedsProgressMonitor(false);
 		setWindowTitle(Messages.NewInvoiceWizard_windowTitle);
-		
-		newInvoice = new Invoice();
-		newInvoice.setUser(ModelHelper.getCurrentUser());
-		
-		LOG.debug("Starting new invoice wizard for user " + newInvoice.getUser()); //$NON-NLS-1$
+		setHelpAvailable(true);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
@@ -86,6 +89,9 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	 */
 	@Override
 	public boolean performFinish() {
+		
+		final Invoice newInvoice = new Invoice();
+		newInvoice.setUser(ModelHelper.getCurrentUser());
 		
 		// update data from wizard pages
 		newInvoice.setNumber(invoiceNumberPage.getInvoiceNumber());
@@ -126,12 +132,5 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 		}
 		
 		return true;
-	}
-
-	/**
-	 * @return the newInvoice
-	 */
-	public Invoice getNewInvoice() {
-		return newInvoice;
 	}
 }

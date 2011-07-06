@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.ui.Messages;
@@ -54,6 +55,8 @@ class TaxRateWizardPage extends WizardPage implements KeyListener, Constants {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, NewTaxRateWizard.HELP_CONTEXT_ID);
+		
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(3, false);
 		composite.setLayout(layout);
@@ -83,6 +86,15 @@ class TaxRateWizardPage extends WizardPage implements KeyListener, Constants {
 		setPageComplete(false);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see org.eclipse.jface.dialogs.DialogPage#performHelp()
+	 */
+	@Override
+	public void performHelp() {
+	    PlatformUI.getWorkbench().getHelpSystem().displayHelp(NewTaxRateWizard.HELP_CONTEXT_ID);
+	}
 	
 	/**
 	 * {@inheritDoc}

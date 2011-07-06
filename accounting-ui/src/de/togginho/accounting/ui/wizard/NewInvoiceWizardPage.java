@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.ui.Messages;
@@ -41,7 +42,7 @@ import de.togginho.accounting.ui.WidgetHelper;
  *
  */
 class NewInvoiceWizardPage extends WizardPage implements KeyListener {
-
+	
 	private Text invoiceNumber;
 	private Combo clientCombo;
 	private Map<String, Client> nameToClientMap;
@@ -51,12 +52,15 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
 		setTitle(Messages.NewInvoiceWizardPage_title);
 		setDescription(Messages.NewInvoiceWizardPage_desc);
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, NewInvoiceWizard.HELP_CONTEXT_ID);
+		
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(3, false);
 		composite.setLayout(layout);
@@ -93,6 +97,15 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
 		setControl(composite);
 		setPageComplete(false);
 	}
+	
+	/**
+     * {@inheritDoc}.
+     * @see org.eclipse.jface.dialogs.DialogPage#performHelp()
+     */
+    @Override
+    public void performHelp() {
+    	PlatformUI.getWorkbench().getHelpSystem().displayHelp(NewInvoiceWizard.HELP_CONTEXT_ID);
+    }
 	
 	/**
 	 * {@inheritDoc}

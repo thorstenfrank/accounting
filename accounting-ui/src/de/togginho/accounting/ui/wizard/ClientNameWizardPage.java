@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
@@ -30,7 +31,7 @@ import de.togginho.accounting.ui.WidgetHelper;
  *
  */
 public class ClientNameWizardPage extends WizardPage {
-
+	
 	private Text clientName;
 	
 	/**
@@ -47,6 +48,7 @@ public class ClientNameWizardPage extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, NewClientWizard.HELP_CONTEXT_ID);
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(2, false);
 		composite.setLayout(layout);
@@ -59,7 +61,12 @@ public class ClientNameWizardPage extends WizardPage {
 		setControl(composite);
 		setPageComplete(true);
 	}
-
+	
+	@Override
+	public void performHelp() {
+		PlatformUI.getWorkbench().getHelpSystem().displayHelp(NewClientWizard.HELP_CONTEXT_ID);
+	}
+	
 	/**
 	 * 
 	 * @return

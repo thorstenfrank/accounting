@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.User;
@@ -58,6 +59,8 @@ class SetupBasicInfoWizardPage extends WizardPage implements KeyListener, Consta
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, SetupWizard.HELP_CONTEXT_ID);
+		
 		composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(3, false);
 		composite.setLayout(layout);
@@ -121,6 +124,15 @@ class SetupBasicInfoWizardPage extends WizardPage implements KeyListener, Consta
 		setControl(composite);
 		setPageComplete(false);
 	}
+	
+	/**
+     * {@inheritDoc}.
+     * @see org.eclipse.jface.dialogs.DialogPage#performHelp()
+     */
+    @Override
+    public void performHelp() {
+    	PlatformUI.getWorkbench().getHelpSystem().displayHelp(SetupWizard.HELP_CONTEXT_ID);
+    }
 
 	/**
 	 * 

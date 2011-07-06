@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.ui.Messages;
@@ -51,6 +52,8 @@ public class SetupBankAccountWizardPage extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, SetupWizard.HELP_CONTEXT_ID);
+		
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(2, false);
 		composite.setLayout(layout);
@@ -74,6 +77,15 @@ public class SetupBankAccountWizardPage extends WizardPage {
 		setPageComplete(true);
 	}
 
+	/**
+     * {@inheritDoc}.
+     * @see org.eclipse.jface.dialogs.DialogPage#performHelp()
+     */
+    @Override
+    public void performHelp() {
+    	PlatformUI.getWorkbench().getHelpSystem().displayHelp(SetupWizard.HELP_CONTEXT_ID);
+    }
+	
 	/**
 	 * 
 	 * @return

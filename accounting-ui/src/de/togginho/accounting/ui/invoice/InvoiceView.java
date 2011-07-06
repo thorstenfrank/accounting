@@ -57,6 +57,8 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class InvoiceView extends ViewPart implements IDoubleClickListener, PropertyChangeListener, Constants {
 	
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceView";
+	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(InvoiceView.class);
 	
@@ -80,6 +82,8 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
+		
 		initInvoiceStateImageMap();
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);

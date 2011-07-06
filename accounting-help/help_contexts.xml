@@ -1,0 +1,36 @@
+<contexts>
+    <context id="NewClientWizard" title="New client wizard">
+        <description>This wizard allows to create a new client.
+Each client must have a unique name.
+The address of the client is optional at this time, but you will have to enter one if you
+want to send invoices to this new client.</description>
+    </context>
+    <context id="SetupWizard">
+       <description>Initial setup</description>
+    </context>
+    <context id="NewInvoiceWizard">
+       <description>Create a new invoice</description>
+    </context>
+    <context id="NewTaxRateWizard">
+       <description>Create a new tax rate for use in your invoices</description>
+    </context>
+    <context id="UserEditor">
+       <description>Edit your profile data...</description>
+    </context>
+    <context id="InvoiceView">
+       <description>View your invoices</description>
+    </context>
+    <context id="InvoiceEditor">
+       <description>View and edit an invoice.
+
+An invoice can only be edited while it has not been sent yet.</description>
+    </context>
+    <context id="ClientEditor">
+       <description>Edit your client.
+
+Note that the name of a client cannot be changed</description>
+    </context>
+    <context id="ClientsView">
+       <description>A list of your clients</description>
+    </context>
+</contexts>

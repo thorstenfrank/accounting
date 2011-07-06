@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -68,6 +69,7 @@ import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
@@ -81,6 +83,8 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class InvoiceEditor extends AbstractAccountingEditor implements Constants, PropertyChangeListener {
 
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceEditor";
+	
 	private static final Logger LOG = Logger.getLogger(InvoiceEditor.class);
 
 	// Column indices for the invoice position table
@@ -134,6 +138,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	@Override
 	public void createPartControl(Composite parent) {
 		LOG.debug("Creating editor"); //$NON-NLS-1$
+		
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
 		

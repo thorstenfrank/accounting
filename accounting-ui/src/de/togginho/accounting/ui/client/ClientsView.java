@@ -39,6 +39,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.ModelHelper;
 
@@ -46,8 +47,10 @@ import de.togginho.accounting.ui.ModelHelper;
  * @author thorsten
  *
  */
-public class ClientsView extends ViewPart 
-	implements IDoubleClickListener, PropertyChangeListener, ISelectionChangedListener {
+public class ClientsView extends ViewPart implements IDoubleClickListener, PropertyChangeListener,
+        ISelectionChangedListener {
+	
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientsView";
 	
 	private static final Logger LOG = Logger.getLogger(ClientsView.class);
 	
@@ -58,6 +61,8 @@ public class ClientsView extends ViewPart
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
+		
 		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_CURRENT_USER, this);
 		
 		viewer = new TableViewer(parent, SWT.FULL_SELECTION);

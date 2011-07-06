@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.ui.Messages;
@@ -32,6 +33,7 @@ import de.togginho.accounting.ui.WidgetHelper;
  */
 class AddressWizardPage extends WizardPage {
 
+	private String helpContextId;
 	private Text street;
 	private Text postCode;
 	private Text city;
@@ -43,10 +45,11 @@ class AddressWizardPage extends WizardPage {
 	/**
 	 * @param pageName
 	 */
-	AddressWizardPage() {
+	AddressWizardPage(final String helpContextId) {
 		super("AddressWizardPage"); //$NON-NLS-1$
 		setTitle(Messages.AddressWizardPage_title);
 		setDescription(Messages.AddressWizardPage_desc);
+		this.helpContextId = helpContextId;
 	}
 
 	/**
@@ -54,6 +57,8 @@ class AddressWizardPage extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, helpContextId);
+		
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout(2, false));
 		
@@ -91,6 +96,15 @@ class AddressWizardPage extends WizardPage {
 		setPageComplete(true);
 	}
 
+	/**
+	 * {@inheritDoc}.
+	 * @see org.eclipse.jface.dialogs.DialogPage#performHelp()
+	 */
+	@Override
+	public void performHelp() {
+		PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpContextId);
+	}
+	
 	/**
 	 * 
 	 * @return

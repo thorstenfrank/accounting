@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
 import de.togginho.accounting.model.TaxRate;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 
 /**
@@ -31,7 +32,19 @@ import de.togginho.accounting.ui.Messages;
  */
 public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 
+	/**
+	 * 
+	 */
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewTaxRateWizard";
+	
+	/**
+	 * 
+	 */
 	private TaxRate newTaxRate;
+	
+	/**
+	 * 
+	 */
 	private TaxRateWizardPage taxRateWizardPage;
 	
 	/**
@@ -40,6 +53,7 @@ public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 	public NewTaxRateWizard() {
 		setNeedsProgressMonitor(false);
 		setWindowTitle(Messages.NewTaxRateWizard_windowTitle);
+		setHelpAvailable(true);
 		newTaxRate = new TaxRate();
 	}
 
@@ -49,7 +63,7 @@ public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		
+		// nothing to do here...
 	}
 
 	/**
@@ -84,6 +98,10 @@ public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 		return finished;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public TaxRate getNewTaxRate() {
 		return newTaxRate;
 	}

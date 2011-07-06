@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -52,6 +53,7 @@ import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.wizard.NewTaxRateWizard;
@@ -62,7 +64,9 @@ import de.togginho.accounting.util.FormatUtil;
  *
  */
 public class UserEditor extends AbstractAccountingEditor {
-
+	
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".UserEditor";
+	
 	private static final Logger LOG = Logger.getLogger(UserEditor.class);
 	
 	private static final int COLUMN_TAX_RATE_ABBREVIATION = 0;
@@ -80,6 +84,8 @@ public class UserEditor extends AbstractAccountingEditor {
 	@Override
 	public void createPartControl(Composite parent) {
 		LOG.debug("Creating editor"); //$NON-NLS-1$
+		
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);

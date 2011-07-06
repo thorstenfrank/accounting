@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -31,6 +32,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
 
@@ -39,6 +41,8 @@ import de.togginho.accounting.ui.ModelHelper;
  *
  */
 public class ClientEditor extends AbstractAccountingEditor {
+	
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientEditor";
 	
 	private static final Logger LOG = Logger.getLogger(ClientEditor.class);
 	
@@ -52,6 +56,8 @@ public class ClientEditor extends AbstractAccountingEditor {
 	@Override
 	public void createPartControl(Composite parent) {
 		LOG.debug("Creating editor"); //$NON-NLS-1$
+		
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);

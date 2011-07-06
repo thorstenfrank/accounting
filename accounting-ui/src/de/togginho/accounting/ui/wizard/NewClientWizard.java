@@ -29,6 +29,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
@@ -40,12 +41,25 @@ import de.togginho.accounting.ui.client.ClientEditorInput;
  */
 public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 
+	/**
+	 * 
+	 */
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewClientWizard";
+	
+	/**
+	 * 
+	 */
 	private static final Logger LOG = Logger.getLogger(NewClientWizard.class);
 	
+	/**
+	 * Name page.
+	 */
 	private ClientNameWizardPage clientNameWizardPage;
-	private AddressWizardPage addressWizardPage;
 	
-	private Client newClient;
+	/**
+	 * Address page
+	 */
+	private AddressWizardPage addressWizardPage;
 		
 	/**
 	 * 
@@ -53,6 +67,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 	public NewClientWizard() {
 		setNeedsProgressMonitor(false);
 		setWindowTitle(Messages.NewClientWizard_windowTitle);
+		setHelpAvailable(true);
 	}
 	
 	
@@ -73,7 +88,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 	public void addPages() {
 		LOG.debug("Adding pages..."); //$NON-NLS-1$
 		clientNameWizardPage = new ClientNameWizardPage();
-		addressWizardPage = new AddressWizardPage();
+		addressWizardPage = new AddressWizardPage(HELP_CONTEXT_ID);
 		
 		addPage(clientNameWizardPage);
 		addPage(addressWizardPage);
@@ -85,7 +100,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 	@Override
 	public boolean performFinish() {
 		LOG.debug("Performing finish"); //$NON-NLS-1$
-		newClient = new Client();
+		final Client newClient = new Client();
 		newClient.setName(clientNameWizardPage.getClientName());
 		newClient.setAddress(addressWizardPage.getAddress());
 		
@@ -120,12 +135,5 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * @return the newClient
-	 */
-	public Client getNewClient() {
-		return newClient;
 	}
 }
