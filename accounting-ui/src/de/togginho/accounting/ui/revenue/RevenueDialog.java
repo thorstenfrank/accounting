@@ -18,8 +18,8 @@ package de.togginho.accounting.ui.revenue;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.BaseLabelProvider;
@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -64,7 +65,9 @@ import de.togginho.accounting.util.FormatUtil;
  * @author thorsten
  *
  */
-public class RevenueDialog extends Dialog {
+public class RevenueDialog extends TrayDialog {
+	
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".RevenueDialog";
 	
 	private static final int COLUMN_INDEX_INVOICE_NUMBER = 0;
 	private static final int COLUMN_INDEX_INVOICE_DATE = 1;
@@ -88,6 +91,7 @@ public class RevenueDialog extends Dialog {
 	 */
 	public RevenueDialog(Shell parentShell) {
 		super(parentShell);
+		setHelpAvailable(true);
 	}
 
 	/**
@@ -96,6 +100,8 @@ public class RevenueDialog extends Dialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
+		
 		formToolkit = new FormToolkit(parent.getDisplay());
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(1, false));
