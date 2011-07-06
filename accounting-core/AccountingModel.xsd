@@ -6,6 +6,7 @@
     <xs:complexType name="user">
     	<xs:sequence>
     		<xs:element name="address" type="address" maxOccurs="1" />
+    		<xs:element name="bankAccount" type="bankAccount" maxOccurs="1" />
     		<xs:element name="taxRates" type="taxRates" maxOccurs="1" />
     		<xs:element name="clients" type="clients" maxOccurs="1" />
     		<xs:element name="invoices" type="invoices" maxOccurs="1" />
@@ -22,6 +23,14 @@
             <xs:element name="mobile" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="fax" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="bankAccount">
+        <xs:sequence>
+            <xs:element name="accountNumber" type="xs:string" maxOccurs="1"/>
+            <xs:element name="bankCode" type="xs:string" maxOccurs="1"/>
+            <xs:element name="bankName" type="xs:string" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
