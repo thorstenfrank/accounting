@@ -95,7 +95,17 @@ public class RevenueDialog extends TrayDialog {
 		super(parentShell);
 		setHelpAvailable(true);
 	}
-		
+	
+	/**
+	 * Always returns <code>true</code>.
+	 * {@inheritDoc}.
+	 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
+	 */
+	@Override
+	protected boolean isResizable() {
+	    return true;
+	}
+	
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
