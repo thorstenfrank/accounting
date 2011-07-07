@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.Price;
 
 /**
  *
@@ -36,6 +37,28 @@ public final class CalculationUtil {
      */
     private CalculationUtil() {
     	
+    }
+    
+    /**
+     * Calculates the total price of an invoice.
+     * 
+     * @param invoice the invoice to calculate
+     * @return the total {@link Price} of the invoice
+     */
+    public static Price calculateTotalPrice(Invoice invoice) {
+    	Price price = new Price();
+    	
+    	for (InvoicePosition position : invoice.getInvoicePositions()) {
+    		price.setNet(calculateNetPrice(position));
+    		if (position.isTaxApplicable()) {
+    			price.setTax(price.getNet().multiply(position.getTaxRate().getRate()));
+    			price.setGross(price.getNet().add(price.getTax()));
+    		} else {
+    			price.setGross(price.getNet());
+    		}
+    	}
+    	
+    	return price;
     }
     
     /**

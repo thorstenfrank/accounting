@@ -15,7 +15,9 @@
  */
 package de.togginho.accounting.ui.revenue;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
@@ -57,7 +59,6 @@ import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
-import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -69,13 +70,13 @@ public class RevenueDialog extends TrayDialog {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".RevenueDialog";
 	
-	private static final int COLUMN_INDEX_INVOICE_NUMBER = 0;
-	private static final int COLUMN_INDEX_INVOICE_DATE = 1;
-	private static final int COLUMN_INDEX_PAYMENT_DATE = 2;
-	private static final int COLUMN_INDEX_CLIENT = 3;
-	private static final int COLUMN_INDEX_NET_PRICE = 4;
-	private static final int COLUMN_INDEX_TAX_AMOUNT = 5;
-	private static final int COLUMN_INDEX_GROSS_PRICE = 6;
+	protected static final int COLUMN_INDEX_INVOICE_NUMBER = 0;
+	protected static final int COLUMN_INDEX_INVOICE_DATE = 1;
+	protected static final int COLUMN_INDEX_PAYMENT_DATE = 2;
+	protected static final int COLUMN_INDEX_CLIENT = 3;
+	protected static final int COLUMN_INDEX_NET_PRICE = 4;
+	protected static final int COLUMN_INDEX_TAX_AMOUNT = 5;
+	protected static final int COLUMN_INDEX_GROSS_PRICE = 6;
 	
 	private FormToolkit formToolkit;
 	private Text netTotal;
@@ -215,54 +216,60 @@ public class RevenueDialog extends TrayDialog {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		TableViewerColumn invoiceNoColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_INVOICE_NUMBER);
-		TableColumn tblclmnInvoiceNo = invoiceNoColumn.getColumn();
-		tcl.setColumnData(tblclmnInvoiceNo, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnInvoiceNo.setText(Messages.RevenueDialog_invoiceNo);
-		
-		TableViewerColumn invoiceDateColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_INVOICE_DATE);
-		TableColumn tblclmnInvoiceDate = invoiceDateColumn.getColumn();
-		tcl.setColumnData(tblclmnInvoiceDate, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnInvoiceDate.setText(Messages.RevenueDialog_invoiceDate);
-		
-		TableViewerColumn paymentDateColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_PAYMENT_DATE);
-		TableColumn tblclmnPaymentDate = paymentDateColumn.getColumn();
-		tcl.setColumnData(tblclmnPaymentDate, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnPaymentDate.setText(Messages.RevenueDialog_paymentDate);
-		
-		TableViewerColumn clientColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_CLIENT);
-		TableColumn tblclmnClient = clientColumn.getColumn();
-		tcl.setColumnData(tblclmnClient, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnClient.setText(Messages.RevenueDialog_client);
-		
-		TableViewerColumn netColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_NET_PRICE);
-		TableColumn tblclmnNet = netColumn.getColumn();
-		tcl.setColumnData(tblclmnNet, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnNet.setText(Messages.RevenueDialog_net);
-		tblclmnNet.setAlignment(SWT.RIGHT);
-		
-		TableViewerColumn taxColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_TAX_AMOUNT);
-		TableColumn tblclmnTax = taxColumn.getColumn();
-		tcl.setColumnData(tblclmnTax, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnTax.setText(Messages.RevenueDialog_tax);
-		tblclmnTax.setAlignment(SWT.RIGHT);
-		
-		TableViewerColumn grossColumn = new TableViewerColumn(tableViewer, SWT.NONE, COLUMN_INDEX_GROSS_PRICE);
-		TableColumn tblclmnGross = grossColumn.getColumn();
-		tcl.setColumnData(tblclmnGross, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		tblclmnGross.setText(Messages.RevenueDialog_gross);
-		tblclmnGross.setAlignment(SWT.RIGHT);
+		createColumn(COLUMN_INDEX_INVOICE_NUMBER, Messages.RevenueDialog_invoiceNo, SWT.CENTER, tcl);
+		createColumn(COLUMN_INDEX_INVOICE_DATE, Messages.RevenueDialog_invoiceDate, SWT.CENTER, tcl);
+		createColumn(COLUMN_INDEX_PAYMENT_DATE, Messages.RevenueDialog_paymentDate, SWT.CENTER, tcl);
+		createColumn(COLUMN_INDEX_CLIENT, Messages.RevenueDialog_client, SWT.CENTER, tcl);
+		createColumn(COLUMN_INDEX_NET_PRICE, Messages.RevenueDialog_net, SWT.RIGHT, tcl);
+		createColumn(COLUMN_INDEX_TAX_AMOUNT, Messages.RevenueDialog_tax, SWT.RIGHT, tcl);
+		createColumn(COLUMN_INDEX_GROSS_PRICE, Messages.RevenueDialog_gross, SWT.RIGHT, tcl);
 		
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(new ArrayContentProvider());
+		InvoiceTableSorter sorter = new InvoiceTableSorter();
+		sorter.setSortColumnIndex(COLUMN_INDEX_INVOICE_NUMBER);
+		tableViewer.setComparator(sorter);
+		table.setSortColumn(table.getColumn(COLUMN_INDEX_INVOICE_NUMBER));
 	}
 
+	/**
+	 * 
+	 * @param index
+	 * @param text
+	 * @param alignment
+	 * @return
+	 */
+	private TableViewerColumn createColumn(final int index, final String text, final int alignment, final TableColumnLayout layout) {
+		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE, index);
+		final TableColumn column = viewerColumn.getColumn();
+		column.setText(text);
+		column.setAlignment(alignment);
+		column.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			    tableViewer.getTable().setSortColumn(column);
+			    ((InvoiceTableSorter) tableViewer.getSorter()).setSortColumnIndex(index);
+			    tableViewer.refresh();
+			}
+		});
+		
+		layout.setColumnData(column, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		
+		return viewerColumn;
+	}
+	
 	/**
 	 * 
 	 */
 	private void updateInvoices() {
 		revenue = ModelHelper.getRevenue(WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate));
-		tableViewer.setInput(revenue.getInvoices());
+		
+		List<InvoiceWrapper> invoices = new ArrayList<InvoiceWrapper>();
+		for (Invoice invoice : revenue.getInvoices()) {
+			invoices.add(new InvoiceWrapper(invoice));
+		}
+		
+		tableViewer.setInput(invoices);
 		tableViewer.refresh();
 		
 		netTotal.setText(FormatUtil.formatCurrency(revenue.getRevenueNet()));
@@ -324,26 +331,26 @@ public class RevenueDialog extends TrayDialog {
          */
         @Override
         public String getColumnText(Object element, int columnIndex) {
-        	if (element == null || !(element instanceof Invoice)) {
+        	if (element == null || !(element instanceof InvoiceWrapper)) {
         		return Constants.HYPHEN;
         	}
         	
-        	final Invoice invoice = (Invoice) element;
+        	final InvoiceWrapper invoice = (InvoiceWrapper) element;
         	switch (columnIndex) {
 			case COLUMN_INDEX_INVOICE_NUMBER:
 				return invoice.getNumber();
 			case COLUMN_INDEX_INVOICE_DATE:
-				return FormatUtil.formatDate(invoice.getInvoiceDate());
+				return invoice.getInvoiceDate();
 			case COLUMN_INDEX_PAYMENT_DATE:
-				return FormatUtil.formatDate(invoice.getPaymentDate());
+				return invoice.getPaymentDate();
 			case COLUMN_INDEX_CLIENT:
-				return invoice.getClient().getName();
+				return invoice.getClient();
 			case COLUMN_INDEX_NET_PRICE:
-				return FormatUtil.formatCurrency(CalculationUtil.calculateTotalNetPrice(invoice));
+				return invoice.getNetAmount();
 			case COLUMN_INDEX_TAX_AMOUNT:
-				return FormatUtil.formatCurrency(CalculationUtil.calculateTotalTaxAmount(invoice));
+				return invoice.getTaxAmount();
 			case COLUMN_INDEX_GROSS_PRICE:
-				return FormatUtil.formatCurrency(CalculationUtil.calculateTotalGrossPrice(invoice));
+				return invoice.getGrossAmount();
 			default:
 				return Constants.HYPHEN;
 			}
