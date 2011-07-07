@@ -16,10 +16,10 @@
 package de.togginho.accounting.ui.revenue;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.BaseLabelProvider;
@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -55,6 +54,7 @@ import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.CalculationUtil;
@@ -81,7 +81,8 @@ public class RevenueDialog extends TrayDialog {
 	private Text netTotal;
 	private Text grossTotal;
 	private Text taxTotal;
-	private Table table;
+	private DateTime fromDate;
+	private DateTime untilDate;
 	private TableViewer tableViewer;
 	private Revenue revenue;
 	
@@ -93,7 +94,7 @@ public class RevenueDialog extends TrayDialog {
 		super(parentShell);
 		setHelpAvailable(true);
 	}
-
+		
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -106,93 +107,98 @@ public class RevenueDialog extends TrayDialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new GridLayout(1, false));
 		
-		Section querySection = formToolkit.createSection(container, Section.TITLE_BAR);
+		createQuerySection(container);
+		
+		createTotalsSection(container);
+		
+		createInvoicesSection(container);
+
+		// get an initial revenue for the current year
+		updateInvoices();
+		
+		return container;
+	}
+
+	/**
+	 * 
+	 * @param parent
+	 */
+	private void createQuerySection(Composite parent) {
+		Section querySection = formToolkit.createSection(parent, Section.TITLE_BAR);
 		querySection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		formToolkit.paintBordersFor(querySection);
 		querySection.setText(Messages.RevenueDialog_revenueTimeframe);
 		
-		Composite composite = new Composite(querySection, SWT.NONE);
-		formToolkit.adapt(composite);
-		formToolkit.paintBordersFor(composite);
-		querySection.setClient(composite);
-		composite.setLayout(new GridLayout(5, false));
+		Composite sectionClient = new Composite(querySection, SWT.NONE);
+		formToolkit.adapt(sectionClient);
+		formToolkit.paintBordersFor(sectionClient);
+		querySection.setClient(sectionClient);
+		sectionClient.setLayout(new GridLayout(5, false));
 		
-		Label lblFrom = new Label(composite, SWT.NONE);
-		formToolkit.adapt(lblFrom, true, true);
-		lblFrom.setText(Messages.RevenueDialog_from);
-		
-		final DateTime fromDate = new DateTime(composite, SWT.BORDER | SWT.DROP_DOWN);
+		formToolkit.createLabel(sectionClient, Messages.RevenueDialog_from);
+		fromDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
 		formToolkit.adapt(fromDate);
 		formToolkit.paintBordersFor(fromDate);
 		fromDate.setDay(1);
-		fromDate.setMonth(0);
+		fromDate.setMonth(Calendar.JANUARY);
 		
-		Label lblUntil = new Label(composite, SWT.NONE);
-		formToolkit.adapt(lblUntil, true, true);
-		lblUntil.setText(Messages.RevenueDialog_until);
-		
-		final DateTime untilDate = new DateTime(composite, SWT.BORDER | SWT.DROP_DOWN);
-		formToolkit.adapt(untilDate);
-		formToolkit.paintBordersFor(untilDate);
+		formToolkit.createLabel(sectionClient, Messages.RevenueDialog_until);
+		untilDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
+//		formToolkit.adapt(untilDate);
+//		formToolkit.paintBordersFor(untilDate);
 		untilDate.setDay(31);
-		untilDate.setMonth(11);
-		
-		Button btnSearch = new Button(composite, SWT.NONE);
+		untilDate.setMonth(Calendar.DECEMBER);
+				
+		final Button btnSearch = formToolkit.createButton(sectionClient, Messages.RevenueDialog_search, SWT.PUSH);
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(btnSearch);
 		btnSearch.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateInvoices(fromDate, untilDate);
+				updateInvoices();
 			}
 		});
-		btnSearch.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		formToolkit.adapt(btnSearch, true, true);
-		btnSearch.setText(Messages.RevenueDialog_search);
-		
-		Section totalsSection = formToolkit.createSection(container, Section.TITLE_BAR);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 */
+	private void createTotalsSection(Composite parent) {
+		Section totalsSection = formToolkit.createSection(parent, Section.TITLE_BAR);
 		totalsSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		formToolkit.paintBordersFor(totalsSection);
 		totalsSection.setText(Messages.RevenueDialog_totals);
 		
-		Composite composite_2 = new Composite(totalsSection, SWT.NONE);
-		formToolkit.adapt(composite_2);
-		formToolkit.paintBordersFor(composite_2);
-		totalsSection.setClient(composite_2);
-		composite_2.setLayout(new GridLayout(6, false));
+		Composite sectionClient = new Composite(totalsSection, SWT.NONE);
+		formToolkit.adapt(sectionClient);
+		formToolkit.paintBordersFor(sectionClient);
+		totalsSection.setClient(sectionClient);
+		sectionClient.setLayout(new GridLayout(6, false));
 		
-		Label netTotalLabel = new Label(composite_2, SWT.NONE);
-		netTotalLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		formToolkit.adapt(netTotalLabel, true, true);
-		netTotalLabel.setText(Messages.labelTotalNet);
-		
-		netTotal = new Text(composite_2, SWT.BORDER);
+		formToolkit.createLabel(sectionClient, Messages.labelTotalNet);
+		netTotal = formToolkit.createText(sectionClient, Constants.EMPTY_STRING);
 		netTotal.setEnabled(false);
 		netTotal.setEditable(false);
-		netTotal.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		formToolkit.adapt(netTotal, true, true);
 		
-		Label taxTotalLabel = new Label(composite_2, SWT.NONE);
-		formToolkit.adapt(taxTotalLabel, true, true);
-		taxTotalLabel.setText(Messages.labelTotalTax);
-		
-		taxTotal = new Text(composite_2, SWT.BORDER);
-		taxTotal.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		formToolkit.createLabel(sectionClient, Messages.labelTotalTax);
+		taxTotal = formToolkit.createText(sectionClient, Constants.EMPTY_STRING);
 		taxTotal.setEnabled(false);
 		taxTotal.setEditable(false);
-		formToolkit.adapt(taxTotal, true, true);
 		
-		Label grossTotalLabel = new Label(composite_2, SWT.NONE);
-		formToolkit.adapt(grossTotalLabel, true, true);
-		grossTotalLabel.setText(Messages.labelTotalGross);
-		
-		grossTotal = new Text(composite_2, SWT.BORDER);
-		grossTotal.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		formToolkit.createLabel(sectionClient, Messages.labelTotalGross);
+		grossTotal = formToolkit.createText(sectionClient, Constants.EMPTY_STRING);
 		grossTotal.setEnabled(false);
 		grossTotal.setEditable(false);
-		formToolkit.adapt(grossTotal, true, true);
-		
-		Section invoiceSection = formToolkit.createSection(container, Section.TITLE_BAR);
-		invoiceSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		formToolkit.paintBordersFor(invoiceSection);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 */
+	private void createInvoicesSection(Composite parent) {
+		Section invoiceSection = formToolkit.createSection(parent, Section.TITLE_BAR);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(invoiceSection);
+		//formToolkit.paintBordersFor(invoiceSection);
 		invoiceSection.setText(Messages.RevenueDialog_invoices);
 		invoiceSection.setExpanded(true);
 		
@@ -204,7 +210,7 @@ public class RevenueDialog extends TrayDialog {
 		tableComposite.setLayout(tcl);
 		
 		tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		table = tableViewer.getTable();
+		final Table table = tableViewer.getTable();
 		formToolkit.paintBordersFor(table);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -249,20 +255,13 @@ public class RevenueDialog extends TrayDialog {
 		
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(new ArrayContentProvider());
-
-		// get an initial revenue for the current year
-		updateInvoices(fromDate, untilDate);
-		
-		return container;
 	}
 
 	/**
 	 * 
-	 * @param from
-	 * @param until
 	 */
-	private void updateInvoices(DateTime from, DateTime until) {
-		revenue = ModelHelper.getRevenue(getDateFromWidget(from), getDateFromWidget(until));
+	private void updateInvoices() {
+		revenue = ModelHelper.getRevenue(WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate));
 		tableViewer.setInput(revenue.getInvoices());
 		tableViewer.refresh();
 		
@@ -272,29 +271,23 @@ public class RevenueDialog extends TrayDialog {
 	}
 	
 	/**
-	 * 
-	 * @param dateTime
-	 * @return
-	 */
-	private Date getDateFromWidget(DateTime dateTime) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
-		cal.set(Calendar.MONTH, dateTime.getMonth());
-		cal.set(Calendar.YEAR, dateTime.getYear());
-		return cal.getTime();
-	}
-	
-	/**
 	 * Create contents of the button bar.
 	 * @param parent
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		Button exportButton = createButton(parent, -1, Messages.RevenueDialog_export, false);
+		if (parent.getLayout() instanceof GridLayout) {
+			GridLayout layout = (GridLayout) parent.getLayout();
+			layout.makeColumnsEqualWidth = false;
+		}
+		final Button exportButton = createButton(parent, -1, Messages.RevenueDialog_export, false);
 		exportButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsExportToPdf).createImage());
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 	}
-
+	
+	/**
+	 * 
+	 */
 	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == -1) {
@@ -313,10 +306,13 @@ public class RevenueDialog extends TrayDialog {
 	}
 
 	/**
-	 *
+	 * Label provider for the table of invoices.
 	 */
 	private class InvoiceLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
 
+		/**
+		 * 
+		 */
         @Override
         public Image getColumnImage(Object element, int columnIndex) {
 	        return null;
@@ -355,7 +351,7 @@ public class RevenueDialog extends TrayDialog {
 	}
 	
 	/**
-	 *
+	 * Export handler for creating a PDF revenue report.
 	 */
 	private class RevenueExportHandler implements ReportGenerationHandler {
 
