@@ -12,6 +12,7 @@
     		<xs:element name="invoices" type="invoices" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required"/>
+    	<xs:attribute name="taxId" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="address">
@@ -36,7 +37,7 @@
 
     <xs:complexType name="taxRates">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" name="taxRate" type="taxRate" />
+            <xs:element minOccurs="1" maxOccurs="unbounded" name="taxRate" type="taxRate" />
         </xs:sequence>
     </xs:complexType>
 
@@ -89,11 +90,11 @@
     
     <xs:complexType name="invoicePosition">
         <xs:sequence>
-            <xs:element name="quantity" type="xs:decimal"/>
-            <xs:element name="pricePerUnit" type="xs:decimal"/>
-            <xs:element name="taxRate" type="taxRate"/>
-            <xs:element name="description" type="xs:string"/>
-            <xs:element name="unit" type="xs:string"/>
+            <xs:element name="quantity" type="xs:decimal" maxOccurs="1"/>
+            <xs:element name="pricePerUnit" type="xs:decimal" maxOccurs="1"/>
+            <xs:element name="taxRate" type="taxRate" maxOccurs="1"/>
+            <xs:element name="description" type="xs:string" maxOccurs="1"/>
+            <xs:element name="unit" type="xs:string" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
