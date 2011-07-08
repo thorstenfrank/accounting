@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.ui.revenue;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -49,7 +50,12 @@ class InvoiceWrapper {
 		price = CalculationUtil.calculateTotalPrice(invoice);
 		netAmount = FormatUtil.formatCurrency(price.getNet());
 		grossAmount = FormatUtil.formatCurrency(price.getGross());
-		taxAmount = FormatUtil.formatCurrency(price.getTax());
+		if (price.getTax() != null) {
+			taxAmount = FormatUtil.formatCurrency(price.getTax());
+		} else {
+			taxAmount = Constants.HYPHEN;
+		}
+		
     }
 
 	/**
