@@ -24,7 +24,8 @@ import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
 
 /**
- *
+ * Utility class for calculating prices of {@link InvoicePosition} and and entire {@link Invoice}.
+ * 
  * @author thorsten frank
  */
 public final class CalculationUtil {
@@ -46,50 +47,47 @@ public final class CalculationUtil {
      * @return the total {@link Price} of the invoice
      */
     public static Price calculateTotalPrice(Invoice invoice) {
-    	Price price = new Price();
+    	BigDecimal totalNet = BigDecimal.ZERO;
+    	BigDecimal totalGross = BigDecimal.ZERO;
+    	BigDecimal totalTax = BigDecimal.ZERO;
     	
-    	for (InvoicePosition position : invoice.getInvoicePositions()) {
-    		price.setNet(calculateNetPrice(position));
-    		if (position.isTaxApplicable()) {
-    			price.setTax(price.getNet().multiply(position.getTaxRate().getRate()));
-    			price.setGross(price.getNet().add(price.getTax()));
-    		} else {
-    			price.setGross(price.getNet());
-    		}
+    	if (invoice != null && invoice.getInvoicePositions() != null) {
+        	for (InvoicePosition position : invoice.getInvoicePositions()) {
+        		final Price singlePrice = calculatePrice(position);
+        		totalNet = totalNet.add(singlePrice.getNet());
+        		totalGross = totalGross.add(singlePrice.getGross());
+        		if (singlePrice.getTax() != null) {
+        			totalTax = totalTax.add(singlePrice.getTax());
+        		}
+        	}    		
     	}
     	
-    	return price;
+    	return new Price(totalNet, totalTax, totalGross);
     }
     
     /**
-     * Calculates the total net price of an invoice by adding up the net prices of all the positions contained within
-     * that invoice.
-     *
-     * @param invoice the invoice for which calculate the total net price
-     *
-     * @return  the total net price of the invoice
-     *
-     * @see #calculateNetPrice(de.togginho.accounting.model.InvoicePosition) 
+     * Calculates the price of a single invoice position.
+     * @param invoicePosition
+     * @return
      */
-    public static BigDecimal calculateTotalNetPrice(Invoice invoice) {
-        LOG.debug("Calculating total net price for invoice no "+invoice.getNumber());
-        
-        BigDecimal totalNet = BigDecimal.ZERO;
-
-        if (invoice.getInvoicePositions() != null) {
-            for (InvoicePosition pos : invoice.getInvoicePositions()) {
-                totalNet = totalNet.add(calculateNetPrice(pos));
-            }
-            LOG.debug(String.format("Total net price for invoice no [%s] is [%s]",invoice.getNumber(), totalNet.toString()));
-        } else {
-        	LOG.warn("No invoice positions, cannot compute total net price for invoice " + invoice.getNumber());
-        }
-
-        
-
-        return totalNet;
+    public static Price calculatePrice(InvoicePosition invoicePosition) {
+    	BigDecimal net = BigDecimal.ZERO;
+    	BigDecimal tax = null;
+    	BigDecimal gross = BigDecimal.ZERO;
+    	
+    	if (invoicePosition != null) {
+    		net = calculateNetPrice(invoicePosition);
+        	if (invoicePosition.isTaxApplicable()) {
+        		tax = net.multiply(invoicePosition.getTaxRate().getRate());
+        		gross = net.add(tax);
+        	} else {
+        		gross = net;
+        	}
+    	}
+    	
+    	return new Price(net, tax, gross);
     }
-
+    
     /**
      * Calculates the net price of a single invoice position by multiplying its quantity by the price per unit, i.e.
      * the price excluding taxes.
@@ -106,85 +104,5 @@ public final class CalculationUtil {
     	BigDecimal netPrice = invoicePosition.getQuantity().multiply(invoicePosition.getPricePerUnit());
     	LOG.debug(String.format("Net price for Invoice Position is [%s]", netPrice.toString()));
     	return netPrice;
-    }
-
-    /**
-     * Calculates the total gross price of a single invoice position by applying the configured tax rate to its net price.
-     * <p>If the {@link InvoicePosition} has no tax rate, the net price is returned.</p>
-     * 
-     * @param invoicePosition the invoice position to calculate
-     * 
-     * @return the gross price of the invoice position
-     * 
-     * @see #calculateNetPrice(InvoicePosition)
-     */
-    public static BigDecimal calculateGrossPrice(InvoicePosition invoicePosition) {
-    	BigDecimal netPrice = calculateNetPrice(invoicePosition);
-    	if (!invoicePosition.isTaxApplicable()) {
-    		return netPrice;
-    	}
-    	
-    	return netPrice.add(netPrice.multiply(invoicePosition.getTaxRate().getRate()));
-    }
-    
-    /**
-     * Calculates the tax amount for a single {@link InvoicePosition} by multiplying its net price with the applicabe tax rate.
-     * <p>If the {@link InvoicePosition} has no tax rate, <code>null</code> is returned.</p>
-     * 
-     * @param invoicePosition the {@link InvoicePosition} to calculate the tax amount for
-     * 
-     * @return the tax amount, or <code>null</code> if the invoice position has no tax rate
-     */
-    public static BigDecimal calculateTaxAmount(InvoicePosition invoicePosition) {
-    	BigDecimal netPrice = calculateNetPrice(invoicePosition);
-    	if (!invoicePosition.isTaxApplicable()) {
-    		return null;
-    	}
-    	LOG.debug(String.format("Applying tax rate %s (%s)", invoicePosition.getTaxRate().getShortName(), invoicePosition.getTaxRate().getRate()));
-    	return netPrice.multiply(invoicePosition.getTaxRate().getRate());
-    }
-    
-    /**
-     *
-     * @param invoice
-     * @return
-     */
-    public static BigDecimal calculateTotalTaxAmount(Invoice invoice) {
-    	BigDecimal totalTax = BigDecimal.ZERO;
-
-    	if (invoice.getInvoicePositions() != null) {
-            for (InvoicePosition pos : invoice.getInvoicePositions()) {
-                if (pos.isTaxApplicable()) {
-                    totalTax = totalTax.add(calculateTaxAmount(pos));
-                }
-            }
-
-            LOG.debug(String.format("Total tax amount for invoice [%s] is [%s]", invoice.getNumber(), totalTax.toString()));    		
-    	} else {
-    		LOG.warn("No positions, cannot compute total tax amount for invoice " + invoice.getNumber());
-    	}
-        
-        return totalTax;
-    }
-
-    /**
-     *
-     * @param invoice
-     * @return
-     */
-    public static BigDecimal calculateTotalGrossPrice(Invoice invoice) {
-    	BigDecimal totalGross = BigDecimal.ZERO;
-    	
-    	if (invoice.getInvoicePositions() != null) {
-            for (InvoicePosition pos : invoice.getInvoicePositions()) {
-                totalGross = totalGross.add(calculateGrossPrice(pos));
-            }
-            
-            LOG.debug(String.format("Total gross price for invoice [%s] is [%s]", invoice.getNumber(), totalGross.toString()));    		
-    	} else {
-    		LOG.warn("No positions, cannot compute total gross price for invoice " + invoice.getNumber());
-    	}
-        
-        return totalGross;
     }
 }

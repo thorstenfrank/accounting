@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.reporting;
 
+import java.math.BigDecimal;
+
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.util.CalculationUtil;
@@ -30,6 +32,8 @@ public class InvoicePositionWrapper implements Constants {
 
     private InvoicePosition invoicePosition;
     
+    private BigDecimal netPrice;
+    
     /**
      * Creates a new invoice position wrapper.
      *
@@ -37,6 +41,7 @@ public class InvoicePositionWrapper implements Constants {
      */
     public InvoicePositionWrapper(InvoicePosition invoicePosition) {
         this.invoicePosition = invoicePosition;
+        netPrice = CalculationUtil.calculateNetPrice(invoicePosition);
     }
     
     /**
@@ -76,7 +81,7 @@ public class InvoicePositionWrapper implements Constants {
      * @return {@link CalculationUtil#calculateNetPrice(InvoicePosition)}
      */
     public String getTotalPriceNet() {
-        return FormatUtil.formatCurrency(CalculationUtil.calculateNetPrice(invoicePosition));
+        return FormatUtil.formatCurrency(netPrice);
     }
 
     /**

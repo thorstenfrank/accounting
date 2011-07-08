@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,7 @@ import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -36,9 +36,7 @@ import de.togginho.accounting.util.FormatUtil;
 public class InvoiceWrapper implements Constants {
 
     private Invoice invoice;
-    private BigDecimal totalNet = BigDecimal.ZERO;
-    private BigDecimal totalTax = BigDecimal.ZERO;
-    private BigDecimal totalGross = BigDecimal.ZERO;
+    private Price totalPrice;
     private List<InvoicePositionWrapper> positions;
 
     /**
@@ -54,9 +52,7 @@ public class InvoiceWrapper implements Constants {
             positions.add(new InvoicePositionWrapper(pos));
         }
 
-        this.totalNet = CalculationUtil.calculateTotalNetPrice(invoice);
-        this.totalGross = CalculationUtil.calculateTotalGrossPrice(invoice);
-        this.totalTax = CalculationUtil.calculateTotalTaxAmount(invoice);
+        this.totalPrice = CalculationUtil.calculateTotalPrice(invoice);
     }
 
     /**
@@ -225,26 +221,26 @@ public class InvoiceWrapper implements Constants {
 
     /**
      * 
-     * @return {@link CalculationUtil#calculateTotalNetPrice(Invoice)}
+     * @return total net price of the invoice
      */
     public String getTotalNet() {
-        return FormatUtil.formatCurrency(totalNet);
+        return FormatUtil.formatCurrency(totalPrice.getNet());
     }
 
     /**
      * 
-     * @return {@link CalculationUtil#calculateTotalTaxAmount(Invoice)}
+     * @return total tax amount contained in the invoice
      */
     public String getTotalTaxAmount() {
-        return FormatUtil.formatCurrency(totalTax);
+        return FormatUtil.formatCurrency(totalPrice.getTax());
     }
 
     /**
      * 
-     * @return {@link CalculationUtil#calculateTotalGrossPrice(Invoice)}
+     * @return total gross price of the invoice
      */
     public String getTotalGross() {
-        return FormatUtil.formatCurrency(totalGross);
+        return FormatUtil.formatCurrency(totalPrice.getGross());
     }
 
     /**

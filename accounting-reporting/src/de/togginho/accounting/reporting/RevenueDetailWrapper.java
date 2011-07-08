@@ -17,6 +17,7 @@ package de.togginho.accounting.reporting;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.Price;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -29,6 +30,8 @@ public class RevenueDetailWrapper implements Constants {
 
 	private Invoice invoice;
 
+	private Price totalPrice;
+	
 	/**
 	 * 
 	 * @param invoice
@@ -36,6 +39,8 @@ public class RevenueDetailWrapper implements Constants {
 	public RevenueDetailWrapper(Invoice invoice) {
 		super();
 		this.invoice = invoice;
+		
+		totalPrice = CalculationUtil.calculateTotalPrice(invoice);
 	}
 
 	/**
@@ -71,7 +76,7 @@ public class RevenueDetailWrapper implements Constants {
 	 * @return
 	 */
 	public String getNetPrice() {
-		return FormatUtil.formatCurrency(CalculationUtil.calculateTotalNetPrice(invoice));
+		return FormatUtil.formatCurrency(totalPrice.getNet());
 	}
 
 	/**
@@ -88,7 +93,7 @@ public class RevenueDetailWrapper implements Constants {
 	 * @return
 	 */
 	public String getTaxAmount() {
-		return FormatUtil.formatCurrency(CalculationUtil.calculateTotalTaxAmount(invoice));
+		return FormatUtil.formatCurrency(totalPrice.getTax());
 	}
 
 	/**
@@ -96,7 +101,7 @@ public class RevenueDetailWrapper implements Constants {
 	 * @return
 	 */
 	public String getGrossPrice() {
-		return FormatUtil.formatCurrency(CalculationUtil.calculateTotalGrossPrice(invoice));
+		return FormatUtil.formatCurrency(totalPrice.getGross());
 	}
 
 	/**

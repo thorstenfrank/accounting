@@ -19,8 +19,19 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
+ * A container for a price including tax, which applies to both an {@link InvoicePosition} and an entire {@link Invoice}.
+ * 
+ * <p> Each {@link Price} instance can hold net, gross and tax amounts that make up a single price. 
+ * {@link #getTax()} may be <code>null</code> if the invoice position or invoice is not tax applicable, in which
+ * case net and gross price will be equal.</p> 
+ * 
+ * <p>This class is not meant to be used directly by clients, but should rather be obtained using the calculation
+ * utility {@link de.togginho.accounting.util.CalculationUtil}.</p>
+ * 
  * @author thorsten
  *
+ * @see de.togginho.accounting.util.CalculationUtil#calculatePrice(InvoicePosition)
+ * @see de.togginho.accounting.util.CalculationUtil#calculateTotalPrice(Invoice)
  */
 public class Price implements Serializable{
 
@@ -36,15 +47,17 @@ public class Price implements Serializable{
 	private BigDecimal gross;
 
 	/**
-     * 
+     * Creates a new price with no values.
      */
     public Price() {
     }
     
 	/**
-     * @param net
-     * @param tax
-     * @param gross
+	 * Creates a new price with the specified values.
+	 * 
+     * @param net net price
+     * @param tax tax amount
+     * @param gross gross price
      */
     public Price(BigDecimal net, BigDecimal tax, BigDecimal gross) {
 	    this.net = net;
@@ -53,42 +66,42 @@ public class Price implements Serializable{
     }
 
 	/**
-     * @return the net
+     * @return the net price
      */
     public BigDecimal getNet() {
     	return net;
     }
 
 	/**
-     * @param net the net to set
+     * @param net the net price
      */
     public void setNet(BigDecimal net) {
     	this.net = net;
     }
 
 	/**
-     * @return the tax
+     * @return the tax amount
      */
     public BigDecimal getTax() {
     	return tax;
     }
 
 	/**
-     * @param tax the tax to set
+     * @param tax the tax amount
      */
     public void setTax(BigDecimal tax) {
     	this.tax = tax;
     }
 
 	/**
-     * @return the gross
+     * @return the gross price
      */
     public BigDecimal getGross() {
     	return gross;
     }
 
 	/**
-     * @param gross the gross to set
+     * @param gross the gross price
      */
     public void setGross(BigDecimal gross) {
     	this.gross = gross;

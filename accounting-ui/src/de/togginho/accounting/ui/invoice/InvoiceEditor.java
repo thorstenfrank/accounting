@@ -67,6 +67,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
@@ -301,7 +302,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		toolkit.createLabel(right, Messages.labelTotalTax);
 		totalTax = getToolkit().createText(
 				right, 
-				FormatUtil.formatCurrency(CalculationUtil.calculateTotalNetPrice(invoice)), 
+				EMPTY_STRING, 
 				SWT.SINGLE | SWT.BORDER | SWT.RIGHT);
 		
 		grabHorizontal.applyTo(totalTax);
@@ -311,7 +312,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		toolkit.createLabel(right, Messages.labelTotalGross);
 		totalGross = getToolkit().createText(
 				right, 
-				FormatUtil.formatCurrency(CalculationUtil.calculateTotalGrossPrice(invoice)), 
+				EMPTY_STRING, 
 				SWT.SINGLE | SWT.BORDER | SWT.RIGHT);
 		grabHorizontal.applyTo(totalGross);
 		totalGross.setEnabled(false);
@@ -596,9 +597,10 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	 */
 	private void calculateTotals() {
 		Invoice invoice = getEditorInput().getInvoice();
-		totalNet.setText(FormatUtil.formatCurrency(CalculationUtil.calculateTotalNetPrice(invoice)));
-		totalTax.setText(FormatUtil.formatCurrency(CalculationUtil.calculateTotalTaxAmount(invoice)));
-		totalGross.setText(FormatUtil.formatCurrency(CalculationUtil.calculateTotalGrossPrice(invoice)));
+		final Price total = CalculationUtil.calculateTotalPrice(invoice);
+		totalNet.setText(FormatUtil.formatCurrency(total.getNet()));
+		totalTax.setText(FormatUtil.formatCurrency(total.getTax()));
+		totalGross.setText(FormatUtil.formatCurrency(total.getGross()));
 	}
 	
 	/**
