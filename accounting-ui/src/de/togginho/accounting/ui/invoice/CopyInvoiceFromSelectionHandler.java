@@ -54,13 +54,12 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
      */
     @Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
-    	CopyInvoiceDialog dialog = new CopyInvoiceDialog(getShell(event));
+    	Invoice original = getInvoiceFromSelection(event);
+    	CopyInvoiceDialog dialog = new CopyInvoiceDialog(getShell(event), original.getNumber());
     	invoiceNumber = null;
     	if (dialog.open() == TitleAreaDialog.OK) {
     		LOG.info("Creating copy of invoice with new number: " + invoiceNumber); //$NON-NLS-1$
-    		Invoice original = getInvoiceFromSelection(event);
     		Invoice copy = ModelHelper.copyInvoice(original, invoiceNumber);
-    		
     		InvoiceEditorInput input = new InvoiceEditorInput(copy);
     		
     		try {
@@ -90,13 +89,15 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
 	 */
 	private class CopyInvoiceDialog extends TitleAreaDialog {
 		
+		private String originalInvoiceNumber;
 		private Text invoiceNumberText;
 		
 		/**
          * @param parentShell
          */
-        private CopyInvoiceDialog(Shell parentShell) {
+        private CopyInvoiceDialog(Shell parentShell, String originalInvoiceNumber) {
 	        super(parentShell);
+	        this.originalInvoiceNumber = originalInvoiceNumber;
         }
         
 		/**
@@ -130,15 +131,16 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
         	final Label dateLabel = WidgetHelper.createLabel(composite, Messages.labelInvoiceNo);
         	GridDataFactory.fillDefaults().indent(5, 5).applyTo(dateLabel);
         	
-        	invoiceNumberText = WidgetHelper.createSingleBorderText(composite, EMPTY_STRING);
+        	invoiceNumberText = WidgetHelper.createSingleBorderText(composite, originalInvoiceNumber);
         	GridDataFactory.fillDefaults().grab(true, false).applyTo(invoiceNumberText);
+        	invoiceNumberText.selectAll();
         	
     		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
     		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
     		
     		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-    		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);
-        	
+    		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);   		
+    		
             return composite;
         }
         
