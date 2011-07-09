@@ -427,7 +427,7 @@ class AccountingServiceImpl implements AccountingService {
     	
     	Calendar cal = Calendar.getInstance();
     	cal.setTime(copy.getInvoiceDate());
-		cal.add(Calendar.MONTH, invoice.getUser() != null ? invoice.getUser().getDefaultPaymentTerms()
+		cal.add(Calendar.DAY_OF_MONTH, invoice.getUser() != null ? invoice.getUser().getDefaultPaymentTerms()
 		        : User.DEFAULT_PAYMENT_TERMS);
     	copy.setDueDate(cal.getTime());
     	copy.setUser(invoice.getUser());
