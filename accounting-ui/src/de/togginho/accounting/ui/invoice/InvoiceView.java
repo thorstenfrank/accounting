@@ -33,11 +33,14 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
@@ -45,6 +48,7 @@ import org.eclipse.ui.part.ViewPart;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.ui.AbstractTableSorter;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -68,10 +72,10 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	private static final Map<InvoiceState, Image> INVOICE_STATE_TO_IMAGE_MAP = new HashMap<InvoiceState, Image>();
 	
 	// column indices
-	private static final int COL_INDEX_INVOICE_NUMBER = 0;
-	private static final int COL_INDEX_INVOICE_STATE = 1;
-	private static final int COL_INDEX_CLIENT = 2;
-	private static final int COL_INDEX_DUE_DATE = 3;
+	protected static final int COL_INDEX_INVOICE_NUMBER = 0;
+	protected static final int COL_INDEX_INVOICE_STATE = 1;
+	protected static final int COL_INDEX_CLIENT = 2;
+	protected static final int COL_INDEX_DUE_DATE = 3;
 	
 	/** The viewer. */
 	private TableViewer tableViewer;
@@ -100,21 +104,58 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		table.setLinesVisible(true);
 		
 		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_NUMBER);
-		col1.getColumn().setText(Messages.InvoiceView_number);
-		tcl.setColumnData(col1.getColumn(), new ColumnWeightData(10, true));
+		final TableColumn col1col = col1.getColumn();
+		col1col.setText(Messages.InvoiceView_number);
+		tcl.setColumnData(col1col, new ColumnWeightData(10, true));
+		col1col.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.getTable().setSortColumn(col1col);
+				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
+			    tableViewer.refresh();
+			}
+		});
+		
 		
 		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_STATE);
-		col2.getColumn().setText(Messages.InvoiceView_state);
-		col2.getColumn().setAlignment(SWT.CENTER);
-		tcl.setColumnData(col2.getColumn(), new ColumnWeightData(10, true));
+		final TableColumn col2col = col2.getColumn();
+		col2col.setText(Messages.InvoiceView_state);
+		col2col.setAlignment(SWT.CENTER);
+		tcl.setColumnData(col2col, new ColumnWeightData(10, true));
+		col2col.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.getTable().setSortColumn(col2col);
+				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_INVOICE_STATE);
+			    tableViewer.refresh();
+			}
+		});
 		
 		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_CLIENT);
-		col3.getColumn().setText(Messages.labelClient);
-		tcl.setColumnData(col3.getColumn(), new ColumnWeightData(15, true));
+		final TableColumn col3col = col3.getColumn();
+		col3col.setText(Messages.labelClient);
+		tcl.setColumnData(col3col, new ColumnWeightData(15, true));
+		col3col.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.getTable().setSortColumn(col3col);
+				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_CLIENT);
+			    tableViewer.refresh();
+			}
+		});
 		
 		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_DUE_DATE);
-		col4.getColumn().setText(Messages.InvoiceView_dueDate);
-		tcl.setColumnData(col4.getColumn(), new ColumnWeightData(10, true));
+		final TableColumn col4col = col4.getColumn();
+		col4col.setText(Messages.InvoiceView_dueDate);
+		tcl.setColumnData(col4col, new ColumnWeightData(10, true));
+		col4col.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.getTable().setSortColumn(col4col);
+				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_DUE_DATE);
+			    tableViewer.refresh();
+			}
+		});
 		
 		// get the invoices to display
 		final Set<Invoice> invoices = ModelHelper.findInvoices();
@@ -122,6 +163,11 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setInput(invoices);
+		
+		InvoiceViewTableSorter sorter = new InvoiceViewTableSorter();
+		sorter.setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
+		tableViewer.setComparator(sorter);
+		table.setSortColumn(col1col);
 		
 		// make sure double-clicks are processed
 		tableViewer.addDoubleClickListener(this);
