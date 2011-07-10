@@ -172,6 +172,7 @@ public class Messages extends NLS {
 	public static String labelPostalCode;
 	public static String labelPricePerUnit;
 	public static String labelQuantity;
+	public static String labelRevenueRelevant;
 	public static String labelStreet;
 	public static String labelSubtotal;
 	public static String labelTaxId;
@@ -183,6 +184,9 @@ public class Messages extends NLS {
 	
 	public static String labelAdd;
 	public static String labelRemove;
+	
+	public static String labelYes;
+	public static String labelNo;
 	
 	// ICONS
 	public static String iconsGroupEdit;

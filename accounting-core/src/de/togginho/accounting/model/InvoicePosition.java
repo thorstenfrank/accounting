@@ -35,12 +35,14 @@ public class InvoicePosition implements Serializable {
 	public static final String FIELD_DESCRIPTION = "description";
 	public static final String FIELD_PRICE_PER_UNIT = "pricePerUnit";
 	public static final String FIELD_TAX_RATE = "taxRate";
+	public static final String FIELD_REVENUE_RELEVANT = "revenueRelevant";
 	
 	private BigDecimal quantity;
 	private String unit;
 	private String description;
 	private BigDecimal pricePerUnit;
 	private TaxRate taxRate;
+	private boolean revenueRelevant = true;
 	
 	/**
 	 * @return the quantity
@@ -119,4 +121,19 @@ public class InvoicePosition implements Serializable {
 	public void setTaxRate(TaxRate taxRate) {
 		this.taxRate = taxRate;
 	}
+
+	/**
+	 * Whether or not this invoice position counts toward revenue. <code>true</code> by default. 
+     * @return the revenueRelevant
+     */
+    public boolean isRevenueRelevant() {
+    	return revenueRelevant;
+    }
+
+	/**
+     * @param revenueRelevant the revenueRelevant to set
+     */
+    public void setRevenueRelevant(boolean revenueRelevant) {
+    	this.revenueRelevant = revenueRelevant;
+    }
 }

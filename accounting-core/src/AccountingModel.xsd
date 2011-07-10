@@ -96,6 +96,7 @@
             <xs:element name="taxRate" type="xmlTaxRate" maxOccurs="1"/>
             <xs:element name="description" type="xs:string" maxOccurs="1"/>
             <xs:element name="unit" type="xs:string" maxOccurs="1"/>
+            <xs:element name="revenueRelevant" type="xs:boolean" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

@@ -89,12 +89,13 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	private static final Logger LOG = Logger.getLogger(InvoiceEditor.class);
 
 	// Column indices for the invoice position table
-	private static final int COLUMN_INDEX_QUANTITY = 0;
-	private static final int COLUMN_INDEX_UNIT = 1;
-	private static final int COLUMN_INDEX_DESCRIPTION = 2;
-	private static final int COLUMN_INDEX_PRICE_PER_UNIT = 3;
-	private static final int COLUMN_INDEX_TAX_RATE = 4;
-	private static final int COLUMN_INDEX_NET_PRICE = 5;
+	private static final int COLUMN_INDEX_REVENUE_RELEVANT = 0;
+	private static final int COLUMN_INDEX_QUANTITY = 1;
+	private static final int COLUMN_INDEX_UNIT = 2;
+	private static final int COLUMN_INDEX_DESCRIPTION = 3;
+	private static final int COLUMN_INDEX_PRICE_PER_UNIT = 4;
+	private static final int COLUMN_INDEX_TAX_RATE = 5;
+	private static final int COLUMN_INDEX_NET_PRICE = 6;
 	
 	// form 
 	private FormToolkit toolkit;
@@ -435,12 +436,19 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
 		
-		invoicePositionViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);		
+		invoicePositionViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
 		final Table table = invoicePositionViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		final int defaultWidth = 15;
+		final int defaultWidth = 13;
+		
+		// REVENUE RELEVANT
+		TableViewerColumn revenueRelevantCol = 
+				new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_REVENUE_RELEVANT);
+		revenueRelevantCol.getColumn().setText(Messages.labelRevenueRelevant);
+		revenueRelevantCol.getColumn().setAlignment(SWT.CENTER);
+		tableLayout.setColumnData(revenueRelevantCol.getColumn(), new ColumnWeightData(11));
 		
 		// QUANTITY
 		TableViewerColumn quantityCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_QUANTITY);
@@ -458,7 +466,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		TableViewerColumn descCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_DESCRIPTION);
 		descCol.getColumn().setText(Messages.labelDescription);
 		descCol.getColumn().setAlignment(SWT.CENTER);
-		tableLayout.setColumnData(descCol.getColumn(), new ColumnWeightData(25));
+		tableLayout.setColumnData(descCol.getColumn(), new ColumnWeightData(24));
 
 		// PRICE PER UNIT
 		TableViewerColumn priceCol = new TableViewerColumn(invoicePositionViewer, SWT.NONE, COLUMN_INDEX_PRICE_PER_UNIT);
@@ -477,7 +485,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		netCol.getColumn().setText(Messages.labelSubtotal);
 		netCol.getColumn().setAlignment(SWT.RIGHT);
 		tableLayout.setColumnData(netCol.getColumn(), new ColumnWeightData(defaultWidth));
-		
+				
 		invoicePositionViewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -495,7 +503,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		invoicePositionViewer.setLabelProvider(new InvoicePositionCellLabelProvider());
 		invoicePositionViewer.setContentProvider(ArrayContentProvider.getInstance());
 		invoicePositionViewer.setInput(invoice.getInvoicePositions());
-		
+				
 		// buttons for adding / removing invoice positions
 		Composite buttons = toolkit.createComposite(sectionClient);
 		buttons.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
@@ -628,6 +636,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
         	}
         	InvoicePosition pos = (InvoicePosition) element;
         	switch (columnIndex) {
+			case COLUMN_INDEX_REVENUE_RELEVANT:
+				return pos.isRevenueRelevant() ? Messages.labelYes : Messages.labelNo;
 			case COLUMN_INDEX_QUANTITY:
 				return FormatUtil.formatDecimalValue(pos.getQuantity());
 			case COLUMN_INDEX_UNIT:
@@ -640,7 +650,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				 return pos.isTaxApplicable() ? pos.getTaxRate().toShortString() : HYPHEN;
 			case COLUMN_INDEX_NET_PRICE:
 				 return FormatUtil.formatCurrency(CalculationUtil.calculateNetPrice(pos));
-				
 			default:
 				break;
 			}

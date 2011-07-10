@@ -189,6 +189,7 @@ public class ModelMapper {
 				}
 				xmlInvoicePosition.setTaxRate(null);
 				xmlInvoicePosition.setUnit(invoicePosition.getUnit());
+				xmlInvoicePosition.setRevenueRelevant(invoicePosition.isRevenueRelevant());
 			}
 		}
 		

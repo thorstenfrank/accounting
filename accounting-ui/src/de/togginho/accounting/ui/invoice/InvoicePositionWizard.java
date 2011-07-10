@@ -32,6 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -144,6 +145,17 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			final boolean editable = invoice.canBeEdited();
 			
+			// REVENUE RELEVANT
+			WidgetHelper.createLabel(composite, EMPTY_STRING);
+			Button revenueRelevant = new Button(composite, SWT.CHECK);
+			revenueRelevant.setText(Messages.labelRevenueRelevant);
+			revenueRelevant.setEnabled(editable);
+			IObservableValue revenueWidgetObservable = SWTObservables.observeSelection(revenueRelevant);
+			bindingContext.bindValue(
+					revenueWidgetObservable, 
+					PojoObservables.observeValue(position, InvoicePosition.FIELD_REVENUE_RELEVANT));
+			revenueWidgetObservable.addValueChangeListener(this);
+			
 			// QUANTITY
 			WidgetHelper.createLabel(composite, Messages.labelQuantity);
 			Text quantity = new Text(composite, SWT.SINGLE | SWT.BORDER);
@@ -231,7 +243,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			bindingContext.bindValue(
 					descriptionWidgetObservable, 
 					PojoObservables.observeValue(position, InvoicePosition.FIELD_DESCRIPTION));
-			descriptionWidgetObservable.addValueChangeListener(this);
+			descriptionWidgetObservable.addValueChangeListener(this);			
 			
 			setControl(composite);
 			setPageComplete(false);
