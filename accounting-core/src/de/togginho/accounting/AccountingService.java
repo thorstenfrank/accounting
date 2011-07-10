@@ -104,7 +104,7 @@ public interface AccountingService {
 	 * @see InvoiceState#CANCELLED
 	 * @see Invoice#getDueDate() 
 	 */
-	Invoice sendInvoice(Invoice invoice);
+	Invoice sendInvoice(Invoice invoice, Date sentDate);
 	
 	/**
 	 * Assigns the payment date to the invoice and saves it. Afterwards, the invoice will be in state
@@ -222,4 +222,10 @@ public interface AccountingService {
 	 * @return a {@link Revenue} instance that contains all paid invoices within the given timeframe
 	 */
 	Revenue getRevenue(Date from, Date until);
+	
+	/**
+	 * 
+	 * @param targetFileName
+	 */
+	void exportModelToXml(String targetFileName);
 }

@@ -130,8 +130,9 @@ public class Messages extends NLS {
 	public static String RevenueDialog_totals;
 	public static String RevenueDialog_until;
 	
-	public static String SendInvoiceCommand_confirmMessage;
-	public static String SendInvoiceCommand_confirmText;
+	public static String SendInvoiceCommand_message;
+	public static String SendInvoiceCommand_title;
+	public static String SendInvoiceCommand_sentDateLabel;
 	
 	public static String SetupWizard_windowTitle;
 	public static String SetupBankAccountWizardPage_desc;

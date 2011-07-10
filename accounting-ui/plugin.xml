@@ -91,6 +91,10 @@
                   label="%command.save.label"
                   style="push">
             </command>
+            <command
+                  commandId="de.togginho.accounting.ui.ExportModelToXml"
+                  style="push">
+            </command>
             <separator
                   name="fileMenuSep2"
                   visible="true">
@@ -452,6 +456,11 @@
             defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
             id="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
             name="%command.revenue.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.ExportModelToXmlHandler"
+            id="de.togginho.accounting.ui.ExportModelToXml"
+            name="Export Model To XML">
       </command>
    </extension>
    <extension

@@ -48,6 +48,7 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.FormatUtil;
+import de.togginho.accounting.xml.ModelMapper;
 
 /**
  * Implementation of the {@link AccountingService} that used DB4o for
@@ -248,17 +249,16 @@ class AccountingServiceImpl implements AccountingService {
 	/**
 	 * {@inheritDoc}.
 	 * 
-	 * @see de.togginho.accounting.AccountingService#sendInvoice(de.togginho.accounting.model.Invoice)
+	 * @see de.togginho.accounting.AccountingService#sendInvoice(Invoice, Date)
 	 */
 	@Override
-	public Invoice sendInvoice(Invoice invoice) {
+	public Invoice sendInvoice(Invoice invoice, Date sentDate) {
 		if (invoice == null) {
 			LOG.warn("Trying to send invoice which is [null]. Aborting..."); //$NON-NLS-1$
 			return null;
 		}
 
 		LOG.debug("sendInvoice: " + invoice.getNumber()); //$NON-NLS-1$
-		final Date today = new Date();
 
 		// Invoice is CANCELLED -> cannot re-send
 		if (invoice.getCancelledDate() != null) {
@@ -270,7 +270,7 @@ class AccountingServiceImpl implements AccountingService {
 		if (invoice.getDueDate() == null) {
 			LOG.error("Cannot send an invoice without a due date: " + invoice.getNumber());
 			throw new AccountingException(Messages.AccountingService_errorCannotSendInvoiceWithoutDueDate);
-		} else if (invoice.getDueDate().before(today)) {
+		} else if (invoice.getDueDate().before(sentDate)) {
 			final String dueDate = FormatUtil.formatDate(invoice.getDueDate());
 			LOG.error(String.format("Invoice [%s] has a due date in the past (%s), cannot send!",  //$NON-NLS-1$
 					invoice.getNumber(), dueDate));
@@ -283,12 +283,12 @@ class AccountingServiceImpl implements AccountingService {
 			invoice = saveInvoice(invoice);
 		}
 
-		invoice.setSentDate(new Date());
+		invoice.setSentDate(sentDate);
 		doStoreEntity(invoice);
 
 		return invoice;
 	}
-	
+		
 	/**
      * {@inheritDoc}.
      * @see de.togginho.accounting.AccountingService#markAsPaid(de.togginho.accounting.model.Invoice, java.util.Date)
@@ -514,6 +514,16 @@ class AccountingServiceImpl implements AccountingService {
 	    return revenue;
     }
 
+    /**
+     * 
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#exportModelToXml(java.lang.String)
+     */
+    @Override
+    public void exportModelToXml(String targetFileName) {
+    	ModelMapper.modelToXml(getCurrentUser(), findInvoices(), targetFileName);
+    }
+    
 	/**
 	 * 
 	 * @param entity

@@ -314,13 +314,15 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		serviceUnderTest.init(getTestContext());
 		
 		// nothing should happen
-		assertNull(serviceUnderTest.sendInvoice(null));
+		assertNull(serviceUnderTest.sendInvoice(null, null));
+		
+		final Date today = new Date();
 		
 		// try to send a cancelled invoice - should yield an exception
-		invoice.setCancelledDate(new Date());
+		invoice.setCancelledDate(today);
 		
 		try {
-			serviceUnderTest.sendInvoice(invoice);
+			serviceUnderTest.sendInvoice(invoice, today);
 			fail("Cancelled invoice cannot be sent again");
 		} catch (AccountingException e) {
 			// this is what we want
@@ -329,7 +331,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		// try so send an invoie without a due date
 		invoice.setCancelledDate(null);
 		try {
-			serviceUnderTest.sendInvoice(invoice);
+			serviceUnderTest.sendInvoice(invoice, today);
 			fail("Sending an invoice without a due date should not be possible");
 		} catch (AccountingException e) {
 			// this is what we want
@@ -340,7 +342,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 1);
 		invoice.setDueDate(cal.getTime());
 		try {
-			serviceUnderTest.sendInvoice(invoice);
+			serviceUnderTest.sendInvoice(invoice, today);
 			fail("Sending an invoice with a past due date should not be possible");
 		} catch (AccountingException e) {
 			// this is what we want
@@ -351,7 +353,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		invoice.setDueDate(cal.getTime());
 		invoice.setUser(getTestUser());
 		
-		Invoice saved = serviceUnderTest.sendInvoice(invoice);
+		Invoice saved = serviceUnderTest.sendInvoice(invoice, today);
 		assertNotNull(saved.getCreationDate());
 		assertNotNull(saved.getSentDate());
 	}

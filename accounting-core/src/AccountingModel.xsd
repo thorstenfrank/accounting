@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
     
-    <xs:element name="user" type="user"/>
+    <xs:element name="user" type="xmlUser"/>
 
-    <xs:complexType name="user">
+    <xs:complexType name="xmlUser">
     	<xs:sequence>
-    		<xs:element name="address" type="address" maxOccurs="1" />
-    		<xs:element name="bankAccount" type="bankAccount" maxOccurs="1" />
-    		<xs:element name="taxRates" type="taxRates" maxOccurs="1" />
-    		<xs:element name="clients" type="clients" maxOccurs="1" />
-    		<xs:element name="invoices" type="invoices" maxOccurs="1" />
+    	   <xs:element name="description" type="xs:string" maxOccurs="1" />
+    		<xs:element name="address" type="xmlAddress" maxOccurs="1" />
+    		<xs:element name="bankAccount" type="xmlBankAccount" maxOccurs="1" />
+    		<xs:element name="taxRates" type="xmlTaxRates" maxOccurs="1" />
+    		<xs:element name="clients" type="xmlClients" maxOccurs="1" />
+    		<xs:element name="invoices" type="xmlInvoices" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required"/>
     	<xs:attribute name="taxId" type="xs:string" use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="address">
+    <xs:complexType name="xmlAddress">
         <xs:sequence>
             <xs:element name="street" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="postalCode" type="xs:string" minOccurs="1" maxOccurs="1"/>
@@ -27,7 +28,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="bankAccount">
+    <xs:complexType name="xmlBankAccount">
         <xs:sequence>
             <xs:element name="accountNumber" type="xs:string" maxOccurs="1"/>
             <xs:element name="bankCode" type="xs:string" maxOccurs="1"/>
@@ -35,13 +36,13 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="taxRates">
+    <xs:complexType name="xmlTaxRates">
         <xs:sequence>
-            <xs:element minOccurs="1" maxOccurs="unbounded" name="taxRate" type="taxRate" />
+            <xs:element minOccurs="1" maxOccurs="unbounded" name="taxRate" type="xmlTaxRate" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="taxRate">
+    <xs:complexType name="xmlTaxRate">
         <xs:sequence>
             <xs:element name="abbreviation" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
@@ -49,26 +50,26 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="clients">
+    <xs:complexType name="xmlClients">
         <xs:sequence>
-            <xs:element name="client" type="client" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="client" type="xmlClient" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="client">
+    <xs:complexType name="xmlClient">
     	<xs:sequence>
-    		<xs:element name="address" type="address" maxOccurs="1" />
+    		<xs:element name="address" type="xmlAddress" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
 
-    <xs:complexType name="invoices">
+    <xs:complexType name="xmlInvoices">
         <xs:sequence>
-            <xs:element name="invoice" type="invoice" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="invoice" type="xmlInvoice" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="invoice">
+    <xs:complexType name="xmlInvoice">
     	<xs:sequence>
     		<xs:element name="creationDate" type="xs:date" minOccurs="1" maxOccurs="1" />
     		<xs:element name="invoiceDate" type="xs:date" minOccurs="0" maxOccurs="1" />
@@ -77,22 +78,22 @@
     		<xs:element name="cancelledDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="paymentDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="client" type="xs:string"/>
-    		<xs:element name="invoicePositions" type="invoicePositions" maxOccurs="1"/>
+    		<xs:element name="invoicePositions" type="xmlInvoicePositions" maxOccurs="1"/>
     	</xs:sequence>
     	<xs:attribute name="number" type="xs:string" use="required"/>
     </xs:complexType>
     
-    <xs:complexType name="invoicePositions">
+    <xs:complexType name="xmlInvoicePositions">
         <xs:sequence>
-            <xs:element name="invoicePosition" type="invoicePosition" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="invoicePosition" type="xmlInvoicePosition" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="invoicePosition">
+    <xs:complexType name="xmlInvoicePosition">
         <xs:sequence>
             <xs:element name="quantity" type="xs:decimal" maxOccurs="1"/>
             <xs:element name="pricePerUnit" type="xs:decimal" maxOccurs="1"/>
-            <xs:element name="taxRate" type="taxRate" maxOccurs="1"/>
+            <xs:element name="taxRate" type="xmlTaxRate" maxOccurs="1"/>
             <xs:element name="description" type="xs:string" maxOccurs="1"/>
             <xs:element name="unit" type="xs:string" maxOccurs="1"/>
         </xs:sequence>

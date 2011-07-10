@@ -176,10 +176,10 @@ public final class ModelHelper {
 	/**
 	 * @param invoice
 	 * @return
-	 * @see de.togginho.accounting.AccountingService#sendInvoice(de.togginho.accounting.model.Invoice)
+	 * @see de.togginho.accounting.AccountingService#sendInvoice(Invoice, Date)
 	 */
-	public static Invoice sendInvoice(Invoice invoice) {
-		Invoice sent = INSTANCE.accountingService.sendInvoice(invoice);
+	public static Invoice sendInvoice(Invoice invoice, Date date) {
+		Invoice sent = INSTANCE.accountingService.sendInvoice(invoice, date);
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, sent);
 		return sent;
 	}
@@ -236,6 +236,14 @@ public final class ModelHelper {
 	 */
 	public static Invoice copyInvoice(Invoice invoice, String newInvoiceNumber) {
 		return INSTANCE.accountingService.copyInvoice(invoice, newInvoiceNumber);
+	}
+	
+	/**
+	 * 
+	 * @param targetFileName
+	 */
+	public static void exportModelToXml(String targetFileName) {
+		INSTANCE.accountingService.exportModelToXml(targetFileName);
 	}
 	
 	/**
