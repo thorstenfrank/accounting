@@ -171,13 +171,11 @@ public class AccountingUI extends AbstractUIPlugin {
 				"Building accounting context for user [%s] with DB file [%s]",  //$NON-NLS-1$
 				userName, dbFileLocation)); //$NON-NLS-1$
 
+		// build the context
 		accountingContext = AccountingContextFactory.buildContext(userName, dbFileLocation);
 		
 		// immediately init the AccountingService
 		LOG.debug("Initialising accounting service..."); //$NON-NLS-1$
-		accountingService.init(accountingContext);
-		
-		LOG.debug("Initialising model helper..."); //$NON-NLS-1$
 		ModelHelper.init(accountingContext, accountingService);
 	}
 	

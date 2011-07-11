@@ -31,6 +31,13 @@ public class Messages extends NLS {
 	public static String AccountingSplashHandler_reuseDataMsg;
 	public static String AccountingSplashHandler_reuseDataText;
 	public static String AccountingSplashHandler_setupDialogCancelledMsg;
+	public static String AccountingSplashHandler_welcomeDialogTitle;
+	public static String AccountingSplashHandler_welcomeDialogMessage;
+	public static String AccountingSplashHandler_welcomeDialogCreateNew;
+	public static String AccountingSplashHandler_welcomeDialogCreateNewHint;
+	public static String AccountingSplashHandler_welcomeDialogUseExisting;
+	public static String AccountingSplashHandler_welcomeDialogImportXml;
+	
 
 	public static String AddressWizardPage_desc;
 	public static String AddressWizardPage_title;
@@ -135,18 +142,27 @@ public class Messages extends NLS {
 	public static String SendInvoiceCommand_sentDateLabel;
 	
 	public static String SetupWizard_windowTitle;
+	
 	public static String SetupBankAccountWizardPage_desc;
-	public static String SetupBasicInfoWizardPage_dataFile;
-	public static String SetupBasicInfoWizardPage_desc;
-	public static String SetupBasicInfoWizardPage_selectFile;
-	public static String SetupBasicInfoWizardPage_yourName;
-
+	
+	public static String SetupExistingDataWizard_windowTitle;
+	
+	public static String TaxIdAndDescriptionWizardPage_desc;
+	
 	public static String UserEditor_header;
 	public static String UserEditor_taxeRateDescription;
 	public static String UserEditor_taxRateAbbreviation;
 	public static String UserEditor_taxRateName;
 	public static String UserEditor_taxRate;
 	public static String UserEditor_taxRates;
+	
+	public static String UserNameAndDbFileWizardPage_dataFile;
+	public static String UserNameAndDbFileWizardPage_desc;
+	public static String UserNameAndDbFileWizardPage_descNewFile;
+	public static String UserNameAndDbFileWizardPage_descOldFile;
+	public static String UserNameAndDbFileWizardPage_selectFile;
+	public static String UserNameAndDbFileWizardPage_title;
+	public static String UserNameAndDbFileWizardPage_yourName;
 	
 	// COMMON LABELS
 	public static String labelAccountNumber;

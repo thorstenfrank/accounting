@@ -20,7 +20,6 @@ import java.io.File;
 import org.eclipse.jface.wizard.Wizard;
 
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 
 /**
@@ -28,10 +27,9 @@ import de.togginho.accounting.ui.Messages;
  *
  */
 public class SetupWizard extends Wizard {
-
-	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".SetupWizard";
 	
-	private SetupBasicInfoWizardPage basicInfoPage;
+	private UserNameAndDbFileWizardPage userNameAndDbFilePage;
+	private TaxIdAndDescriptionWizardPage taxIdAndDescriptionPage;
 	private AddressWizardPage userAddressPage;
 	private SetupBankAccountWizardPage bankAccountPage;
 	
@@ -46,7 +44,6 @@ public class SetupWizard extends Wizard {
 	public SetupWizard() {
 		setNeedsProgressMonitor(false);
 		setWindowTitle(Messages.SetupWizard_windowTitle);
-		setHelpAvailable(true);
 	}
 	
 	/**
@@ -54,11 +51,13 @@ public class SetupWizard extends Wizard {
 	 */
 	@Override
 	public void addPages() {
-		basicInfoPage = new SetupBasicInfoWizardPage();
-		userAddressPage = new AddressWizardPage(HELP_CONTEXT_ID);
+		userNameAndDbFilePage = new UserNameAndDbFileWizardPage(true);
+		taxIdAndDescriptionPage = new TaxIdAndDescriptionWizardPage();
+		userAddressPage = new AddressWizardPage(null);
 		bankAccountPage = new SetupBankAccountWizardPage();
 		
-		addPage(basicInfoPage);
+		addPage(userNameAndDbFilePage);
+		addPage(taxIdAndDescriptionPage);
 		addPage(userAddressPage);
 		addPage(bankAccountPage);
 	}
@@ -72,23 +71,18 @@ public class SetupWizard extends Wizard {
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performCancel()
-	 */
-	@Override
-	public boolean performCancel() {
-		return super.performCancel();
-	}
-
-	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
-		configuredUser = basicInfoPage.getUser();
+		configuredUser = new User();
+		configuredUser.setName(userNameAndDbFilePage.getSelectedUserName());
+		configuredUser.setTaxNumber(taxIdAndDescriptionPage.getTaxId());
+		configuredUser.setDescription(taxIdAndDescriptionPage.getUserDescription());
 		configuredUser.setAddress(userAddressPage.getAddress());
 		configuredUser.setBankAccount(bankAccountPage.getBankAccount());
 		
-		dbFileLocation = basicInfoPage.getDbFileLocation();
+		dbFileLocation = userNameAndDbFilePage.getSelectedDbFileName();
 				
 		// if the path to the db file doesn't exist, create it
 		File dbFile = new File(dbFileLocation);

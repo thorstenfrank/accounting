@@ -102,7 +102,9 @@ class AddressWizardPage extends WizardPage {
 	 */
 	@Override
 	public void performHelp() {
-		PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpContextId);
+		if (helpContextId != null) {
+			PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpContextId);
+		}
 	}
 	
 	/**

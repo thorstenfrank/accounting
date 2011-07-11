@@ -78,6 +78,7 @@ public final class ModelHelper {
 	protected static final void init(AccountingContext context, AccountingService service) {
 		INSTANCE.context = context;
 		INSTANCE.accountingService = service;
+		INSTANCE.accountingService.init(context);
 		//INSTANCE.propertyChangeSupport = new PropertyChangeSupport(INSTANCE);
 	}
 

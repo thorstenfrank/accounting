@@ -70,18 +70,22 @@ public class ModelMapper {
 	}
 	
 	/**
+	 * 
 	 * @param fileName
+	 * @return
 	 */
-	public static void xmlToModel(String fileName) {
+	public static ImportResult xmlToModel(String fileName) {
 		try {
+			final ImportResult importResult = new ImportResult();
 			LOG.info("Importing model data from file " + fileName);
 	        Unmarshaller unmarshaller = JAXBContext.newInstance(JAXB_CONTEXT).createUnmarshaller();
 	        final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(fileName));
 	        
 	        XmlToModel xmlToModel = new XmlToModel(xmlUser);
-	        xmlToModel.getUser();
-	        xmlToModel.getInvoices();
+	        importResult.setImportedUser(xmlToModel.getUser());
+	        importResult.setImportedInvoices(xmlToModel.getInvoices());
 	        LOG.info("import finished successfully");
+	        return importResult;
         } catch (JAXBException e) {
         	LOG.error("Error importing data from XML", e);
 	        throw new AccountingException("Error importing data from XML", e);
