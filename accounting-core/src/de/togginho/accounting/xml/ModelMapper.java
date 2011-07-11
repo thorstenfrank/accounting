@@ -23,6 +23,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.log4j.Logger;
+
+import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.xml.generated.XmlUser;
@@ -33,6 +36,8 @@ import de.togginho.accounting.xml.generated.XmlUser;
  */
 public class ModelMapper {
 
+	private static final Logger LOG = Logger.getLogger(ModelMapper.class);
+	
 	/**
 	 * 
 	 */
@@ -54,25 +59,32 @@ public class ModelMapper {
 	public static void modelToXml(User user, Set<Invoice> invoices, String targetFile) {
 		try {
 	        Marshaller marshaller = JAXBContext.newInstance(JAXB_CONTEXT).createMarshaller();
-	        	        
+	        
+	        LOG.info("Exporting model data to file " + targetFile);
 	        marshaller.marshal(new ModelToXml().convertToXml(user, invoices), new File(targetFile));
+	        LOG.info("export finished successfully");
         } catch (JAXBException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
+        	LOG.error("Error exporting data to xml", e);
+        	throw new AccountingException("Error exporting data to XML", e);
         }
 	}
 	
+	/**
+	 * @param fileName
+	 */
 	public static void xmlToModel(String fileName) {
 		try {
+			LOG.info("Importing model data from file " + fileName);
 	        Unmarshaller unmarshaller = JAXBContext.newInstance(JAXB_CONTEXT).createUnmarshaller();
 	        final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(fileName));
 	        
 	        XmlToModel xmlToModel = new XmlToModel(xmlUser);
 	        xmlToModel.getUser();
 	        xmlToModel.getInvoices();
+	        LOG.info("import finished successfully");
         } catch (JAXBException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
+        	LOG.error("Error importing data from XML", e);
+	        throw new AccountingException("Error importing data from XML", e);
         }
 	}
 }

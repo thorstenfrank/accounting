@@ -255,17 +255,17 @@
       </menuContribution>
       <menuContribution
             locationURI="menu:de.togginho.accounting.ui.invoice.InvoiceView">
-         <command
-               commandId="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
-               icon="icons/page_gear.png"
-               style="push">
-         </command>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:de.togginho.accounting.ui.invoice.InvoiceView">
          <command
                commandId="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
                icon="icons/page_add.png"
+               style="push">
+         </command>
+         <command
+               commandId="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+               icon="icons/page_gear.png"
                style="push">
          </command>
       </menuContribution>
