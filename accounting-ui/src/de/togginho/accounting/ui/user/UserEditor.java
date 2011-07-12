@@ -65,7 +65,7 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class UserEditor extends AbstractAccountingEditor {
 	
-	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".UserEditor";
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".UserEditor"; //$NON-NLS-1$
 	
 	private static final Logger LOG = Logger.getLogger(UserEditor.class);
 	

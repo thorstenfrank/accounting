@@ -228,4 +228,12 @@ public interface AccountingService {
 	 * @param targetFileName
 	 */
 	void exportModelToXml(String targetFileName);
+	
+	/**
+	 * 
+	 * @param sourceXmlFile
+	 * @param dbFileLocation
+	 * @return
+	 */
+	AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation);
 }

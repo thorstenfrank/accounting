@@ -35,7 +35,7 @@ public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 	/**
 	 * 
 	 */
-	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewTaxRateWizard";
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewTaxRateWizard"; //$NON-NLS-1$
 	
 	/**
 	 * 

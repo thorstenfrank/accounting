@@ -42,7 +42,7 @@ import de.togginho.accounting.ui.ModelHelper;
  */
 public class ClientEditor extends AbstractAccountingEditor {
 	
-	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientEditor";
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientEditor"; //$NON-NLS-1$
 	
 	private static final Logger LOG = Logger.getLogger(ClientEditor.class);
 	

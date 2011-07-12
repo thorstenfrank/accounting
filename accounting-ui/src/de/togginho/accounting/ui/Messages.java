@@ -27,14 +27,15 @@ public class Messages extends NLS {
 	
 	public static String AbstractClientHandler_message;
 	public static String AbstractClientHandler_text;
-		
-	public static String AccountingSplashHandler_reuseDataMsg;
-	public static String AccountingSplashHandler_reuseDataText;
+	
+	public static String AbstractInvoiceHandler_errorNoInvoiceInCurrentEditor;
+	public static String AbstractInvoiceHandler_errorNoInvoiceInSelection;
+
+	public static String AccountingSplashHandler_errorUserNotFoundInDbFile;
 	public static String AccountingSplashHandler_setupDialogCancelledMsg;
 	public static String AccountingSplashHandler_welcomeDialogTitle;
 	public static String AccountingSplashHandler_welcomeDialogMessage;
 	public static String AccountingSplashHandler_welcomeDialogCreateNew;
-	public static String AccountingSplashHandler_welcomeDialogCreateNewHint;
 	public static String AccountingSplashHandler_welcomeDialogUseExisting;
 	public static String AccountingSplashHandler_welcomeDialogImportXml;
 	
@@ -77,6 +78,13 @@ public class Messages extends NLS {
 	public static String ExportInvoiceCommand_loadingTemplate;
 	public static String ExportInvoiceCommand_startingReportGeneration;
 
+	public static String ImportFromXmlWizard_dataFileLabel;
+	public static String ImportFromXmlWizard_errorDataFileExists;
+	public static String ImportFromXmlWizard_title;
+	public static String ImportFromXmlWizard_message;
+	public static String ImportFromXmlWizard_xmlFileLabel;
+	public static String ImportFromXmlWizard_xmlFileSelectText;
+	
 	public static String InvoiceEditor_details;
 	public static String InvoiceEditor_header;
 	public static String InvoiceEditor_overview;
@@ -160,6 +168,8 @@ public class Messages extends NLS {
 	public static String UserNameAndDbFileWizardPage_desc;
 	public static String UserNameAndDbFileWizardPage_descNewFile;
 	public static String UserNameAndDbFileWizardPage_descOldFile;
+	public static String UserNameAndDbFileWizardPage_errorExistingFile;
+	public static String UserNameAndDbFileWizardPage_errorNonExistingFile;
 	public static String UserNameAndDbFileWizardPage_selectFile;
 	public static String UserNameAndDbFileWizardPage_title;
 	public static String UserNameAndDbFileWizardPage_yourName;

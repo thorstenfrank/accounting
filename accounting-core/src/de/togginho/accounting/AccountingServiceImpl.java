@@ -49,6 +49,7 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.FormatUtil;
+import de.togginho.accounting.xml.ImportResult;
 import de.togginho.accounting.xml.ModelMapper;
 
 /**
@@ -94,14 +95,15 @@ class AccountingServiceImpl implements AccountingService {
 			return;
 		}
 
-		LOG.info("init");
+		LOG.info("service init"); //$NON-NLS-1$
 		this.context = context;
 
 		try {
 			objectContainer = db4oService.openFile(createConfiguration(), context.getDbFileName());
 		} catch (DatabaseFileLockedException e) {
 			LOG.error(String.format(
-					"DB file [%s] is locked by another process - application is probably already running", context.getDbFileName()), e); //$NON-NLS-1$
+					"DB file [%s] is locked by another process - application is probably already running", //$NON-NLS-1$
+					context.getDbFileName()), e); 
 			
 			throw new AccountingException(
 			        Messages.bind(Messages.AccountingService_errorFileLocked, context.getDbFileName()), e);
@@ -522,11 +524,49 @@ class AccountingServiceImpl implements AccountingService {
     /**
      * 
      * {@inheritDoc}.
-     * @see de.togginho.accounting.AccountingService#exportModelToXml(java.lang.String)
+     * @see AccountingService#exportModelToXml(java.lang.String)
      */
     @Override
     public void exportModelToXml(String targetFileName) {
     	ModelMapper.modelToXml(getCurrentUser(), findInvoices(), targetFileName);
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}.
+     * @see AccountingService#importModelFromXml(String, String)
+     */
+    @Override
+    public AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation) {
+    	if (initialised) {
+    		throw new AccountingException("Cannot import into an existing DB!");
+    	}
+    	
+    	LOG.info("Importing from " + sourceXmlFile); //$NON-NLS-1$
+    	ImportResult importResult = ModelMapper.xmlToModel(sourceXmlFile);
+    	
+    	final String userName = importResult.getImportedUser().getName();
+    	
+    	LOG.info("Building context for imported user " + userName); //$NON-NLS-1$
+    	this.context = AccountingContextFactory.buildContext(userName, dbFileLocation);
+    	
+    	init(context);
+    	
+    	// save all entities imported from XML...
+    	LOG.info("Now saving imported user to DB file");
+    	objectContainer.store(importResult.getImportedUser());
+    	
+    	final Set<Invoice> importedInvoices = importResult.getImportedInvoices();
+    	if (importedInvoices != null) {
+    		LOG.info("Now saving imported Invoices to DB file: " + importedInvoices.size());
+    		for (Invoice invoice : importedInvoices) {
+    			objectContainer.store(invoice);
+    		}
+    	}
+    	
+    	objectContainer.commit();
+    	
+    	return context;
     }
     
 	/**

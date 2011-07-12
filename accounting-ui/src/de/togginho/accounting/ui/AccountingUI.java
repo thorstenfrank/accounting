@@ -151,6 +151,17 @@ public class AccountingUI extends AbstractUIPlugin {
 	}
 	
 	/**
+	 * 
+	 * @param xmlFile
+	 * @param dbFileLocation
+	 */
+	protected void initContextFromImport(final String xmlFile, final String dbFileLocation) {
+		accountingContext = accountingService.importModelFromXml(xmlFile, dbFileLocation);
+		
+		ModelHelper.init(accountingContext, accountingService);
+	}
+	
+	/**
 	 * Initialises the context from the supplied values. This method should be called only during the first run of
 	 * the application!
 	 * 

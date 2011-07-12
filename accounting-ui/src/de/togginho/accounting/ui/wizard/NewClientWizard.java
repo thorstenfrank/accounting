@@ -44,7 +44,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 	/**
 	 * 
 	 */
-	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewClientWizard";
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewClientWizard"; //$NON-NLS-1$
 	
 	/**
 	 * 

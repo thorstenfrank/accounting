@@ -45,7 +45,7 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	/**
 	 * 
 	 */
-	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewInvoiceWizard";
+	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewInvoiceWizard"; //$NON-NLS-1$
 	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(NewInvoiceWizard.class);

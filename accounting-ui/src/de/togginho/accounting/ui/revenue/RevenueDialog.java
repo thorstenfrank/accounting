@@ -68,7 +68,7 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class RevenueDialog extends TrayDialog {
 	
-	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".RevenueDialog";
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".RevenueDialog"; //$NON-NLS-1$
 	
 	protected static final int COLUMN_INDEX_INVOICE_NUMBER = 0;
 	protected static final int COLUMN_INDEX_INVOICE_DATE = 1;

@@ -50,7 +50,7 @@ import de.togginho.accounting.ui.ModelHelper;
 public class ClientsView extends ViewPart implements IDoubleClickListener, PropertyChangeListener,
         ISelectionChangedListener {
 	
-	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientsView";
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientsView"; //$NON-NLS-1$
 	
 	private static final Logger LOG = Logger.getLogger(ClientsView.class);
 	

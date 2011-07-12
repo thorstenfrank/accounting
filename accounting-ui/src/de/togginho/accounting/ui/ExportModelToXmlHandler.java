@@ -37,12 +37,12 @@ public class ExportModelToXmlHandler extends AbstractAccountingHandler {
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		FileDialog fd = new FileDialog(getShell(event), SWT.SAVE);
 		fd.setFilterExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
-		fd.setFilterNames(new String[]{"XML files"});
+		fd.setFilterNames(new String[]{"XML files"}); //$NON-NLS-1$
 		
 		final String targetFileName = fd.open();
 		
 		if (targetFileName == null) {
-			getLogger().info("Exporting cancelled by user");
+			getLogger().info("Exporting cancelled by user"); //$NON-NLS-1$
 		} else {
 			ModelHelper.exportModelToXml(targetFileName);
 		}

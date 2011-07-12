@@ -79,7 +79,7 @@ public class ReportGenerationUtil {
 		this.handler = handler;
 		reportingService = AccountingUI.getDefault().getReportingService();
 	    if (reportingService == null) {
-	    	throw new AccountingException("No service!");
+	    	throw new AccountingException(Messages.ReportGenerationUtil_errorNoReportingService);
 	    }
 	    
 	    

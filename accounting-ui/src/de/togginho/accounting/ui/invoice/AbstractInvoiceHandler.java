@@ -66,7 +66,7 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 		
 		// TODO refine this
 		if (invoice == null) {
-			throw new AccountingException("No invoice in current selection!");
+			throw new AccountingException(Messages.AbstractInvoiceHandler_errorNoInvoiceInSelection);
 		}
 		
 		return invoice;
@@ -92,7 +92,7 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 		
 		// TODO refine this
 		if (invoice == null) {
-			throw new AccountingException("No invoice in current editor!");
+			throw new AccountingException(Messages.AbstractInvoiceHandler_errorNoInvoiceInCurrentEditor);
 		}
 		
 		return invoice;

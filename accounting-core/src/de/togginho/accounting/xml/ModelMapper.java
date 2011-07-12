@@ -60,11 +60,11 @@ public class ModelMapper {
 		try {
 	        Marshaller marshaller = JAXBContext.newInstance(JAXB_CONTEXT).createMarshaller();
 	        
-	        LOG.info("Exporting model data to file " + targetFile);
+	        LOG.info("Exporting model data to file " + targetFile); //$NON-NLS-1$
 	        marshaller.marshal(new ModelToXml().convertToXml(user, invoices), new File(targetFile));
-	        LOG.info("export finished successfully");
+	        LOG.info("export finished successfully"); //$NON-NLS-1$
         } catch (JAXBException e) {
-        	LOG.error("Error exporting data to xml", e);
+        	LOG.error("Error exporting data to xml", e); //$NON-NLS-1$
         	throw new AccountingException("Error exporting data to XML", e);
         }
 	}
@@ -77,17 +77,18 @@ public class ModelMapper {
 	public static ImportResult xmlToModel(String fileName) {
 		try {
 			final ImportResult importResult = new ImportResult();
-			LOG.info("Importing model data from file " + fileName);
+			LOG.info("Importing model data from file " + fileName); //$NON-NLS-1$
 	        Unmarshaller unmarshaller = JAXBContext.newInstance(JAXB_CONTEXT).createUnmarshaller();
 	        final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(fileName));
 	        
-	        XmlToModel xmlToModel = new XmlToModel(xmlUser);
+	        XmlToModel xmlToModel = new XmlToModel();
+	        xmlToModel.convert(xmlUser);
 	        importResult.setImportedUser(xmlToModel.getUser());
 	        importResult.setImportedInvoices(xmlToModel.getInvoices());
-	        LOG.info("import finished successfully");
+	        LOG.info("import finished successfully"); //$NON-NLS-1$
 	        return importResult;
         } catch (JAXBException e) {
-        	LOG.error("Error importing data from XML", e);
+        	LOG.error("Error importing data from XML", e); //$NON-NLS-1$
 	        throw new AccountingException("Error importing data from XML", e);
         }
 	}

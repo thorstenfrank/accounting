@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 
 /**
@@ -92,7 +93,7 @@ class UserNameAndDbFileWizardPage extends WizardPage implements KeyListener {
 		WidgetHelper.createLabel(composite, Messages.UserNameAndDbFileWizardPage_yourName);
 		
 		userName = new Text(composite, SWT.BORDER | SWT.SINGLE);
-		userName.setText(System.getProperty("user.name"));
+		userName.setText(System.getProperty("user.name")); //$NON-NLS-1$
 		grabHorizontal.applyTo(userName);
 		userName.addKeyListener(this);
 		
@@ -105,7 +106,7 @@ class UserNameAndDbFileWizardPage extends WizardPage implements KeyListener {
 		dbFile = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		grabHorizontal.applyTo(dbFile);
 		if (newFile) {
-			dbFile.setText(System.getProperty("user.home") + File.separator + "accounting.data"); //$NON-NLS-1$ //$NON-NLS-2$
+			dbFile.setText(ModelHelper.buildDefaultDbFileLocation());
 		}
 		
 		dbFile.addKeyListener(this);
@@ -153,7 +154,17 @@ class UserNameAndDbFileWizardPage extends WizardPage implements KeyListener {
      */
     private void updateIsPageComplete() {
 		if (!userName.getText().isEmpty() && !dbFile.getText().isEmpty()) {
-			setPageComplete(true);
+			File file = new File(dbFile.getText());
+			if (newFile && file.exists()) {
+				setErrorMessage(Messages.UserNameAndDbFileWizardPage_errorExistingFile);
+				setPageComplete(false);
+			} else if (!newFile && !file.exists()) {
+				setErrorMessage(Messages.UserNameAndDbFileWizardPage_errorNonExistingFile);
+				setPageComplete(false);
+			} else {
+				setErrorMessage(null);
+				setPageComplete(true);
+			}
 		} else {
 			setPageComplete(false);
 		}

@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.splash.AbstractSplashHandler;
 
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.wizard.ImportFromXmlWizard;
 import de.togginho.accounting.ui.wizard.SetupExistingDataWizard;
 import de.togginho.accounting.ui.wizard.SetupWizard;
 
@@ -104,15 +105,17 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 		} else {
 			switch (setupMode) {
 			case CREATE_NEW:
-				LOG.info("Creating new data.."); // $NON-NLS-1$
 				runSetupWizard();
 				break;
 			case USE_EXISTING:
-			case IMPORT_XML:
-				LOG.info("Use existing data..."); // $NON-NLS-1$
 				runUseExistingWizard();
 				break;
+			case IMPORT_XML:
+				runImportFromXmlWizard();
+				break;
 			}
+			
+			AccountingUI.getDefault().setFirstRun(true);
 		}
 	}
 	
@@ -120,6 +123,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 	 * 
 	 */
 	private void runSetupWizard() {
+		LOG.info("Running setup wizard..."); // $NON-NLS-1$ //$NON-NLS-1$
 		SetupWizard wizard = new SetupWizard();
 		WizardDialog dialog = new WizardDialog(getSplash(), wizard);
 		if (dialog.open() == WizardDialog.CANCEL) {
@@ -130,18 +134,63 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 			
 			AccountingUI.getDefault().initContext(user.getName(), wizard.getDbFileLocation());
 			
-			handleUserSetup(user);
+			try {
+				LOG.info("Initial save of user " +user.getName()); //$NON-NLS-1$
+				ModelHelper.saveCurrentUser(user);
+				initialised = true;
+			} catch (Exception e) {
+				LOG.error("Error saving user", e);  //$NON-NLS-1$
+				errorMessage = e.getLocalizedMessage();
+			}
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	private void runUseExistingWizard() {
+		LOG.info("Running wizard to use existing data..."); // $NON-NLS-1$ //$NON-NLS-1$
 		SetupExistingDataWizard wizard = new SetupExistingDataWizard();
 		WizardDialog dialog = new WizardDialog(getSplash(), wizard);
 		
 		if (dialog.open() == WizardDialog.CANCEL) {
 			handleSetupCancelledByUser();
 		} else {
-			LOG.info("Now running useExisting stuff...");
+			LOG.info("Now running useExisting stuff..."); //$NON-NLS-1$
+			
+			AccountingUI.getDefault().initContext(wizard.getUserName(), wizard.getFileLocation());
+			
+			User user = ModelHelper.getCurrentUser();
+			if (user == null) {
+				LOG.warn(String.format("User [%s] not found in data file [%s]", //$NON-NLS-1$
+						wizard.getUserName(), wizard.getFileLocation()));
+				errorMessage = Messages.bind(Messages.AccountingSplashHandler_errorUserNotFoundInDbFile, 
+						wizard.getUserName(), wizard.getFileLocation());
+				initialised = false;
+			} else {
+				initialised = true;				
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void runImportFromXmlWizard() {
+		LOG.info("Running wizard to import from XML..."); //$NON-NLS-1$
+		ImportFromXmlWizard wizard = new ImportFromXmlWizard();
+		WizardDialog dialog = new WizardDialog(getSplash(), wizard);
+		
+		if (dialog.open() == WizardDialog.CANCEL) {
+			handleSetupCancelledByUser();
+		} else {
+			try {
+	            AccountingUI.getDefault().initContextFromImport(wizard.getXmlFile(), wizard.getDbFile());
+	            initialised = true;
+            } catch (Exception e) {
+            	errorMessage = e.getMessage();
+            	initialised = false;
+            }
 		}
 	}
 	
@@ -151,40 +200,6 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 	private void handleSetupCancelledByUser() {
 		LOG.warn("Cannot continue application without necessary info - exiting now...");  //$NON-NLS-1$
 		errorMessage = Messages.AccountingSplashHandler_setupDialogCancelledMsg;
-	}
-	
-	/**
-	 * 
-	 * @param userFromWizard
-	 */
-	private void handleUserSetup(User userFromWizard) {
-		User currentUser = ModelHelper.getCurrentUser();
-		
-		if (currentUser != null) {
-			MessageBox msgBox = new MessageBox(getSplash(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-			msgBox.setText(Messages.AccountingSplashHandler_reuseDataText);
-			msgBox.setMessage(Messages.bind(Messages.AccountingSplashHandler_reuseDataMsg, currentUser.getName()));
-			int result = msgBox.open();
-			
-			if (result == SWT.YES) {
-				LOG.debug("Reusing existing data for user " + currentUser.getName()); //$NON-NLS-1$
-				initialised = true;
-			}
-		}
-		
-		if (!initialised) {
-			try {
-				LOG.info("Initial save of user " +userFromWizard.getName()); //$NON-NLS-1$
-				ModelHelper.saveCurrentUser(userFromWizard);
-				initialised = true;
-			} catch (Exception e) {
-				LOG.error("Error saving user", e);  //$NON-NLS-1$
-				errorMessage = e.getLocalizedMessage();
-				return;
-			}    				
-		}
-		
-		AccountingUI.getDefault().setFirstRun(true);
 	}
 
 	/**

@@ -84,7 +84,7 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class InvoiceEditor extends AbstractAccountingEditor implements Constants, PropertyChangeListener {
 
-	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceEditor";
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceEditor"; //$NON-NLS-1$
 	
 	private static final Logger LOG = Logger.getLogger(InvoiceEditor.class);
 

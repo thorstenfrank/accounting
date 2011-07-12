@@ -17,6 +17,7 @@ package de.togginho.accounting.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,10 +47,7 @@ public final class ModelHelper {
 	
 	/** */
 	public static final String MODEL_INVOICE_FILTER = "model.invoice.filter"; //$NON-NLS-1$
-	
-	/** */
-	private AccountingContext context;
-	
+		
 	/** */
 	private AccountingService accountingService;
 	
@@ -76,7 +74,6 @@ public final class ModelHelper {
 	 * @param service
 	 */
 	protected static final void init(AccountingContext context, AccountingService service) {
-		INSTANCE.context = context;
 		INSTANCE.accountingService = service;
 		INSTANCE.accountingService.init(context);
 		//INSTANCE.propertyChangeSupport = new PropertyChangeSupport(INSTANCE);
@@ -277,5 +274,17 @@ public final class ModelHelper {
 	 */
 	public static void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		INSTANCE.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String buildDefaultDbFileLocation() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(System.getProperty("user.home")); //$NON-NLS-1$
+		sb.append(File.separatorChar);
+		sb.append("accounting.data"); //$NON-NLS-1$
+		return sb.toString();
 	}
 }

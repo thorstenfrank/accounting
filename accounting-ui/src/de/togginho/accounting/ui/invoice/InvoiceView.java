@@ -61,7 +61,7 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class InvoiceView extends ViewPart implements IDoubleClickListener, PropertyChangeListener, Constants {
 	
-	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceView";
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceView"; //$NON-NLS-1$
 	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(InvoiceView.class);

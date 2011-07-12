@@ -26,6 +26,9 @@ import de.togginho.accounting.ui.Messages;
  */
 public class SetupExistingDataWizard extends Wizard {
 
+	private String userName;
+	private String dbFileLocation;
+	
 	private UserNameAndDbFileWizardPage page;
 	
 	/**
@@ -53,6 +56,8 @@ public class SetupExistingDataWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
+		this.userName = page.getSelectedUserName();
+		this.dbFileLocation = page.getSelectedDbFileName();
 		return true;
 	}
 
@@ -61,14 +66,14 @@ public class SetupExistingDataWizard extends Wizard {
 	 * @return
 	 */
 	public String getUserName() {
-		return page.getSelectedUserName();
+		return userName;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public String getSelectedFileLocation() {
-		return page.getSelectedDbFileName();
+	public String getFileLocation() {
+		return dbFileLocation;
 	}
 }
