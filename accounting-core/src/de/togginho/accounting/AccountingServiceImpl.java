@@ -38,6 +38,7 @@ import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.ext.Db4oIOException;
+import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
 import com.db4o.query.Predicate;
 
@@ -104,6 +105,10 @@ class AccountingServiceImpl implements AccountingService {
 			
 			throw new AccountingException(
 			        Messages.bind(Messages.AccountingService_errorFileLocked, context.getDbFileName()), e);
+		} catch (IncompatibleFileFormatException e) {
+			LOG.error(String.format("File [%s] is not a valid data file format!", e)); //$NON-NLS-1$
+			throw new AccountingException(
+					Messages.bind(Messages.AccountingService_errorIllegalFileFormat, context.getDbFileName()), e);
 		} catch (Exception e) {
 			LOG.error("Error setting up DB " + context.getDbFileName(), e); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorServiceInit, e);
