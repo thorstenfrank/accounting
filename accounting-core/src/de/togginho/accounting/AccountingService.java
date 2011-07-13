@@ -53,8 +53,8 @@ public interface AccountingService {
 	 * @param context the context to use for init of this service - must <b>NOT</b> be <code>null</code>, and all
 	 * 		  properties of the context need to be non-empty
 	 * 
-	 * @throws AccountingException if this service cannot be properly initialised or if the context or one of it's
-	 * 		   properties is <code>null</code>
+	 * @throws AccountingException if the supplied context or one of its properties are <code>null</code>, or if the 
+	 * 		   database cannot be opened
 	 */
 	void init(AccountingContext context);
 	
