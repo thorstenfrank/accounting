@@ -15,14 +15,16 @@
  */
 package de.togginho.accounting.ui;
 
+import java.lang.reflect.Proxy;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.util.tracker.ServiceTracker;
 
 import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.AccountingContextFactory;
@@ -36,9 +38,6 @@ public class AccountingUI extends AbstractUIPlugin {
 
 	/** The plug-in ID. */
 	public static final String PLUGIN_ID = "de.togginho.accounting.ui"; //$NON-NLS-1$
-	
-	/** The shared instance. */
-	private static AccountingUI plugin;
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingUI.class);
@@ -46,14 +45,18 @@ public class AccountingUI extends AbstractUIPlugin {
 	private static final String KEY_USER_NAME = "accounting.user.name"; //$NON-NLS-1$
 	
 	private static final String KEY_USER_DB_FILE = "accounting.db.file"; //$NON-NLS-1$
+
+	
+	/** The shared instance. */
+	private static AccountingUI plugin;
 	
 	/** Application context. */
 	private AccountingContext accountingContext;
 	
 	/** */
-	private AccountingService accountingService;
+	private AccountingServiceInvocationHandler accountingServiceProxy;
 	
-	private ReportingService reportingService;
+	private ServiceTracker<ReportingService, ReportingService> reportingServiceTracker;
 	
 	/** */
 	private boolean firstRun = false;
@@ -73,23 +76,16 @@ public class AccountingUI extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		
-		// create the tracker for the accounting service
-		ServiceReference ref = context.getServiceReference(AccountingService.class.getName());
-		if (ref == null) {
-			LOG.error("Cannot start, no service ref for CORE service!"); //$NON-NLS-1$
-			System.exit(1);
-		}
-
-		accountingService = (AccountingService) context.getService(ref);
-		if (accountingService == null) {
-			LOG.error("NO CORE SERVICE!"); //$NON-NLS-1$
-			System.exit(1);
-		}
+		LOG.info("Creating service trackers"); //$NON-NLS-1$
+		ServiceTracker<AccountingService, AccountingService> accountingServiceTracker = 
+				new ServiceTracker<AccountingService, AccountingService>(context, AccountingService.class, null);
+		accountingServiceTracker.open();
 		
-		ServiceReference ref2 = context.getServiceReference(ReportingService.class.getName());
-		if (ref2 != null) {
-			reportingService = (ReportingService) context.getService(ref2);
-		}
+		accountingServiceProxy = new AccountingServiceInvocationHandler(accountingServiceTracker);
+		
+		reportingServiceTracker = new ServiceTracker<ReportingService, ReportingService>(
+				context, ReportingService.class, null);
+		reportingServiceTracker.open();
 	}
 
 	/**
@@ -106,10 +102,23 @@ public class AccountingUI extends AbstractUIPlugin {
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public static AccountingService getAccountingService() {
+		final Class<AccountingService> serviceClazz = AccountingService.class;
+		
+		return (AccountingService) Proxy.newProxyInstance(
+				serviceClazz.getClassLoader(), 
+				new Class[]{serviceClazz}, 
+				plugin.accountingServiceProxy);
+	}
+	
+	/**
 	 * @return the reportingService
 	 */
 	public ReportingService getReportingService() {
-		return reportingService;
+		return reportingServiceTracker.getService();
 	}
 
 	/**
@@ -122,7 +131,7 @@ public class AccountingUI extends AbstractUIPlugin {
 	/**
 	 * @param firstRun the firstRun to set
 	 */
-	public void setFirstRun(boolean firstRun) {
+	protected void setFirstRun(boolean firstRun) {
 		this.firstRun = firstRun;
 	}
 	
@@ -156,9 +165,9 @@ public class AccountingUI extends AbstractUIPlugin {
 	 * @param dbFileLocation
 	 */
 	protected void initContextFromImport(final String xmlFile, final String dbFileLocation) {
-		accountingContext = accountingService.importModelFromXml(xmlFile, dbFileLocation);
+		//accountingContext = accountingService.importModelFromXml(xmlFile, dbFileLocation);
 		
-		ModelHelper.init(accountingContext, accountingService);
+		//ModelHelper.init(accountingContext, accountingService);
 	}
 	
 	/**
@@ -187,7 +196,8 @@ public class AccountingUI extends AbstractUIPlugin {
 		
 		// immediately init the AccountingService
 		LOG.debug("Initialising accounting service..."); //$NON-NLS-1$
-		ModelHelper.init(accountingContext, accountingService);
+		
+		accountingServiceProxy.setAccountingContext(accountingContext);
 	}
 	
 	/**

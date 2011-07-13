@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
@@ -32,7 +31,7 @@ import de.togginho.accounting.model.User;
 
 /**
  * @author thorsten
- *
+ * @deprecated use {@link AccountingUI#getAccountingService()} instead
  */
 public final class ModelHelper {
 	
@@ -48,9 +47,6 @@ public final class ModelHelper {
 	/** */
 	public static final String MODEL_INVOICE_FILTER = "model.invoice.filter"; //$NON-NLS-1$
 		
-	/** */
-	private AccountingService accountingService;
-	
 	private PropertyChangeSupport propertyChangeSupport;
 	
 	private User currentUser;
@@ -67,17 +63,6 @@ public final class ModelHelper {
 		invoiceFilter.add(InvoiceState.SENT);
 		invoiceFilter.add(InvoiceState.OVERDUE);
 	}
-	
-	/**
-	 * 
-	 * @param context
-	 * @param service
-	 */
-	protected static final void init(AccountingContext context, AccountingService service) {
-		INSTANCE.accountingService = service;
-		INSTANCE.accountingService.init(context);
-		//INSTANCE.propertyChangeSupport = new PropertyChangeSupport(INSTANCE);
-	}
 
 	/**
 	 * 
@@ -85,7 +70,7 @@ public final class ModelHelper {
 	 */
 	public static User getCurrentUser() {
 		if (INSTANCE.currentUser == null) {
-			INSTANCE.currentUser = INSTANCE.accountingService.getCurrentUser();
+			INSTANCE.currentUser = AccountingUI.getAccountingService().getCurrentUser();
 		}
 		return INSTANCE.currentUser;
 	}
@@ -102,7 +87,7 @@ public final class ModelHelper {
 	 * @param newUser
 	 */
 	public static void saveCurrentUser(User newUser) {
-		INSTANCE.currentUser = INSTANCE.accountingService.saveCurrentUser(newUser);
+		INSTANCE.currentUser = AccountingUI.getAccountingService().saveCurrentUser(newUser);
 		// old value needs to be null to make sure the change is actually broadcast
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_CURRENT_USER, null, INSTANCE.currentUser);		
 	}
@@ -121,7 +106,7 @@ public final class ModelHelper {
 	 */
 	private Set<Invoice> doFindInvoices() {
 		if (invoiceFilter == null || invoiceFilter.isEmpty()) {
-			return accountingService.findInvoices();
+			return AccountingUI.getAccountingService().findInvoices();
 		}
 		final InvoiceState[] states = new InvoiceState[invoiceFilter.size()];
 		Iterator<InvoiceState> iter = invoiceFilter.iterator();
@@ -131,7 +116,7 @@ public final class ModelHelper {
 			counter++;
 		}
 		
-		return accountingService.findInvoices(states);
+		return AccountingUI.getAccountingService().findInvoices(states);
 	}
 	
 	/**
@@ -157,7 +142,7 @@ public final class ModelHelper {
 	 * @return
 	 */
 	public static Invoice getInvoice(String invoiceNumber) {
-		return INSTANCE.accountingService.getInvoice(invoiceNumber);
+		return AccountingUI.getAccountingService().getInvoice(invoiceNumber);
 	}
 	
 	/**
@@ -166,7 +151,7 @@ public final class ModelHelper {
 	 * @return
 	 */
 	public static Invoice saveInvoice(Invoice invoice) {
-		Invoice saved = INSTANCE.accountingService.saveInvoice(invoice);
+		Invoice saved = AccountingUI.getAccountingService().saveInvoice(invoice);
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, saved);
 		return saved;
 	}
@@ -174,10 +159,10 @@ public final class ModelHelper {
 	/**
 	 * @param invoice
 	 * @return
-	 * @see de.togginho.accounting.AccountingService#sendInvoice(Invoice, Date)
+	 * @see de.togginho.accounting.AccountingUI.getAccountingService()#sendInvoice(Invoice, Date)
 	 */
 	public static Invoice sendInvoice(Invoice invoice, Date date) {
-		Invoice sent = INSTANCE.accountingService.sendInvoice(invoice, date);
+		Invoice sent = AccountingUI.getAccountingService().sendInvoice(invoice, date);
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, sent);
 		return sent;
 	}
@@ -189,7 +174,7 @@ public final class ModelHelper {
      * @see AccountingService#markAsPaid(Invoice, Date)
      */
     public static Invoice markAsPaid(Invoice invoice, Date paymentDate) {
-	    Invoice paid = INSTANCE.accountingService.markAsPaid(invoice, paymentDate);
+	    Invoice paid = AccountingUI.getAccountingService().markAsPaid(invoice, paymentDate);
 	    INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, paid);
 	    return paid;
     }
@@ -199,7 +184,7 @@ public final class ModelHelper {
 	 * @param invoice
 	 */
 	public static void deleteInvoice(Invoice invoice) {
-		INSTANCE.accountingService.deleteInvoice(invoice);
+		AccountingUI.getAccountingService().deleteInvoice(invoice);
 		INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, invoice, null);
 	}
 
@@ -210,7 +195,7 @@ public final class ModelHelper {
 	 * @see AccountingService#cancelInvoice(Invoice)
 	 */
 	public static Invoice cancelInvoice(Invoice invoice) {
-		Invoice cancelled = INSTANCE.accountingService.cancelInvoice(invoice);
+		Invoice cancelled = AccountingUI.getAccountingService().cancelInvoice(invoice);
 	    INSTANCE.propertyChangeSupport.firePropertyChange(MODEL_INVOICES, null, cancelled);
 	    return cancelled;
 	}
@@ -222,7 +207,7 @@ public final class ModelHelper {
      * @see de.togginho.accounting.AccountingService#getRevenue(java.util.Date, java.util.Date)
      */
     public static Revenue getRevenue(Date from, Date until) {
-	    return INSTANCE.accountingService.getRevenue(from, until);
+	    return AccountingUI.getAccountingService().getRevenue(from, until);
     }
 
 	/**
@@ -233,7 +218,7 @@ public final class ModelHelper {
 	 * @see AccountingService#copyInvoice(Invoice, String)
 	 */
 	public static Invoice copyInvoice(Invoice invoice, String newInvoiceNumber) {
-		return INSTANCE.accountingService.copyInvoice(invoice, newInvoiceNumber);
+		return AccountingUI.getAccountingService().copyInvoice(invoice, newInvoiceNumber);
 	}
 	
 	/**
@@ -241,7 +226,7 @@ public final class ModelHelper {
 	 * @param targetFileName
 	 */
 	public static void exportModelToXml(String targetFileName) {
-		INSTANCE.accountingService.exportModelToXml(targetFileName);
+		AccountingUI.getAccountingService().exportModelToXml(targetFileName);
 	}
 	
 	/**
