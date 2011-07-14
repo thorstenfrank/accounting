@@ -26,9 +26,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 
 /**
  * Abstract base class for all invoice-centric command handlers.
@@ -114,7 +114,7 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 			getLogger().info("Deleting invoice " + invoice.getNumber()); //$NON-NLS-1$
 			
 			// do the actual work
-			ModelHelper.deleteInvoice(invoice);
+			AccountingUI.getAccountingService().deleteInvoice(invoice);
 			
 			// close any open editors for the deleted invoice
 			removeOpenEditorForInvoice(invoice, event);
@@ -138,7 +138,7 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 		if (areYouSure) {
 			getLogger().info("Cancelling invoice " + invoice.getNumber()); //$NON-NLS-1$
 			// do the actual work
-			ModelHelper.cancelInvoice(invoice);
+			AccountingUI.getAccountingService().cancelInvoice(invoice);
 		} else {
 			getLogger().info("CancelInvoice was cancelled by user"); //$NON-NLS-1$
 		}

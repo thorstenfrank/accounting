@@ -33,7 +33,6 @@ import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.invoice.InvoiceEditorInput;
 
 /**
@@ -91,7 +90,8 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	public boolean performFinish() {
 		
 		final Invoice newInvoice = new Invoice();
-		newInvoice.setUser(ModelHelper.getCurrentUser());
+		
+		newInvoice.setUser(AccountingUI.getAccountingService().getCurrentUser());
 		
 		// update data from wizard pages
 		newInvoice.setNumber(invoiceNumberPage.getInvoiceNumber());
@@ -101,7 +101,7 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 		newInvoice.setInvoiceDate(new Date());
 		
 		// check if an invoice with that number already exists
-		if (ModelHelper.getInvoice(newInvoice.getNumber()) != null) {
+		if (AccountingUI.getAccountingService().getInvoice(newInvoice.getNumber()) != null) {
 			LOG.warn(String.format("Invoice with number [%s] already exists!", newInvoice.getNumber())); //$NON-NLS-1$
 			MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
 			msgBox.setMessage(Messages.NewInvoiceWizardPage_alreadyExistsMsg);
@@ -112,7 +112,7 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 		
 		// save the invoice
 		LOG.info("Saving new invoice " + newInvoice); //$NON-NLS-1$
-		ModelHelper.saveInvoice(newInvoice);
+		AccountingUI.getAccountingService().saveInvoice(newInvoice);
 		
 		LOG.debug("Setting selection to new invoice"); //$NON-NLS-1$
 		ISelectionProvider selectionProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().getSelectionProvider();

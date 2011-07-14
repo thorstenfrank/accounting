@@ -16,46 +16,48 @@
 package de.togginho.accounting.ui.user;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 
+import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
-import de.togginho.accounting.ui.ModelHelper;
 
 /**
+ * Opens the editor for the current user.
+ * 
  * @author tfrank1
  *
  */
-public class OpenUserEditorCommand extends AbstractHandler {
+public class OpenUserEditorCommand extends AbstractAccountingHandler {
 
+	private static final Logger LOG = Logger.getLogger(OpenUserEditorCommand.class);
+	
 	private static final String ERROR_MSG = "Error opening user editor"; //$NON-NLS-1$
 	
 	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Logger.getLogger(this.getClass()).debug("Opening user editor"); //$NON-NLS-1$
-		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		//HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
-		
-		UserEditorInput input = new UserEditorInput(ModelHelper.getCurrentUser());
-		
+     * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    protected void doExecute(ExecutionEvent event) throws ExecutionException {
+    	LOG.debug("Opening user editor"); //$NON-NLS-1$
+	    
+    	UserEditorInput input = new UserEditorInput(AccountingUI.getAccountingService().getCurrentUser());
+    	
 		try {
-			page.openEditor(input, IDs.EDIT_USER_ID);
+			getActivePage(event).openEditor(input, IDs.EDIT_USER_ID);
 		} catch (PartInitException e) {
-			Logger.getLogger(this.getClass()).error(ERROR_MSG, e);
+			LOG.error(ERROR_MSG, e);
 			throw new ExecutionException(ERROR_MSG, e);
 		}
-		
-		
-		return null;
-	}
-
+    }
+    
+	/**
+     * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
+     */
+    @Override
+    protected Logger getLogger() {
+	    return LOG;
+    }
 }

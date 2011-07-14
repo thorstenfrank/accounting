@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 
 /**
@@ -79,7 +79,7 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
 		
 		clientCombo = new Combo(composite, SWT.READ_ONLY);
 		String[] clientNames = null;
-		Set<Client> clients = ModelHelper.getCurrentUser().getClients();
+		Set<Client> clients = AccountingUI.getAccountingService().getCurrentUser().getClients();
 		if (clients != null) {
 			nameToClientMap = new HashMap<String, Client>();
 			clientNames = new String[clients.size()];

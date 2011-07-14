@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 
 /**
@@ -143,7 +143,7 @@ public class ImportFromXmlWizard extends Wizard {
     		
     		WidgetHelper.createLabel(composite, Messages.ImportFromXmlWizard_dataFileLabel);
     		final Text dbFileText = WidgetHelper.createSingleBorderText(
-    				composite, ModelHelper.buildDefaultDbFileLocation());
+    				composite, AccountingUI.buildDefaultDbFileLocation());
     		dbFile = dbFileText.getText();
     		grabHorizontal.applyTo(dbFileText);
     		dbFileText.addKeyListener(new KeyAdapter() {

@@ -30,8 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 
 /**
@@ -106,7 +106,7 @@ class UserNameAndDbFileWizardPage extends WizardPage implements KeyListener {
 		dbFile = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		grabHorizontal.applyTo(dbFile);
 		if (newFile) {
-			dbFile.setText(ModelHelper.buildDefaultDbFileLocation());
+			dbFile.setText(AccountingUI.buildDefaultDbFileLocation());
 		}
 		
 		dbFile.addKeyListener(this);

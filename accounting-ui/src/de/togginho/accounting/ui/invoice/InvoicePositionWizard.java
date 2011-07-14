@@ -204,35 +204,38 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			taxRate.add(EMPTY_STRING);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(taxRate);
 			
-			TaxRate existing = position != null && position.getTaxRate() != null ? position.getTaxRate() : null;
-			int index = 1;
-			descToRateMap = new HashMap<String, TaxRate>();
-			for (TaxRate rate : invoice.getUser().getTaxRates()) {
-				final String desc = rate.toLongString();
-				descToRateMap.put(desc, rate);
-				taxRate.add(desc);
-				if (rate.equals(existing)) {
-					taxRate.select(index);
-				} else {
-					index++;
-				}
-			}
-			taxRate.addSelectionListener(new SelectionAdapter() {
-				/**
-				 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-				 */
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					Combo combo = (Combo) e.getSource();
-					final String selected = combo.getItem(combo.getSelectionIndex());
-					if (selected.isEmpty()) {
-						position.setTaxRate(null);
+			if (invoice.getUser().getTaxRates() != null) {
+				TaxRate existing = position != null && position.getTaxRate() != null ? position.getTaxRate() : null;
+				
+				int index = 1;
+				descToRateMap = new HashMap<String, TaxRate>();
+				for (TaxRate rate : invoice.getUser().getTaxRates()) {
+					final String desc = rate.toLongString();
+					descToRateMap.put(desc, rate);
+					taxRate.add(desc);
+					if (rate.equals(existing)) {
+						taxRate.select(index);
 					} else {
-						position.setTaxRate(descToRateMap.get(selected));
+						index++;
 					}
-					checkIfPageComplete();
 				}
-			});
+				taxRate.addSelectionListener(new SelectionAdapter() {
+					/**
+					 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+					 */
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						Combo combo = (Combo) e.getSource();
+						final String selected = combo.getItem(combo.getSelectionIndex());
+						if (selected.isEmpty()) {
+							position.setTaxRate(null);
+						} else {
+							position.setTaxRate(descToRateMap.get(selected));
+						}
+						checkIfPageComplete();
+					}
+				});				
+			}
 			
 			// DESCRIPTION
 			WidgetHelper.createLabel(composite, Messages.labelDescription);

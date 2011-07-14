@@ -29,9 +29,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 
 /**
  * Deletes a client provided by the active {@link IWorkbenchPart}, or more precisely it's {@link ISelectionProvider}.
@@ -49,24 +49,24 @@ public class DeleteClientCommand extends AbstractClientHandler {
 	 * @see AbstractClientHandler#handleClient(Client, ExecutionEvent)
 	 */
 	@Override
-	protected void handleClient(Client client, ExecutionEvent event) throws ExecutionException {
+	protected void handleClient(Client clientToDelete, ExecutionEvent event) throws ExecutionException {
 		MessageBox messageBox = new MessageBox(getShell(event), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 		
-		LOG.debug("Confirming deletion of client " + client.getName()); //$NON-NLS-1$
+		LOG.debug("Confirming deletion of client " + clientToDelete.getName()); //$NON-NLS-1$
 		
-		messageBox.setMessage(Messages.bind(Messages.DeleteClientCommand_confirmMessage, client.getName()));
+		messageBox.setMessage(Messages.bind(Messages.DeleteClientCommand_confirmMessage, clientToDelete.getName()));
 		messageBox.setText(Messages.DeleteClientCommand_confirmText);
 		
 		if (messageBox.open() == SWT.YES) {
-			User currentUser = ModelHelper.getCurrentUser();
+			User currentUser = AccountingUI.getAccountingService().getCurrentUser();
 			
 			LOG.debug(String.format("Removing client [%s] from user [%s]",  //$NON-NLS-1$
-					client.getName(), currentUser.getName()));
+					clientToDelete.getName(), currentUser.getName()));
 			
 			Iterator<Client> iter = currentUser.getClients().iterator();
 			while (iter.hasNext()) {
 				Client toBeDeleted = iter.next();
-				if (toBeDeleted.equals(client)) {
+				if (toBeDeleted.equals(clientToDelete)) {
 					LOG.debug("Found client in user, now removing"); //$NON-NLS-1$
 					iter.remove();
 					break;
@@ -74,12 +74,12 @@ public class DeleteClientCommand extends AbstractClientHandler {
 			}
 			
 			// save the current user
-			ModelHelper.saveCurrentUser();
+			AccountingUI.getAccountingService().saveCurrentUser(currentUser);
 			
 			// close open editors for the deleted client, if open
-			removeOpenEditorForClient(client, event);
+			removeOpenEditorForClient(clientToDelete, event);
 		} else {
-			LOG.debug(String.format("Deleting client [%s] was cancelled.", client.getName())); //$NON-NLS-1$
+			LOG.debug(String.format("Deleting client [%s] was cancelled.", clientToDelete.getName())); //$NON-NLS-1$
 		}
 	}
 	

@@ -44,7 +44,7 @@ public class ExportModelToXmlHandler extends AbstractAccountingHandler {
 		if (targetFileName == null) {
 			getLogger().info("Exporting cancelled by user"); //$NON-NLS-1$
 		} else {
-			ModelHelper.exportModelToXml(targetFileName);
+			AccountingUI.getAccountingService().exportModelToXml(targetFileName);
 		}
 	}
 

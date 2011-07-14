@@ -55,7 +55,6 @@ import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.wizard.NewTaxRateWizard;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -313,7 +312,7 @@ public class UserEditor extends AbstractAccountingEditor {
 		
 		User user = getEditorInput().getUser();
 		
-		ModelHelper.saveCurrentUser(user);
+		AccountingUI.getAccountingService().saveCurrentUser(user);
 		
 		setIsDirty(false);
 	}	

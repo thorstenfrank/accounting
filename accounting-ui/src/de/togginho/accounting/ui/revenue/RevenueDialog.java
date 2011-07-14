@@ -55,7 +55,6 @@ import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
@@ -272,7 +271,8 @@ public class RevenueDialog extends TrayDialog {
 	 * 
 	 */
 	private void updateInvoices() {
-		revenue = ModelHelper.getRevenue(WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate));
+		revenue = AccountingUI.getAccountingService().getRevenue(
+				WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate));
 		
 		List<InvoiceWrapper> invoices = new ArrayList<InvoiceWrapper>();
 		for (Invoice invoice : revenue.getInvoices()) {

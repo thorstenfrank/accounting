@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 
 import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.ui.ModelHelper;
 
 /**
  * Sends the currently edited invoice. This handler is active when the active view part is {@link InvoiceEditor}, and
@@ -27,7 +26,7 @@ import de.togginho.accounting.ui.ModelHelper;
  *  
  * @author thorsten
  * @see SendInvoiceFromSelectionHandler
- * @see ModelHelper#sendInvoice(Invoice)
+ * @see de.togginho.accounting.AccountingService#sendInvoice(Invoice)
  */
 public class SendInvoiceFromEditorHandler extends SendInvoiceFromSelectionHandler {
 

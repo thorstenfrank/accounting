@@ -19,13 +19,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.ui.AbstractAccountingHandler;
 
 /**
  * Cancels the currently selected invoice.
  * 
  * @author thorsten
- * @see ModelHelper#cancelInvoice(de.togginho.accounting.model.Invoice)
+ * @see de.togginho.accounting.AccountingService#cancelInvoice(de.togginho.accounting.model.Invoice)
  */
 public class CancelInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 

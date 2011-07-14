@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -44,7 +44,7 @@ import de.togginho.accounting.util.FormatUtil;
  * 
  * @author thorsten
  * @see SendInvoiceFromEditorHandler
- * @see ModelHelper#sendInvoice(Invoice)
+ * @see de.togginho.accounting.AccountingService#sendInvoice(Invoice)
  */
 public class SendInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 
@@ -67,7 +67,7 @@ public class SendInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 		if (dialog.open() == TitleAreaDialog.OK) {
 			getLogger().info(String.format("Now marking invoice [%s] as sent on [%s]", //$NON-NLS-1$
 					invoice.getNumber(), FormatUtil.formatDate(sentDate)));
-			ModelHelper.sendInvoice(invoice, sentDate);
+			AccountingUI.getAccountingService().sendInvoice(invoice, sentDate);
 		} else {
 			getLogger().debug("Payment was cancelled..."); //$NON-NLS-1$
 		}

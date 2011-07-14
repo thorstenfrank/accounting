@@ -31,12 +31,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IViewPart;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 
 /**
@@ -55,7 +56,16 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		currentFilter = ModelHelper.getInvoiceFilter();
+		IViewPart viewPart = getActivePage(event).findView(IDs.VIEW_INVOICES_ID);
+		InvoiceView invoiceView = null;
+		if (viewPart != null && viewPart instanceof InvoiceView) {
+			invoiceView = (InvoiceView) viewPart;
+			currentFilter = invoiceView.getInvoiceFilter();
+		} else {
+			LOG.warn("No active invoice view found! This command should not have been fired...");
+			return;
+		}
+		
 		TitleAreaDialog tad = new TitleAreaDialog(getShell(event)) {
 			@Override
 			public void create() {
@@ -121,7 +131,7 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
 			}
 			LOG.info(sb.toString());
 			
-			ModelHelper.setInvoiceFilter(currentFilter);
+			invoiceView.invoicesChanged();
 		} else {
 			LOG.debug("Change invoice filter was cancelled"); //$NON-NLS-1$
 		}

@@ -15,9 +15,8 @@
  */
 package de.togginho.accounting.ui.invoice;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,14 +51,14 @@ import de.togginho.accounting.ui.AbstractTableSorter;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.ui.ModelChangeListener;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
  *
  */
-public class InvoiceView extends ViewPart implements IDoubleClickListener, PropertyChangeListener, Constants {
+public class InvoiceView extends ViewPart implements IDoubleClickListener, ModelChangeListener {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceView"; //$NON-NLS-1$
 	
@@ -80,6 +79,19 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	/** The viewer. */
 	private TableViewer tableViewer;
 	
+	private Set<InvoiceState> invoiceFilter;
+	
+	/**
+	 * 
+	 */
+	public InvoiceView() {
+		this.invoiceFilter = new HashSet<InvoiceState>();
+		// fill invoice filter with default values
+		invoiceFilter.add(InvoiceState.CREATED);
+		invoiceFilter.add(InvoiceState.OVERDUE);
+		invoiceFilter.add(InvoiceState.SENT);
+    }
+
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -88,15 +100,16 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	public void createPartControl(Composite parent) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		
+		AccountingUI.addModelChangeListener(this);
+		
 		initInvoiceStateImageMap();
-		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
-		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
 		
 		Composite tableComposite = new Composite(parent, SWT.NONE);
 		TableColumnLayout tcl = new TableColumnLayout();
 		tableComposite.setLayout(tcl);
 		
 		tableViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
+		
 		getSite().setSelectionProvider(tableViewer);
 		
 		Table table = tableViewer.getTable();
@@ -157,12 +170,9 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 			}
 		});
 		
-		// get the invoices to display
-		final Set<Invoice> invoices = ModelHelper.findInvoices();
-		
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-		tableViewer.setInput(invoices);
+		tableViewer.setInput(getInvoicesWithFilter());
 		
 		InvoiceViewTableSorter sorter = new InvoiceViewTableSorter();
 		sorter.setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
@@ -193,9 +203,10 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	 */
 	@Override
 	public void dispose() {
-		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
-		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICE_FILTER, this);
+		// unregister myself as a listener
+		AccountingUI.removeModelChangeListener(this);
 		
+		// dispose the images used for visualizing the invoice states
 		for (InvoiceState state : INVOICE_STATE_TO_IMAGE_MAP.keySet()) {
 			INVOICE_STATE_TO_IMAGE_MAP.get(state).dispose();
 		}
@@ -224,20 +235,52 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
 	}
 
 	/**
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+     * @see de.togginho.accounting.ui.ModelChangeListener#currentUserChanged()
+     */
+    @Override
+    public void currentUserChanged() {
+	    // don't need to to anything here...
+    }
+
+	/**
+     * @see de.togginho.accounting.ui.ModelChangeListener#invoicesChanged()
+     */
+    @Override
+    public void invoicesChanged() {
 		LOG.info("Refreshing invoices..."); //$NON-NLS-1$
-		Set<Invoice> invoices = ModelHelper.findInvoices();
 
-		LOG.debug("Number of invoices: " + invoices.size()); //$NON-NLS-1$
-		
 		// reload open invoices
-		tableViewer.setInput(invoices);
+		tableViewer.setInput(getInvoicesWithFilter());
 		tableViewer.refresh();
-	}
+		
+		// update selection to force re-evaluation of handlers on the current selection
+    }
+    
+	/**
+     * @return the invoiceFilter
+     */
+    protected Set<InvoiceState> getInvoiceFilter() {
+    	return invoiceFilter;
+    }
 
+	/**
+	 * 
+	 * @return
+	 */
+	private Set<Invoice> getInvoicesWithFilter() {
+		Set<Invoice> invoices = null;
+		
+		if (invoiceFilter == null || invoiceFilter.isEmpty()) {
+			invoices = AccountingUI.getAccountingService().findInvoices();
+		} else {
+			invoices = AccountingUI.getAccountingService().findInvoices(
+					(InvoiceState[]) invoiceFilter.toArray(new InvoiceState[invoiceFilter.size()]));
+		}
+		
+		LOG.debug("Number of invoices found: " + invoices.size()); //$NON-NLS-1$
+		return invoices;
+	}
+	
 	/**
 	 * 
 	 */
@@ -281,23 +324,21 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Prope
          */
         @Override
         public String getColumnText(Object element, int columnIndex) {
-        	if (element == null || !(element instanceof Invoice)) {
-        		return HYPHEN;
+        	if (element != null && element instanceof Invoice) {        		
+        		final Invoice invoice = (Invoice) element;
+		    	switch (columnIndex) {
+				case COL_INDEX_INVOICE_NUMBER:
+					return invoice.getNumber();
+				case COL_INDEX_INVOICE_STATE:
+					return invoice.getState().getTranslatedString();
+				case COL_INDEX_CLIENT:
+					return invoice.getClient() != null ? invoice.getClient().getName() : Constants.HYPHEN;
+				case COL_INDEX_DUE_DATE:
+					return invoice.getDueDate() != null ? FormatUtil.formatDate(invoice.getDueDate()) : Constants.HYPHEN;
+		    	}
         	}
         	
-        	final Invoice invoice = (Invoice) element;
-        	switch (columnIndex) {
-			case COL_INDEX_INVOICE_NUMBER:
-				return invoice.getNumber();
-			case COL_INDEX_INVOICE_STATE:
-				return invoice.getState().getTranslatedString();
-			case COL_INDEX_CLIENT:
-				return invoice.getClient() != null ? invoice.getClient().getName() : Constants.HYPHEN;
-			case COL_INDEX_DUE_DATE:
-				return invoice.getDueDate() != null ? FormatUtil.formatDate(invoice.getDueDate()) : Constants.HYPHEN;
-			default:
-				return HYPHEN;
-			}
+        	return Constants.HYPHEN;
         }
 	}
 }

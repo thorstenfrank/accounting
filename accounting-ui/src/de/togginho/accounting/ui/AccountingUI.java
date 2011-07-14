@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.ui;
 
+import java.io.File;
 import java.lang.reflect.Proxy;
 
 import org.apache.log4j.Logger;
@@ -42,10 +43,11 @@ public class AccountingUI extends AbstractUIPlugin {
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingUI.class);
 	
+	/** */
 	private static final String KEY_USER_NAME = "accounting.user.name"; //$NON-NLS-1$
 	
+	/** */
 	private static final String KEY_USER_DB_FILE = "accounting.db.file"; //$NON-NLS-1$
-
 	
 	/** The shared instance. */
 	private static AccountingUI plugin;
@@ -56,18 +58,12 @@ public class AccountingUI extends AbstractUIPlugin {
 	/** */
 	private AccountingServiceInvocationHandler accountingServiceProxy;
 	
+	/** */
 	private ServiceTracker<ReportingService, ReportingService> reportingServiceTracker;
 	
 	/** */
 	private boolean firstRun = false;
 	
-	
-	/**
-	 * The constructor
-	 */
-	public AccountingUI() {
-	}
-
 	/**
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
@@ -102,16 +98,65 @@ public class AccountingUI extends AbstractUIPlugin {
 	}
 	
 	/**
+	 * Returns the shared instance
+	 *
+	 * @return the shared instance
+	 */
+	public static AccountingUI getDefault() {
+		return plugin;
+	}
+
+	/**
+	 * Returns an image descriptor for the image file at the given
+	 * plug-in relative path
+	 *
+	 * @param path the path
+	 * @return the image descriptor
+	 */
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String buildDefaultDbFileLocation() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(System.getProperty("user.home")); //$NON-NLS-1$
+		sb.append(File.separatorChar);
+		sb.append("accounting.data"); //$NON-NLS-1$
+		return sb.toString();
+	}
+	
+	/**
 	 * 
 	 * @return
 	 */
 	public static AccountingService getAccountingService() {
+		// TODO cache the proxy instance?
 		final Class<AccountingService> serviceClazz = AccountingService.class;
 		
 		return (AccountingService) Proxy.newProxyInstance(
 				serviceClazz.getClassLoader(), 
 				new Class[]{serviceClazz}, 
 				plugin.accountingServiceProxy);
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public static void addModelChangeListener(ModelChangeListener listener) {
+		plugin.accountingServiceProxy.addModelChangeListener(listener);
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public static void removeModelChangeListener(ModelChangeListener listener) {
+		plugin.accountingServiceProxy.removeModelChangeListener(listener);
 	}
 	
 	/**
@@ -144,8 +189,8 @@ public class AccountingUI extends AbstractUIPlugin {
 		// TODO throw an exception if the context is already initialised...
 		
 		LOG.info("Initialising AccountingContext"); //$NON-NLS-1$
-		
-		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(getBundle().getSymbolicName());
+				
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
 		
 		if (prefs != null) {
 			final String userName = prefs.get(KEY_USER_NAME, null);
@@ -153,7 +198,7 @@ public class AccountingUI extends AbstractUIPlugin {
 			
 			initContext(userName, dbFileLocation);
 		} else {
-			LOG.warn("No preferences to be found in instance scope with name " + getBundle().getSymbolicName()); //$NON-NLS-1$
+			LOG.warn("No preferences to be found in instance scope with name " + PLUGIN_ID); //$NON-NLS-1$
 		}
 		
 		return (accountingContext != null);
@@ -165,9 +210,8 @@ public class AccountingUI extends AbstractUIPlugin {
 	 * @param dbFileLocation
 	 */
 	protected void initContextFromImport(final String xmlFile, final String dbFileLocation) {
-		//accountingContext = accountingService.importModelFromXml(xmlFile, dbFileLocation);
-		
-		//ModelHelper.init(accountingContext, accountingService);
+		accountingServiceProxy.setAccountingContext(
+				getAccountingService().importModelFromXml(xmlFile, dbFileLocation));
 	}
 	
 	/**
@@ -195,8 +239,7 @@ public class AccountingUI extends AbstractUIPlugin {
 		accountingContext = AccountingContextFactory.buildContext(userName, dbFileLocation);
 		
 		// immediately init the AccountingService
-		LOG.debug("Initialising accounting service..."); //$NON-NLS-1$
-		
+		LOG.debug("Propagating context to AccountingService proxy..."); //$NON-NLS-1$
 		accountingServiceProxy.setAccountingContext(accountingContext);
 	}
 	
@@ -211,9 +254,9 @@ public class AccountingUI extends AbstractUIPlugin {
 			LOG.info("Saving context to preferences..."); //$NON-NLS-1$
 		}
 		
-		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(getBundle().getSymbolicName());
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
 		if (prefs == null) {
-			LOG.warn("Preferences not found: " + getBundle().getSymbolicName()); //$NON-NLS-1$
+			LOG.warn("Preferences not found: " + PLUGIN_ID); //$NON-NLS-1$
 			return;
 		}
 		
@@ -225,25 +268,5 @@ public class AccountingUI extends AbstractUIPlugin {
 		} catch (BackingStoreException e) {
 			LOG.error("Error saving context!", e); //$NON-NLS-1$
 		}
-	}
-	
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static AccountingUI getDefault() {
-		return plugin;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 }

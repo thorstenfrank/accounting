@@ -32,7 +32,6 @@ import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.client.ClientEditorInput;
 
 /**
@@ -105,7 +104,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 		newClient.setAddress(addressWizardPage.getAddress());
 		
 		LOG.debug("Getting current user from Plugin"); //$NON-NLS-1$
-		User user = ModelHelper.getCurrentUser();
+		User user = AccountingUI.getAccountingService().getCurrentUser();
 		if (user.getClients() == null) {
 			user.setClients(new HashSet<Client>());
 		} else {
@@ -118,13 +117,11 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 				return false;
 			}
 		}
-
-		user.getClients().add(newClient);
 		
 		LOG.info("Saving current user with newly added client " + newClient.getName());  //$NON-NLS-1$
+		user.getClients().add(newClient);
+		AccountingUI.getAccountingService().saveCurrentUser(user);
 		
-		ModelHelper.saveCurrentUser(user);
-
 		LOG.debug("Opening editor for newly created client"); //$NON-NLS-1$
 		ClientEditorInput input = new ClientEditorInput(newClient);
 		

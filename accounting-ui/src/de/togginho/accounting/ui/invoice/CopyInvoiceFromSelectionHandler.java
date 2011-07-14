@@ -32,14 +32,14 @@ import org.eclipse.ui.PartInitException;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 
 /**
  * @author thorsten
- *
+ * @see de.togginho.accounting.AccountingService#copyInvoice(Invoice, String)
  */
 public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler implements Constants {
 	
@@ -59,7 +59,7 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
     	invoiceNumber = null;
     	if (dialog.open() == TitleAreaDialog.OK) {
     		LOG.info("Creating copy of invoice with new number: " + invoiceNumber); //$NON-NLS-1$
-    		Invoice copy = ModelHelper.copyInvoice(original, invoiceNumber);
+    		Invoice copy = AccountingUI.getAccountingService().copyInvoice(original, invoiceNumber);
     		InvoiceEditorInput input = new InvoiceEditorInput(copy);
     		
     		try {
@@ -150,7 +150,7 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
         		invoiceNumber = invoiceNumberText.getText();
         		if (invoiceNumber == null || invoiceNumber.isEmpty()) {
         			setErrorMessage(Messages.CopyInvoiceCommand_errorEmptyInvoiceNumber);
-        		} else if (ModelHelper.getInvoice(invoiceNumber) != null) {
+        		} else if (AccountingUI.getAccountingService().getInvoice(invoiceNumber) != null) {
         			setErrorMessage(Messages.CopyInvoiceCommand_errorExistingInvoice);
         		} else {
         			super.buttonPressed(buttonId);

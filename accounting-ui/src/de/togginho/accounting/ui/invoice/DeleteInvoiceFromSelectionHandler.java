@@ -27,7 +27,7 @@ import de.togginho.accounting.model.Invoice;
  * 
  * @author tfrank1
  * @see DeleteInvoiceFromEditorHandler
- * @see de.togginho.accounting.ui.ModelHelper#deleteInvoice(Invoice)
+ * @see de.togginho.accounting.AccountingService#deleteInvoice(Invoice)
  */
 public class DeleteInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 

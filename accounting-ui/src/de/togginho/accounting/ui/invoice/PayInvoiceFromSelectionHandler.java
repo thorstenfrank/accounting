@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -45,7 +45,7 @@ import de.togginho.accounting.util.FormatUtil;
  * when {@link Invoice#canBePaid()} returns <code>true</code> for that invoice.
  * 
  * @author tfrank1
- * @see ModelHelper#markAsPaid(Invoice, Date)
+ * @see de.togginho.accounting.AccountingService#markAsPaid(Invoice, Date)
  */
 public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 
@@ -68,7 +68,7 @@ public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 			LOG.info(String.format("Now marking invoice [%s] as paid on [%s]", //$NON-NLS-1$
 					invoice.getNumber(), FormatUtil.formatDate(paymentDate)));
 			
-			ModelHelper.markAsPaid(invoice, paymentDate);
+			AccountingUI.getAccountingService().markAsPaid(invoice, paymentDate);
 		} else {
 			LOG.debug("Payment was cancelled..."); //$NON-NLS-1$
 		}

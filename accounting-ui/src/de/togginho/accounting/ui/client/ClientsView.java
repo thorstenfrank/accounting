@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.ui.client;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,9 +23,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -41,14 +37,13 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
-import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.ui.ModelChangeListener;
 
 /**
  * @author thorsten
  *
  */
-public class ClientsView extends ViewPart implements IDoubleClickListener, PropertyChangeListener,
-        ISelectionChangedListener {
+public class ClientsView extends ViewPart implements IDoubleClickListener, ModelChangeListener {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientsView"; //$NON-NLS-1$
 	
@@ -62,8 +57,7 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Prope
 	@Override
 	public void createPartControl(Composite parent) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
-		
-		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_CURRENT_USER, this);
+		AccountingUI.addModelChangeListener(this);		
 		
 		viewer = new TableViewer(parent, SWT.FULL_SELECTION);
 		getSite().setSelectionProvider(viewer);
@@ -86,6 +80,7 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Prope
 		
 		viewer.addDoubleClickListener(this);
 		
+		// build the context menu
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
@@ -101,7 +96,7 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Prope
 		
 		try {
 			LOG.debug("Retrieving list of clients from current user"); //$NON-NLS-1$
-			User user = ModelHelper.getCurrentUser();
+			final User user = AccountingUI.getAccountingService().getCurrentUser();
 			
 			if (user != null) {
 				if (user.getClients() == null) {
@@ -146,32 +141,29 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Prope
 	}
 
 	/** 
-	 * Removes this viewer from the registered listeners of the {@link ModelHelper} then calls <code>super()</code>.
-	 * @see ModelHelper#removePropertyChangeListener(String, PropertyChangeListener)
+	 * Removes this view as a listener from the service.
 	 */
 	@Override
 	public void dispose() {
 		LOG.debug("Disposing client list viewer"); //$NON-NLS-1$
-		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_CURRENT_USER, this);
+		AccountingUI.removeModelChangeListener(this);
 		super.dispose();
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		LOG.debug("Current user changed, will update client list viewer"); //$NON-NLS-1$
-		viewer.refresh();
-	}
+     * @see de.togginho.accounting.ui.ModelChangeListener#currentUserChanged()
+     */
+    @Override
+    public void currentUserChanged() {
+    	LOG.debug("Current User changed, now refreshing view..."); //$NON-NLS-1$
+	    viewer.refresh();
+    }
 
 	/**
-	 * {@inheritDoc}.
-	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-	 */
-	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
-		LOG.debug("selectionChanged: " + event.getSelection() != null); //$NON-NLS-1$
-	}
+     * @see de.togginho.accounting.ui.ModelChangeListener#invoicesChanged()
+     */
+    @Override
+    public void invoicesChanged() {
+	    // we're not really interested in this event...
+    }
 }

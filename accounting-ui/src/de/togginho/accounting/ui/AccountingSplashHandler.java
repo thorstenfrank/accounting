@@ -136,7 +136,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 			
 			try {
 				LOG.info("Initial save of user " +user.getName()); //$NON-NLS-1$
-				ModelHelper.saveCurrentUser(user);
+				AccountingUI.getAccountingService().saveCurrentUser(user);
 				initialised = true;
 			} catch (Exception e) {
 				LOG.error("Error saving user", e);  //$NON-NLS-1$
@@ -160,7 +160,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 			
 			AccountingUI.getDefault().initContext(wizard.getUserName(), wizard.getFileLocation());
 			
-			User user = ModelHelper.getCurrentUser();
+			User user = AccountingUI.getAccountingService().getCurrentUser();
 			if (user == null) {
 				LOG.warn(String.format("User [%s] not found in data file [%s]", //$NON-NLS-1$
 						wizard.getUserName(), wizard.getFileLocation()));

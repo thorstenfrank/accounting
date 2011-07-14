@@ -16,7 +16,6 @@
 package de.togginho.accounting.ui.invoice;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,7 +72,7 @@ import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.ModelHelper;
+import de.togginho.accounting.ui.ModelChangeListener;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -82,7 +81,7 @@ import de.togginho.accounting.util.FormatUtil;
  * @author thorsten
  *
  */
-public class InvoiceEditor extends AbstractAccountingEditor implements Constants, PropertyChangeListener {
+public class InvoiceEditor extends AbstractAccountingEditor implements Constants, ModelChangeListener {
 
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceEditor"; //$NON-NLS-1$
 	
@@ -142,8 +141,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		LOG.debug("Creating editor"); //$NON-NLS-1$
 		
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
-		
-		ModelHelper.addPropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
+		AccountingUI.addModelChangeListener(this);
 		
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
@@ -214,7 +212,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	 */
 	@Override
 	public void dispose() {
-		ModelHelper.removePropertyChangeListener(ModelHelper.MODEL_INVOICES, this);
+		AccountingUI.removeModelChangeListener(this);
 	    super.dispose();
 	}
 	
@@ -550,7 +548,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		Invoice invoice = getEditorInput().getInvoice();
 		
 		// TODO exception handling
-		ModelHelper.saveInvoice(invoice);
+		AccountingUI.getAccountingService().saveInvoice(invoice);
 		
 		setIsDirty(false);
 	}
@@ -579,9 +577,25 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	 * {@inheritDoc}.
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	@Override
+	
     public void propertyChange(PropertyChangeEvent evt) {
 		refreshInvoicePositions();
+    }
+    
+	/**
+     * @see de.togginho.accounting.ui.ModelChangeListener#currentUserChanged()
+     */
+    @Override
+    public void currentUserChanged() {
+	    // TODO if the client's address changed, display these new values...
+    }
+
+	/**
+     * @see de.togginho.accounting.ui.ModelChangeListener#invoicesChanged()
+     */
+    @Override
+    public void invoicesChanged() {
+	    refreshInvoicePositions();
     }
 
 	/**
