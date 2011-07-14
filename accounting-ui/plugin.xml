@@ -91,12 +91,16 @@
                   label="%command.save.label"
                   style="push">
             </command>
+            <separator
+                  name="fileMenuSep2"
+                  visible="true">
+            </separator>
             <command
                   commandId="de.togginho.accounting.ui.ExportModelToXml"
                   style="push">
             </command>
             <separator
-                  name="fileMenuSep2"
+                  name="fileMenuSep3"
                   visible="true">
             </separator>
             <command
@@ -460,7 +464,7 @@
       <command
             defaultHandler="de.togginho.accounting.ui.ExportModelToXmlHandler"
             id="de.togginho.accounting.ui.ExportModelToXml"
-            name="Export Model To XML">
+            name="%command.export.data.label">
       </command>
    </extension>
    <extension
