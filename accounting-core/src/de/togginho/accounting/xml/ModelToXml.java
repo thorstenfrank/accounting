@@ -231,7 +231,6 @@ class ModelToXml {
 				if (invoicePosition.isTaxApplicable()) {
 					xmlInvoicePosition.setTaxRate(converTaxRate(invoicePosition.getTaxRate()));
 				}
-				xmlInvoicePosition.setTaxRate(null);
 				xmlInvoicePosition.setUnit(invoicePosition.getUnit());
 				xmlInvoicePosition.setRevenueRelevant(invoicePosition.isRevenueRelevant());
 			}
