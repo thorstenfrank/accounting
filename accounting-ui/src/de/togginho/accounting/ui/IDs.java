@@ -67,5 +67,6 @@ public interface IDs {
 	public static final String CMD_CANCEL_INVOICE = "de.togginho.accounting.ui.invoice.CancelInvoiceCommand"; //$NON-NLS-1$
 	
 	public static final String CMD_CHANGE_INVOICES_FILTER = "de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"; //$NON-NLS-1$
-	
+
+	public static final String CMD_FIND_INVOICE = "de.togginho.accounting.ui.invoice.FindInvoiceCommand"; //$NON-NLS-1$
 }

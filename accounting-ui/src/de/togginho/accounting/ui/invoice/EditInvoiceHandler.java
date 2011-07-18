@@ -18,8 +18,7 @@ package de.togginho.accounting.ui.invoice;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PartInitException;
 
 import de.togginho.accounting.model.Invoice;
@@ -43,23 +42,36 @@ public class EditInvoiceHandler extends AbstractInvoiceHandler {
 	 */
 	@Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		Invoice invoice = getInvoiceFromSelection(event);
+		Invoice invoice = getInvoiceToEdit(event);
+		if (invoice == null) {
+			LOG.warn("No invoice to edit!"); //$NON-NLS-1$
+			return;
+		}
 		getLogger().debug("Opening invoice " + invoice.getNumber()); //$NON-NLS-1$
 		InvoiceEditorInput input = new InvoiceEditorInput(invoice);
 		try {
 			getActivePage(event).openEditor(input, IDs.EDIT_INVOIDCE_ID);
 			
 			if (!invoice.canBeEdited()) {
-				MessageBox box = new MessageBox(getShell(event), SWT.ICON_INFORMATION | SWT.OK);
-				box.setMessage(Messages.EditInvoiceCommand_uneditableMessage);
-				box.setText(Messages.EditInvoiceCommand_uneditableText);
-				box.open();				
+				MessageDialog.openInformation(
+						getShell(event), 
+						Messages.EditInvoiceCommand_uneditableText, 
+						Messages.EditInvoiceCommand_uneditableMessage);				
 			}
 		} catch (PartInitException e) {
 			getLogger().error("Error opening editor for invoice " + invoice.getNumber(), e); //$NON-NLS-1$
 			throw new ExecutionException(Messages.bind(Messages.EditInvoiceCommand_errorOpeningEditor, invoice), e);
 		}
     }
+	
+	/**
+	 * 
+	 * @param event
+	 * @return
+	 */
+	protected Invoice getInvoiceToEdit(ExecutionEvent event) {
+		return getInvoiceFromSelection(event);
+	}
 	
 	/**
 	 * 

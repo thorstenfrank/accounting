@@ -39,7 +39,6 @@ public class Messages extends NLS {
 	public static String AccountingSplashHandler_welcomeDialogUseExisting;
 	public static String AccountingSplashHandler_welcomeDialogImportXml;
 	
-
 	public static String AddressWizardPage_desc;
 	public static String AddressWizardPage_title;
 
@@ -77,7 +76,12 @@ public class Messages extends NLS {
 	public static String ExportInvoiceCommand_fillingReport;
 	public static String ExportInvoiceCommand_loadingTemplate;
 	public static String ExportInvoiceCommand_startingReportGeneration;
-
+	
+	public static String FindInvoiceCommand_inputMessage;
+	public static String FindInvoiceCommand_inputTitle;
+	public static String FindInvoiceCommand_noresultMessage;
+	public static String FindInvoiceCommand_noresultTitle;
+	
 	public static String ImportFromXmlWizard_dataFileLabel;
 	public static String ImportFromXmlWizard_errorDataFileExists;
 	public static String ImportFromXmlWizard_title;

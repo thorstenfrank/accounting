@@ -272,6 +272,11 @@
                icon="icons/page_gear.png"
                style="push">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
+               icon="icons/page_find.png"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="popup:de.togginho.accounting.ui.invoice.InvoiceView">
@@ -465,6 +470,12 @@
             defaultHandler="de.togginho.accounting.ui.ExportModelToXmlHandler"
             id="de.togginho.accounting.ui.ExportModelToXml"
             name="%command.export.data.label">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.invoice"
+            defaultHandler="de.togginho.accounting.ui.invoice.FindInvoiceHandler"
+            id="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
+            name="%command.find.invoice.label">
       </command>
    </extension>
    <extension
