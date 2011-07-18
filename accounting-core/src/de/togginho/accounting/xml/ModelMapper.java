@@ -60,6 +60,8 @@ public class ModelMapper {
 		try {
 	        Marshaller marshaller = JAXBContext.newInstance(JAXB_CONTEXT).createMarshaller();
 	        
+	        marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
+	        
 	        LOG.info("Exporting model data to file " + targetFile); //$NON-NLS-1$
 	        marshaller.marshal(new ModelToXml().convertToXml(user, invoices), new File(targetFile));
 	        LOG.info("export finished successfully"); //$NON-NLS-1$
