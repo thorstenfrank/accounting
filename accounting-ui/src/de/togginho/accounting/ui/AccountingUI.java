@@ -51,10 +51,7 @@ public class AccountingUI extends AbstractUIPlugin {
 	
 	/** The shared instance. */
 	private static AccountingUI plugin;
-	
-	/** Application context. */
-	private AccountingContext accountingContext;
-	
+		
 	/** */
 	private AccountingServiceInvocationHandler accountingServiceProxy;
 	
@@ -201,7 +198,7 @@ public class AccountingUI extends AbstractUIPlugin {
 			LOG.warn("No preferences to be found in instance scope with name " + PLUGIN_ID); //$NON-NLS-1$
 		}
 		
-		return (accountingContext != null);
+		return (accountingServiceProxy.getAccountingContext() != null);
 	}
 	
 	/**
@@ -234,20 +231,18 @@ public class AccountingUI extends AbstractUIPlugin {
 		LOG.debug(String.format(
 				"Building accounting context for user [%s] with DB file [%s]",  //$NON-NLS-1$
 				userName, dbFileLocation)); //$NON-NLS-1$
-
-		// build the context
-		accountingContext = AccountingContextFactory.buildContext(userName, dbFileLocation);
 		
-		// immediately init the AccountingService
+		// build the context and immediately init the AccountingService
 		LOG.debug("Propagating context to AccountingService proxy..."); //$NON-NLS-1$
-		accountingServiceProxy.setAccountingContext(accountingContext);
+		accountingServiceProxy.setAccountingContext(AccountingContextFactory.buildContext(userName, dbFileLocation));
 	}
 	
 	/**
 	 * Saves the application context to preferences.
 	 */
 	private void saveContext() {
-		if (accountingContext == null) {
+		final AccountingContext accCtx = accountingServiceProxy.getAccountingContext();
+		if (accCtx == null) {
 			LOG.warn("No accounting context present, no user preferences to save..."); //$NON-NLS-1$
 			return;
 		} else {
@@ -260,8 +255,8 @@ public class AccountingUI extends AbstractUIPlugin {
 			return;
 		}
 		
-		prefs.put(KEY_USER_NAME, accountingContext.getUserName());
-		prefs.put(KEY_USER_DB_FILE, accountingContext.getDbFileName());
+		prefs.put(KEY_USER_NAME, accCtx.getUserName());
+		prefs.put(KEY_USER_DB_FILE, accCtx.getDbFileName());
 		
 		try {
 			prefs.flush();
