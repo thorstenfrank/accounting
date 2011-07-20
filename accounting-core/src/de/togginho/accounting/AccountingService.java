@@ -75,6 +75,12 @@ public interface AccountingService {
 	 */
 	User saveCurrentUser(User user);
 	
+	Set<Client> getClients();
+	
+	Client saveClient(Client client);
+	
+	void deleteClient(Client client);
+	
 	/**
 	 * Saves an {@link Invoice} to persistence.
 	 * 

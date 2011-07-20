@@ -34,6 +34,7 @@ import com.db4o.config.ObjectClass;
 import com.db4o.config.ObjectField;
 import com.db4o.config.encoding.StringEncodings;
 import com.db4o.constraints.UniqueFieldValueConstraint;
+import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
@@ -218,8 +219,62 @@ class AccountingServiceImpl implements AccountingService {
 	}
 
 	/**
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.AccountingService#getClients()
+	 */
+	@Override
+	public Set<Client> getClients() {
+		
+		Set<Client> clients = new HashSet<Client>();
+		
+		try {
+			clients.addAll(objectContainer.query(Client.class));
+		} catch (Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		}
+		
+		return clients;
+	}
+
+	/**
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.AccountingService#saveClient(de.togginho.accounting.model.Client)
+	 */
+	@Override
+	public Client saveClient(Client client) {
+		try {
+			doStoreEntity(client);
+		} catch (UniqueFieldValueConstraintViolationException e) {
+			throw new AccountingException("A client with this name already exists!");
+		}
+		
+		return client;
+	}
+
+	/**
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.AccountingService#deleteClient(de.togginho.accounting.model.Client)
+	 */
+	@Override
+	public void deleteClient(Client client) {
+		// TODO make sure a client can only be deleted when there are no invoices left...
+		
+		try {
+			objectContainer.delete(client);
+			objectContainer.commit();
+		} catch (Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		} catch (DatabaseReadOnlyException e) {
+			throwDbReadOnlyException(e);
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
-	 * 
 	 * @see de.togginho.accounting.AccountingService#saveInvoice(de.togginho.accounting.model.Invoice)
 	 */
 	@Override

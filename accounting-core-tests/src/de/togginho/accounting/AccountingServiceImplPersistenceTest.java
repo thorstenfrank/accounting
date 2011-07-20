@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;
@@ -139,5 +140,26 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		assertNotNull(invoices);
 		assertEquals(1, invoices.size());
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void testSavingClient() {
+		Client client = new Client();
+		client.setName("The Client");
+		
+		serviceUnderTest.saveClient(client);
+		
+		Client another = new Client();
+		another.setName(client.getName());
+		
+		try {
+			serviceUnderTest.saveClient(another);
+			fail("Should have caught exception because of unique key violation");
+		} catch (AccountingException e) {
+			// this is what we want
+		}
 	}
 }

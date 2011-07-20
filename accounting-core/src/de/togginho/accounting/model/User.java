@@ -50,6 +50,9 @@ public class User implements Serializable {
 	private Address address;
 	private String taxNumber;
 	private BankAccount bankAccount;
+	/**
+	 * @deprecated
+	 */
 	private Set<Client> clients;
 	private Set<TaxRate> taxRates;
 	
@@ -125,6 +128,7 @@ public class User implements Serializable {
 
 	/**
 	 * @return the clients
+	 * @deprecated
 	 */
 	public Set<Client> getClients() {
 		return clients;
@@ -132,6 +136,7 @@ public class User implements Serializable {
 
 	/**
 	 * Finds the client with the supplied name.
+	 * @deprecated
 	 * @param name the {@link Client#getName()} to find
 	 * @return the client, or <code>null</code> if there is no client by that name or this user has no clients
 	 */
@@ -148,6 +153,7 @@ public class User implements Serializable {
 	
 	/**
 	 * @param clients the clients to set
+	 * @deprecated
 	 */
 	public void setClients(Set<Client> clients) {
 		this.clients = clients;
