@@ -68,17 +68,36 @@ public interface AccountingService {
 	User getCurrentUser();
 	
 	/**
-	 * Saves the current user. Saving includes the user's clients, configured tax rates, bank account and address.
+	 * Saves the current user to persistence. 
+	 * Saving includes the user's configured tax rates, bank account and address.
 	 * 
 	 * @param user
 	 * @return
 	 */
 	User saveCurrentUser(User user);
 	
+	/**
+	 * Returns all {@link Client} instances.
+	 * 
+	 * @return the clients
+	 */
 	Set<Client> getClients();
 	
+	/**
+	 * Saves the supplied {@link Client} to persistence.
+	 * <p>This method applies to both new and changed existing instances.</p>
+	 * 
+	 * @param client the {@link Client} to save
+	 * @return the save instance
+	 */
 	Client saveClient(Client client);
 	
+	/**
+	 * Removes the supplied client permanently from persistence.
+	 * <p>This method will throw an {@link AccountingException} if there are saved invoices connected to this cient.</p>
+	 * 
+	 * @param client the {@link Client} instance to delete
+	 */
 	void deleteClient(Client client);
 	
 	/**
