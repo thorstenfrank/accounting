@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.ui.client;
 
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -33,7 +31,6 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.Client;
-import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
@@ -126,14 +123,7 @@ public class ClientEditor extends AbstractAccountingEditor {
 		
 		LOG.debug("Saving client " + updatedClient.getName()); //$NON-NLS-1$
 		
-		final User currentUser = AccountingUI.getAccountingService().getCurrentUser();
-		Set<Client> clients = currentUser.getClients();
-		if (clients.contains(updatedClient)) {
-			clients.remove(updatedClient);
-			clients.add(updatedClient);
-		}
-		
-		AccountingUI.getAccountingService().saveCurrentUser(currentUser);
+		AccountingUI.getAccountingService().saveClient(updatedClient);
 		
 		setIsDirty(false);
 		

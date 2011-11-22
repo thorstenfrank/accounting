@@ -79,7 +79,7 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
 		
 		clientCombo = new Combo(composite, SWT.READ_ONLY);
 		String[] clientNames = null;
-		Set<Client> clients = AccountingUI.getAccountingService().getCurrentUser().getClients();
+		Set<Client> clients = AccountingUI.getAccountingService().getClients();
 		if (clients != null) {
 			nameToClientMap = new HashMap<String, Client>();
 			clientNames = new String[clients.size()];

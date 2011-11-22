@@ -109,8 +109,8 @@ public class Messages extends NLS {
 	public static String MarkInvoiceAsPaidCommand_title;
 	
 	public static String NewClientWizard_windowTitle;
-	public static String NewClientWizard_alreadyExistsMsg;
-	public static String NewClientWizard_alreadyExistsText;
+	public static String NewClientWizard_unknownErrorMsg;
+	public static String NewClientWizard_errorSavingTitle;
 	
 	public static String NewInvoiceWizard_windowTitle;
 	public static String NewInvoiceWizardPage_chooseClient;

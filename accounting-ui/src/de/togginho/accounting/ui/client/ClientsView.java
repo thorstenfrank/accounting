@@ -34,7 +34,6 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.model.Client;
-import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.ModelChangeListener;
@@ -95,16 +94,7 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Model
 		Set<Client> clients = null;
 		
 		try {
-			LOG.debug("Retrieving list of clients from current user"); //$NON-NLS-1$
-			final User user = AccountingUI.getAccountingService().getCurrentUser();
-			
-			if (user != null) {
-				if (user.getClients() == null) {
-					user.setClients(new HashSet<Client>());
-				}
-				clients = user.getClients();
-			}
-			
+			clients = AccountingUI.getAccountingService().getClients();
 		} catch (Exception e) {
 			LOG.error("Error getting list of clients from DB", e); //$NON-NLS-1$
 		}

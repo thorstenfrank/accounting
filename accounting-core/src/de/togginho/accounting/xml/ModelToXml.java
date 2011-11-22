@@ -73,7 +73,7 @@ class ModelToXml {
 	 * @param invoices
 	 * @return
 	 */
-	protected XmlUser convertToXml(User user, Set<Invoice> invoices) {
+	protected XmlUser convertToXml(User user, Set<Client> clients, Set<Invoice> invoices) {
 		LOG.info("Exporting User to XML: " + user.getName()); //$NON-NLS-1$
 		
 		xmlUser = new XmlUser();
@@ -87,7 +87,7 @@ class ModelToXml {
 			xmlUser.setAddress(convertAddress(user.getAddress()));
 		}
 		
-		convertClients(user);
+		convertClients(clients);
 		
 		convertTaxRates(user);
 		
@@ -142,12 +142,12 @@ class ModelToXml {
 	 * 
 	 * @param user
 	 */
-	private void convertClients(User user) {
-	    if (user.getClients() != null && !user.getClients().isEmpty()) {
+	private void convertClients(Set<Client> clients) {
+	    if (clients != null && !clients.isEmpty()) {
 	    	LOG.debug("Converting clients..."); //$NON-NLS-1$
 			XmlClients xmlClients = new XmlClients();
 			xmlUser.setClients(xmlClients);
-			for (Client client : user.getClients()) {
+			for (Client client : clients) {
 				LOG.debug("Converting client " + client.getName()); //$NON-NLS-1$
 				XmlClient xmlClient = new XmlClient();
 				xmlClient.setName(client.getName());

@@ -103,6 +103,9 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	// invoice position table
 	private TableViewer invoicePositionViewer;
 
+	// clients
+	private Set<Client> clients;
+	
 	// tax rate map...
 	private Map<String, TaxRate> shortStringToTaxRateMap;
 	private String[] taxRateShortNames;
@@ -332,6 +335,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		Invoice invoice = getEditorInput().getInvoice();
 		Client theClient = invoice.getClient();
+		clients = AccountingUI.getAccountingService().getClients();
 		
 		toolkit.createLabel(sectionClient, Messages.labelClientName);
 		Combo clientCombo = new Combo(sectionClient, SWT.READ_ONLY);
@@ -359,7 +363,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		int currentClientIndex = 0;
 		int counter = 1;
 		clientCombo.add(EMPTY_STRING);
-		for (Client client : invoice.getUser().getClients()) {
+		for (Client client : clients) {
 			clientCombo.add(client.getName());
 			if (theClient != null && theClient.equals(client)) {
 				currentClientIndex = counter;
@@ -384,8 +388,14 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 					changed = true;
 				} else {
 					Client currentClient = invoice.getClient();
-					newClient = invoice.getUser().getClientByName(selected);
-					if (currentClient == null || currentClient.equals(newClient) == false) {
+					// get the selected client instance
+					for (Client client : clients) {
+						if (client.getName().equals(selected)) {
+							newClient = client;
+							break;
+						}
+					}
+					if ((currentClient == null && newClient != null) || currentClient.equals(newClient) == false) {
 						invoice.setClient(newClient);
 						changed = true;
 					}

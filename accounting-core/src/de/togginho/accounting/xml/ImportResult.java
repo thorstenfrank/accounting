@@ -17,6 +17,7 @@ package de.togginho.accounting.xml;
 
 import java.util.Set;
 
+import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
 
@@ -28,8 +29,10 @@ public class ImportResult {
 
 	private User importedUser;
 	
+	private Set<Client> importedClients;
+	
 	private Set<Invoice> importedInvoices;
-
+	
 	/**
      * @return the importedUser
      */
@@ -42,6 +45,20 @@ public class ImportResult {
      */
     void setImportedUser(User importedUser) {
     	this.importedUser = importedUser;
+    }
+
+	/**
+     * @return the importedClients
+     */
+    public Set<Client> getImportedClients() {
+    	return importedClients;
+    }
+
+	/**
+     * @param importedClients the importedClients to set
+     */
+    void setImportedClients(Set<Client> importedClients) {
+    	this.importedClients = importedClients;
     }
 
 	/**

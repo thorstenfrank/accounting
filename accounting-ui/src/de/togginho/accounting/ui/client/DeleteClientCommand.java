@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.ui.client;
 
-import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -28,7 +26,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
 import de.togginho.accounting.model.Client;
-import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -58,23 +55,11 @@ public class DeleteClientCommand extends AbstractClientHandler {
 		messageBox.setText(Messages.DeleteClientCommand_confirmText);
 		
 		if (messageBox.open() == SWT.YES) {
-			User currentUser = AccountingUI.getAccountingService().getCurrentUser();
 			
-			LOG.debug(String.format("Removing client [%s] from user [%s]",  //$NON-NLS-1$
-					clientToDelete.getName(), currentUser.getName()));
-			
-			Iterator<Client> iter = currentUser.getClients().iterator();
-			while (iter.hasNext()) {
-				Client toBeDeleted = iter.next();
-				if (toBeDeleted.equals(clientToDelete)) {
-					LOG.debug("Found client in user, now removing"); //$NON-NLS-1$
-					iter.remove();
-					break;
-				}
-			}
+			LOG.debug(String.format("Removing client [%s]", clientToDelete.getName())); //$NON-NLS-1$
 			
 			// save the current user
-			AccountingUI.getAccountingService().saveCurrentUser(currentUser);
+			AccountingUI.getAccountingService().deleteClient(clientToDelete);
 			
 			// close open editors for the deleted client, if open
 			removeOpenEditorForClient(clientToDelete, event);

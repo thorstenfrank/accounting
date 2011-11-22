@@ -15,20 +15,17 @@
  */
 package de.togginho.accounting.ui.wizard;
 
-import java.util.HashSet;
-
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Client;
-import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -104,23 +101,17 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 		newClient.setAddress(addressWizardPage.getAddress());
 		
 		LOG.debug("Getting current user from Plugin"); //$NON-NLS-1$
-		User user = AccountingUI.getAccountingService().getCurrentUser();
-		if (user.getClients() == null) {
-			user.setClients(new HashSet<Client>());
-		} else {
-			LOG.debug("Checking for existing client with name " + newClient.getName()); //$NON-NLS-1$
-			if (user.getClients().contains(newClient)) {
-				MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-				msgBox.setMessage(Messages.bind(Messages.NewClientWizard_alreadyExistsMsg, newClient.getName()));
-				msgBox.setText(Messages.NewClientWizard_alreadyExistsText);
-				msgBox.open();
-				return false;
-			}
-		}
 		
-		LOG.info("Saving current user with newly added client " + newClient.getName());  //$NON-NLS-1$
-		user.getClients().add(newClient);
-		AccountingUI.getAccountingService().saveCurrentUser(user);
+		try {
+	        AccountingUI.getAccountingService().saveClient(newClient);
+        } catch (AccountingException e) {
+        	LOG.error("Error saving new client " + newClient.getName(), e);
+        	MessageDialog.openError(getShell(), Messages.NewClientWizard_errorSavingTitle, e.getLocalizedMessage());
+        } catch (Exception e) {
+        	LOG.error("Unkown error saving new client " + newClient.getName(), e);
+        	MessageDialog.openError(
+        			getShell(), Messages.NewClientWizard_errorSavingTitle, Messages.NewClientWizard_unknownErrorMsg);
+        }
 		
 		LOG.debug("Opening editor for newly created client"); //$NON-NLS-1$
 		ClientEditorInput input = new ClientEditorInput(newClient);

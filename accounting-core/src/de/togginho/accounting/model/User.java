@@ -41,7 +41,7 @@ public class User implements Serializable {
 	public static final String FIELD_ADDRESS = "address";
 	public static final String FIELD_TAX_NUMBER = "taxNumber";
 	public static final String FIELD_BANK_ACCOUNT = "bankAccount";
-	public static final String FIELD_CLIENTS = "clients";
+	//public static final String FIELD_CLIENTS = "clients";
 	public static final String FIELD_TAX_RATES = "taxRates";
 	
 	// must be unique
@@ -50,10 +50,10 @@ public class User implements Serializable {
 	private Address address;
 	private String taxNumber;
 	private BankAccount bankAccount;
-	/**
-	 * @deprecated
-	 */
-	private Set<Client> clients;
+//	/**
+//	 * @deprecated
+//	 */
+//	private Set<Client> clients;
 	private Set<TaxRate> taxRates;
 	
 	/**
@@ -126,60 +126,60 @@ public class User implements Serializable {
 		this.bankAccount = bankAccount;
 	}
 
-	/**
-	 * @return the clients
-	 * @deprecated
-	 */
-	public Set<Client> getClients() {
-		return clients;
-	}
+//	/**
+//	 * @return the clients
+//	 * @deprecated
+//	 */
+//	public Set<Client> getClients() {
+//		return clients;
+//	}
 
-	/**
-	 * Finds the client with the supplied name.
-	 * @deprecated
-	 * @param name the {@link Client#getName()} to find
-	 * @return the client, or <code>null</code> if there is no client by that name or this user has no clients
-	 */
-	public Client getClientByName(String name) {
-		if (clients != null && name != null) {
-			for (Client client : clients) {
-				if (name.equals(client.getName())) {
-					return client;
-				}
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * @param clients the clients to set
-	 * @deprecated
-	 */
-	public void setClients(Set<Client> clients) {
-		this.clients = clients;
-	}
-
-	/**
-	 * 
-	 * @param client the client to add
-	 */
-	public void addClient(Client client) {
-		if (clients == null){
-			clients = new HashSet<Client>();
-		}
-		
-		clients.add(client);
-	}
-	
-	/**
-	 * 
-	 * @param client the client to remove
-	 */
-	public void removeClient(Client client) {
-		if (clients != null) {
-			clients.remove(client);
-		}
-	}
+//	/**
+//	 * Finds the client with the supplied name.
+//	 * @deprecated
+//	 * @param name the {@link Client#getName()} to find
+//	 * @return the client, or <code>null</code> if there is no client by that name or this user has no clients
+//	 */
+//	public Client getClientByName(String name) {
+//		if (clients != null && name != null) {
+//			for (Client client : clients) {
+//				if (name.equals(client.getName())) {
+//					return client;
+//				}
+//			}
+//		}
+//		return null;
+//	}
+//	
+//	/**
+//	 * @param clients the clients to set
+//	 * @deprecated
+//	 */
+//	public void setClients(Set<Client> clients) {
+//		this.clients = clients;
+//	}
+//
+//	/**
+//	 * 
+//	 * @param client the client to add
+//	 */
+//	public void addClient(Client client) {
+//		if (clients == null){
+//			clients = new HashSet<Client>();
+//		}
+//		
+//		clients.add(client);
+//	}
+//	
+//	/**
+//	 * 
+//	 * @param client the client to remove
+//	 */
+//	public void removeClient(Client client) {
+//		if (clients != null) {
+//			clients.remove(client);
+//		}
+//	}
 
 	
 	/**

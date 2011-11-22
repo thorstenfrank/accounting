@@ -59,6 +59,9 @@ class XmlToModel {
 	/** Target user object. */
 	private User user;
 	
+	/** Target clients. */
+	private Set<Client> clients;
+	
 	/** Target invoices. */
 	private Set<Invoice> invoices;
 	
@@ -76,21 +79,36 @@ class XmlToModel {
     protected void convert(XmlUser xmlUser) {
     	LOG.info("Converting data imported from XML..."); //$NON-NLS-1$
     	this.xmlUser = xmlUser;
+
+    	// convert the user first
     	convertUser();
+    	
+    	// then the clients
+    	convertClients();
+    	
+    	// finally the invoices
     	convertInvoices();
     }
 	
 	/**
      * @return the user
      */
-    protected User getUser() {
+    User getUser() {
     	return user;
     }
 
+    /**
+     * 
+     * @return the clients
+     */
+    Set<Client> getClients() {
+    	return clients;
+    }
+    
 	/**
      * @return the invoices
      */
-    protected Set<Invoice> getInvoices() {
+    Set<Invoice> getInvoices() {
     	return invoices;
     }
     
@@ -111,8 +129,6 @@ class XmlToModel {
 		}
 		
 		convertTaxRates();
-		
-		convertClients();
 	}
 
 	/**
@@ -128,7 +144,7 @@ class XmlToModel {
 				Invoice invoice = new Invoice();
 				invoices.add(invoice);
 				invoice.setNumber(xmlInvoice.getNumber());
-				invoice.setClient(user.getClientByName(xmlInvoice.getClient()));
+				invoice.setClient(findOrCreateClient(xmlInvoice.getClient()));
 				invoice.setUser(user);
 				
 				invoice.setCancelledDate(convertDate(xmlInvoice.getCancelledDate()));
@@ -182,13 +198,31 @@ class XmlToModel {
 	
 	/**
 	 * 
+	 * @param clientName
+	 * @return
+	 */
+	private Client findOrCreateClient(String clientName) {
+		for (Client client : clients) {
+			if (client.getName().equals(clientName)) {
+				return client;
+			}
+		}
+		
+		// client not found, create a new one
+		Client client = new Client();
+		client.setName(clientName);
+		clients.add(client);
+		return client;
+	}
+	
+	/**
+	 * 
 	 */
 	private void convertClients() {
 	    XmlClients xmlClients = xmlUser.getClients();
 		if (xmlClients != null && !xmlClients.getClient().isEmpty()) {
 			LOG.debug("Converting clients..."); //$NON-NLS-1$
-			Set<Client> clients = new HashSet<Client>();
-			user.setClients(clients);
+			clients = new HashSet<Client>();
 			for (XmlClient xmlClient : xmlClients.getClient()) {
 				LOG.debug("Converting client " + xmlClient.getName()); //$NON-NLS-1$
 				Client client = new Client();

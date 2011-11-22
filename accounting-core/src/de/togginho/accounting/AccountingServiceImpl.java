@@ -583,7 +583,7 @@ class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public void exportModelToXml(String targetFileName) {
-    	ModelMapper.modelToXml(getCurrentUser(), findInvoices(), targetFileName);
+    	ModelMapper.modelToXml(getCurrentUser(), getClients(), findInvoices(), targetFileName);
     }
     
     /**
@@ -611,12 +611,24 @@ class AccountingServiceImpl implements AccountingService {
     	LOG.info("Now saving imported user to DB file");
     	objectContainer.store(importResult.getImportedUser());
     	
+    	final Set<Client> importedClients = importResult.getImportedClients();
+    	if (importedClients != null && !importedClients.isEmpty()) {
+    		LOG.info("Now saving imported clients: " + importedClients.size()); //$NON-NLS-1$
+    		for (Client client : importedClients) {
+    			objectContainer.store(client);
+    		}
+    	} else {
+    		LOG.info("No clients to import"); //$NON-NLS-1$
+    	}
+    	
     	final Set<Invoice> importedInvoices = importResult.getImportedInvoices();
-    	if (importedInvoices != null) {
-    		LOG.info("Now saving imported Invoices to DB file: " + importedInvoices.size());
+    	if (importedInvoices != null && !importedInvoices.isEmpty()) {
+    		LOG.info("Now saving imported Invoices to DB file: " + importedInvoices.size()); //$NON-NLS-1$
     		for (Invoice invoice : importedInvoices) {
     			objectContainer.store(invoice);
     		}
+    	} else {
+    		LOG.info("No invoices to import"); //$NON-NLS-1$
     	}
     	
     	objectContainer.commit();
