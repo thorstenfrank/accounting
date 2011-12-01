@@ -21,12 +21,11 @@ limitations under the License.
 -->
 
 <project name="togginho-accounting-reporting" default="compile.reports" basedir=".">
-    <description>
-            description
-    </description>
+    
+	<description>Compiles Jasper reports</description>
     
     <property name="reporting" location="${basedir}" />
-    <property name="reports" location="${reporting}/jasperreports" />
+    <property name="reports" location="${reporting}/src" />
     <property name="core" location="${reporting}/../accounting-core" />
     
     <path id="classpath">
@@ -51,6 +50,7 @@ limitations under the License.
             <include name="**/*.jrxml" />
         </jrc>
         
+    	<echo message="Copying compiled report files to ${reporting}/bin" />
         <copy todir="${reporting}/bin" overwrite="true">
             <fileset dir="${reports}">
                 <include name="**/*.jasper"/>
@@ -59,9 +59,9 @@ limitations under the License.
     </target>
 
     <target name="clean">
+    	<echo message="Deleting all existing Jasper files from ${reports}"/>
         <delete dir="${reports}">
             <include name="**/*.jasper"/>
-            <include name="**/*.java" />
         </delete>
     </target>
 </project>
