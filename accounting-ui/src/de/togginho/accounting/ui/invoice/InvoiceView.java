@@ -235,19 +235,11 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 	}
 
 	/**
-     * @see de.togginho.accounting.ui.ModelChangeListener#currentUserChanged()
+     * @see de.togginho.accounting.ui.ModelChangeListener#modelChanged()
      */
     @Override
-    public void currentUserChanged() {
-	    // don't need to to anything here...
-    }
-
-	/**
-     * @see de.togginho.accounting.ui.ModelChangeListener#invoicesChanged()
-     */
-    @Override
-    public void invoicesChanged() {
-		LOG.info("Refreshing invoices..."); //$NON-NLS-1$
+    public void modelChanged() {
+		LOG.info("Model data changed, refreshing invoices..."); //$NON-NLS-1$
 
 		// reload open invoices
 		tableViewer.setInput(getInvoicesWithFilter());

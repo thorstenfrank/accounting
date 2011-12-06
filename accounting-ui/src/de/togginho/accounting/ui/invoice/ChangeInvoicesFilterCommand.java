@@ -131,7 +131,7 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
 			}
 			LOG.info(sb.toString());
 			
-			invoiceView.invoicesChanged();
+			invoiceView.modelChanged();
 		} else {
 			LOG.debug("Change invoice filter was cancelled"); //$NON-NLS-1$
 		}

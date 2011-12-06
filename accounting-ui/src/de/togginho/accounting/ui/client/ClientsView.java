@@ -141,19 +141,14 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Model
 	}
 	
 	/**
-     * @see de.togginho.accounting.ui.ModelChangeListener#currentUserChanged()
-     */
-    @Override
-    public void currentUserChanged() {
-    	LOG.debug("Current User changed, now refreshing view..."); //$NON-NLS-1$
+	 * 
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.ModelChangeListener#modelChanged()
+	 */
+	@Override
+	public void modelChanged() {
+    	LOG.debug("Model data changed, now refreshing view..."); //$NON-NLS-1$
+    	viewer.setInput(getClients());
 	    viewer.refresh();
-    }
-
-	/**
-     * @see de.togginho.accounting.ui.ModelChangeListener#invoicesChanged()
-     */
-    @Override
-    public void invoicesChanged() {
-	    // we're not really interested in this event...
-    }
+	}
 }

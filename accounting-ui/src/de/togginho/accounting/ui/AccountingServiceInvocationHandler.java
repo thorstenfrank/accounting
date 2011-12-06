@@ -35,17 +35,18 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 
 	private static final Logger LOG = Logger.getLogger(AccountingServiceInvocationHandler.class);
 	
-	private static final Set<String> USER_CHANGING_METHODS = new HashSet<String>();
-	private static final Set<String> INVOICE_CHANGING_METHODS = new HashSet<String>();
+	private static final Set<String> MODEL_CHANGING_METHODS = new HashSet<String>();
 
 	static {
-		USER_CHANGING_METHODS.add("saveCurrentUser");
-		
-		INVOICE_CHANGING_METHODS.add("saveInvoice");
-		INVOICE_CHANGING_METHODS.add("sendInvoice");
-		INVOICE_CHANGING_METHODS.add("markAsPaid");
-		INVOICE_CHANGING_METHODS.add("cancelInvoice");
-		INVOICE_CHANGING_METHODS.add("deleteInvoice");
+		MODEL_CHANGING_METHODS.add("saveCurrentUser"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("saveClient"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("deleteClient"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("saveInvoice"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("sendInvoice"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("markAsPaid"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("cancelInvoice"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("deleteInvoice"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("importModelFromXml"); //$NON-NLS-1$
 	}
 	
 	/** */
@@ -86,19 +87,16 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		LOG.debug("invoking method: " + method.getName()); //$NON-NLS-1$
+		
 		Object result = method.invoke(getService(), args);
-		if (USER_CHANGING_METHODS.contains(method.getName())) {
-			LOG.debug("Broadcasting changes to current user"); //$NON-NLS-1$
+		
+		if (MODEL_CHANGING_METHODS.contains(method.getName())) {
+			LOG.debug("Broadcasting model changes to registered listeners"); //$NON-NLS-1$
 			for (ModelChangeListener listener : modelChangeListeners) {
-				listener.currentUserChanged();
+				listener.modelChanged();
 			}
 		}
-		if (INVOICE_CHANGING_METHODS.contains(method.getName())) {
-			LOG.debug("Broadcasting changes to invoices"); //$NON-NLS-1$
-			for (ModelChangeListener listener : modelChangeListeners) {
-				listener.invoicesChanged();
-			}
-		}
+		
 		return result;
 	}
 

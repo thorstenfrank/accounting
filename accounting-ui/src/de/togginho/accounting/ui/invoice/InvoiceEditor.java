@@ -591,20 +591,12 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
     public void propertyChange(PropertyChangeEvent evt) {
 		refreshInvoicePositions();
     }
-    
-	/**
-     * @see de.togginho.accounting.ui.ModelChangeListener#currentUserChanged()
-     */
-    @Override
-    public void currentUserChanged() {
-	    // TODO if the client's address changed, display these new values...
-    }
 
 	/**
-     * @see de.togginho.accounting.ui.ModelChangeListener#invoicesChanged()
+     * @see de.togginho.accounting.ui.ModelChangeListener#modelChanged()
      */
     @Override
-    public void invoicesChanged() {
+    public void modelChanged() {
 	    refreshInvoicePositions();
     }
 

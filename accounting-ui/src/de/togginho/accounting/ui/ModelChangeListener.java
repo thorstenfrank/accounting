@@ -21,13 +21,6 @@ package de.togginho.accounting.ui;
  */
 public interface ModelChangeListener {
 
-	/**
-	 * 
-	 */
-	void currentUserChanged();
-	
-	/**
-	 * 
-	 */
-	void invoicesChanged();
+	void modelChanged();
+
 }
