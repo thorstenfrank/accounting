@@ -249,16 +249,26 @@ public interface AccountingService {
 	Revenue getRevenue(Date from, Date until);
 	
 	/**
+	 * Exports the entire database to the specified XML file. This file can later be used to re-create the DB.
 	 * 
-	 * @param targetFileName
+	 * @param targetFileName the fully qualified path and filename of the XML file to create
+	 * 
+	 * @see #importModelFromXml(String, String)
 	 */
 	void exportModelToXml(String targetFileName);
 	
 	/**
+	 * Creates a new database that is filled with the information provided in the XML file.
 	 * 
-	 * @param sourceXmlFile
-	 * @param dbFileLocation
-	 * @return
+	 * <p>The XML source file must adhere to the schema definition <code>AccountingModel.xsd</code> and should be
+	 * created using {@link #exportModelToXml(String)}.</p> 
+	 * 
+	 * @param sourceXmlFile  the XML file to import
+	 * @param dbFileLocation location of the DB file where imported information will be stored
+	 * 
+	 * @return the context to use filled with imported data
+	 * 
+	 * @see #exportModelToXml(String)
 	 */
 	AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation);
 }
