@@ -42,10 +42,19 @@ public class ExportInvoiceFromSelectionHandler extends AbstractInvoiceHandler im
      */
     @Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
-    	currentInvoice = getInvoiceFromSelection(event);
+    	currentInvoice = doGetInvoice(event);
     	ReportGenerationUtil.executeReportGeneration(this, getShell(event));
     }
-        
+    
+	/**
+	 * 
+	 * @param event
+	 * @return
+	 */
+	protected Invoice doGetInvoice(ExecutionEvent event) {
+		return getInvoiceFromSelection(event);
+	}
+    
 	/**
      * {@inheritDoc}.
      * @see ReportGenerationHandler#getTargetFileNameSuggestion()

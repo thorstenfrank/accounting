@@ -17,38 +17,32 @@ package de.togginho.accounting.ui.invoice;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 
 import de.togginho.accounting.model.Invoice;
 
 /**
- * Deletes the currently edited invoice. This handler should be active when the currently active part is an
- * {@link InvoiceEditor} and only if the edited invoice may be deleted ({@link Invoice#canBeDeleted()}).
- * 
- * @author tfrank1
- * @see DeleteInvoiceFromSelectionHandler
+ * @author thorsten
+ *
  */
-public class DeleteInvoiceFromEditorHandler extends AbstractInvoiceHandler {
+public class ExportInvoiceFromEditorHandler extends ExportInvoiceFromSelectionHandler {
 
-	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(DeleteInvoiceFromEditorHandler.class);
+	private static final Logger LOG = Logger.getLogger(ExportInvoiceFromEditorHandler.class);
 	
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see de.togginho.accounting.ui.invoice.ExportInvoiceFromSelectionHandler#doGetInvoice(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
-	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		deleteInvoice(getInvoiceFromEditor(event), event);
-	}
-	
+    protected Invoice doGetInvoice(ExecutionEvent event) {
+	    return getInvoiceFromEditor(event);
+    }
+
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()
+	 * @see de.togginho.accounting.ui.invoice.ExportInvoiceFromSelectionHandler#getLogger()
 	 */
 	@Override
-	protected Logger getLogger() {
-		return LOG;
-	}
-
+    protected Logger getLogger() {
+	    return LOG;
+    }
 }

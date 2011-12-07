@@ -336,8 +336,8 @@
       <menuContribution
             locationURI="toolbar:de.togginho.accounting.ui.invoice.InvoiceEditor">
          <command
-               commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
-               icon="icons/page_delete.png"
+               commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand"
+               icon="icons/page_white_acrobat.png"
                style="push">
          </command>
          <command
@@ -606,20 +606,6 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.DeleteInvoiceFromEditorHandler"
-            commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand">
-         <activeWhen>
-            <reference
-                  definitionId="invoiceIsActiveEditor">
-            </reference>
-         </activeWhen>
-         <enabledWhen>
-            <with variable="activeEditorInput">
-               <test property="de.togginho.accounting.ui.invoiceEditor.canBeDeleted" />
-            </with>
-         </enabledWhen>
-      </handler>
-      <handler
             class="de.togginho.accounting.ui.invoice.PayInvoiceFromSelectionHandler"
             commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
          <activeWhen>
@@ -660,6 +646,20 @@
                     ifEmpty="false">
                  <test property="de.togginho.accounting.ui.invoice.canBeExported" />
               </iterate>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.invoice.ExportInvoiceFromEditorHandler"
+            commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand">
+         <activeWhen>
+            <reference
+                  definitionId="invoiceIsActiveEditor">
+            </reference>
+         </activeWhen>
+         <enabledWhen>
+            <with variable="activeEditorInput">
+               <test property="de.togginho.accounting.ui.invoiceEditor.canBeExported" />
+            </with>
          </enabledWhen>
       </handler>
       <handler
