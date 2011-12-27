@@ -47,6 +47,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.FormatUtil;
@@ -487,11 +488,13 @@ class AccountingServiceImpl implements AccountingService {
     	copy.setClient(invoice.getClient());
     	copy.setInvoiceDate(new Date());
     	
+    	copy.setPaymentTerms(invoice.getPaymentTerms() != null ? invoice.getPaymentTerms() : PaymentTerms.DEFAULT);
+    	
     	Calendar cal = Calendar.getInstance();
     	cal.setTime(copy.getInvoiceDate());
-		cal.add(Calendar.DAY_OF_MONTH, invoice.getUser() != null ? invoice.getUser().getDefaultPaymentTerms()
-		        : User.DEFAULT_PAYMENT_TERMS);
+		cal.add(Calendar.DAY_OF_MONTH, copy.getPaymentTerms().getFullPaymentTargetInDays());
     	copy.setDueDate(cal.getTime());
+    	
     	copy.setUser(invoice.getUser());
     	
     	if (invoice.getInvoicePositions() != null) {

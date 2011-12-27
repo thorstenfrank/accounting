@@ -52,6 +52,8 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.PaymentTerms;
+import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.User;
 
 /**
@@ -608,21 +610,30 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		Invoice original = new Invoice();
 		
+		// Test copying without actual content
 		Invoice copy = serviceUnderTest.copyInvoice(original, newInvoiceNo);
 		
 		assertCopiedInvoice(copy, newInvoiceNo);
 		assertNull(copy.getClient());
 		assertNull(copy.getInvoicePositions());
 		assertNull(copy.getUser());
+		assertNotNull(copy.getInvoiceDate());
+		assertEquals(PaymentTerms.DEFAULT, copy.getPaymentTerms());
 		
+		// test simple copy
 		original.setUser(getTestUser());
 		original.setClient(getTestClient());
+		final PaymentTerms terms = new PaymentTerms(PaymentType.NET, 35);
+		original.setPaymentTerms(terms);
+		
 		copy = serviceUnderTest.copyInvoice(original, newInvoiceNo);
 		assertCopiedInvoice(copy, newInvoiceNo);
 		assertEquals(getTestUser(), copy.getUser());
 		assertEquals(getTestClient(), copy.getClient());
 		assertNull(copy.getInvoicePositions());
+		assertEquals(terms, copy.getPaymentTerms());
 		
+		// full copy including invoice positions
 		InvoicePosition ip = new InvoicePosition();
 		ip.setDescription("IP_Description");
 		ip.setPricePerUnit(new BigDecimal("25"));

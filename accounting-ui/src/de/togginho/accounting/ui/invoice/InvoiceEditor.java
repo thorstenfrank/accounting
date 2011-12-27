@@ -66,6 +66,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
@@ -264,10 +265,20 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			}
 		});
 		
+		// PAYMENT TERMS
+		if (invoice.getPaymentTerms() == null) {
+			if (invoice.getClient() != null && invoice.getClient().getDefaultPaymentTerms() != null) {
+				invoice.setPaymentTerms(invoice.getClient().getDefaultPaymentTerms());
+			} else {
+				LOG.warn("Client has no payment terms configured, will use default"); //$NON-NLS-1$
+				invoice.setPaymentTerms(PaymentTerms.DEFAULT);
+			}
+		}
+		
 		// DUE DATE
 		if (invoice.getDueDate() == null) {
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_MONTH, invoice.getUser().getDefaultPaymentTerms());
+			cal.add(Calendar.DAY_OF_MONTH, invoice.getPaymentTerms().getFullPaymentTargetInDays());
 			invoice.setDueDate(cal.getTime());
 		}
 		toolkit.createLabel(left, Messages.labelInvoiceDueDate);

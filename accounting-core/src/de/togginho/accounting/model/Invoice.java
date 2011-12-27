@@ -40,6 +40,7 @@ public class Invoice implements Serializable {
 	public static final String FIELD_PAYMENT_DATE = "paymentDate";
 	public static final String FIELD_USER = "user";
 	public static final String FIELD_CLIENT = "client";
+	public static final String FIELD_PAYMENT_TERMS = "paymentTerms";
 	public static final String FIELD_INVOICE_POSITIONS = "invoicePositions";
 	
 	private String number;
@@ -51,6 +52,7 @@ public class Invoice implements Serializable {
 	private Date cancelledDate;
 	private User user;
 	private Client client;
+	private PaymentTerms paymentTerms;
 	private List<InvoicePosition> invoicePositions;
 	
 	/**
@@ -198,6 +200,21 @@ public class Invoice implements Serializable {
 	public void setClient(Client client) {
 		this.client = client;
 	}
+
+	/**
+     * @return the paymentTerms
+     */
+    public PaymentTerms getPaymentTerms() {
+    	return paymentTerms;
+    }
+
+	/**
+     * @param paymentTerms the paymentTerms to set
+     */
+    public void setPaymentTerms(PaymentTerms paymentTerms) {
+    	this.paymentTerms = paymentTerms;
+    	// FIXME set the due date...
+    }
 
 	/**
 	 * @return the invoicePositions

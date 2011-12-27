@@ -31,10 +31,12 @@ public class Client implements Serializable {
 	
 	public static final String FIELD_NAME = "name";
 	public static final String FIELD_ADDRESS = "address";
+	public static final String FIELD_DEFAULT_PAYMENT_TERMS = "defaultPaymentTerms";
 	
 	private String name;
 	private Address address;
-
+	private PaymentTerms defaultPaymentTerms;
+	
 	/**
 	 * 
 	 * @return the name of the client
@@ -66,8 +68,22 @@ public class Client implements Serializable {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+	
+	/**
+     * @return the defaultPaymentTerms
+     */
+    public PaymentTerms getDefaultPaymentTerms() {
+    	return defaultPaymentTerms;
+    }
 
-	/* (non-Javadoc)
+	/**
+     * @param defaultPaymentTerms the defaultPaymentTerms to set
+     */
+    public void setDefaultPaymentTerms(PaymentTerms defaultPaymentTerms) {
+    	this.defaultPaymentTerms = defaultPaymentTerms;
+    }
+
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -78,7 +94,7 @@ public class Client implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
