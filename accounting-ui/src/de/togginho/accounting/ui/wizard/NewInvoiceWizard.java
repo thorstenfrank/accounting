@@ -111,8 +111,8 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 		}
 		
 		// save the invoice
-		LOG.info("Saving new invoice " + newInvoice); //$NON-NLS-1$
-		AccountingUI.getAccountingService().saveInvoice(newInvoice);
+//		LOG.info("Saving new invoice " + newInvoice); //$NON-NLS-1$
+//		AccountingUI.getAccountingService().saveInvoice(newInvoice);
 		
 		LOG.debug("Setting selection to new invoice"); //$NON-NLS-1$
 		ISelectionProvider selectionProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().getSelectionProvider();
