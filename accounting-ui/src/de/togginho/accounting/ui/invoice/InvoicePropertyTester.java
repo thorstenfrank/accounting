@@ -45,11 +45,11 @@ public class InvoicePropertyTester extends PropertyTester {
 	@Override
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 		Invoice invoice = null;
-		LOG.debug("PROPERTY: " + property); //$NON-NLS-1$
+		//LOG.debug("PROPERTY: " + property); //$NON-NLS-1$
 		if (receiver instanceof Invoice) {
 			invoice = (Invoice) receiver;
 		} else if (receiver instanceof InvoiceEditorInput) {
-			LOG.debug("testing from editor input"); //$NON-NLS-1$
+			//LOG.debug("testing from editor input"); //$NON-NLS-1$
 			invoice = ((InvoiceEditorInput) receiver).getInvoice();
 		} else {
 			LOG.warn("Unknown receiver type: " + receiver.getClass().getName()); //$NON-NLS-1$
@@ -83,8 +83,8 @@ public class InvoicePropertyTester extends PropertyTester {
 		} else if (CAN_BE_SENT.equals(property)) {
 			result = invoice.canBeSent();
 		}
-		LOG.debug(String.format("Property [%s] on Invoice [%s] was tested [%s]",  //$NON-NLS-1$
-				property, invoice.getNumber(), result));
+		//LOG.debug(String.format("Property [%s] on Invoice [%s] was tested [%s]",  //$NON-NLS-1$
+		//		property, invoice.getNumber(), result));
 		return result;
 	}
 }
