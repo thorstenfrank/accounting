@@ -23,8 +23,10 @@ import java.util.Set;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -41,7 +43,7 @@ import de.togginho.accounting.ui.WidgetHelper;
  * @author thorsten
  *
  */
-class NewInvoiceWizardPage extends WizardPage implements KeyListener {
+class NewInvoiceWizardPage extends WizardPage {
 	
 	private Text invoiceNumber;
 	private Combo clientCombo;
@@ -65,19 +67,26 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
 		GridLayout layout = new GridLayout(3, false);
 		composite.setLayout(layout);
 		
-		// User name
+		// INVOICE NO
 		WidgetHelper.createLabel(composite, Messages.labelInvoiceNo);
 		
 		invoiceNumber = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(invoiceNumber);
-		invoiceNumber.addKeyListener(this);
+		invoiceNumber.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				checkIfPageComplete();
+			}
+		});
 		
 		Button generateButton = new Button(composite, SWT.PUSH);
 		generateButton.setText(Messages.NewInvoiceWizardPage_generate);
 
+		// CLIENT
 		WidgetHelper.createLabel(composite, Messages.NewInvoiceWizardPage_chooseClient);
 		
 		clientCombo = new Combo(composite, SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(clientCombo);
 		String[] clientNames = null;
 		Set<Client> clients = AccountingUI.getAccountingService().getClients();
 		if (clients != null) {
@@ -93,6 +102,12 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
 			clientNames = new String[0];
 		}
 		clientCombo.setItems(clientNames);
+		clientCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				checkIfPageComplete();
+			}
+		});
 		
 		setControl(composite);
 		setPageComplete(false);
@@ -107,28 +122,17 @@ class NewInvoiceWizardPage extends WizardPage implements KeyListener {
     	PlatformUI.getWorkbench().getHelpSystem().displayHelp(NewInvoiceWizard.HELP_CONTEXT_ID);
     }
 	
-	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-	 */
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// nothing to do here...
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-	 */
-	@Override
-	public void keyReleased(KeyEvent e) {
-		if (invoiceNumber.getText().isEmpty()) {
+    /**
+     * 
+     */
+	private void checkIfPageComplete() {
+		if (invoiceNumber.getText().isEmpty() || clientCombo.getSelectionIndex() < 0) {
 			setPageComplete(false);
 		} else {
 			setPageComplete(true);
-		}
+		}		
 	}
-
+	
 	/**
 	 * 
 	 * @return
