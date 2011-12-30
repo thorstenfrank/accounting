@@ -22,6 +22,7 @@ import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.util.CalculationUtil;
@@ -62,8 +63,16 @@ public class InvoiceWrapper implements Constants {
     public String getInvoiceDate() {
     	return FormatUtil.formatDate(invoice.getInvoiceDate());
     }
-
+    
     /**
+     * @return
+     * @see de.togginho.accounting.model.Invoice#getPaymentTerms()
+     */
+    public PaymentTerms getPaymentTerms() {
+	    return invoice.getPaymentTerms();
+    }
+    
+	/**
      * 
      * @return {@link Invoice#getNumber()}
      */
@@ -106,8 +115,8 @@ public class InvoiceWrapper implements Constants {
     	if (phone == null) {
     		return null;
     	}
-        // TODO localize this
-        return "Phone: " + phone;
+    	
+    	return Messages.bind(Messages.Phone, phone);
     }
 
     /**
@@ -119,8 +128,8 @@ public class InvoiceWrapper implements Constants {
     	if (mobile == null) {
     		return null;
     	}
-    	// TODO localize this
-    	return "Mobile: " + mobile;
+    	
+    	return Messages.bind(Messages.Mobile, mobile);
     }
     
     /**
@@ -132,8 +141,8 @@ public class InvoiceWrapper implements Constants {
     	if (email == null) {
     		return null;
     	}
-        // TODO localize this
-        return "Mail: " + email;
+    	
+    	return Messages.bind(Messages.Email, email);
     }
 
     /**
@@ -165,8 +174,7 @@ public class InvoiceWrapper implements Constants {
      * @return the invoice user's {@link User#getTaxNumber()}
      */
     public String getUserTaxNumberFormatted() {
-    	// TODO localize this
-        return "Steuernr: " + invoice.getUser().getTaxNumber();
+        return Messages.bind(Messages.TaxId, invoice.getUser().getTaxNumber());
     }
 
     /**

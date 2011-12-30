@@ -64,6 +64,20 @@ public class InvoiceDataSource extends AbstractReportDataSource {
 		fieldMap.put("total.tax.amount.title", Messages.InvoiceDataSource_totalTaxAmountTitle); //$NON-NLS-1$
 		fieldMap.put("total.gross.title", Messages.InvoiceDataSource_totalGrossTitle); //$NON-NLS-1$
 		fieldMap.put("user.taxNumber.header", Messages.InvoiceDataSource_userTaxNumberHeader); //$NON-NLS-1$
-		fieldMap.put("paymentConditionText", Messages.InvoiceDataSource_paymentConditionText); //$NON-NLS-1$
+		
+		String paymentConditionText = null;
+		switch (wrapper.getPaymentTerms().getPaymentType()) {
+		case TRADE_CREDIT:
+			paymentConditionText = Messages.bind(
+					Messages.InvoiceDataSource_paymentConditionTradeCredit, 
+					wrapper.getPaymentTerms().getFullPaymentTargetInDays());
+			break;
+
+		default:
+			paymentConditionText = "Gimme da Money";
+			break;
+		}
+		
+		fieldMap.put("paymentConditionText", paymentConditionText);
 	}
 }

@@ -32,7 +32,6 @@ public class Messages extends NLS {
 	public static String InvoiceDataSource_invoiceDateTitle;
 	public static String InvoiceDataSource_invoiceNumberTitle;
 	public static String InvoiceDataSource_invoiceTitle;
-	public static String InvoiceDataSource_paymentConditionText;
 	public static String InvoiceDataSource_positionHeaderDescription;
 	public static String InvoiceDataSource_positionHeaderPrice;
 	public static String InvoiceDataSource_positionHeaderPricePerUnit;
@@ -46,6 +45,7 @@ public class Messages extends NLS {
 	public static String InvoiceDataSource_userBankCodeTitle;
 	public static String InvoiceDataSource_userBankTitle;
 	public static String InvoiceDataSource_userTaxNumberHeader;
+	public static String InvoiceDataSource_paymentConditionTradeCredit;
 	
 	public static String RevenueReportGenerator_clientTitle;
 	public static String RevenueReportGenerator_fromTitle;
@@ -60,6 +60,11 @@ public class Messages extends NLS {
 	public static String RevenueReportGenerator_taxRateTitle;
 	public static String RevenueReportGenerator_untilTitle;
 
+	public static String TaxId;
+	public static String Phone;
+	public static String Mobile;
+	public static String Email;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
