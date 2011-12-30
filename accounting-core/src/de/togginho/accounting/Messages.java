@@ -58,6 +58,8 @@ public class Messages extends NLS {
 	public static String InvoiceState_PAID;
 	public static String InvoiceState_CANCELLED;
 	
+	public static String PaymentType_TRADE_CREDIT;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

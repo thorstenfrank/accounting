@@ -31,7 +31,10 @@ public class PaymentTerms implements Serializable {
     private static final long serialVersionUID = 8912815234249967592L;
     
     /** Reasonable default. */
-    public static final PaymentTerms DEFAULT = new PaymentTerms(PaymentType.NET, 30);
+    public static final PaymentTerms DEFAULT = new PaymentTerms(PaymentType.TRADE_CREDIT, 30);
+    
+    public static final String FIELD_TYPE = "paymentType";
+    public static final String FIELD_FULL_PAYMENT_TARGET = "fullPaymentTargetInDays";
     
     /**
      * 

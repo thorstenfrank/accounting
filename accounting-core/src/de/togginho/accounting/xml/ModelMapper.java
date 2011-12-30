@@ -68,7 +68,7 @@ public class ModelMapper {
 	        LOG.info("export finished successfully"); //$NON-NLS-1$
         } catch (JAXBException e) {
         	LOG.error("Error exporting data to xml", e); //$NON-NLS-1$
-        	throw new AccountingException("Error exporting data to XML", e);
+        	throw new AccountingException("Error exporting data to XML", e); //$NON-NLS-1$
         }
 	}
 	
@@ -93,7 +93,7 @@ public class ModelMapper {
 	        return importResult;
         } catch (JAXBException e) {
         	LOG.error("Error importing data from XML", e); //$NON-NLS-1$
-	        throw new AccountingException("Error importing data from XML", e);
+	        throw new AccountingException("Error importing data from XML", e); //$NON-NLS-1$
         }
 	}
 }

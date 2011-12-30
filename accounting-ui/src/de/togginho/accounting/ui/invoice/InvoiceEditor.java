@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +40,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -49,6 +52,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
@@ -61,12 +65,11 @@ import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
 
 import de.togginho.accounting.Constants;
-import de.togginho.accounting.model.Address;
-import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
+import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
@@ -103,9 +106,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 
 	// invoice position table
 	private TableViewer invoicePositionViewer;
-
-	// clients
-	private Set<Client> clients;
 	
 	// tax rate map...
 	private Map<String, TaxRate> shortStringToTaxRateMap;
@@ -115,6 +115,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	private Text totalNet;
 	private Text totalTax;
 	private Text totalGross;
+	private DateTime dueDate;
 	
 	private boolean invoiceCanBeEdited;
 	
@@ -168,14 +169,26 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			}
 		}
 		
+		if (invoice.getPaymentTerms() == null) {
+			if (invoice.getClient() == null || invoice.getClient().getDefaultPaymentTerms() == null) {
+				invoice.setPaymentTerms(PaymentTerms.DEFAULT);
+			} else {
+				invoice.setPaymentTerms(invoice.getClient().getDefaultPaymentTerms());
+			}
+		}
+		
 		createOverviewSection();
 		
-		createClientSection();
+		//createClientSection();
+		
+		createPaymentTermsSection(invoice);
 		
 		createInvoicePositionsSection();
 		
 		// calculate the prices for display
 		calculateTotals();
+		
+		calculateDueDate();
 		
 //		CommandContributionItemParameter deleteInvoiceParam = new CommandContributionItemParameter(
 //				getSite().getWorkbenchWindow(), 
@@ -245,6 +258,12 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		number.setEnabled(false);
 		number.setEditable(false);
 
+		// CLIENT
+		toolkit.createLabel(left, Messages.labelClient);
+		final Text clientName = createText(left, invoice.getClient().getName());
+		clientName.setEnabled(false);
+		clientName.setEditable(false);
+		
 		// INVOICE DATE
 		if (invoice.getInvoiceDate() == null) {
 			invoice.setInvoiceDate(new Date());
@@ -260,43 +279,11 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				Invoice invoice = getEditorInput().getInvoice();								
 				if (invoice.getInvoiceDate().compareTo(newInvoiceDate) != 0) {
 					invoice.setInvoiceDate(newInvoiceDate);
+					calculateDueDate();
 					setIsDirty(true);
 				}
 			}
 		});
-		
-		// PAYMENT TERMS
-		if (invoice.getPaymentTerms() == null) {
-			if (invoice.getClient() != null && invoice.getClient().getDefaultPaymentTerms() != null) {
-				invoice.setPaymentTerms(invoice.getClient().getDefaultPaymentTerms());
-			} else {
-				LOG.warn("Client has no payment terms configured, will use default"); //$NON-NLS-1$
-				invoice.setPaymentTerms(PaymentTerms.DEFAULT);
-			}
-		}
-		
-		// DUE DATE
-		if (invoice.getDueDate() == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_MONTH, invoice.getPaymentTerms().getFullPaymentTargetInDays());
-			invoice.setDueDate(cal.getTime());
-		}
-		toolkit.createLabel(left, Messages.labelInvoiceDueDate);
-		DateTime dueDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
-		dueDate.setEnabled(invoiceCanBeEdited);
-		WidgetHelper.dateToWidget(invoice.getDueDate(), dueDate);
-		dueDate.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				final Date newDueDate = WidgetHelper.widgetToDate((DateTime) e.getSource());
-				Invoice invoice = getEditorInput().getInvoice();
-				if (invoice.getDueDate().compareTo(newDueDate) != 0) {
-					invoice.setDueDate(newDueDate);
-					setIsDirty(true);
-				}
-			}
-		});
-		
 		
 		Composite right = toolkit.createComposite(sectionClient);
 		right.setLayout(new GridLayout(2, false));
@@ -335,103 +322,75 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	
 	/**
 	 * 
+	 * @param client
 	 */
-	private void createClientSection() {
-		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
-		section.setText(Messages.labelClient);
-		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+	private void createPaymentTermsSection(Invoice invoice) {		
+		final PaymentTerms paymentTerms = invoice.getPaymentTerms();
 		
-		Composite sectionClient = toolkit.createComposite(section);
+	    Section paymentTermsSection = toolkit.createSection(getForm().getBody(), Section.TITLE_BAR);
+		paymentTermsSection.setText(Messages.labelPaymentTerms);
+		
+		paymentTermsSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		Composite sectionClient = toolkit.createComposite(paymentTermsSection);
 		sectionClient.setLayout(new GridLayout(2, false));
+				
+		toolkit.createLabel(sectionClient, Messages.labelPaymentType);
 		
-		Invoice invoice = getEditorInput().getInvoice();
-		Client theClient = invoice.getClient();
-		clients = AccountingUI.getAccountingService().getClients();
-		
-		toolkit.createLabel(sectionClient, Messages.labelClientName);
-		Combo clientCombo = new Combo(sectionClient, SWT.READ_ONLY);
-		clientCombo.setEnabled(invoiceCanBeEdited);
-		
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(clientCombo);
-
-		Address address = theClient != null ? theClient.getAddress() : null;
-		
-		toolkit.createLabel(sectionClient, Messages.labelStreet);
-		final Text street = createText(sectionClient, address != null ? address.getStreet() : EMPTY_STRING);
-		street.setEditable(false);
-		street.setEnabled(false);
-		
-		toolkit.createLabel(sectionClient, Messages.labelPostalCode);
-		final Text postCode = createText(sectionClient, address != null ? address.getPostalCode() : EMPTY_STRING);
-		postCode.setEditable(false);
-		postCode.setEnabled(false);
-		
-		toolkit.createLabel(sectionClient, Messages.labelCity);
-		final Text city = createText(sectionClient, address != null ? address.getCity() : EMPTY_STRING);
-		city.setEditable(false);
-		city.setEnabled(false);
-		
-		int currentClientIndex = 0;
-		int counter = 1;
-		clientCombo.add(EMPTY_STRING);
-		for (Client client : clients) {
-			clientCombo.add(client.getName());
-			if (theClient != null && theClient.equals(client)) {
-				currentClientIndex = counter;
+		final Combo paymentTypes = new Combo(sectionClient, SWT.READ_ONLY);
+		toolkit.adapt(paymentTypes);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(paymentTypes);
+		final List<PaymentType> paymentTypeList = new ArrayList<PaymentType>();
+		int index = 0;
+		for (PaymentType element : PaymentType.values()) {
+			paymentTypes.add(element.getTranslatedString());
+			paymentTypeList.add(index, element);
+			if (element.name().equals(paymentTerms.getPaymentType().name())) {
+				paymentTypes.select(index);
+			} else {
+				index++;
 			}
-			counter++;
 		}
 		
-		if (currentClientIndex >= 0) {
-			clientCombo.select(currentClientIndex);
-		}
-		
-		clientCombo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Combo combo = (Combo) e.getSource();
-				final String selected = combo.getItem(combo.getSelectionIndex());
-				Invoice invoice = getEditorInput().getInvoice();
-				Client newClient = null;
-				boolean changed = false;
-				if (selected.isEmpty() && invoice.getClient() != null) {
-					invoice.setClient(null);
-					changed = true;
-				} else {
-					Client currentClient = invoice.getClient();
-					// get the selected client instance
-					for (Client client : clients) {
-						if (client.getName().equals(selected)) {
-							newClient = client;
-							break;
-						}
-					}
-					if ((currentClient == null && newClient != null) || currentClient.equals(newClient) == false) {
-						invoice.setClient(newClient);
-						changed = true;
-					}
-				}
-				if (changed) {
-					if (newClient != null && newClient.getAddress() != null) {
-						Address address = newClient.getAddress();
-						street.setText(address.getStreet() != null ? address.getStreet() : EMPTY_STRING);
-						postCode.setText(address.getPostalCode() != null ? address.getPostalCode() : EMPTY_STRING);
-						city.setText(address.getCity() != null ? address.getCity() : EMPTY_STRING);						
-					} else {
-						street.setText(EMPTY_STRING);
-						postCode.setText(EMPTY_STRING);
-						city.setText(EMPTY_STRING);
-					}
-
-					setIsDirty(true);
-					firePropertyChange(IEditorPart.PROP_DIRTY);
-				}
-			}
-			
+		paymentTypes.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+            	final Combo combo = (Combo) e.getSource();
+            	PaymentType newType = paymentTypeList.get(combo.getSelectionIndex());
+            	if ( ! newType.name().equals(paymentTerms.getPaymentType().name())) {
+                	paymentTerms.setPaymentType(newType);
+                	calculateDueDate();
+                	setIsDirty(true);
+            	}
+            }
 		});
 		
-		section.setClient(sectionClient);
+		toolkit.createLabel(sectionClient, Messages.labelPaymentTarget);
+		final Spinner spinner = new Spinner(sectionClient, SWT.BORDER);
+		//toolkit.adapt(spinner);
+		spinner.setIncrement(1);
+		spinner.setMinimum(0);
+		spinner.setSelection(paymentTerms.getFullPaymentTargetInDays());
 		
+		spinner.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				paymentTerms.setFullPaymentTargetInDays(spinner.getSelection());
+				calculateDueDate();
+				setIsDirty(true);
+			}
+		});
+		
+		toolkit.createLabel(sectionClient, Messages.InvoiceView_dueDate);
+		dueDate = new DateTime(sectionClient, SWT.DATE | SWT.BORDER);
+		dueDate.setEnabled(false);
+		if (invoice.getDueDate() != null) {
+			WidgetHelper.dateToWidget(invoice.getDueDate(), dueDate);
+		}
+		
+		
+		paymentTermsSection.setClient(sectionClient);
 	}
 	
 	/**
@@ -636,6 +595,21 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		totalNet.setText(FormatUtil.formatCurrency(total.getNet()));
 		totalTax.setText(FormatUtil.formatCurrency(total.getTax()));
 		totalGross.setText(FormatUtil.formatCurrency(total.getGross()));
+	}
+	
+	/**
+	 * 
+	 */
+	private void calculateDueDate() {
+		if (!invoiceCanBeEdited) {
+			return;
+		}
+		Invoice invoice = getEditorInput().getInvoice();
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(invoice.getInvoiceDate().getTime());
+		cal.add(Calendar.DAY_OF_MONTH, invoice.getPaymentTerms().getFullPaymentTargetInDays());
+		invoice.setDueDate(cal.getTime());
+		WidgetHelper.dateToWidget(invoice.getDueDate(), dueDate);
 	}
 	
 	/**

@@ -30,6 +30,8 @@ import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.PaymentTerms;
+import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.xml.generated.XmlAddress;
@@ -38,6 +40,7 @@ import de.togginho.accounting.xml.generated.XmlClient;
 import de.togginho.accounting.xml.generated.XmlClients;
 import de.togginho.accounting.xml.generated.XmlInvoice;
 import de.togginho.accounting.xml.generated.XmlInvoicePosition;
+import de.togginho.accounting.xml.generated.XmlPaymentTerms;
 import de.togginho.accounting.xml.generated.XmlTaxRate;
 import de.togginho.accounting.xml.generated.XmlTaxRates;
 import de.togginho.accounting.xml.generated.XmlUser;
@@ -153,6 +156,7 @@ class XmlToModel {
 				invoice.setInvoiceDate(convertDate(xmlInvoice.getInvoiceDate()));
 				invoice.setPaymentDate(convertDate(xmlInvoice.getPaymentDate()));
 				invoice.setSentDate(convertDate(xmlInvoice.getSentDate()));
+				invoice.setPaymentTerms(convertPaymentTerms(xmlInvoice.getPaymentTerms()));
 				
 				if (xmlInvoice.getInvoicePositions() != null) {
 					invoice.setInvoicePositions(new ArrayList<InvoicePosition>());
@@ -226,8 +230,9 @@ class XmlToModel {
 			for (XmlClient xmlClient : xmlClients.getClient()) {
 				LOG.debug("Converting client " + xmlClient.getName()); //$NON-NLS-1$
 				Client client = new Client();
-				client.setAddress(convertAddress(xmlClient.getAddress()));
 				client.setName(xmlClient.getName());
+				client.setAddress(convertAddress(xmlClient.getAddress()));
+				client.setDefaultPaymentTerms(convertPaymentTerms(xmlClient.getDefaultPaymentTerms()));
 				clients.add(client);
 			}
 		} else {
@@ -261,7 +266,7 @@ class XmlToModel {
 	    rate.setLongName(xmlRate.getName());
 	    rate.setShortName(xmlRate.getAbbreviation());
 	    rate.setRate(xmlRate.getRate());
-	    LOG.debug("Converted tax rate " + rate.toLongString());
+	    LOG.debug("Converted tax rate " + rate.toLongString()); //$NON-NLS-1$
 	    return rate;
     }
 
@@ -314,5 +319,18 @@ class XmlToModel {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		return cal.getTime();
+	}
+	
+	/**
+	 * 
+	 * @param xmlTerms
+	 * @return
+	 */
+	private PaymentTerms convertPaymentTerms(XmlPaymentTerms xmlTerms) {
+		if (xmlTerms == null) {
+			return null;
+		}
+		
+		return new PaymentTerms(PaymentType.TRADE_CREDIT, xmlTerms.getFullPaymentTargetInDays());
 	}
 }

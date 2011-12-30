@@ -198,6 +198,9 @@ public class Messages extends NLS {
 	public static String labelInvoiceNo;
 	public static String labelMobile;
 	public static String labelName;
+	public static String labelPaymentTerms;
+	public static String labelPaymentType;
+	public static String labelPaymentTarget;
 	public static String labelPhone;
 	public static String labelPostalCode;
 	public static String labelPricePerUnit;

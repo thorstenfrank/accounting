@@ -623,7 +623,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		// test simple copy
 		original.setUser(getTestUser());
 		original.setClient(getTestClient());
-		final PaymentTerms terms = new PaymentTerms(PaymentType.NET, 35);
+		final PaymentTerms terms = new PaymentTerms(PaymentType.TRADE_CREDIT, 35);
 		original.setPaymentTerms(terms);
 		
 		copy = serviceUnderTest.copyInvoice(original, newInvoiceNo);

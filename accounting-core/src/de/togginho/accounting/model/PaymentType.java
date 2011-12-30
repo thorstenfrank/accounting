@@ -17,6 +17,8 @@ package de.togginho.accounting.model;
 
 import java.io.Serializable;
 
+import de.togginho.accounting.Messages;
+
 /**
  * Describes how a payment is to be made.
  * 
@@ -26,7 +28,31 @@ import java.io.Serializable;
 public enum PaymentType implements Serializable {
 
 	/**
+	 * Credit purchase, Zielkauf.
 	 * Net payments are payments of the total due amount of an invoice, usually by way of bank transfer.
 	 */
-	NET;
+	TRADE_CREDIT(Messages.PaymentType_TRADE_CREDIT);
+	
+	/**
+	 * translated name of this state
+	 */
+	private String translated;
+		
+	/**
+	 * Creates a new {@link PaymentType}.
+     * @param translated translated name of this state
+     */
+    private PaymentType(String translated) {
+	    this.translated = translated;
+    }
+
+	/**
+	 * Returns a translated String describing this state. The locale used is the default locale derived from the
+	 * framework.
+	 * 
+	 * @return a locale-sensitive string representation of this invoice state
+	 */
+	public String getTranslatedString() {
+		return translated;
+	}
 }

@@ -30,6 +30,7 @@ import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.xml.generated.XmlAddress;
@@ -40,6 +41,8 @@ import de.togginho.accounting.xml.generated.XmlInvoice;
 import de.togginho.accounting.xml.generated.XmlInvoicePosition;
 import de.togginho.accounting.xml.generated.XmlInvoicePositions;
 import de.togginho.accounting.xml.generated.XmlInvoices;
+import de.togginho.accounting.xml.generated.XmlPaymentTerms;
+import de.togginho.accounting.xml.generated.XmlPaymentType;
 import de.togginho.accounting.xml.generated.XmlTaxRate;
 import de.togginho.accounting.xml.generated.XmlTaxRates;
 import de.togginho.accounting.xml.generated.XmlUser;
@@ -152,6 +155,7 @@ class ModelToXml {
 				XmlClient xmlClient = new XmlClient();
 				xmlClient.setName(client.getName());
 				xmlClient.setAddress(convertAddress(client.getAddress()));
+				xmlClient.setDefaultPaymentTerms(convertPaymentTerms(client.getDefaultPaymentTerms()));
 				xmlClients.getClient().add(xmlClient);
 			}
 		} else {
@@ -217,6 +221,7 @@ class ModelToXml {
 		xmlInvoice.setInvoiceDate(convertDate(invoice.getInvoiceDate()));		
 		xmlInvoice.setPaymentDate(convertDate(invoice.getPaymentDate()));
 		xmlInvoice.setSentDate(convertDate(invoice.getSentDate()));
+		xmlInvoice.setPaymentTerms(convertPaymentTerms(invoice.getPaymentTerms()));
 		
 		if (invoice.getInvoicePositions() != null) {
 			XmlInvoicePositions xmlInvoicePositions = new XmlInvoicePositions();
@@ -244,7 +249,7 @@ class ModelToXml {
 	 * @param date
 	 * @return
 	 */
-	protected XMLGregorianCalendar convertDate(Date date) {
+	private XMLGregorianCalendar convertDate(Date date) {
 		if (date == null) {
 			return null;
 		}
@@ -262,5 +267,20 @@ class ModelToXml {
         }
 		
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param paymentTerms
+	 * @return
+	 */
+	private XmlPaymentTerms convertPaymentTerms(PaymentTerms paymentTerms) {
+		if (paymentTerms == null) {
+			paymentTerms = PaymentTerms.DEFAULT;
+		}
+		XmlPaymentTerms xmlTerms = new XmlPaymentTerms();
+		xmlTerms.setFullPaymentTargetInDays(paymentTerms.getFullPaymentTargetInDays());
+		xmlTerms.setType(XmlPaymentType.NET);
+		return xmlTerms;
 	}
 }

@@ -50,6 +50,19 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:simpleType name="xmlPaymentType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="net" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="xmlPaymentTerms">
+        <xs:sequence>
+            <xs:element name="type" type="xmlPaymentType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="fullPaymentTargetInDays" type="xs:int" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="xmlClients">
         <xs:sequence>
             <xs:element name="client" type="xmlClient" minOccurs="1" maxOccurs="unbounded"/>
@@ -59,6 +72,7 @@
     <xs:complexType name="xmlClient">
     	<xs:sequence>
     		<xs:element name="address" type="xmlAddress" maxOccurs="1" />
+    		<xs:element name="defaultPaymentTerms" type="xmlPaymentTerms" minOccurs="0" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
@@ -73,6 +87,7 @@
     	<xs:sequence>
     		<xs:element name="creationDate" type="xs:date" minOccurs="1" maxOccurs="1" />
     		<xs:element name="invoiceDate" type="xs:date" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="paymentTerms" type="xmlPaymentTerms" minOccurs="0" maxOccurs="1" />
     		<xs:element name="dueDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="sentDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="cancelledDate" type="xs:date" minOccurs="0" maxOccurs="1" />
