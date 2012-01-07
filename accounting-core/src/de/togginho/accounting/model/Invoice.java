@@ -16,6 +16,7 @@
 package de.togginho.accounting.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,6 @@ public class Invoice implements Serializable {
 	public static final String FIELD_STATE = "state";
 	public static final String FIELD_CREATION_DATE = "creationDate";
 	public static final String FIELD_INVOICE_DATE = "invoiceDate";
-	public static final String FIELD_DUE_DATE = "dueDate";
 	public static final String FIELD_SENT_DATE = "sentDate";
 	public static final String FIELD_PAYMENT_DATE = "paymentDate";
 	public static final String FIELD_USER = "user";
@@ -46,7 +46,6 @@ public class Invoice implements Serializable {
 	private String number;
 	private Date creationDate;
 	private Date invoiceDate;
-	private Date dueDate;
 	private Date sentDate;
 	private Date paymentDate;
 	private Date cancelledDate;
@@ -79,7 +78,7 @@ public class Invoice implements Serializable {
 			return InvoiceState.CANCELLED;
 		} else if (paymentDate != null) {
 			return InvoiceState.PAID;
-		} else if (sentDate != null && dueDate.before(new Date())) {
+		} else if (isOverdue()) {
 			return InvoiceState.OVERDUE;
 		} else if (sentDate != null) {
 			return InvoiceState.SENT;
@@ -88,6 +87,21 @@ public class Invoice implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean isOverdue() {
+		if (sentDate != null) {
+			final Date dueDate = getDueDate();
+			if (dueDate != null && dueDate.before(new Date())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * @return the creationDate
 	 */
@@ -121,14 +135,24 @@ public class Invoice implements Serializable {
 	 * @return the dueDate
 	 */
 	public Date getDueDate() {
+		Date dueDate = null;
+	    if (invoiceDate != null && paymentTerms != null) {
+        	Calendar cal = Calendar.getInstance();
+        	cal.setTime(invoiceDate);
+    		cal.add(Calendar.DAY_OF_MONTH, this.paymentTerms.getFullPaymentTargetInDays());
+        	dueDate = cal.getTime();
+    	}
 		return dueDate;
 	}
 
 	/**
 	 * @param dueDate the dueDate to set
+	 * @deprecated the due date is calculated at runtime by {@link #getDueDate()}, so calling this method has absolutely
+	 * no effect. 
 	 */
+	@Deprecated
 	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
+		// nothing to do here...
 	}
 
 	/**
@@ -213,7 +237,6 @@ public class Invoice implements Serializable {
      */
     public void setPaymentTerms(PaymentTerms paymentTerms) {
     	this.paymentTerms = paymentTerms;
-    	// FIXME set the due date...
     }
 
 	/**

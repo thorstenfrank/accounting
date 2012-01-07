@@ -217,7 +217,7 @@ class ModelToXml {
 		xmlInvoice.setCancelledDate(convertDate(invoice.getCancelledDate()));
 		xmlInvoice.setClient(invoice.getClient().getName());
 		xmlInvoice.setCreationDate(convertDate(invoice.getCreationDate()));
-		xmlInvoice.setDueDate(convertDate(invoice.getDueDate()));
+		// xmlInvoice.setDueDate(convertDate(invoice.getDueDate()));
 		xmlInvoice.setInvoiceDate(convertDate(invoice.getInvoiceDate()));		
 		xmlInvoice.setPaymentDate(convertDate(invoice.getPaymentDate()));
 		xmlInvoice.setSentDate(convertDate(invoice.getSentDate()));
@@ -276,7 +276,7 @@ class ModelToXml {
 	 */
 	private XmlPaymentTerms convertPaymentTerms(PaymentTerms paymentTerms) {
 		if (paymentTerms == null) {
-			paymentTerms = PaymentTerms.DEFAULT;
+			paymentTerms = PaymentTerms.getDefault();
 		}
 		XmlPaymentTerms xmlTerms = new XmlPaymentTerms();
 		xmlTerms.setFullPaymentTargetInDays(paymentTerms.getFullPaymentTargetInDays());

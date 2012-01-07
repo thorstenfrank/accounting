@@ -23,15 +23,16 @@ import java.io.Serializable;
  * @author thorsten
  *
  */
-public class PaymentTerms implements Serializable {
+public class PaymentTerms implements Serializable, Cloneable {
 
 	/**
      * Serial Version UID.
      */
     private static final long serialVersionUID = 8912815234249967592L;
     
-    /** Reasonable default. */
-    public static final PaymentTerms DEFAULT = new PaymentTerms(PaymentType.TRADE_CREDIT, 30);
+    /** Default Values. */
+    private static final PaymentType DEFAULT_TYPE = PaymentType.TRADE_CREDIT;
+    private static final int DEFAULT_PAYMENT_TARGET = 30;
     
     public static final String FIELD_TYPE = "paymentType";
     public static final String FIELD_FULL_PAYMENT_TARGET = "fullPaymentTargetInDays";
@@ -45,7 +46,6 @@ public class PaymentTerms implements Serializable {
      * 
      */
 	private int fullPaymentTargetInDays;
-
 	
 	/*
 	 * private double discountPercentage;
@@ -68,6 +68,25 @@ public class PaymentTerms implements Serializable {
 	    this.fullPaymentTargetInDays = fullPaymentTargetInDays;
     }
 
+    /**
+     * Returns the global default payment terms, which is Net30.
+     * 
+     * @return global default payment terms
+     */
+    public static PaymentTerms getDefault() {
+    	return new PaymentTerms(DEFAULT_TYPE, DEFAULT_PAYMENT_TARGET);
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}.
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    protected Object clone() {
+    	return new PaymentTerms(paymentType, fullPaymentTargetInDays);
+    }
+    
 	/**
      * @return the fullPaymentTargetInDays
      */
@@ -127,5 +146,16 @@ public class PaymentTerms implements Serializable {
 	    if (paymentType != other.paymentType)
 		    return false;
 	    return true;
+    }
+    
+    /**
+     * {@inheritDoc}.
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(paymentType.name()).append(" ").append(fullPaymentTargetInDays);
+        return sb.toString();
     }
 }

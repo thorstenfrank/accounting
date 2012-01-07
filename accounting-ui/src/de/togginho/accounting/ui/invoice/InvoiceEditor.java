@@ -17,7 +17,6 @@ package de.togginho.accounting.ui.invoice;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -171,7 +170,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		if (invoice.getPaymentTerms() == null) {
 			if (invoice.getClient() == null || invoice.getClient().getDefaultPaymentTerms() == null) {
-				invoice.setPaymentTerms(PaymentTerms.DEFAULT);
+				invoice.setPaymentTerms(PaymentTerms.getDefault());
 			} else {
 				invoice.setPaymentTerms(invoice.getClient().getDefaultPaymentTerms());
 			}
@@ -188,7 +187,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		// calculate the prices for display
 		calculateTotals();
 		
-		calculateDueDate();
+		updateDueDate();
 		
 //		CommandContributionItemParameter deleteInvoiceParam = new CommandContributionItemParameter(
 //				getSite().getWorkbenchWindow(), 
@@ -279,7 +278,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				Invoice invoice = getEditorInput().getInvoice();								
 				if (invoice.getInvoiceDate().compareTo(newInvoiceDate) != 0) {
 					invoice.setInvoiceDate(newInvoiceDate);
-					calculateDueDate();
+					updateDueDate();
 					setIsDirty(true);
 				}
 			}
@@ -359,7 +358,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
             	PaymentType newType = paymentTypeList.get(combo.getSelectionIndex());
             	if ( ! newType.name().equals(paymentTerms.getPaymentType().name())) {
                 	paymentTerms.setPaymentType(newType);
-                	calculateDueDate();
+                	updateDueDate();
                 	setIsDirty(true);
             	}
             }
@@ -377,7 +376,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			@Override
 			public void modifyText(ModifyEvent e) {
 				paymentTerms.setFullPaymentTargetInDays(spinner.getSelection());
-				calculateDueDate();
+				updateDueDate();
 				setIsDirty(true);
 			}
 		});
@@ -600,15 +599,8 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	/**
 	 * 
 	 */
-	private void calculateDueDate() {
-		if (!invoiceCanBeEdited) {
-			return;
-		}
+	private void updateDueDate() {
 		Invoice invoice = getEditorInput().getInvoice();
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(invoice.getInvoiceDate().getTime());
-		cal.add(Calendar.DAY_OF_MONTH, invoice.getPaymentTerms().getFullPaymentTargetInDays());
-		invoice.setDueDate(cal.getTime());
 		WidgetHelper.dateToWidget(invoice.getDueDate(), dueDate);
 	}
 	

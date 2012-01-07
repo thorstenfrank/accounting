@@ -152,7 +152,6 @@ class XmlToModel {
 				
 				invoice.setCancelledDate(convertDate(xmlInvoice.getCancelledDate()));
 				invoice.setCreationDate(convertDate(xmlInvoice.getCreationDate()));
-				invoice.setDueDate(convertDate(xmlInvoice.getDueDate()));
 				invoice.setInvoiceDate(convertDate(xmlInvoice.getInvoiceDate()));
 				invoice.setPaymentDate(convertDate(xmlInvoice.getPaymentDate()));
 				invoice.setSentDate(convertDate(xmlInvoice.getSentDate()));

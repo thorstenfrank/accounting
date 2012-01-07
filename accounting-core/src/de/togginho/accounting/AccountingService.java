@@ -22,6 +22,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 
@@ -99,6 +100,27 @@ public interface AccountingService {
 	 * @param client the {@link Client} instance to delete
 	 */
 	void deleteClient(Client client);
+	
+	/**
+	 * Creates a new invoice whose state will be {@link InvoiceState#UNSAVED}.
+	 * <p> 
+	 * The returned instance will be assigned both the supplied invoice number and
+	 * client, along with the current user (see {@link #getCurrentUser()}). Also, the invoice date will be set to today,
+	 * and the payment terms will either be taken from the supplied Client's default value, or if there is none, the
+	 * global default ( {@link PaymentTerms#DEFAULT}.  
+	 * </p>
+	 * 
+	 * @param invoiceNumber a unique number for the invoice to create. If an invoice with the same number already 
+	 * 		  exists, an {@link AccountingException} is thrown
+	 * 
+	 * @param client the {@link Client} that the newly created invoice will be billed to, must not be <code>null</code>
+	 * 
+	 * @return a newly created {@link Invoice}
+	 * 
+	 * @throws AccountingException if the supplied invoice number is either empty or another invoice with that number
+	 * 	  	   already exists, or if the supplied client is <code>null</code>
+	 */
+	Invoice createNewInvoice(String invoiceNumber, Client client);
 	
 	/**
 	 * Saves an {@link Invoice} to persistence.

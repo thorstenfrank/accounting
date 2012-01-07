@@ -50,6 +50,9 @@ public class Messages extends NLS {
 	public static String AccountingService_errorCannotSendCancelledInvoice;
 	public static String AccountingService_errorCannotSendInvoiceWithoutDueDate;
 	public static String AccountingService_errorCannotSendInvoiceWithDueDateInPast;
+	public static String AccountingService_errorMissingClient;
+	public static String AccountingService_errorInvoiceNumberExists;
+	public static String AccountingService_errorClientExists;
 	
 	public static String InvoiceState_UNSAVED;
 	public static String InvoiceState_CREATED;

@@ -117,8 +117,6 @@ public class Messages extends NLS {
 	public static String NewInvoiceWizardPage_desc;
 	public static String NewInvoiceWizardPage_generate;
 	public static String NewInvoiceWizardPage_title;
-	public static String NewInvoiceWizardPage_alreadyExistsMsg;
-	public static String NewInvoiceWizardPage_alreadyExistsText;
 	
 	public static String NewTaxRateWizard_abbreviation;
 	public static String NewTaxRateWizard_description;

@@ -16,7 +16,6 @@
 package de.togginho.accounting;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -248,7 +247,8 @@ class AccountingServiceImpl implements AccountingService {
 		try {
 			doStoreEntity(client);
 		} catch (UniqueFieldValueConstraintViolationException e) {
-			throw new AccountingException("A client with this name already exists!");
+			LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
+			throw new AccountingException(Messages.AccountingService_errorClientExists);
 		}
 		
 		return client;
@@ -274,6 +274,52 @@ class AccountingServiceImpl implements AccountingService {
 		}
 	}
 
+	/**
+	 * Creates a new but unsaved invoice.
+	 * 
+	 * @param invoiceNumber
+	 * @param client
+	 * @return
+	 */
+	public Invoice createNewInvoice(String invoiceNumber, Client client) {
+		LOG.debug(String.format("Creating new invoice [%s]", invoiceNumber)); //$NON-NLS-1$
+		
+		// validate invoice no: not empty, not yet used
+		if (invoiceNumber == null || invoiceNumber.isEmpty()) {
+			throw new AccountingException(Messages.AccountingService_errorMissingInvoiceNumber);
+		}
+
+		// check if client exists
+		if (client == null) {
+			throw new AccountingException(Messages.AccountingService_errorMissingClient);
+		}
+		
+		// check if an invoice with that number already exists
+		if (getInvoice(invoiceNumber) != null) {
+			LOG.error("An invoice with this number already exists: " + invoiceNumber); //$NON-NLS-1$
+			throw new AccountingException(Messages.AccountingService_errorInvoiceNumberExists);
+		}
+		
+		// create invoice
+		Invoice invoice = new Invoice();
+		
+		// assign values
+		invoice.setNumber(invoiceNumber);
+		invoice.setUser(getCurrentUser());
+		invoice.setClient(client);
+		invoice.setInvoiceDate(new Date());
+		if (client.getDefaultPaymentTerms() != null) {
+			LOG.debug("Using default payment terms of client"); //$NON-NLS-1$
+			invoice.setPaymentTerms(client.getDefaultPaymentTerms());
+		} else {
+			LOG.debug("Using global default payment terms"); //$NON-NLS-1$
+			invoice.setPaymentTerms(PaymentTerms.getDefault());
+		}
+		
+		// assign payment terms
+		return invoice;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.AccountingService#saveInvoice(de.togginho.accounting.model.Invoice)
@@ -463,9 +509,11 @@ class AccountingServiceImpl implements AccountingService {
 				}
 			});
 
-			if (invoiceList.size() == 1) {
+			if (invoiceList == null || invoiceList.size() < 1) {
+				invoice = null;
+			} else if (invoiceList.size() == 1) {
 				invoice = invoiceList.get(0);
-			} else {
+			} else if (invoiceList.size() > 1) {
 				LOG.warn("Should have found 1 invoice, but found instead: " + invoiceList.size()); //$NON-NLS-1$
 			}
 		} catch (Db4oIOException e) {
@@ -483,19 +531,11 @@ class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public Invoice copyInvoice(Invoice invoice, String invoiceNumber) {
-    	Invoice copy = new Invoice();
-    	copy.setNumber(invoiceNumber);
-    	copy.setClient(invoice.getClient());
-    	copy.setInvoiceDate(new Date());
+    	Invoice copy = createNewInvoice(invoiceNumber, invoice.getClient());
     	
-    	copy.setPaymentTerms(invoice.getPaymentTerms() != null ? invoice.getPaymentTerms() : PaymentTerms.DEFAULT);
-    	
-    	Calendar cal = Calendar.getInstance();
-    	cal.setTime(copy.getInvoiceDate());
-		cal.add(Calendar.DAY_OF_MONTH, copy.getPaymentTerms().getFullPaymentTargetInDays());
-    	copy.setDueDate(cal.getTime());
-    	
-    	copy.setUser(invoice.getUser());
+    	if (invoice.getPaymentTerms() != null) {
+    		copy.setPaymentTerms(invoice.getPaymentTerms());
+    	}
     	
     	if (invoice.getInvoicePositions() != null) {
     		List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
@@ -505,7 +545,7 @@ class AccountingServiceImpl implements AccountingService {
 	                InvoicePosition copiedIP = (InvoicePosition) BeanUtils.cloneBean(origIP);
 	                positions.add(copiedIP);
                 } catch (Exception e) {
-                	LOG.error("Error while cloning invoice position", e);
+                	LOG.error("Error while cloning invoice position", e); //$NON-NLS-1$
                 }
     		}
     		
@@ -514,7 +554,7 @@ class AccountingServiceImpl implements AccountingService {
     	
 	    return copy;
     }
-
+    
 	/**
 	 * {@inheritDoc}
 	 * 

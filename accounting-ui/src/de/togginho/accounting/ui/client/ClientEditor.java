@@ -100,7 +100,7 @@ public class ClientEditor extends AbstractAccountingEditor {
 	 */
 	private void createPaymentTermsSection(Client client) {
 		if (client.getDefaultPaymentTerms() == null) {
-			client.setDefaultPaymentTerms(PaymentTerms.DEFAULT);
+			client.setDefaultPaymentTerms(PaymentTerms.getDefault());
 			setIsDirty(true);
 		}
 		

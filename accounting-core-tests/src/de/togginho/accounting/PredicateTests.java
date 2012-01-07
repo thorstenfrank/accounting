@@ -15,15 +15,16 @@
  */
 package de.togginho.accounting;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.User;
 
 /**
@@ -71,9 +72,7 @@ public class PredicateTests extends BaseTestFixture {
 		
 		candidate.setCreationDate(new Date());
 		candidate.setSentDate(new Date());
-		Calendar dueDate = Calendar.getInstance();
-		dueDate.add(Calendar.MONTH, 1);
-		candidate.setDueDate(dueDate.getTime());
+		candidate.setPaymentTerms(PaymentTerms.getDefault());
 		assertTrue(predicate.match(candidate));
 		
 		predicate = new FindInvoicesPredicate(getTestContext(), InvoiceState.CREATED, InvoiceState.SENT);

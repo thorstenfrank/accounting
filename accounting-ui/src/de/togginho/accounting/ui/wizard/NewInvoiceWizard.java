@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.ui.wizard;
 
-import java.util.Date;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -29,6 +27,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
@@ -89,33 +88,22 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	@Override
 	public boolean performFinish() {
 		
-		final Invoice newInvoice = new Invoice();
+		Invoice newInvoice = null;
 		
-		newInvoice.setUser(AccountingUI.getAccountingService().getCurrentUser());
-		
-		// update data from wizard pages
-		newInvoice.setNumber(invoiceNumberPage.getInvoiceNumber());
-		newInvoice.setClient(invoiceNumberPage.getSelectedClient());
-		
-		// set the default invoice date to today
-		newInvoice.setInvoiceDate(new Date());
-		
-		// check if an invoice with that number already exists
-		if (AccountingUI.getAccountingService().getInvoice(newInvoice.getNumber()) != null) {
-			LOG.warn(String.format("Invoice with number [%s] already exists!", newInvoice.getNumber())); //$NON-NLS-1$
-			MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
-			msgBox.setMessage(Messages.NewInvoiceWizardPage_alreadyExistsMsg);
-			msgBox.setText(Messages.NewInvoiceWizardPage_alreadyExistsText);
+		try {
+	        newInvoice = AccountingUI.getAccountingService().createNewInvoice(
+	        		invoiceNumberPage.getInvoiceNumber(), invoiceNumberPage.getSelectedClient());
+        } catch (AccountingException e) {
+        	MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
+        	msgBox.setMessage(Messages.labelError);
+        	msgBox.setText(e.getMessage());
 			msgBox.open();
 			return false;
-		}
-		
-		// save the invoice
-//		LOG.info("Saving new invoice " + newInvoice); //$NON-NLS-1$
-//		AccountingUI.getAccountingService().saveInvoice(newInvoice);
+        }
 		
 		LOG.debug("Setting selection to new invoice"); //$NON-NLS-1$
-		ISelectionProvider selectionProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().getSelectionProvider();
+		ISelectionProvider selectionProvider = 
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().getSelectionProvider();
 		if (selectionProvider != null) {
 			selectionProvider.setSelection(new StructuredSelection(newInvoice));
 		} else {

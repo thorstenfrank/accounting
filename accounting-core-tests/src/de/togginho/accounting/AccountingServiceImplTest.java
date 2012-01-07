@@ -26,11 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +46,6 @@ import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.PaymentType;
@@ -206,7 +201,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		saveUserWithException();
 		saveUserWithException();
 	}
-		
+	
 	/**
 	 * Test method for {@link AccountingService#saveInvoice(Invoice)}.
 	 */
@@ -340,9 +335,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		}
 		
 		// try to send an invoice with a due date in the past
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 1);
-		invoice.setDueDate(cal.getTime());
+		invoice.setPaymentTerms(new PaymentTerms(PaymentType.TRADE_CREDIT, -50));
 		try {
 			serviceUnderTest.sendInvoice(invoice, today);
 			fail("Sending an invoice with a past due date should not be possible");
@@ -351,8 +344,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		}
 		
 		// prepare the invoice for a proper save
-		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 2);
-		invoice.setDueDate(cal.getTime());
+		invoice.setInvoiceDate(new Date());
+		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		invoice.setUser(getTestUser());
 		
 		Invoice saved = serviceUnderTest.sendInvoice(invoice, today);
@@ -373,7 +366,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		invoice.setUser(getTestUser());
 		invoice.setClient(new Client());
 		invoice.setCreationDate(new Date());
-		invoice.setDueDate(new Date());
+		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		serviceUnderTest.markAsPaid(invoice, null);
 		assertNull(invoice.getPaymentDate());
@@ -413,7 +406,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		Invoice invoice = new Invoice();
 		invoice.setCreationDate(new Date());
 		invoice.setSentDate(new Date());
-		invoice.setDueDate(new Date());
+		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		ocMock.store(invoice);
 		expectLastCall().once();
@@ -527,7 +520,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		// try deleting an invoice in an advanced state
 		invoice.setCreationDate(new Date());
 		invoice.setSentDate(new Date());
-		invoice.setDueDate(new Date());
+		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		try {
 	        serviceUnderTest.deleteInvoice(invoice);
@@ -596,83 +589,6 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		} catch (AccountingException e) {
 			// this is what we want
 		}
-	}
-	
-	/**
-	 * Tests {@link AccountingServiceImpl#copyInvoice(Invoice, String)}.
-	 */
-	@Test
-	public void testCopyInvoice() {
-		serviceUnderTest.init(getTestContext());
-		replay(ocMock);
-		
-		final String newInvoiceNo = "TheNewInvoiceNumber";
-		
-		Invoice original = new Invoice();
-		
-		// Test copying without actual content
-		Invoice copy = serviceUnderTest.copyInvoice(original, newInvoiceNo);
-		
-		assertCopiedInvoice(copy, newInvoiceNo);
-		assertNull(copy.getClient());
-		assertNull(copy.getInvoicePositions());
-		assertNull(copy.getUser());
-		assertNotNull(copy.getInvoiceDate());
-		assertEquals(PaymentTerms.DEFAULT, copy.getPaymentTerms());
-		
-		// test simple copy
-		original.setUser(getTestUser());
-		original.setClient(getTestClient());
-		final PaymentTerms terms = new PaymentTerms(PaymentType.TRADE_CREDIT, 35);
-		original.setPaymentTerms(terms);
-		
-		copy = serviceUnderTest.copyInvoice(original, newInvoiceNo);
-		assertCopiedInvoice(copy, newInvoiceNo);
-		assertEquals(getTestUser(), copy.getUser());
-		assertEquals(getTestClient(), copy.getClient());
-		assertNull(copy.getInvoicePositions());
-		assertEquals(terms, copy.getPaymentTerms());
-		
-		// full copy including invoice positions
-		InvoicePosition ip = new InvoicePosition();
-		ip.setDescription("IP_Description");
-		ip.setPricePerUnit(new BigDecimal("25"));
-		ip.setQuantity(new BigDecimal("10"));
-		ip.setUnit("IP_Unit");
-		
-		List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
-		positions.add(ip);
-		original.setInvoicePositions(positions);
-		
-		copy = serviceUnderTest.copyInvoice(original, newInvoiceNo);
-		assertCopiedInvoice(copy, newInvoiceNo);
-		assertEquals(getTestUser(), copy.getUser());
-		assertEquals(getTestClient(), copy.getClient());
-		assertNotNull(copy.getInvoicePositions());
-		assertEquals(1, copy.getInvoicePositions().size());
-		
-		InvoicePosition copiedIP = copy.getInvoicePositions().get(0);
-		assertEquals(ip.getDescription(), copiedIP.getDescription());
-		assertEquals(ip.getPricePerUnit(), copiedIP.getPricePerUnit());
-		assertEquals(ip.getQuantity(), copiedIP.getQuantity());
-		assertEquals(ip.getTaxRate(), copiedIP.getTaxRate());
-		assertEquals(ip.getUnit(), copiedIP.getUnit());
-	}
-	
-	/**
-	 * 
-	 * @param copy
-	 */
-	private void assertCopiedInvoice(Invoice copy, String invoiceNumber) {
-		assertNotNull("Copied invoice should not be null", copy);
-		assertEquals("Invoice number doesn't match", invoiceNumber, copy.getNumber());
-		assertNull("Cancelled date should be null", copy.getCancelledDate());
-		assertNull("Creation date should be null", copy.getCreationDate());		
-		assertNull("Payment date should be null", copy.getPaymentDate());
-		assertNull("Sent date should be null", copy.getSentDate());
-		assertNotNull("Invoice date should not be null", copy.getInvoiceDate());
-		assertNotNull("Due date should not be null", copy.getDueDate());
-		assertEquals("Copied invoice state should be UNSAVED", InvoiceState.UNSAVED, copy.getState());
 	}
 	
 	/**
