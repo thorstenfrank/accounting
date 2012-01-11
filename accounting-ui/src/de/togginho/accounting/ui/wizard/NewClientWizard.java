@@ -98,6 +98,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 		LOG.debug("Performing finish"); //$NON-NLS-1$
 		final Client newClient = new Client();
 		newClient.setName(clientNameWizardPage.getClientName());
+		newClient.setClientNumber(clientNameWizardPage.getClientNumber());
 		newClient.setAddress(addressWizardPage.getAddress());
 		
 		LOG.debug("Getting current user from Plugin"); //$NON-NLS-1$

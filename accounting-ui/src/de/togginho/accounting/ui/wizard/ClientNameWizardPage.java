@@ -18,6 +18,8 @@ package de.togginho.accounting.ui.wizard;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -33,6 +35,7 @@ import de.togginho.accounting.ui.WidgetHelper;
 public class ClientNameWizardPage extends WizardPage {
 	
 	private Text clientName;
+	private Text clientNumber;
 	
 	/**
 	 * 
@@ -54,12 +57,22 @@ public class ClientNameWizardPage extends WizardPage {
 		composite.setLayout(layout);
 		
 		WidgetHelper.createLabel(composite, Messages.labelClientName);
-		
 		clientName = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clientName);
 		
+		clientName.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				checkIfPageComplete();
+			}
+		});
+		
+		WidgetHelper.createLabel(composite, Messages.labelClientNumber);
+		clientNumber = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(clientNumber);
+		
 		setControl(composite);
-		setPageComplete(true);
+		setPageComplete(false);
 	}
 	
 	@Override
@@ -73,5 +86,24 @@ public class ClientNameWizardPage extends WizardPage {
 	 */
 	protected String getClientName() {
 		return clientName.getText();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected String getClientNumber() {
+		return clientNumber.getText();
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkIfPageComplete() {
+		if (clientName.getText().isEmpty()) {
+			setPageComplete(false);
+		} else {
+			setPageComplete(true);
+		}
 	}
 }
