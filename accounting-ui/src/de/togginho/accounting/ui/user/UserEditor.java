@@ -312,9 +312,12 @@ public class UserEditor extends AbstractAccountingEditor {
 		
 		User user = getEditorInput().getUser();
 		
-		AccountingUI.getAccountingService().saveCurrentUser(user);
-		
-		setIsDirty(false);
+		try {
+			AccountingUI.getAccountingService().saveCurrentUser(user);
+			setIsDirty(false);
+		} catch (Exception e) {
+			showError(e);
+		}
 	}	
 		
 	/**

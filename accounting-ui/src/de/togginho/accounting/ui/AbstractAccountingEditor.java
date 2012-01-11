@@ -32,6 +32,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -304,5 +305,16 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 		createText(addressSectionClient, address.getFaxNumber(), address, Address.FIELD_FAX_NUMBER);
 		
 		addressSection.setClient(addressSectionClient);
+	}
+	
+	/**
+	 * 
+	 * @param e
+	 */
+	protected void showError(Exception e) {
+		MessageBox msgBox = new MessageBox(getEditorSite().getShell(), SWT.ICON_ERROR | SWT.OK);
+		msgBox.setMessage(e.getLocalizedMessage());
+		msgBox.setText(Messages.labelError);
+		msgBox.open();
 	}
 }

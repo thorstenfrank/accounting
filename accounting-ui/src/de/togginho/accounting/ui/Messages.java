@@ -190,7 +190,6 @@ public class Messages extends NLS {
 	public static String labelClientNumber;
 	public static String labelDescription;
 	public static String labelEmail;
-	public static String labelError;
 	public static String labelFax;
 	public static String labelInvoiceDate;
 	public static String labelInvoiceDueDate;
@@ -219,6 +218,9 @@ public class Messages extends NLS {
 	
 	public static String labelYes;
 	public static String labelNo;
+	
+	public static String labelError;
+	public static String labelUnkownError;
 	
 	// ICONS
 	public static String iconsGroupEdit;

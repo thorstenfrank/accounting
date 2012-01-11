@@ -526,10 +526,12 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	public void doSave(IProgressMonitor monitor) {
 		Invoice invoice = getEditorInput().getInvoice();
 		
-		// TODO exception handling
-		AccountingUI.getAccountingService().saveInvoice(invoice);
-		
-		setIsDirty(false);
+		try {
+			AccountingUI.getAccountingService().saveInvoice(invoice);
+			setIsDirty(false);
+		} catch (Exception e) {
+			showError(e);
+		}
 	}
 	
 	/**
