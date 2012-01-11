@@ -30,10 +30,12 @@ public class Client implements Serializable {
 	private static final long serialVersionUID = 6108633451701651981L;
 	
 	public static final String FIELD_NAME = "name";
+	public static final String FIELD_CLIENT_NUMBER = "clientNumber";
 	public static final String FIELD_ADDRESS = "address";
 	public static final String FIELD_DEFAULT_PAYMENT_TERMS = "defaultPaymentTerms";
 	
 	private String name;
+	private String clientNumber;
 	private Address address;
 	private PaymentTerms defaultPaymentTerms;
 	
@@ -51,6 +53,20 @@ public class Client implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the clientNumber
+	 */
+	public String getClientNumber() {
+		return clientNumber;
+	}
+
+	/**
+	 * @param clientNumber the clientNumber to set
+	 */
+	public void setClientNumber(String clientNumber) {
+		this.clientNumber = clientNumber;
 	}
 
 	/**

@@ -71,7 +71,8 @@
 
     <xs:complexType name="xmlClient">
     	<xs:sequence>
-    		<xs:element name="address" type="xmlAddress" maxOccurs="1" />
+    		<xs:element name="clientNumber" type="xs:string" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="address" type="xmlAddress" minOccurs="0" maxOccurs="1" />
     		<xs:element name="defaultPaymentTerms" type="xmlPaymentTerms" minOccurs="0" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required" />

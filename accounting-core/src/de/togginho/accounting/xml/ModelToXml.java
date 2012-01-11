@@ -154,6 +154,7 @@ class ModelToXml {
 				LOG.debug("Converting client " + client.getName()); //$NON-NLS-1$
 				XmlClient xmlClient = new XmlClient();
 				xmlClient.setName(client.getName());
+				xmlClient.setClientNumber(client.getClientNumber());
 				xmlClient.setAddress(convertAddress(client.getAddress()));
 				xmlClient.setDefaultPaymentTerms(convertPaymentTerms(client.getDefaultPaymentTerms()));
 				xmlClients.getClient().add(xmlClient);
