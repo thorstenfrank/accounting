@@ -26,6 +26,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
 
 import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
@@ -66,9 +67,9 @@ public class ModelMapper {
 	        LOG.info("Exporting model data to file " + targetFile); //$NON-NLS-1$
 	        marshaller.marshal(new ModelToXml().convertToXml(user, clients, invoices), new File(targetFile));
 	        LOG.info("export finished successfully"); //$NON-NLS-1$
-        } catch (JAXBException e) {
+        } catch (Exception e) {
         	LOG.error("Error exporting data to xml", e); //$NON-NLS-1$
-        	throw new AccountingException("Error exporting data to XML", e); //$NON-NLS-1$
+        	throw new AccountingException(Messages.ModelMapper_errorDuringExport, e);
         }
 	}
 	
@@ -91,9 +92,9 @@ public class ModelMapper {
 	        importResult.setImportedInvoices(xmlToModel.getInvoices());
 	        LOG.info("import finished successfully"); //$NON-NLS-1$
 	        return importResult;
-        } catch (JAXBException e) {
+        } catch (Exception e) {
         	LOG.error("Error importing data from XML", e); //$NON-NLS-1$
-	        throw new AccountingException("Error importing data from XML", e); //$NON-NLS-1$
+	        throw new AccountingException(Messages.ModelMapper_errorDuringImport, e);
         }
 	}
 }

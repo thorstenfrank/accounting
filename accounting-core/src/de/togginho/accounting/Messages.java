@@ -54,13 +54,16 @@ public class Messages extends NLS {
 	public static String AccountingService_errorInvoiceNumberExists;
 	public static String AccountingService_errorClientExists;
 	
+	public static String ModelMapper_errorDuringExport;
+	public static String ModelMapper_errorDuringImport;
+	
 	public static String InvoiceState_UNSAVED;
 	public static String InvoiceState_CREATED;
 	public static String InvoiceState_SENT;
 	public static String InvoiceState_OVERDUE;
 	public static String InvoiceState_PAID;
 	public static String InvoiceState_CANCELLED;
-	
+		
 	public static String PaymentType_TRADE_CREDIT;
 	
 	static {
