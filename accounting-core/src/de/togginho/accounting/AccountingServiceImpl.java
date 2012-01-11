@@ -37,6 +37,7 @@ import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
+import com.db4o.ext.Db4oException;
 import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
@@ -696,6 +697,10 @@ class AccountingServiceImpl implements AccountingService {
 			throwDbClosedException(e);
 		} catch (DatabaseReadOnlyException e) {
 			throwDbReadOnlyException(e);
+		} catch (Db4oException e) {
+			LOG.error("Error while trying so store entity: " + entity, e);
+			objectContainer.rollback();
+			throw e;
 		}
 	}
 
