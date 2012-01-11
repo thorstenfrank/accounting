@@ -79,12 +79,14 @@ public class ClientEditor extends AbstractAccountingEditor {
 		GridLayout layout = new GridLayout(2, false);
 		form.getBody().setLayout(layout);
 		
+		createBasicInfoSection(client);
+		
+		createPaymentTermsSection(client);
+		
 		if (client.getAddress() == null) {
 			client.setAddress(new Address());
 		}
 		createAddressSection(client.getAddress());
-		
-		createPaymentTermsSection(client);
 		
 		form.getToolBarManager().add(ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
 		form.getToolBarManager().update(true);
@@ -94,6 +96,28 @@ public class ClientEditor extends AbstractAccountingEditor {
 		form.reflow(true);
 	}
 
+	/**
+	 * 
+	 * @param client
+	 */
+	private void createBasicInfoSection(Client client) {
+		Section basicSection = toolkit.createSection(getForm().getBody(), Section.TITLE_BAR);
+		basicSection.setText(Messages.labelBasicInformation);
+		basicSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		basicSection.setLayout(new GridLayout(2, false));
+		
+		Composite sectionClient = toolkit.createComposite(basicSection);
+		sectionClient.setLayout(new GridLayout(2, false));
+		
+		toolkit.createLabel(sectionClient, Messages.labelClientName);
+		createText(sectionClient, client.getName(), client, Client.FIELD_NAME);
+		
+		toolkit.createLabel(sectionClient, Messages.labelClientNumber);
+		createText(sectionClient, client.getClientNumber(), client, Client.FIELD_CLIENT_NUMBER);
+		
+		basicSection.setClient(sectionClient);
+	}
+	
 	/**
 	 * 
 	 * @param client
@@ -190,11 +214,13 @@ public class ClientEditor extends AbstractAccountingEditor {
 		
 		LOG.debug("Saving client " + updatedClient.getName()); //$NON-NLS-1$
 		
-		AccountingUI.getAccountingService().saveClient(updatedClient);
-		
-		setIsDirty(false);
-		
-		setPartName(getEditorInput().getName());
+		try {
+			AccountingUI.getAccountingService().saveClient(updatedClient);
+			setIsDirty(false);
+			setPartName(getEditorInput().getName());
+		} catch (Exception e) {
+			showError(e);
+		}
 	}
 	
 	/**
