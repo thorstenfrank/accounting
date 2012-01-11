@@ -16,6 +16,7 @@
 package de.togginho.accounting.ui;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -85,19 +86,29 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 	 * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
 	 */
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(Object proxy, Method method, Object[] args) throws AccountingException {
 		LOG.debug("invoking method: " + method.getName()); //$NON-NLS-1$
 		
-		Object result = method.invoke(getService(), args);
-		
-		if (MODEL_CHANGING_METHODS.contains(method.getName())) {
-			LOG.debug("Broadcasting model changes to registered listeners"); //$NON-NLS-1$
-			for (ModelChangeListener listener : modelChangeListeners) {
-				listener.modelChanged();
+		try {
+			Object result = method.invoke(getService(), args);
+			if (MODEL_CHANGING_METHODS.contains(method.getName())) {
+				LOG.debug("Broadcasting model changes to registered listeners"); //$NON-NLS-1$
+				for (ModelChangeListener listener : modelChangeListeners) {
+					listener.modelChanged();
+				}
 			}
+				
+			return result;
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof AccountingException) {
+				throw (AccountingException) e.getTargetException();
+			}
+			LOG.error("Unknown error during processing of service request", e.getTargetException()); //$NON-NLS-1$
+			throw new AccountingException(Messages.labelUnkownError, e.getTargetException());
+		} catch (Throwable t) {
+			LOG.error("Error while calling service", t); //$NON-NLS-1$
+			throw new AccountingException(Messages.labelUnkownError, t);
 		}
-		
-		return result;
 	}
 
 	/**
