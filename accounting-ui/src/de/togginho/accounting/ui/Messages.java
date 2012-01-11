@@ -77,6 +77,9 @@ public class Messages extends NLS {
 	public static String ExportInvoiceCommand_loadingTemplate;
 	public static String ExportInvoiceCommand_startingReportGeneration;
 	
+	public static String ExportModelToXmlHandler_exportSuccessfull_title;
+	public static String ExportModelToXmlHandler_exportSuccessfull_text;
+	
 	public static String FindInvoiceCommand_inputMessage;
 	public static String FindInvoiceCommand_inputTitle;
 	public static String FindInvoiceCommand_noresultMessage;

@@ -20,6 +20,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 
 /**
  * @author thorsten
@@ -45,6 +46,10 @@ public class ExportModelToXmlHandler extends AbstractAccountingHandler {
 			getLogger().info("Exporting cancelled by user"); //$NON-NLS-1$
 		} else {
 			AccountingUI.getAccountingService().exportModelToXml(targetFileName);
+			MessageBox msgBox = new MessageBox(getShell(event), SWT.ICON_INFORMATION | SWT.OK);
+			msgBox.setMessage(Messages.bind(Messages.ExportModelToXmlHandler_exportSuccessfull_text, targetFileName));
+			msgBox.setText(Messages.ExportModelToXmlHandler_exportSuccessfull_title);
+			msgBox.open();
 		}
 	}
 
