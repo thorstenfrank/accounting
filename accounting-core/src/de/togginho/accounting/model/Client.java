@@ -34,9 +34,24 @@ public class Client implements Serializable {
 	public static final String FIELD_ADDRESS = "address";
 	public static final String FIELD_DEFAULT_PAYMENT_TERMS = "defaultPaymentTerms";
 	
+	/**
+	 * Name of the client - must be unique.
+	 */
 	private String name;
+	
+	/**
+	 * Unique number.
+	 */
 	private String clientNumber;
+	
+	/**
+	 * Address where invoices are billed to.
+	 */
 	private Address address;
+	
+	/**
+	 * Used for new invoices to this client.
+	 */
 	private PaymentTerms defaultPaymentTerms;
 	
 	/**

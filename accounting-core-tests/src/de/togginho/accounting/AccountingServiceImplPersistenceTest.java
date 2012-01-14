@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	private static final Logger LOG = Logger.getLogger(AccountingServiceImplPersistenceTest.class);
 	
 	private static final Invoice INVOICE1 = new Invoice();
-	
+		
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -69,10 +70,19 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		service.saveCurrentUser(getTestUser());
 	
 		INVOICE1.setUser(getTestUser());
-		INVOICE1.setNumber("JUnitInvoice1");
+		
+		StringBuilder sb = new StringBuilder("RE");
+		Calendar cal = Calendar.getInstance();
+		sb.append(cal.get(Calendar.YEAR));
+		sb.append("-01");
+		
+		INVOICE1.setNumber(sb.toString());
+		INVOICE1.setClient(getTestClient());
 		service.saveInvoice(INVOICE1);
 		
-		service.shutDown();
+		// for some reason, this causes strange behavior sometimes... just leave the container open for the
+		// duration of the tests...
+		//service.shutDown();
 	}
 
 	/**
@@ -80,6 +90,11 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		// this is only a safetly blanket
+		// service should have been properly shut down when stopping the service
+		AccountingServiceImpl service = (AccountingServiceImpl) AccountingCore.getAccountingService();
+		service.shutDown();
+		
 		File daFile = new File(TEST_DB_FILE);
 		if (daFile.exists()) {
 			LOG.debug("Deleting test DB file");
@@ -101,6 +116,8 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	@Before
 	public void setUp() throws Exception {
 		serviceUnderTest = AccountingCore.getAccountingService();
+		// just to make sure - this should never actually cause init, since that's
+		// already been done during test class setup
 		serviceUnderTest.init(getTestContext());
 	}
 	
@@ -117,6 +134,20 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
         }
 	}
 
+	/**
+	 * Simple positive test for saving and deleting an invoice.
+	 */
+	@Test
+	public void testSaveAndDeleteInvoice() {
+		Invoice saved = serviceUnderTest.saveInvoice(
+				serviceUnderTest.createNewInvoice(serviceUnderTest.getNextInvoiceNumber(), getTestClient()));
+		
+		assertEquals(InvoiceState.CREATED, saved.getState());
+		
+		// delete the invoice again to make sure other tests can continue working 
+		serviceUnderTest.deleteInvoice(saved);
+	}
+	
 	/**
 	 * Test method for {@link AccountingServiceImpl#getInvoice(String)}.
 	 */
@@ -281,6 +312,32 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		assertEquals(ip.getQuantity(), copiedIP.getQuantity());
 		assertEquals(ip.getTaxRate(), copiedIP.getTaxRate());
 		assertEquals(ip.getUnit(), copiedIP.getUnit());
+	}
+	
+	/**
+	 * Test method for {@link AccountingService#getNextInvoiceNumber()}.
+	 */
+	@Test
+	public void testInvoiceSequencer() {
+		String  invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
+		int sequence = new Integer(invoiceNumber.substring(7));
+		
+		serviceUnderTest.saveInvoice(serviceUnderTest.createNewInvoice(invoiceNumber, getTestClient()));
+		
+		invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
+		sequence = sequence + 1; 
+		assertEquals(new Integer(sequence), new Integer(invoiceNumber.substring(7)));
+		
+		sequence = sequence + 5;
+		StringBuilder newInvoiceNumber = new StringBuilder();
+		newInvoiceNumber.append(invoiceNumber.substring(0, 7));
+		newInvoiceNumber.append(sequence);
+		
+		serviceUnderTest.saveInvoice(serviceUnderTest.createNewInvoice(newInvoiceNumber.toString(), getTestClient()));
+		
+		invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
+		sequence++;
+		assertEquals(new Integer(sequence), new Integer(invoiceNumber.substring(7)));
 	}
 	
 	/**

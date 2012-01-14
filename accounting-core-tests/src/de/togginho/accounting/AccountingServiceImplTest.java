@@ -92,6 +92,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		expect(userClassMock.objectField(User.FIELD_NAME)).andReturn(userNameFieldMock);
 		userNameFieldMock.indexed(true);
 		configurationMock.add(anyObject(UniqueFieldValueConstraint.class)); // TODO check arguments too
+		configurationMock.add(anyObject(UniqueFieldValueConstraint.class)); // TODO check arguments too
 		
 		ObjectClass clientClassMock = createMock(ObjectClass.class);
 		expect(configurationMock.objectClass(Client.class)).andReturn(clientClassMock);
@@ -187,7 +188,10 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	public void testSaveUser() {
 		serviceUnderTest.init(getTestContext());
 		
-		setupMockForEntitySave(getTestUser());
+		ocMock.store(getTestUser());
+		ocMock.commit();
+		
+		setupMockForEntitySaveWithExceptions(getTestUser());
 		
 		replay(ocMock);
 		
@@ -211,7 +215,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		serviceUnderTest.init(getTestContext());
 		
-		setupMockForEntitySave(invoice);
+		setupMockForEntitySaveWithExceptions(invoice);
 		
 		replay(ocMock);
 		
@@ -279,14 +283,11 @@ public class AccountingServiceImplTest extends BaseTestFixture {
         }
 
 		// reset values to make the Invoice saveable
+		invoice.setCreationDate(new Date());
 		invoice.setSentDate(null);
 		invoice.setCancelledDate(null);
 		invoice.setUser(getTestUser());
-		
-		// try a normal save
-		Invoice saved = serviceUnderTest.saveInvoice(invoice);
-		assertEquals(InvoiceState.CREATED, saved.getState());
-		
+				
 		// try saves with exceptions
 		saveInvoiceWithException(invoice);
 		saveInvoiceWithException(invoice);
@@ -301,10 +302,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		invoice.setNumber("JUnitTestInvoiceNo");
 		
 		ocMock.store(invoice);
-		expectLastCall().times(2); 
 		ocMock.commit();
-		expectLastCall().times(2);
-		// since the invoice wasn't saved before, expect to have it saved once initially and again with the sent date set
 		
 		replay(ocMock);
 		
@@ -345,6 +343,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		// prepare the invoice for a proper save
 		invoice.setInvoiceDate(new Date());
+		invoice.setCreationDate(new Date());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		invoice.setUser(getTestUser());
 		
@@ -623,10 +622,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 * 
 	 * @param entity
 	 */
-	private void setupMockForEntitySave(Object entity) {
-		ocMock.store(entity);
-		ocMock.commit();
-
+	private void setupMockForEntitySaveWithExceptions(Object entity) {
 		// throw DB closed exception
 		ocMock.store(entity);
 		expectLastCall().andThrow(new DatabaseClosedException());

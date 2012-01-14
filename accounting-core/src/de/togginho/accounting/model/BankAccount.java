@@ -38,6 +38,8 @@ public class BankAccount implements Serializable {
 	private String bankName;
 	private String bankCode;
 	private String accountNumber;
+	private String iban;
+	private String bic;
 
 	/**
 	 * Describes a code that uniquely defines the credit institution, such as a Bankleitzahl in Germany, routing transit
@@ -89,5 +91,33 @@ public class BankAccount implements Serializable {
 	 */
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
+	}
+
+	/**
+	 * @return the iban
+	 */
+	public String getIban() {
+		return iban;
+	}
+
+	/**
+	 * @param iban the iban to set
+	 */
+	public void setIban(String iban) {
+		this.iban = iban;
+	}
+
+	/**
+	 * @return the bic
+	 */
+	public String getBic() {
+		return bic;
+	}
+
+	/**
+	 * @param bic the bic to set
+	 */
+	public void setBic(String bic) {
+		this.bic = bic;
 	}
 }

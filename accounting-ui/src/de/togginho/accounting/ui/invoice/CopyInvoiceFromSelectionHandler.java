@@ -55,7 +55,7 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
     @Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
     	Invoice original = getInvoiceFromSelection(event);
-    	CopyInvoiceDialog dialog = new CopyInvoiceDialog(getShell(event), original.getNumber());
+    	CopyInvoiceDialog dialog = new CopyInvoiceDialog(getShell(event));
     	invoiceNumber = null;
     	if (dialog.open() == TitleAreaDialog.OK) {
     		LOG.info("Creating copy of invoice with new number: " + invoiceNumber); //$NON-NLS-1$
@@ -89,15 +89,13 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
 	 */
 	private class CopyInvoiceDialog extends TitleAreaDialog {
 		
-		private String originalInvoiceNumber;
 		private Text invoiceNumberText;
 		
 		/**
          * @param parentShell
          */
-        private CopyInvoiceDialog(Shell parentShell, String originalInvoiceNumber) {
+        private CopyInvoiceDialog(Shell parentShell) {
 	        super(parentShell);
-	        this.originalInvoiceNumber = originalInvoiceNumber;
         }
         
 		/**
@@ -131,7 +129,8 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
         	final Label dateLabel = WidgetHelper.createLabel(composite, Messages.labelInvoiceNo);
         	GridDataFactory.fillDefaults().indent(5, 5).applyTo(dateLabel);
         	
-        	invoiceNumberText = WidgetHelper.createSingleBorderText(composite, originalInvoiceNumber);
+        	final String invoiceNumber = AccountingUI.getAccountingService().getNextInvoiceNumber();
+        	invoiceNumberText = WidgetHelper.createSingleBorderText(composite, invoiceNumber);
         	GridDataFactory.fillDefaults().grab(true, false).applyTo(invoiceNumberText);
         	invoiceNumberText.selectAll();
         	

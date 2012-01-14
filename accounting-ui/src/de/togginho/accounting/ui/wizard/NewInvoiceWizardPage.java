@@ -71,6 +71,7 @@ class NewInvoiceWizardPage extends WizardPage {
 		WidgetHelper.createLabel(composite, Messages.labelInvoiceNo);
 		
 		invoiceNumber = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		invoiceNumber.setText(AccountingUI.getAccountingService().getNextInvoiceNumber());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(invoiceNumber);
 		invoiceNumber.addKeyListener(new KeyAdapter() {
 			@Override

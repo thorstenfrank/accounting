@@ -16,6 +16,7 @@
 package de.togginho.accounting;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -42,6 +43,7 @@ import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
 import com.db4o.query.Predicate;
+import com.db4o.query.Query;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
@@ -50,6 +52,7 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.model.internal.InvoiceSequencer;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.xml.ImportResult;
 import de.togginho.accounting.xml.ModelMapper;
@@ -64,6 +67,9 @@ class AccountingServiceImpl implements AccountingService {
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingServiceImpl.class);
+	
+	private static final String INVOICE_SEQUENCER_SEMAPHORE = "INVOICE_SEQUENCER_SEMAPHORE";
+	private static final int SEMAPHORE_WAIT_TIMEOUT = 1000;
 	
 	private boolean initialised;
 
@@ -149,6 +155,7 @@ class AccountingServiceImpl implements AccountingService {
 		clientClass.cascadeOnDelete(true);
 		clientClass.objectField(Client.FIELD_NAME).indexed(true);
 		config.add(new UniqueFieldValueConstraint(Client.class, Client.FIELD_NAME));
+		config.add(new UniqueFieldValueConstraint(Client.class, Client.FIELD_CLIENT_NUMBER));
 
 		// config for Invoice object graph
 		ObjectClass invoiceClass = config.objectClass(Invoice.class);
@@ -162,16 +169,18 @@ class AccountingServiceImpl implements AccountingService {
 	}
 
 	/**
-	 * Propery shuts down the service.
+	 * Properly shuts down the service.
 	 */
 	protected void shutDown() {
 		LOG.info("shutDown"); //$NON-NLS-1$
 
 		if (!initialised) {
+			LOG.info("Service not initialised, nothing to do here!"); //$NON-NLS-1$
 			return;
 		}
 
 		try {
+			LOG.info("Closing object container."); //$NON-NLS-1$
 			objectContainer.close();
 		} catch (Db4oIOException e) {
 			LOG.warn("Error closing DB file, will ignore", e); //$NON-NLS-1$
@@ -262,19 +271,88 @@ class AccountingServiceImpl implements AccountingService {
 	@Override
 	public void deleteClient(Client client) {
 		// TODO make sure a client can only be deleted when there are no invoices left...
-		
-		try {
-			objectContainer.delete(client);
-			objectContainer.commit();
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		} catch (DatabaseReadOnlyException e) {
-			throwDbReadOnlyException(e);
-		}
+		doDeleteEntity(client);
 	}
 
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.AccountingService#getNextInvoiceNumber()
+	 */
+	public String getNextInvoiceNumber() {		
+		Calendar cal = Calendar.getInstance();
+		final int currentYear = cal.get(Calendar.YEAR);
+		
+		InvoiceSequencer sequencer = getInvoiceSequencer();
+		
+		if (currentYear != sequencer.getYear()) {
+			sequencer.setYear(currentYear);
+			sequencer.setCurrentSequenceNumber(1);
+		} else {
+			sequencer.setCurrentSequenceNumber(sequencer.getCurrentSequenceNumber() + 1);
+		}
+		
+		try {
+			doStoreEntity(sequencer);
+			
+			return String.format("RE%d-%02d", currentYear, sequencer.getCurrentSequenceNumber());
+		} finally {
+			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private InvoiceSequencer getInvoiceSequencer() {
+		if (objectContainer.ext().setSemaphore(INVOICE_SEQUENCER_SEMAPHORE, SEMAPHORE_WAIT_TIMEOUT)) {
+			Query query = objectContainer.query();
+			query.constrain(InvoiceSequencer.class);
+			
+			ObjectSet<InvoiceSequencer> set = query.execute();
+			
+			InvoiceSequencer sequencer = null;
+			
+			if (set.size() == 1) {
+				sequencer = set.next();
+				LOG.debug("Sequencer found: " + sequencer.toString()); //$NON-NLS-1$
+			} else {
+				sequencer = new InvoiceSequencer();
+				LOG.info("No sequencer found in storage, creating new"); //$NON-NLS-1$
+			}
+				
+			return sequencer;
+		} else {
+			throw new AccountingException("Busy!");
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void updateInvoiceSequencer(String invoiceNumber) {
+		final int year = new Integer(invoiceNumber.substring(2, 6));
+		final int number = new Integer(invoiceNumber.substring(7));
+		
+		InvoiceSequencer sequencer = getInvoiceSequencer();
+		LOG.debug("Current sequencer: " + sequencer.toString()); //$NON-NLS-1$
+		
+		try {
+			if (year == sequencer.getYear() && number == sequencer.getCurrentSequenceNumber()) {
+				LOG.debug("Nothing to change, sequencer is up to date!"); //$NON-NLS-1$
+			} else {
+				sequencer.setYear(year);
+				sequencer.setCurrentSequenceNumber(number);
+				LOG.info("Updating sequencer: "+sequencer.toString()); //$NON-NLS-1$
+				doStoreEntity(sequencer);
+				
+			}			
+		} finally {
+			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
+		}
+	}
+	
 	/**
 	 * Creates a new but unsaved invoice.
 	 * 
@@ -296,10 +374,7 @@ class AccountingServiceImpl implements AccountingService {
 		}
 		
 		// check if an invoice with that number already exists
-		if (getInvoice(invoiceNumber) != null) {
-			LOG.error("An invoice with this number already exists: " + invoiceNumber); //$NON-NLS-1$
-			throw new AccountingException(Messages.AccountingService_errorInvoiceNumberExists);
-		}
+		validateInvoiceNumberNotYetUsed(invoiceNumber);
 		
 		// create invoice
 		Invoice invoice = new Invoice();
@@ -322,6 +397,17 @@ class AccountingServiceImpl implements AccountingService {
 	}
 	
 	/**
+	 * 
+	 * @param invoiceNumber
+	 */
+	private void validateInvoiceNumberNotYetUsed(String invoiceNumber) {
+		if (getInvoice(invoiceNumber) != null) {
+			LOG.error("An invoice with this number already exists: " + invoiceNumber); //$NON-NLS-1$
+			throw new AccountingException(Messages.AccountingService_errorInvoiceNumberExists);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.AccountingService#saveInvoice(de.togginho.accounting.model.Invoice)
 	 */
@@ -340,6 +426,7 @@ class AccountingServiceImpl implements AccountingService {
 			LOG.error("Saving an invoice is only possible for a known user"); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorUnknownUser);
 		}
+		
 		InvoiceState state = invoice.getState();
 		if (!InvoiceState.UNSAVED.equals(state) && !InvoiceState.CREATED.equals(state)) {
 			LOG.error("Cannot save an invoice that is beyond state CREATED. Was: " + state); //$NON-NLS-1$
@@ -348,7 +435,9 @@ class AccountingServiceImpl implements AccountingService {
 
 		if (invoice.getCreationDate() == null) {
 			LOG.info("Saving invoice for the first time: " + invoice.getNumber()); //$NON-NLS-1$
+			validateInvoiceNumberNotYetUsed(invoice.getNumber());
 			invoice.setCreationDate(new Date());
+			updateInvoiceSequencer(invoice.getNumber());
 		}
 
 		doStoreEntity(invoice);
@@ -479,16 +568,7 @@ class AccountingServiceImpl implements AccountingService {
 					Messages.bind(Messages.AccountingService_errorInvoiceCannotBeDeleted, params));
 		}
 
-		try {
-			objectContainer.delete(invoice);
-			objectContainer.commit();
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		} catch (DatabaseReadOnlyException e) {
-			throwDbReadOnlyException(e);
-		}
+		doDeleteEntity(invoice);
 	}
 
 	/**
@@ -683,13 +763,15 @@ class AccountingServiceImpl implements AccountingService {
 	/**
 	 * 
 	 * @param entity
-	 * @throws AccountingPersistenceException
+	 * @throws AccountingException
+	 * @throws Db4oException
 	 */
 	private void doStoreEntity(Object entity) {
 		if (entity == null) {
-			LOG.warn("Call to doStoreEntity with param [null]!");
+			LOG.warn("Call to doStoreEntity with param [null]!"); //$NON-NLS-1$
 			return;
 		}
+		
 		try {
 			objectContainer.store(entity);
 			objectContainer.commit();
@@ -697,13 +779,43 @@ class AccountingServiceImpl implements AccountingService {
 			throwDbClosedException(e);
 		} catch (DatabaseReadOnlyException e) {
 			throwDbReadOnlyException(e);
+		} catch(Db4oIOException e) {
+			throwDb4oIoException(e);
 		} catch (Db4oException e) {
-			LOG.error("Error while trying so store entity: " + entity, e);
+			LOG.error("Error while trying so store entity: " + entity, e); //$NON-NLS-1$
 			objectContainer.rollback();
 			throw e;
 		}
 	}
 
+	/**
+	 * 
+	 * @param entity
+	 * @throws AccountingException
+	 * @throws Db4oException
+	 */
+	private void doDeleteEntity(Object entity) {
+		if (entity == null) {
+			LOG.warn("Call to doDeleteEntity with param [null]!"); //$NON-NLS-1$
+			return;
+		}
+		
+		try {
+			objectContainer.delete(entity);
+			objectContainer.commit();
+		} catch (Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		} catch (DatabaseReadOnlyException e) {
+			throwDbReadOnlyException(e);
+		} catch (Db4oException e) {
+			LOG.error("Error while deleting entity: " + entity, e); //$NON-NLS-1$
+			objectContainer.rollback();
+			throw e;
+		}
+	}
+	
 	/**
 	 * 
 	 * @param e

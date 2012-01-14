@@ -102,6 +102,12 @@ public interface AccountingService {
 	void deleteClient(Client client);
 	
 	/**
+	 * 
+	 * @return
+	 */
+	String getNextInvoiceNumber();
+	
+	/**
 	 * Creates a new invoice whose state will be {@link InvoiceState#UNSAVED}.
 	 * <p> 
 	 * The returned instance will be assigned both the supplied invoice number and
