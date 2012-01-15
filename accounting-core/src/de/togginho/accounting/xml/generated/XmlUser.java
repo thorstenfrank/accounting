@@ -11,7 +11,6 @@ package de.togginho.accounting.xml.generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -54,17 +53,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 public class XmlUser {
 
-    @XmlElement(required = true)
     protected String description;
-    @XmlElement(required = true)
     protected XmlAddress address;
-    @XmlElement(required = true)
     protected XmlBankAccount bankAccount;
-    @XmlElement(required = true)
     protected XmlTaxRates taxRates;
-    @XmlElement(required = true)
     protected XmlClients clients;
-    @XmlElement(required = true)
     protected XmlInvoices invoices;
     @XmlAttribute(required = true)
     protected String name;

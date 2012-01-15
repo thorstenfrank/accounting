@@ -5,12 +5,12 @@
 
     <xs:complexType name="xmlUser">
     	<xs:sequence>
-    	   <xs:element name="description" type="xs:string" maxOccurs="1" />
-    		<xs:element name="address" type="xmlAddress" maxOccurs="1" />
-    		<xs:element name="bankAccount" type="xmlBankAccount" maxOccurs="1" />
-    		<xs:element name="taxRates" type="xmlTaxRates" maxOccurs="1" />
-    		<xs:element name="clients" type="xmlClients" maxOccurs="1" />
-    		<xs:element name="invoices" type="xmlInvoices" maxOccurs="1" />
+    	   <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="address" type="xmlAddress" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="bankAccount" type="xmlBankAccount" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="taxRates" type="xmlTaxRates" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="clients" type="xmlClients" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="invoices" type="xmlInvoices" minOccurs="0" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required"/>
     	<xs:attribute name="taxId" type="xs:string" use="optional"/>
