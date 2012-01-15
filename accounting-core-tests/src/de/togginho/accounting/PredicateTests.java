@@ -18,6 +18,7 @@ package de.togginho.accounting;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
@@ -26,6 +27,7 @@ import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * Tests for DB4o predicates. Since these usually only contain a single method, all tests are compressed into this 
@@ -82,4 +84,44 @@ public class PredicateTests extends BaseTestFixture {
 		candidate.setCancelledDate(new Date());
 		assertFalse(predicate.match(candidate));
 	}
+	
+	/**
+	 * Test for {@link FindInvoicesForRevenuePredicate}.
+	 */
+	@Test
+	public void testFindInvoicesForRevenuePredicate() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 2);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.YEAR, 2012);
+		
+		TimeFrame timeFrame = new TimeFrame();
+		timeFrame.setFrom(cal.getTime());
+		
+		cal.set(Calendar.DAY_OF_MONTH, 30);
+		timeFrame.setUntil(cal.getTime());
+		
+		FindInvoicesForRevenuePredicate predicate = new FindInvoicesForRevenuePredicate(timeFrame);
+		
+		Invoice invoice = new Invoice();
+		invoice.setCreationDate(cal.getTime()); // actual date doesn't matter, just need this to get state CREATED		
+		assertFalse(predicate.match(invoice));
+		
+		cal.set(Calendar.DAY_OF_MONTH, 15);
+		invoice.setPaymentDate(cal.getTime());
+		invoice.setCancelledDate(cal.getTime()); // Invoice was paid, but also cancelled - should be ignored
+		assertFalse(predicate.match(invoice));
+		
+		invoice.setCancelledDate(null);
+		assertTrue(predicate.match(invoice));
+		
+		cal.set(Calendar.DAY_OF_MONTH, 1); // outside of range
+		invoice.setPaymentDate(cal.getTime());
+		assertFalse(predicate.match(invoice));
+		
+		cal.set(Calendar.DAY_OF_MONTH, 31); // outside of range
+		invoice.setPaymentDate(cal.getTime());
+		assertFalse(predicate.match(invoice));
+	}
+	
 }
