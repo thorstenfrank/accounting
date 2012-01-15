@@ -21,6 +21,7 @@ import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * @author thorsten
@@ -41,9 +42,9 @@ class FindInvoicesForRevenuePredicate extends Predicate<Invoice> {
      * @param from
      * @param until
      */
-    FindInvoicesForRevenuePredicate(Date from, Date until) {
-	    this.from = from;
-	    this.until = until;
+    FindInvoicesForRevenuePredicate(TimeFrame timeFrame) {
+	    this.from = timeFrame.getFrom();
+	    this.until = timeFrame.getUntil();
     }
 
 	/**

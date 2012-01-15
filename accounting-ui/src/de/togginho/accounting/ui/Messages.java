@@ -137,18 +137,15 @@ public class Messages extends NLS {
 	public static String RevenueDialog_client;
 	public static String RevenueDialog_defaultFilename;
 	public static String RevenueDialog_export;
-	public static String RevenueDialog_from;
 	public static String RevenueDialog_gross;
 	public static String RevenueDialog_invoiceDate;
 	public static String RevenueDialog_invoiceNo;
 	public static String RevenueDialog_invoices;
 	public static String RevenueDialog_net;
 	public static String RevenueDialog_paymentDate;
-	public static String RevenueDialog_revenueTimeframe;
 	public static String RevenueDialog_search;
 	public static String RevenueDialog_tax;
 	public static String RevenueDialog_totals;
-	public static String RevenueDialog_until;
 	
 	public static String SendInvoiceCommand_message;
 	public static String SendInvoiceCommand_title;
@@ -186,6 +183,7 @@ public class Messages extends NLS {
 	public static String labelBankCode;
 	public static String labelBankName;
 	public static String labelBasicInformation;
+	public static String labelBIC;
 	public static String labelCity;
 	public static String labelClient;
 	public static String labelClientDetails;
@@ -194,6 +192,7 @@ public class Messages extends NLS {
 	public static String labelDescription;
 	public static String labelEmail;
 	public static String labelFax;
+	public static String labelIBAN;
 	public static String labelInvoiceDate;
 	public static String labelInvoiceDueDate;
 	public static String labelInvoiceNo;
@@ -215,6 +214,15 @@ public class Messages extends NLS {
 	public static String labelTotalNet;
 	public static String labelTotalTax;
 	public static String labelUnit;
+	
+	//
+	public static String labelTimeFrame;
+	public static String labelFrom;
+	public static String labelUntil;
+	public static String labelLastMonth;
+	public static String labelThisMonth;
+	public static String labelLastYear;
+	public static String labelThisYear;
 	
 	public static String labelAdd;
 	public static String labelRemove;

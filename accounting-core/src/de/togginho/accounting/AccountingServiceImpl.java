@@ -54,6 +54,7 @@ import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.model.internal.InvoiceSequencer;
 import de.togginho.accounting.util.FormatUtil;
+import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.xml.ImportResult;
 import de.togginho.accounting.xml.ModelMapper;
 
@@ -668,17 +669,16 @@ class AccountingServiceImpl implements AccountingService {
 
 	/**
      * {@inheritDoc}.
-     * @see de.togginho.accounting.AccountingService#getRevenue(java.util.Date, java.util.Date)
+     * @see de.togginho.accounting.AccountingService#getRevenue(de.togginho.accounting.util.TimeFrame)
      */
     @Override
-    public Revenue getRevenue(Date from, Date until) {
+    public Revenue getRevenue(TimeFrame timeFrame) {
     	Revenue revenue = new Revenue();
-    	revenue.setFrom(from);
-    	revenue.setUntil(until);
+    	revenue.setTimeFrame(timeFrame);
     	
     	try {
     		List<Invoice> invoices = new ArrayList<Invoice>(
-    				objectContainer.query(new FindInvoicesForRevenuePredicate(from, until)));
+    				objectContainer.query(new FindInvoicesForRevenuePredicate(timeFrame)));
     		Collections.sort(invoices, new Comparator<Invoice>() {
     				/**
                      * {@inheritDoc}.

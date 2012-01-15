@@ -25,6 +25,7 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * Service interface for the <code>accounting-core</code> plugin.
@@ -270,11 +271,11 @@ public interface AccountingService {
 	 * 
 	 * <p>Revenue considers all invoices that have a payment date within the given timeframe and are not cancelled.</p>
 	 * 
-	 * @param from  starting date for the revenue, inclusive
-	 * @param until end date for the revenue, invlusive
+	 * @param timeFrame the time frame for which to collect the {@link Revenue}
+	 * 
 	 * @return a {@link Revenue} instance that contains all paid invoices within the given timeframe
 	 */
-	Revenue getRevenue(Date from, Date until);
+	Revenue getRevenue(TimeFrame timeFrame);
 	
 	/**
 	 * Exports the entire database to the specified XML file. This file can later be used to re-create the DB.

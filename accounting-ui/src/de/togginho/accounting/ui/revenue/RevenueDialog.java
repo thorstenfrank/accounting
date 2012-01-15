@@ -59,6 +59,7 @@ import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * 
@@ -137,7 +138,7 @@ public class RevenueDialog extends TrayDialog {
 		Section querySection = formToolkit.createSection(parent, Section.TITLE_BAR);
 		querySection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		formToolkit.paintBordersFor(querySection);
-		querySection.setText(Messages.RevenueDialog_revenueTimeframe);
+		querySection.setText(Messages.labelTimeFrame);
 		
 		Composite sectionClient = new Composite(querySection, SWT.NONE);
 		formToolkit.adapt(sectionClient);
@@ -145,14 +146,14 @@ public class RevenueDialog extends TrayDialog {
 		querySection.setClient(sectionClient);
 		sectionClient.setLayout(new GridLayout(5, false));
 		
-		formToolkit.createLabel(sectionClient, Messages.RevenueDialog_from);
+		formToolkit.createLabel(sectionClient, Messages.labelFrom);
 		fromDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
 		formToolkit.adapt(fromDate);
 		formToolkit.paintBordersFor(fromDate);
 		fromDate.setDay(1);
 		fromDate.setMonth(Calendar.JANUARY);
 		
-		formToolkit.createLabel(sectionClient, Messages.RevenueDialog_until);
+		formToolkit.createLabel(sectionClient, Messages.labelUntil);
 		untilDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
 //		formToolkit.adapt(untilDate);
 //		formToolkit.paintBordersFor(untilDate);
@@ -165,6 +166,33 @@ public class RevenueDialog extends TrayDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateInvoices();
+			}
+		});
+		
+		final Button thisYear = formToolkit.createButton(sectionClient, Messages.labelThisYear, SWT.RADIO);
+		thisYear.setSelection(true);
+		thisYear.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (thisYear.getSelection()) {
+					TimeFrame period = TimeFrame.thisYear();
+					WidgetHelper.dateToWidget(period.getFrom(), fromDate);
+					WidgetHelper.dateToWidget(period.getUntil(), untilDate);
+					updateInvoices(period);
+				}
+			}
+		});
+		
+		final Button lastYear = formToolkit.createButton(sectionClient, Messages.labelLastYear, SWT.RADIO);
+		lastYear.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (lastYear.getSelection()) {
+					TimeFrame period = TimeFrame.lastYear();
+					WidgetHelper.dateToWidget(period.getFrom(), fromDate);
+					WidgetHelper.dateToWidget(period.getUntil(), untilDate);
+					updateInvoices(period);
+				}
 			}
 		});
 	}
@@ -271,9 +299,15 @@ public class RevenueDialog extends TrayDialog {
 	 * 
 	 */
 	private void updateInvoices() {
-		revenue = AccountingUI.getAccountingService().getRevenue(
-				WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate));
-		
+		updateInvoices(new TimeFrame(WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate)));
+	}
+	
+	/**
+	 * 
+	 * @param timeFrame
+	 */
+	private void updateInvoices(TimeFrame timeFrame) {
+		revenue = AccountingUI.getAccountingService().getRevenue(timeFrame);
 		List<InvoiceWrapper> invoices = new ArrayList<InvoiceWrapper>();
 		for (Invoice invoice : revenue.getInvoices()) {
 			invoices.add(new InvoiceWrapper(invoice));

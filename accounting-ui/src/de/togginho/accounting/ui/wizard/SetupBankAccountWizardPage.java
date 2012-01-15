@@ -36,6 +36,8 @@ public class SetupBankAccountWizardPage extends WizardPage {
 	private Text accountNumber;
 	private Text bankCode;
 	private Text bankName;
+	private Text bic;
+	private Text iban;
 	
 	/**
 	 * 
@@ -70,6 +72,14 @@ public class SetupBankAccountWizardPage extends WizardPage {
 		bankName = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		grabHorizontal.applyTo(bankName);
 		
+		WidgetHelper.createLabel(composite, Messages.labelBIC);
+		bic = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		grabHorizontal.applyTo(bic);
+
+		WidgetHelper.createLabel(composite, Messages.labelIBAN);
+		iban = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		grabHorizontal.applyTo(iban);
+		
 		setControl(composite);
 		setPageComplete(true);
 	}
@@ -92,6 +102,14 @@ public class SetupBankAccountWizardPage extends WizardPage {
 		}
 		if (!bankName.getText().isEmpty()) {
 			account.setBankName(bankName.getText());
+			hasValue = true;
+		}
+		if (!bic.getText().isEmpty()) {
+			account.setBic(bic.getText());
+			hasValue = true;
+		}
+		if (!iban.getText().isEmpty()) {
+			account.setIban(iban.getText());
 			hasValue = true;
 		}
 		

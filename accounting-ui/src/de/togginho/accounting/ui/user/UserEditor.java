@@ -199,33 +199,15 @@ public class UserEditor extends AbstractAccountingEditor {
 		toolkit.createLabel(client, Messages.labelBankName);
 		createText(client, account.getBankName(), account, BankAccount.FIELD_BANK_NAME);
 		
+		toolkit.createLabel(client, Messages.labelBIC);
+		createText(client, account.getBic(), account, BankAccount.FIELD_BIC);
+
+		toolkit.createLabel(client, Messages.labelIBAN);
+		createText(client, account.getBic(), account, BankAccount.FIELD_IBAN);
+		
 		accountSection.setClient(client);
 	}
-	
-//	private void createClientList() {
-//		Section clientSection = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
-//		clientSection.setText(Messages.UserEditor_clientSectionHeader);
-//		clientSection.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-//		
-//		Composite client = toolkit.createComposite(clientSection);
-//		client.setLayout(new GridLayout(2, false));
-//		clientSection.setClient(client);
-//		
-//		ClientsListViewer clientViewer = new ClientsListViewer(client);
-//		clientViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-//		getSite().setSelectionProvider(clientViewer);
-//		
-//		Composite buttons = toolkit.createComposite(client);
-//		buttons.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-//		buttons.setLayout(new FillLayout(SWT.VERTICAL));
-//		
-//		Button add = toolkit.createButton(buttons, Messages.labelAdd, SWT.PUSH);
-//		add.addSelectionListener(new SimpleCommandCallingSelectionListener(IDs.CMD_NEW_CLIENT_WIZARD));
-//		
-//		Button remove = toolkit.createButton(buttons, Messages.labelRemove, SWT.PUSH);
-//		remove.addSelectionListener(new SimpleCommandCallingSelectionListener(IDs.CMD_DELETE_CLIENT));
-//	}
-	
+		
 	/**
 	 * 
 	 */

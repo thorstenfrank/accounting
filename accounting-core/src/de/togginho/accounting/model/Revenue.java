@@ -17,10 +17,10 @@ package de.togginho.accounting.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import de.togginho.accounting.util.CalculationUtil;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * A container for paid invoices within a specific time period.
@@ -36,41 +36,25 @@ public class Revenue implements Serializable {
 	 */
 	private static final long serialVersionUID = -9220047923401626299L;
 
-	private Date from;
-
-	private Date until;
+	private TimeFrame timeFrame;
 
 	private List<Invoice> invoices;
 	
 	private Price totalRevenue;
-		
+	
 	/**
-	 * @return the from
-	 */
-	public Date getFrom() {
-		return from;
-	}
+     * @return the timeFrame
+     */
+    public TimeFrame getTimeFrame() {
+    	return timeFrame;
+    }
 
 	/**
-	 * @param from the from to set
-	 */
-	public void setFrom(Date from) {
-		this.from = from;
-	}
-
-	/**
-	 * @return the until
-	 */
-	public Date getUntil() {
-		return until;
-	}
-
-	/**
-	 * @param until the until to set
-	 */
-	public void setUntil(Date until) {
-		this.until = until;
-	}
+     * @param timeFrame the timeFrame to set
+     */
+    public void setTimeFrame(TimeFrame timeFrame) {
+    	this.timeFrame = timeFrame;
+    }
 
 	/**
 	 * @return the invoices

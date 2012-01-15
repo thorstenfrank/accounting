@@ -62,7 +62,7 @@ public class RevenueWrapper {
 	 * @return
 	 */
 	public String getFromDate() {
-		return FormatUtil.formatDate(revenue.getFrom());
+		return FormatUtil.formatDate(revenue.getTimeFrame().getFrom());
 	}
 
 	/**
@@ -97,6 +97,6 @@ public class RevenueWrapper {
 	 * @return
 	 */
 	public String getUntilDate() {
-		return FormatUtil.formatDate(revenue.getUntil());
+		return FormatUtil.formatDate(revenue.getTimeFrame().getUntil());
 	}
 }
