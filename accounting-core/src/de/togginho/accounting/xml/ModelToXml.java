@@ -123,6 +123,8 @@ class ModelToXml {
 			xmlBankAccount.setAccountNumber(account.getAccountNumber());
 			xmlBankAccount.setBankCode(account.getBankCode());
 			xmlBankAccount.setBankName(account.getBankName());
+			xmlBankAccount.setBic(account.getBic());
+			xmlBankAccount.setIban(account.getIban());
 		}
     }
 

@@ -282,6 +282,8 @@ class XmlToModel {
 			account.setAccountNumber(xmlAccount.getAccountNumber());
 			account.setBankCode(xmlAccount.getBankCode());
 			account.setBankName(xmlAccount.getBankName());
+			account.setBic(xmlAccount.getBic());
+			account.setIban(xmlAccount.getIban());
 		} else {
 			LOG.debug("No bank account to convert."); //$NON-NLS-1$
 		}

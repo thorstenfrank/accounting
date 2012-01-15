@@ -34,6 +34,8 @@ public class BankAccount implements Serializable {
 	public static final String FIELD_ACCOUNT_NUMBER = "accountNumber";
 	public static final String FIELD_BANK_CODE = "bankCode";
 	public static final String FIELD_BANK_NAME = "bankName";
+	public static final String FIELD_BIC = "bic";
+	public static final String FIELD_IBAN = "iban";
 	
 	private String bankName;
 	private String bankCode;

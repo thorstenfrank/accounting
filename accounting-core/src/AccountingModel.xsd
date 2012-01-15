@@ -30,9 +30,11 @@
 
     <xs:complexType name="xmlBankAccount">
         <xs:sequence>
-            <xs:element name="accountNumber" type="xs:string" maxOccurs="1"/>
-            <xs:element name="bankCode" type="xs:string" maxOccurs="1"/>
-            <xs:element name="bankName" type="xs:string" maxOccurs="1"/>
+            <xs:element name="accountNumber" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="bankCode" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="bankName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="bic" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="iban" type="xs:string" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
