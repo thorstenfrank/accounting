@@ -46,6 +46,7 @@ import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -700,7 +701,35 @@ class AccountingServiceImpl implements AccountingService {
 	    return revenue;
     }
 
+    
     /**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#saveExpense(de.togginho.accounting.model.Expense)
+     */
+    @Override
+    public Expense saveExpense(Expense expense) {
+    	doStoreEntity(expense);
+	    return expense;
+    }
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#getExpenses(de.togginho.accounting.util.TimeFrame)
+     */
+    @Override
+    public Set<Expense> getExpenses(TimeFrame timeFrame) {
+    	Set<Expense> expenses = null;
+    	try {
+	        expenses = new HashSet<Expense>(objectContainer.query(new FindExpensesPredicate(timeFrame)));
+        } catch (Db4oIOException e) {
+        	throwDb4oIoException(e);
+        } catch (DatabaseClosedException e) {
+        	throwDbClosedException(e);
+        }
+    	return expenses;
+    }
+
+	/**
      * 
      * {@inheritDoc}.
      * @see AccountingService#exportModelToXml(java.lang.String)

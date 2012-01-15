@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2012 thorsten frank (thorsten.frank@gmx.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,43 +19,44 @@ import java.util.Date;
 
 import com.db4o.query.Predicate;
 
-import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.util.TimeFrame;
 
 /**
  * @author thorsten
  *
  */
-class FindInvoicesForRevenuePredicate extends Predicate<Invoice> {
+class FindExpensesPredicate extends Predicate<Expense> {
 
-	/**
+    /**
      * 
      */
-    private static final long serialVersionUID = -7375474511194166527L;
+    private static final long serialVersionUID = -4505472471157331493L;
 
-    private Date from;
+	private Date from;
     
     private Date until;
-        
-	/**
+    
+    /**
+     * 
      * @param timeFrame
      */
-    FindInvoicesForRevenuePredicate(TimeFrame timeFrame) {
+    FindExpensesPredicate(TimeFrame timeFrame) {
 	    this.from = timeFrame.getFrom();
 	    this.until = timeFrame.getUntil();
     }
-
+    
 	/**
 	 * {@inheritDoc}.
 	 * @see com.db4o.query.Predicate#match(java.lang.Object)
 	 */
 	@Override
-	public boolean match(Invoice candidate) {
-		if (InvoiceState.PAID.equals(candidate.getState())) {
+	public boolean match(Expense candidate) {
+		if (candidate.getPaymentDate() != null) {
 			return candidate.getPaymentDate().compareTo(from) >= 0
-				&& candidate.getPaymentDate().compareTo(until) <= 0;
+					&& candidate.getPaymentDate().compareTo(until) <= 0;
 		}
+		
 		return false;
 	}
 

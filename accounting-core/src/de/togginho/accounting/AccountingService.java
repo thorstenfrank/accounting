@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Set;
 
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -276,6 +277,20 @@ public interface AccountingService {
 	 * @return a {@link Revenue} instance that contains all paid invoices within the given timeframe
 	 */
 	Revenue getRevenue(TimeFrame timeFrame);
+	
+	/**
+	 * 
+	 * @param expense
+	 * @return
+	 */
+	Expense saveExpense(Expense expense);
+	
+	/**
+	 * 
+	 * @param timeFrame
+	 * @return
+	 */
+	Set<Expense> getExpenses(TimeFrame timeFrame);
 	
 	/**
 	 * Exports the entire database to the specified XML file. This file can later be used to re-create the DB.
