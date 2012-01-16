@@ -161,6 +161,7 @@ public class AccountingServiceImpl implements AccountingService {
 		clientClass.cascadeOnUpdate(true);
 		clientClass.cascadeOnDelete(true);
 		clientClass.objectField(Client.FIELD_NAME).indexed(true);
+		clientClass.objectField(Client.FIELD_CLIENT_NUMBER).indexed(true);
 		config.add(new UniqueFieldValueConstraint(Client.class, Client.FIELD_NAME));
 		config.add(new UniqueFieldValueConstraint(Client.class, Client.FIELD_CLIENT_NUMBER));
 

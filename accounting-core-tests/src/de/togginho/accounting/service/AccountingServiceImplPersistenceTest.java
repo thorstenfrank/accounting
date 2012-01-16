@@ -257,9 +257,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		assertEquals(getTestUser(), invoice.getUser());
 		assertNotNull(invoice.getInvoiceDate());
 		assertNull(invoice.getCreationDate());
-		assertEquals(PaymentTerms.getDefault(), invoice.getPaymentTerms());
-		
-
+		assertEquals(getTestClient().getDefaultPaymentTerms(), invoice.getPaymentTerms());
 	}
 	
 	/**
@@ -280,7 +278,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		assertNotNull(copy.getInvoiceDate());
 		assertEquals(getTestUser(), copy.getUser());
 		assertEquals(getTestClient(), copy.getClient());
-		assertEquals(PaymentTerms.getDefault(), copy.getPaymentTerms());
+		assertEquals(getTestClient().getDefaultPaymentTerms(), copy.getPaymentTerms());
 		
 		// test simple copy
 		original.setUser(getTestUser());

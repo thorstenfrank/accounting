@@ -44,7 +44,6 @@ import com.db4o.internal.encoding.UTF8StringEncoding;
 import com.db4o.osgi.Db4oService;
 import com.db4o.query.Predicate;
 
-import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.BaseTestFixture;
@@ -54,9 +53,6 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.service.AccountingServiceImpl;
-import de.togginho.accounting.service.FindCurrentUserPredicate;
-import de.togginho.accounting.service.FindInvoicesPredicate;
 
 /**
  * Tests for {@link AccountingServiceImpl}. This test includes only mocked behavior of the DB4o object container, and
@@ -108,6 +104,9 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		ObjectField clientNameMock = createMock(ObjectField.class);
 		expect(clientClassMock.objectField(Client.FIELD_NAME)).andReturn(clientNameMock);
 		clientNameMock.indexed(true);
+		ObjectField clientNumberMock = createMock(ObjectField.class);
+		expect(clientClassMock.objectField(Client.FIELD_CLIENT_NUMBER)).andReturn(clientNumberMock);
+		clientNumberMock.indexed(true);		
 		configurationMock.add(anyObject(UniqueFieldValueConstraint.class)); // TODO check arguments too
 		
 		ObjectClass invoiceClassMock = createMock(ObjectClass.class);

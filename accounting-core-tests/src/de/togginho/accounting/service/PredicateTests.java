@@ -24,6 +24,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import de.togginho.accounting.BaseTestFixture;
+import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
@@ -128,4 +129,20 @@ public class PredicateTests extends BaseTestFixture {
 		assertFalse(predicate.match(invoice));
 	}
 	
+	/**
+	 * Test for {@link FindInvoicesForClientPredicate}.
+	 */
+	@Test
+	public void testFindInvoicesForClientPredicate() {
+		Client client = new Client();
+		client.setName("JUnitClient");
+		
+		FindInvoicesForClientPredicate predicate = new FindInvoicesForClientPredicate(client);
+		
+		Invoice invoice = new Invoice();
+		assertFalse(predicate.match(invoice));
+		
+		invoice.setClient(client);
+		assertTrue(predicate.match(invoice));
+	}
 }
