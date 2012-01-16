@@ -22,7 +22,7 @@ import de.togginho.accounting.model.User;
  * @author thorsten
  *
  */
-abstract class BaseTestFixture {
+public abstract class BaseTestFixture {
 
 	protected static final String TEST_USER_NAME = "JUnitTestUser";
 	

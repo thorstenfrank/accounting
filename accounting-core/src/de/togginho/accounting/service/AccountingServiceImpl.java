@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +45,11 @@ import com.db4o.osgi.Db4oService;
 import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 
+import de.togginho.accounting.AccountingContext;
+import de.togginho.accounting.AccountingContextFactory;
+import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.AccountingService;
+import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
@@ -65,7 +70,7 @@ import de.togginho.accounting.xml.ModelMapper;
  * 
  * @author thorsten frank
  */
-class AccountingServiceImpl implements AccountingService {
+public class AccountingServiceImpl implements AccountingService {
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingServiceImpl.class);
@@ -84,7 +89,7 @@ class AccountingServiceImpl implements AccountingService {
 	 * 
 	 * @param db4oService
 	 */
-	AccountingServiceImpl(Db4oService db4oService) {
+	public AccountingServiceImpl(Db4oService db4oService) {
 		this.db4oService = db4oService;
 		this.initialised = false;
 	}
@@ -173,7 +178,7 @@ class AccountingServiceImpl implements AccountingService {
 	/**
 	 * Properly shuts down the service.
 	 */
-	protected void shutDown() {
+	public void shutDown() {
 		LOG.info("shutDown"); //$NON-NLS-1$
 
 		if (!initialised) {

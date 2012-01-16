@@ -24,6 +24,8 @@ import org.osgi.framework.ServiceReference;
 
 import com.db4o.osgi.Db4oService;
 
+import de.togginho.accounting.service.AccountingServiceImpl;
+
 /**
  * The activator for the <code>accounting-core</code> plugin.
  * 
@@ -84,7 +86,7 @@ public class AccountingCore implements BundleActivator {
 	 * 
 	 * @return
 	 */
-	protected static AccountingService getAccountingService() {
+	public static AccountingService getAccountingService() {
 		return accountingServiceImpl;
 	}
 }

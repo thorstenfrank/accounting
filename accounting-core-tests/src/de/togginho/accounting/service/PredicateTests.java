@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,10 +23,14 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.service.FindCurrentUserPredicate;
+import de.togginho.accounting.service.FindInvoicesForRevenuePredicate;
+import de.togginho.accounting.service.FindInvoicesPredicate;
 import de.togginho.accounting.util.TimeFrame;
 
 /**

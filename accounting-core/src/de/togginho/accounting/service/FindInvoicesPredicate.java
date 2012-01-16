@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.service;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import com.db4o.query.Predicate;
 
+import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;

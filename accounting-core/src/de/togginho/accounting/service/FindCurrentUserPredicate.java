@@ -13,50 +13,48 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
-
-import java.util.Date;
+package de.togginho.accounting.service;
 
 import com.db4o.query.Predicate;
 
-import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.model.InvoiceState;
-import de.togginho.accounting.util.TimeFrame;
+import de.togginho.accounting.AccountingContext;
+import de.togginho.accounting.model.User;
 
 /**
+ * A predicate to search for the {@link User} defined through {@link AccountingContext#getUserName()}.
+ * 
  * @author thorsten
- *
  */
-class FindInvoicesForRevenuePredicate extends Predicate<Invoice> {
+class FindCurrentUserPredicate extends Predicate<User> {
 
 	/**
-     * 
-     */
-    private static final long serialVersionUID = -7375474511194166527L;
-
-    private Date from;
-    
-    private Date until;
-        
+	 * 
+	 */
+	private static final long serialVersionUID = -1325854897879815773L;
+	
+	/** The context. */
+	private AccountingContext context;
+	
 	/**
-     * @param timeFrame
-     */
-    FindInvoicesForRevenuePredicate(TimeFrame timeFrame) {
-	    this.from = timeFrame.getFrom();
-	    this.until = timeFrame.getUntil();
-    }
+	 * Creates a new predicate.
+	 * 
+	 * @param context the context containing the user name
+	 */
+	FindCurrentUserPredicate(AccountingContext context) {
+		this.context = context;
+	}
 
 	/**
 	 * {@inheritDoc}.
 	 * @see com.db4o.query.Predicate#match(java.lang.Object)
 	 */
 	@Override
-	public boolean match(Invoice candidate) {
-		if (InvoiceState.PAID.equals(candidate.getState())) {
-			return candidate.getPaymentDate().compareTo(from) >= 0
-				&& candidate.getPaymentDate().compareTo(until) <= 0;
+	public boolean match(User candidate) {
+		if (candidate == null) {
+			return false;
 		}
-		return false;
+		
+		return context.getUserName().equals(candidate.getName());
 	}
 
 }

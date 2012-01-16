@@ -72,31 +72,36 @@ public interface AccountingService {
 	
 	/**
 	 * Saves the current user to persistence. 
-	 * Saving includes the user's configured tax rates, bank account and address.
 	 * 
-	 * @param user
-	 * @return
+	 * <p>Saving includes the user's configured tax rates, bank account and address.</p>
+	 * 
+	 * @param user the {@link User} to save
+	 * 
+	 * @return the saved instance - clients should use this for any further work 
 	 */
 	User saveCurrentUser(User user);
 	
 	/**
 	 * Returns all {@link Client} instances.
 	 * 
-	 * @return the clients
+	 * @return all clients known to the system
 	 */
 	Set<Client> getClients();
 	
 	/**
 	 * Saves the supplied {@link Client} to persistence.
+	 * 
 	 * <p>This method applies to both new and changed existing instances.</p>
 	 * 
 	 * @param client the {@link Client} to save
-	 * @return the save instance
+	 * 
+	 * @return the saved instance - clients should use this for any further work
 	 */
 	Client saveClient(Client client);
 	
 	/**
 	 * Removes the supplied client permanently from persistence.
+	 * 
 	 * <p>This method will throw an {@link AccountingException} if there are saved invoices connected to this cient.</p>
 	 * 
 	 * @param client the {@link Client} instance to delete
@@ -104,8 +109,9 @@ public interface AccountingService {
 	void deleteClient(Client client);
 	
 	/**
+	 * Returns the next (sequential) invoice number.
 	 * 
-	 * @return
+	 * @return the next valid invoice number
 	 */
 	String getNextInvoiceNumber();
 	
@@ -279,16 +285,21 @@ public interface AccountingService {
 	Revenue getRevenue(TimeFrame timeFrame);
 	
 	/**
+	 * Saves an {@link Expense}.
 	 * 
-	 * @param expense
-	 * @return
+	 * @param expense the {@link Expense} to save
+	 * 
+	 * @return the saved instance - this should be used by clients for any further work
 	 */
 	Expense saveExpense(Expense expense);
 	
 	/**
+	 * Returns a {@link Set} of {@link Expense}s that were paid for within the supplied {@link TimeFrame}.
+	 *  
+	 * @param timeFrame	the time frame within which the {@link Expense#getPaymentDate()} needs to be in order to be
+	 * 		  part of the returned {@link Set}
 	 * 
-	 * @param timeFrame
-	 * @return
+	 * @return	a {@link Set} of {@link Expense}s from within the supplied {@link TimeFrame}
 	 */
 	Set<Expense> getExpenses(TimeFrame timeFrame);
 	

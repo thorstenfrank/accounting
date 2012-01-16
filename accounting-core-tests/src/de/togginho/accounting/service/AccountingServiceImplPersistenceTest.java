@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,6 +33,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.togginho.accounting.AccountingCore;
+import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.AccountingService;
+import de.togginho.accounting.BaseTestFixture;
+import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
@@ -40,6 +45,7 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.service.AccountingServiceImpl;
 
 /**
  * Tests for {@link AccountingServiceImpl} that use a temporary DB file.
