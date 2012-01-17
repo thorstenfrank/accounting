@@ -15,29 +15,24 @@
  */
 package de.togginho.accounting.xml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.togginho.accounting.BaseTestFixture;
-import de.togginho.accounting.model.Address;
-import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
-import de.togginho.accounting.model.PaymentTerms;
+import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.xml.generated.XmlAddress;
-import de.togginho.accounting.xml.generated.XmlBankAccount;
-import de.togginho.accounting.xml.generated.XmlClient;
-import de.togginho.accounting.xml.generated.XmlPaymentTerms;
-import de.togginho.accounting.xml.generated.XmlPaymentType;
 import de.togginho.accounting.xml.generated.XmlTaxRate;
 import de.togginho.accounting.xml.generated.XmlTaxRates;
 import de.togginho.accounting.xml.generated.XmlUser;
@@ -53,30 +48,9 @@ public class ModelToXmlTest extends XmlTestBase {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		modelToXml = new ModelToXml();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 	/**
@@ -90,7 +64,10 @@ public class ModelToXmlTest extends XmlTestBase {
 		final Set<Client> clients = new HashSet<Client>();
 		clients.add(client);
 		
-		XmlUser xmlUser = modelToXml.convertToXml(user, clients, null);
+		final Set<Invoice> invoices = new HashSet<Invoice>();
+		invoices.add(createInvoice());
+		
+		XmlUser xmlUser = modelToXml.convertToXml(user, clients, invoices);
 		assertNotNull(xmlUser);
 		assertEquals(user.getName(), xmlUser.getName());
 		assertEquals(user.getDescription(), xmlUser.getDescription());
@@ -104,11 +81,48 @@ public class ModelToXmlTest extends XmlTestBase {
 		assertEquals(1, xmlUser.getClients().getClient().size());
 		assertClientsSame(client, xmlUser.getClients().getClient().get(0));
 		
-		assertNull(xmlUser.getInvoices());
-
-		ModelMapper.modelToXml(user, null, null, "JUnitTestFile.xml");
+		assertNotNull(xmlUser.getInvoices());
+		assertEquals(1, xmlUser.getInvoices().getInvoice().size());
+		
+		ModelMapper.modelToXml(user, clients, invoices, "JUnitTestFile.xml");
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	private Invoice createInvoice() {
+		Invoice invoice = new Invoice();
+		invoice.setClient(getTestClient());
+		invoice.setNumber("JUnitInvoiceNo");
+		invoice.setPaymentTerms(getTestClient().getDefaultPaymentTerms());
+		invoice.setUser(getTestUser());
+
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.YEAR, 2011);
+		invoice.setCreationDate(cal.getTime());
+		invoice.setInvoiceDate(cal.getTime());
+		invoice.setSentDate(cal.getTime());
+		
+		cal.add(Calendar.DAY_OF_MONTH, invoice.getPaymentTerms().getFullPaymentTargetInDays());
+		invoice.setPaymentDate(cal.getTime());
+
+		InvoicePosition ip = new InvoicePosition();
+		ip.setDescription("JUnitInvoicePosition");
+		ip.setPricePerUnit(new BigDecimal("55"));
+		ip.setQuantity(new BigDecimal("100.5"));
+		ip.setRevenueRelevant(true);
+		ip.setTaxRate(invoice.getUser().getTaxRates().iterator().next());
+		ip.setUnit("JUnitUni");
+		
+		final List<InvoicePosition> invoicePositions = new ArrayList<InvoicePosition>();
+		invoicePositions.add(ip);
+		invoice.setInvoicePositions(invoicePositions);
+		
+		return invoice;
+	}
 	
 	/**
 	 * 
@@ -120,8 +134,7 @@ public class ModelToXmlTest extends XmlTestBase {
 		assertNotNull(xmlRates);
 		assertEquals(1, xmlRates.getTaxRate().size());
 		XmlTaxRate xmlRate = xmlRates.getTaxRate().get(0);
-		assertEquals(rate.getLongName(), xmlRate.getName());
-		assertEquals(rate.getShortName(), xmlRate.getAbbreviation());
-		assertEquals(rate.getRate(), xmlRate.getRate());
+		
+		assertTaxRatesSame(rate, xmlRate);
 	}
 }

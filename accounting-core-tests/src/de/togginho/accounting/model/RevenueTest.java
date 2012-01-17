@@ -23,21 +23,20 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.togginho.accounting.BaseTestFixture;
+
 /**
  * @author thorsten
  *
  */
-public class RevenueTest {
+public class RevenueTest extends BaseTestFixture {
 
 	/**
 	 * Test method for {@link de.togginho.accounting.model.Revenue#getRevenueNet()}.
 	 */
 	@Test
 	public void testRevenueCalculation() {
-		TaxRate taxRate = new TaxRate();
-		taxRate.setLongName("JUnitTax");
-		taxRate.setRate(new BigDecimal("0.15"));
-		taxRate.setShortName("JUT");
+		TaxRate taxRate = getTestUser().getTaxRates().iterator().next();
 		
 		// INVOICE 1
 		InvoicePosition ip1 = new InvoicePosition();

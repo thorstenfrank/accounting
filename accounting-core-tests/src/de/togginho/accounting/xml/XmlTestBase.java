@@ -18,16 +18,29 @@ package de.togginho.accounting.xml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.PaymentTerms;
+import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.xml.generated.XmlAddress;
 import de.togginho.accounting.xml.generated.XmlBankAccount;
 import de.togginho.accounting.xml.generated.XmlClient;
+import de.togginho.accounting.xml.generated.XmlInvoice;
+import de.togginho.accounting.xml.generated.XmlInvoicePosition;
 import de.togginho.accounting.xml.generated.XmlPaymentTerms;
 import de.togginho.accounting.xml.generated.XmlPaymentType;
+import de.togginho.accounting.xml.generated.XmlTaxRate;
 
 /**
  * @author thorsten
@@ -112,5 +125,81 @@ class XmlTestBase extends BaseTestFixture {
 		}
 		
 		assertEquals(terms.getFullPaymentTargetInDays(), xmlTerms.getFullPaymentTargetInDays());
+	}
+	
+	/**
+	 * 
+	 * @param invoice
+	 * @param xmlInvoice
+	 */
+	protected void assertInvoicesSame(Invoice invoice, XmlInvoice xmlInvoice) {
+		if (invoice == null) {
+			assertNull(xmlInvoice);
+		} else {
+			assertNotNull(xmlInvoice);
+		}
+		
+		assertEquals(invoice.getNumber(), xmlInvoice.getNumber());
+		assertEquals(invoice.getClient().getName(), xmlInvoice.getClient());
+		assertDatesSame(invoice.getCancelledDate(), xmlInvoice.getCancelledDate());
+		assertDatesSame(invoice.getCreationDate(), xmlInvoice.getCreationDate());
+		assertDatesSame(invoice.getDueDate(), xmlInvoice.getDueDate());
+		assertDatesSame(invoice.getInvoiceDate(), xmlInvoice.getInvoiceDate());
+		assertDatesSame(invoice.getPaymentDate(), xmlInvoice.getPaymentDate());
+		assertDatesSame(invoice.getSentDate(), xmlInvoice.getSentDate());
+		
+		if (invoice.getInvoicePositions() == null) {
+			assertNull(xmlInvoice.getInvoicePositions());
+		} else {
+			assertNotNull(xmlInvoice.getInvoicePositions());
+			
+			final List<InvoicePosition> ips = invoice.getInvoicePositions();
+			final List<XmlInvoicePosition> xmlIps = xmlInvoice.getInvoicePositions().getInvoicePosition();
+			
+			for (int i = 0; i < ips.size(); i++) {
+				InvoicePosition ip = ips.get(i);
+				XmlInvoicePosition xmlIp = xmlIps.get(i);
+				
+				assertEquals(ip.getDescription(), xmlIp.getDescription());
+				assertEquals(ip.getUnit(), xmlIp.getUnit());
+				assertEquals(ip.getPricePerUnit(), xmlIp.getPricePerUnit());
+				assertEquals(ip.getQuantity(), xmlIp.getQuantity());
+				assertTaxRatesSame(ip.getTaxRate(), xmlIp.getTaxRate());
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param date
+	 * @param xmlDate
+	 */
+	protected void assertDatesSame(Date date, XMLGregorianCalendar xmlDate) {
+		if (date == null) {
+			assertNull(xmlDate);
+		} else {
+			assertNotNull(xmlDate);
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		assertEquals(cal.get(Calendar.DAY_OF_MONTH), xmlDate.getDay());
+		assertEquals(cal.get(Calendar.MONTH) + 1, xmlDate.getMonth());
+		assertEquals(cal.get(Calendar.YEAR), xmlDate.getYear());
+	}
+	
+	/**
+	 * @param rate
+	 * @param xmlRate
+	 */
+	protected void assertTaxRatesSame(TaxRate rate, XmlTaxRate xmlRate) {
+		if (rate == null) {
+			assertNull(xmlRate);
+		} else {
+			assertNotNull(xmlRate);
+		}
+		assertEquals(rate.getLongName(), xmlRate.getName());
+		assertEquals(rate.getShortName(), xmlRate.getAbbreviation());
+		assertEquals(rate.getRate(), xmlRate.getRate());
 	}
 }
