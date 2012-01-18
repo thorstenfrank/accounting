@@ -30,7 +30,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="creationDate" type="{http://www.w3.org/2001/XMLSchema}date"/>
  *         &lt;element name="invoiceDate" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/>
  *         &lt;element name="paymentTerms" type="{}xmlPaymentTerms" minOccurs="0"/>
- *         &lt;element name="dueDate" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/>
  *         &lt;element name="sentDate" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/>
  *         &lt;element name="cancelledDate" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/>
  *         &lt;element name="paymentDate" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/>
@@ -50,7 +49,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "creationDate",
     "invoiceDate",
     "paymentTerms",
-    "dueDate",
     "sentDate",
     "cancelledDate",
     "paymentDate",
@@ -65,8 +63,6 @@ public class XmlInvoice {
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar invoiceDate;
     protected XmlPaymentTerms paymentTerms;
-    @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar dueDate;
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar sentDate;
     @XmlSchemaType(name = "date")
@@ -150,30 +146,6 @@ public class XmlInvoice {
      */
     public void setPaymentTerms(XmlPaymentTerms value) {
         this.paymentTerms = value;
-    }
-
-    /**
-     * Gets the value of the dueDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getDueDate() {
-        return dueDate;
-    }
-
-    /**
-     * Sets the value of the dueDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setDueDate(XMLGregorianCalendar value) {
-        this.dueDate = value;
     }
 
     /**

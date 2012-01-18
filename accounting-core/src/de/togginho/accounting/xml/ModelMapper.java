@@ -42,7 +42,7 @@ public class ModelMapper {
 	/**
 	 * 
 	 */
-	private static final String JAXB_CONTEXT = "de.togginho.accounting.xml.generated";	
+	protected static final String JAXB_CONTEXT = "de.togginho.accounting.xml.generated";	
 	
 	/**
 	 * 

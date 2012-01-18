@@ -91,7 +91,6 @@
     		<xs:element name="creationDate" type="xs:date" minOccurs="1" maxOccurs="1" />
     		<xs:element name="invoiceDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="paymentTerms" type="xmlPaymentTerms" minOccurs="0" maxOccurs="1" />
-    		<xs:element name="dueDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="sentDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="cancelledDate" type="xs:date" minOccurs="0" maxOccurs="1" />
     		<xs:element name="paymentDate" type="xs:date" minOccurs="0" maxOccurs="1" />
