@@ -15,6 +15,9 @@
  */
 package de.togginho.accounting.ui;
 
+import java.text.Collator;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -24,11 +27,32 @@ import org.eclipse.swt.SWT;
  * @author thorsten
  *
  */
-public abstract class AbstractTableSorter extends ViewerSorter {
+public abstract class AbstractTableSorter<ModelClass> extends ViewerSorter {
 	
 	private int column = -1;
 
 	private int direction = 1;
+
+	private Class<? extends ModelClass> modelClass;
+	
+	/**
+	 * 
+	 * @param modelClass
+	 */
+	public AbstractTableSorter(Class<? extends ModelClass> modelClass) {
+		super();
+		this.modelClass = modelClass;
+	}
+
+	/**
+	 * 
+	 * @param modelClass
+	 * @param collator
+	 */
+	public AbstractTableSorter(Class<? extends ModelClass> modelClass, Collator collator) {
+		super(collator);
+		this.modelClass = modelClass;
+	}
 
 	/**
 	 * 
@@ -54,7 +78,15 @@ public abstract class AbstractTableSorter extends ViewerSorter {
 			((TableViewer) viewer).getTable().setSortDirection(direction < 0 ? SWT.DOWN : SWT.UP);
 		}
 		
-		return doCompare(e1, e2, column) * direction;
+		try {
+			ModelClass mc1 = modelClass.cast(e1);
+			ModelClass mc2 = modelClass.cast(e2);
+			final int result = doCompare(mc1, mc2, column);
+			return result * direction; // make sure the current direction is used
+		} catch (ClassCastException e) {
+			getLogger().warn("Couldn't cast input to model object class", e);
+			return 0;
+		}
     }
 	
     /**
@@ -64,5 +96,11 @@ public abstract class AbstractTableSorter extends ViewerSorter {
      * @param columnIndex
      * @return
      */
-	protected abstract int doCompare(Object e1, Object e2, int columnIndex);
+	protected abstract int doCompare(ModelClass e1, ModelClass e2, int columnIndex);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected abstract Logger getLogger();
 }

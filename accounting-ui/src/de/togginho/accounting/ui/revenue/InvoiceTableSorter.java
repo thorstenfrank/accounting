@@ -15,23 +15,41 @@
  */
 package de.togginho.accounting.ui.revenue;
 
+import org.apache.log4j.Logger;
+
 import de.togginho.accounting.ui.AbstractTableSorter;
 
 /**
  * @author thorsten
  * 
  */
-public class InvoiceTableSorter extends AbstractTableSorter {
+public class InvoiceTableSorter extends AbstractTableSorter<InvoiceWrapper> {
+	
+	/** Logger. */
+	private static final Logger LOG = Logger.getLogger(InvoiceTableSorter.class);
 	
 	/**
+	 * 
+	 */
+	protected InvoiceTableSorter() {
+		super(InvoiceWrapper.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractTableSorter#getLogger()
+	 */
+	@Override
+	protected Logger getLogger() {
+		return LOG;
+	}
+
+	/**
      * {@inheritDoc}.
-     * @see de.togginho.accounting.ui.AbstractTableSorter#doCompare(java.lang.Object, java.lang.Object, int)
+     * @see AbstractTableSorter#doCompare(Object, Object, int)
      */
     @Override
-    protected int doCompare(Object e1, Object e2, int columnIndex) {
-		InvoiceWrapper i1 = (InvoiceWrapper) e1;
-		InvoiceWrapper i2 = (InvoiceWrapper) e2;
-		
+    protected int doCompare(InvoiceWrapper i1, InvoiceWrapper i2, int columnIndex) {
 		switch (columnIndex) {
 		case RevenueDialog.COLUMN_INDEX_INVOICE_NUMBER:
 			return i1.getNumber().compareTo(i2.getNumber());

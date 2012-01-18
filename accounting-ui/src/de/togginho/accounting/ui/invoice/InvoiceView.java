@@ -47,7 +47,6 @@ import org.eclipse.ui.part.ViewPart;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
-import de.togginho.accounting.ui.AbstractTableSorter;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -116,6 +115,8 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
+		final InvoiceViewTableSorter sorter = new InvoiceViewTableSorter();
+		
 		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_NUMBER);
 		final TableColumn col1col = col1.getColumn();
 		col1col.setText(Messages.InvoiceView_number);
@@ -124,7 +125,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				tableViewer.getTable().setSortColumn(col1col);
-				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
+				sorter.setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
 			    tableViewer.refresh();
 			}
 		});
@@ -139,7 +140,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				tableViewer.getTable().setSortColumn(col2col);
-				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_INVOICE_STATE);
+				sorter.setSortColumnIndex(COL_INDEX_INVOICE_STATE);
 			    tableViewer.refresh();
 			}
 		});
@@ -152,7 +153,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				tableViewer.getTable().setSortColumn(col3col);
-				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_CLIENT);
+				sorter.setSortColumnIndex(COL_INDEX_CLIENT);
 			    tableViewer.refresh();
 			}
 		});
@@ -165,7 +166,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				tableViewer.getTable().setSortColumn(col4col);
-				((AbstractTableSorter) tableViewer.getSorter()).setSortColumnIndex(COL_INDEX_DUE_DATE);
+				sorter.setSortColumnIndex(COL_INDEX_DUE_DATE);
 			    tableViewer.refresh();
 			}
 		});
@@ -174,7 +175,6 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setInput(getInvoicesWithFilter());
 		
-		InvoiceViewTableSorter sorter = new InvoiceViewTableSorter();
 		sorter.setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
 		tableViewer.setComparator(sorter);
 		table.setSortColumn(col1col);

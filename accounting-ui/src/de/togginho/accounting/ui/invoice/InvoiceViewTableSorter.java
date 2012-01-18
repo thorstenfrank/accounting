@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.ui.invoice;
 
+import org.apache.log4j.Logger;
+
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AbstractTableSorter;
@@ -23,30 +25,47 @@ import de.togginho.accounting.ui.AbstractTableSorter;
  * @author thorsten
  *
  */
-public class InvoiceViewTableSorter extends AbstractTableSorter {
+public class InvoiceViewTableSorter extends AbstractTableSorter<Invoice> {
+
+	private static final Logger LOG = Logger.getLogger(InvoiceViewTableSorter.class);
+	
+	/**
+	 * 
+	 */
+	protected InvoiceViewTableSorter() {
+		super(Invoice.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractTableSorter#getLogger()
+	 */
+	@Override
+	protected Logger getLogger() {
+		return LOG;
+	}
 
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.AbstractTableSorter#doCompare(java.lang.Object, java.lang.Object, int)
+	 * @see AbstractTableSorter#doCompare(Object, Object, int)
 	 */
 	@Override
-	protected int doCompare(Object e1, Object e2, int columnIndex) {
-		Invoice i1 = (Invoice) e1;
-		Invoice i2 = (Invoice) e2;
+	protected int doCompare(Invoice i1, Invoice i2, int columnIndex) {
+		int result = 0;
 		switch (columnIndex) {
 		case InvoiceView.COL_INDEX_INVOICE_NUMBER:
-			return i1.getNumber().compareTo(i2.getNumber());
+			result = i1.getNumber().compareTo(i2.getNumber());
 		case InvoiceView.COL_INDEX_INVOICE_STATE:
-			return i1.getState().compareTo(i2.getState());
+			result = i1.getState().compareTo(i2.getState());
 		case InvoiceView.COL_INDEX_CLIENT:
-			return compareClients(i1.getClient(), i2.getClient());
+			result = compareClients(i1.getClient(), i2.getClient());
 		case InvoiceView.COL_INDEX_DUE_DATE:
-			return i1.getDueDate().compareTo(i2.getDueDate());
+			result = i1.getDueDate().compareTo(i2.getDueDate());
 		default:
 			break;
 		}
 		
-		return 0;
+		return result;
 	}
 
 	/**
