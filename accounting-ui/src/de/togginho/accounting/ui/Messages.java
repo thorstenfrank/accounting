@@ -230,7 +230,7 @@ public class Messages extends NLS {
 	public static String labelNo;
 	
 	public static String labelError;
-	public static String labelUnkownError;
+	public static String labelUnknownError;
 	
 	// ICONS
 	public static String iconsGroupEdit;

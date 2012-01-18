@@ -104,10 +104,10 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 				throw (AccountingException) e.getTargetException();
 			}
 			LOG.error("Unknown error during processing of service request", e.getTargetException()); //$NON-NLS-1$
-			throw new AccountingException(Messages.labelUnkownError, e.getTargetException());
+			throw new AccountingException(Messages.labelUnknownError, e.getTargetException());
 		} catch (Throwable t) {
 			LOG.error("Error while calling service", t); //$NON-NLS-1$
-			throw new AccountingException(Messages.labelUnkownError, t);
+			throw new AccountingException(Messages.labelUnknownError, t);
 		}
 	}
 
