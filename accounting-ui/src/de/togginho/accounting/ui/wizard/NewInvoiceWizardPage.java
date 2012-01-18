@@ -28,7 +28,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -64,7 +63,7 @@ class NewInvoiceWizardPage extends WizardPage {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, NewInvoiceWizard.HELP_CONTEXT_ID);
 		
 		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout(3, false);
+		GridLayout layout = new GridLayout(2, false);
 		composite.setLayout(layout);
 		
 		// INVOICE NO
@@ -80,9 +79,6 @@ class NewInvoiceWizardPage extends WizardPage {
 			}
 		});
 		
-		Button generateButton = new Button(composite, SWT.PUSH);
-		generateButton.setText(Messages.NewInvoiceWizardPage_generate);
-
 		// CLIENT
 		WidgetHelper.createLabel(composite, Messages.NewInvoiceWizardPage_chooseClient);
 		
