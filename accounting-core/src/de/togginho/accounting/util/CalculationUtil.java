@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 import org.apache.log4j.Logger;
 
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
@@ -104,5 +105,25 @@ public final class CalculationUtil {
     	BigDecimal netPrice = invoicePosition.getQuantity().multiply(invoicePosition.getPricePerUnit());
     	LOG.debug(String.format("Net price for Invoice Position is [%s]", netPrice.toString()));
     	return netPrice;
+    }
+    
+    /**
+     * 
+     * @param expense
+     * @return
+     */
+    public static Price calculatePrice(Expense expense) {
+    	BigDecimal net = expense.getNetAmount() != null ? expense.getNetAmount() : BigDecimal.ZERO;
+    	BigDecimal tax = null;
+    	BigDecimal gross = BigDecimal.ZERO;
+    	
+    	if (expense.getTaxRate() == null) {
+    		gross = net;
+    	} else {
+    		tax = net.multiply(expense.getTaxRate().getRate());
+    		gross = net.add(tax);
+    	}
+    	
+    	return new Price(net, tax, gross); 
     }
 }
