@@ -30,6 +30,11 @@ public class Expense implements Serializable {
      */
     private static final long serialVersionUID = -5195455587226426017L;
 
+    public static final String FIELD_DESCRIPTION = "description";
+    public static final String FIELD_PAYMENT_DATE = "paymentDate";
+    public static final String FIELD_NET_AMOUNT = "netAmount";
+    public static final String FIELD_TAX_RATE = "taxRate";
+    
     private String description;
     
     private Date paymentDate;
