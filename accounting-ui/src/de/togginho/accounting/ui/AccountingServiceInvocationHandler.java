@@ -48,6 +48,7 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 		MODEL_CHANGING_METHODS.add("cancelInvoice"); //$NON-NLS-1$
 		MODEL_CHANGING_METHODS.add("deleteInvoice"); //$NON-NLS-1$
 		MODEL_CHANGING_METHODS.add("importModelFromXml"); //$NON-NLS-1$
+		MODEL_CHANGING_METHODS.add("saveExpense"); //$NON-NLS-1$
 	}
 	
 	/** */
