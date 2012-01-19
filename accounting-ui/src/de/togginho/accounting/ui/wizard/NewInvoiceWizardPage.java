@@ -49,7 +49,7 @@ class NewInvoiceWizardPage extends WizardPage {
 	private Map<String, Client> nameToClientMap;
 	
 	NewInvoiceWizardPage() {
-		super("NewInvoiceWizardPage"); //$NON-NLS-1$
+		super(NewInvoiceWizardPage.class.getName());
 		setTitle(Messages.NewInvoiceWizardPage_title);
 		setDescription(Messages.NewInvoiceWizardPage_desc);
 	}
