@@ -62,7 +62,7 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
 			invoiceView = (InvoiceView) viewPart;
 			currentFilter = invoiceView.getInvoiceFilter();
 		} else {
-			LOG.warn("No active invoice view found! This command should not have been fired...");
+			LOG.warn("No active invoice view found! This command should not have been fired..."); //$NON-NLS-1$
 			return;
 		}
 		
