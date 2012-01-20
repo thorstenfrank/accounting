@@ -72,6 +72,16 @@
                         value="de.togginho.accounting.ui.wizard.NewInvoiceWizard">
                   </parameter>
                </command>
+               <command
+                     commandId="org.eclipse.ui.newWizard"
+                     icon="icons/tag_blue_add.png"
+                     label="%menu.file.new.expense.label"
+                     style="push">
+                  <parameter
+                        name="newWizardId"
+                        value="de.togginho.accounting.ui.wizard.EditExpenseWizard">
+                  </parameter>
+               </command>
                <separator
                      name="newSubMenuSep1"
                      visible="true">
@@ -136,6 +146,16 @@
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
                      value="de.togginho.accounting.ui.invoice.InvoiceView">
+               </parameter>
+            </command>
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  icon="icons/tag_blue.png"
+                  label="%command.viewExpenses.label"
+                  style="push">
+               <parameter
+                     name="org.eclipse.ui.views.showView.viewId"
+                     value="de.togginho.accounting.ui.expense.ExpensesView">
                </parameter>
             </command>
             <command
@@ -214,6 +234,22 @@
             <command
                   commandId="de.togginho.accounting.ui.client.NewClientCommand"
                   icon="icons/group_add.png"
+                  style="push">
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+                  icon="icons/tag_blue_add.png"
+                  style="push">
+            </command>
+         </toolbar>
+         <separator
+               name="accounting-ui.separator1">
+         </separator>
+         <toolbar
+               id="accounting-ui.toolbar1">
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
+                  icon="icons/page_find.png"
                   style="push">
             </command>
          </toolbar>
@@ -356,6 +392,14 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:de.togginho.accounting.ui.expense.ExpensesView">
+         <command
+               commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+               icon="icons/tag_blue_add.png"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -477,6 +521,16 @@
             id="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
             name="%command.find.invoice.label">
       </command>
+      <category
+            id="de.togginho.accounting.ui.expense"
+            name="%commandCategory.expense.name">
+      </category>
+      <command
+            categoryId="de.togginho.accounting.ui.expense"
+            defaultHandler="de.togginho.accounting.ui.expense.EditExpenseCommand"
+            id="de.togginho.accounting.ui.expense.EditExpenseCommand"
+            name="%command.newExpense.name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -491,7 +545,14 @@
             class="de.togginho.accounting.ui.invoice.InvoiceView"
             icon="icons/page.png"
             id="de.togginho.accounting.ui.invoice.InvoiceView"
-            name="%view.openInvoices"
+            name="%view.invoices"
+            restorable="true">
+      </view>
+      <view
+            class="de.togginho.accounting.ui.expense.ExpensesView"
+            icon="icons/tag_blue.png"
+            id="de.togginho.accounting.ui.expense.ExpensesView"
+            name="%view.expenses"
             restorable="true">
       </view>
    </extension>
@@ -510,6 +571,13 @@
             icon="icons/page_add.png"
             id="de.togginho.accounting.ui.wizard.NewInvoiceWizard"
             name="%new.invoice.wizard.label">
+      </wizard>
+      <wizard
+            category="de.togginho.accounting.ui.wizard"
+            class="de.togginho.accounting.ui.wizard.EditExpenseWizard"
+            icon="icons/tag_blue_add.png"
+            id="de.togginho.accounting.ui.wizard.NewExpenseWizard"
+            name="%new.expense.wizard.label">
       </wizard>
    </extension>
    <extension

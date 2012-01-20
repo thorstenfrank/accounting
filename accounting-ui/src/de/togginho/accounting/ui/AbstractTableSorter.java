@@ -22,6 +22,11 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * @author thorsten
@@ -88,19 +93,49 @@ public abstract class AbstractTableSorter<ModelClass> extends ViewerSorter {
 			return 0;
 		}
     }
-	
+
     /**
+     * Can be called by views to enable sorting for the supplied column.
      * 
-     * @param e1
-     * @param e2
-     * @param columnIndex
-     * @return
+     * <p>
+     * This method will add a {@link SelectionListener} to the supplied {@link TableColumn}, which in turn will
+     * notify the {@link Table} contained in the supplied {@link TableViewer} that this column is now the sorting one.
+     * Also, this sorter will be adapted.
+     * </p>
+     * 
+     * @param tableViewer	the viewer containing a table to be sorted
+     * @param col			the column in the table that should be sorted
+     * @param columnIndex	the index of the sorting column - this is necessary because there's no way to retrieve this
+     * 						information from the column itself
+     */
+    public void addSortingSupport(final TableViewer tableViewer, final TableColumn col, final int columnIndex) {
+		col.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.getTable().setSortColumn(col);
+				setSortColumnIndex(columnIndex);
+				tableViewer.refresh();
+			}
+		});
+    }
+    
+    /**
+     * Called by {@link #compare(Viewer, Object, Object)} to handle the actual comparison of the two supplied objects.
+     * 
+     * @param e1			the first element
+     * @param e2			the second element
+     * @param columnIndex	the index within the table that points to the attribute to be compared
+     * 
+     * @return	<code>-1</code> if the attribute signified by <code>columnIndex</code> of <code>e1</code>is less than 
+     * 			the value of the same attribute of <code>e2</code>, <code>0</code> if they are equal, <code>1</code> if
+     * 			is more. 
      */
 	protected abstract int doCompare(ModelClass e1, ModelClass e2, int columnIndex);
 	
 	/**
+	 * Returns an implementation-specific {@link Logger}.
 	 * 
-	 * @return
+	 * @return the logger to use
 	 */
 	protected abstract Logger getLogger();
 }

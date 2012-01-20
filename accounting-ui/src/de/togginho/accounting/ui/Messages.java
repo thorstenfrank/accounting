@@ -67,6 +67,11 @@ public class Messages extends NLS {
 	
 	public static String EditClientCommand_errorOpeningEditor;
 	
+	public static String EditExpenseWizard_newTitle;
+	public static String EditExpenseWizard_editTitle;
+	public static String EditExpenseWizard_newDesc;
+	public static String EditExpenseWizard_editDesc;
+	
 	public static String EditInvoiceCommand_errorOpeningEditor;
 	public static String EditInvoiceCommand_uneditableMessage;
 	public static String EditInvoiceCommand_uneditableText;
@@ -188,15 +193,19 @@ public class Messages extends NLS {
 	public static String labelClientDetails;
 	public static String labelClientName;
 	public static String labelClientNumber;
+	public static String labelDate;
 	public static String labelDescription;
 	public static String labelEmail;
+	public static String labelExpense;
 	public static String labelFax;
+	public static String labelGross;
 	public static String labelIBAN;
 	public static String labelInvoiceDate;
 	public static String labelInvoiceDueDate;
 	public static String labelInvoiceNo;
 	public static String labelMobile;
 	public static String labelName;
+	public static String labelNet;
 	public static String labelPaymentTerms;
 	public static String labelPaymentType;
 	public static String labelPaymentTarget;

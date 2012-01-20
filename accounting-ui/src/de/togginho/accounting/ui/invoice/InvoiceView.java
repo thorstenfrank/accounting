@@ -77,7 +77,7 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 	
 	/** The viewer. */
 	private TableViewer tableViewer;
-	
+	private InvoiceViewTableSorter sorter;
 	private Set<InvoiceState> invoiceFilter;
 	
 	/**
@@ -115,61 +115,32 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		final InvoiceViewTableSorter sorter = new InvoiceViewTableSorter();
+		sorter = new InvoiceViewTableSorter();
 		
 		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_NUMBER);
 		final TableColumn col1col = col1.getColumn();
 		col1col.setText(Messages.InvoiceView_number);
 		tcl.setColumnData(col1col, new ColumnWeightData(10, true));
-		col1col.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.getTable().setSortColumn(col1col);
-				sorter.setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
-			    tableViewer.refresh();
-			}
-		});
-		
+		addSortingSupport(col1col, COL_INDEX_INVOICE_NUMBER);
 		
 		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_STATE);
 		final TableColumn col2col = col2.getColumn();
 		col2col.setText(Messages.InvoiceView_state);
 		col2col.setAlignment(SWT.CENTER);
 		tcl.setColumnData(col2col, new ColumnWeightData(10, true));
-		col2col.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.getTable().setSortColumn(col2col);
-				sorter.setSortColumnIndex(COL_INDEX_INVOICE_STATE);
-			    tableViewer.refresh();
-			}
-		});
+		addSortingSupport(col2col, COL_INDEX_INVOICE_STATE);
 		
 		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_CLIENT);
 		final TableColumn col3col = col3.getColumn();
 		col3col.setText(Messages.labelClient);
 		tcl.setColumnData(col3col, new ColumnWeightData(15, true));
-		col3col.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.getTable().setSortColumn(col3col);
-				sorter.setSortColumnIndex(COL_INDEX_CLIENT);
-			    tableViewer.refresh();
-			}
-		});
+		addSortingSupport(col3col, COL_INDEX_CLIENT);
 		
 		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_DUE_DATE);
 		final TableColumn col4col = col4.getColumn();
 		col4col.setText(Messages.InvoiceView_dueDate);
 		tcl.setColumnData(col4col, new ColumnWeightData(10, true));
-		col4col.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.getTable().setSortColumn(col4col);
-				sorter.setSortColumnIndex(COL_INDEX_DUE_DATE);
-			    tableViewer.refresh();
-			}
-		});
+		addSortingSupport(col4col, COL_INDEX_DUE_DATE);
 		
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -189,6 +160,22 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		getSite().registerContextMenu(menuManager, tableViewer);
 	}
 
+	/**
+	 * 
+	 * @param col
+	 * @param columnIndex
+	 */
+	private void addSortingSupport(final TableColumn col, final int columnIndex) {
+		col.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.getTable().setSortColumn(col);
+				sorter.setSortColumnIndex(columnIndex);
+				tableViewer.refresh();
+			}
+		});
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()

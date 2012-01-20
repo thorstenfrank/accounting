@@ -38,6 +38,8 @@ public interface IDs {
 	
 	public static final String EDIT_INVOIDCE_ID = "de.togginho.accounting.ui.invoice.InvoiceEditor"; //$NON-NLS-1$
 	
+	public static final String VIEW_EXPENSES_ID = "de.togginho.accounting.ui.expense.ExpensesView"; //$NON-NLS-1$
+	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMANDS / ACTIONS / EVENTS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,4 +71,6 @@ public interface IDs {
 	public static final String CMD_CHANGE_INVOICES_FILTER = "de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"; //$NON-NLS-1$
 
 	public static final String CMD_FIND_INVOICE = "de.togginho.accounting.ui.invoice.FindInvoiceCommand"; //$NON-NLS-1$
+	
+	public static final String CMD_EDIT_EXPENSE = "de.togginho.accounting.ui.expense.EditExpenseCommand"; //$NON-NLS-1$
 }
