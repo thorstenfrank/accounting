@@ -305,7 +305,7 @@
          </command>
          <command
                commandId="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
-               icon="icons/page_gear.png"
+               icon="icons/table_gear.png"
                style="push">
          </command>
          <command
@@ -397,6 +397,11 @@
          <command
                commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
                icon="icons/tag_blue_add.png"
+               style="push">
+         </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               icon="icons/table_gear.png"
                style="push">
          </command>
       </menuContribution>
@@ -530,6 +535,12 @@
             defaultHandler="de.togginho.accounting.ui.expense.EditExpenseCommand"
             id="de.togginho.accounting.ui.expense.EditExpenseCommand"
             name="%command.newExpense.name">
+      </command>
+      <command
+      		categoryId="de.togginho.accounting.ui.expense"
+      		defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+      		id="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+      		name="%command.changeExpensesViewTimeFrame.name">
       </command>
    </extension>
    <extension

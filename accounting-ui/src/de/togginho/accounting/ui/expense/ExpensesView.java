@@ -60,6 +60,7 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	
 	private TableViewer tableViewer;
 	private ExpensesViewTableSorter sorter;
+	private TimeFrame currentTimeFrame;
 	
 	/**
 	 * {@inheritDoc}
@@ -114,7 +115,8 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		
 		tableViewer.setLabelProvider(new ExpenseLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-		tableViewer.setInput(getExpenses(TimeFrame.thisMonth()));
+		this.currentTimeFrame = TimeFrame.thisMonth();
+		tableViewer.setInput(getExpenses());
 		sorter.setSortColumnIndex(COL_INDEX_DATE);
 		tableViewer.setComparator(sorter);
 		table.setSortColumn(col1col);
@@ -129,11 +131,10 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	
 	/**
 	 * 
-	 * @param timeFrame
 	 * @return
 	 */
-	private Set<ExpenseWrapper> getExpenses(TimeFrame timeFrame) {
-		final Set<Expense> expenses = AccountingUI.getAccountingService().getExpenses(timeFrame);
+	private Set<ExpenseWrapper> getExpenses() {
+		final Set<Expense> expenses = AccountingUI.getAccountingService().getExpenses(currentTimeFrame);
 		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(expenses.size());
 		
 		for (Expense expense : expenses) {
@@ -182,8 +183,24 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	 */
 	@Override
 	public void modelChanged() {
-		tableViewer.setInput(getExpenses(TimeFrame.thisMonth()));
+		tableViewer.setInput(getExpenses());
 		tableViewer.refresh();
+	}	
+	
+	/**
+	 * @return the currentTimeFrame
+	 */
+	protected TimeFrame getCurrentTimeFrame() {
+		return currentTimeFrame;
+	}
+
+	/**
+	 * @param currentTimeFrame the currentTimeFrame to set
+	 */
+	protected void setCurrentTimeFrame(TimeFrame newTimeFrame) {
+		if (newTimeFrame != null) {
+			this.currentTimeFrame = newTimeFrame;
+		}
 	}
 
 	/**
