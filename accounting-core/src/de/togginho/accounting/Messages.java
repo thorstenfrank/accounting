@@ -56,7 +56,7 @@ public class Messages extends NLS {
 	
 	public static String ModelMapper_errorDuringExport;
 	public static String ModelMapper_errorDuringImport;
-	
+		
 	public static String InvoiceState_UNSAVED;
 	public static String InvoiceState_CREATED;
 	public static String InvoiceState_SENT;
@@ -65,6 +65,9 @@ public class Messages extends NLS {
 	public static String InvoiceState_CANCELLED;
 		
 	public static String PaymentType_TRADE_CREDIT;
+	
+	public static String ExpenseType_OPEX;
+	public static String ExpenseType_CAPEX;
 	
 	static {
 		// initialize resource bundle

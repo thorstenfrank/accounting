@@ -81,6 +81,6 @@ public enum InvoiceState implements Serializable {
 	 * @return a locale-sensitive string representation of this invoice state
 	 */
 	public String getTranslatedString() {
-		return translated;
+		return translated != null ? translated : this.name();
 	}
 }

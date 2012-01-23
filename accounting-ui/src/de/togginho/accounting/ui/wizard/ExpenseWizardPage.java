@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AccountingUI;
@@ -96,6 +97,32 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	
 		DataBindingContext bindingContext = new DataBindingContext();
 		
+		WidgetHelper.createLabel(composite, "Expense Type");
+		final Combo expenseTypeCombo = new Combo(composite, SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(expenseTypeCombo);
+
+		final List<ExpenseType> expenseTypes = new ArrayList<ExpenseType>();
+		expenseTypes.add(null);
+		int index = 0;
+		for (ExpenseType expenseType : ExpenseType.values()) {
+			expenseTypes.add(expenseType);
+			expenseTypeCombo.add(expenseType.getTranslatedString());
+			if (expenseType.equals(expense.getExpenseType())) {
+				expenseTypeCombo.select(index);
+			} else {
+				index++;
+			}
+		}
+		
+		expenseTypeCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final Combo combo = (Combo) e.getSource();
+				ExpenseType expenseType = expenseTypes.get(combo.getSelectionIndex());
+				expense.setExpenseType(expenseType);
+			}
+		});
+		
 		WidgetHelper.createLabel(composite, Messages.labelDate);
 		if (expense.getPaymentDate() == null) {
 			expense.setPaymentDate(new Date());
@@ -136,11 +163,10 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		Set<TaxRate> origRates = AccountingUI.getAccountingService().getCurrentUser().getTaxRates();
 		final List<TaxRate> taxRates = new ArrayList<TaxRate>(origRates.size() + 1);
 		
-		String[] items = new String[origRates.size() + 1]; 
-		items[0] = Constants.EMPTY_STRING;
+		String[] taxRateItems = new String[origRates.size() + 1]; 
+		taxRateItems[0] = Constants.EMPTY_STRING;
 		taxRates.add(null);
-		
-		int index = 1;
+		index = 1;
 		Iterator<TaxRate> iter = origRates.iterator();
 		int selection = 0;
 		while (iter.hasNext()) {
@@ -148,12 +174,12 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 			if (rate.equals(expense.getTaxRate())) {
 				selection = index;
 			}
-			items[index] = rate.toShortString();
+			taxRateItems[index] = rate.toShortString();
 			taxRates.add(rate);
 			index++;
 		}
 		
-		taxRate.setItems(items);
+		taxRate.setItems(taxRateItems);
 		taxRate.select(selection);
 		taxRate.addSelectionListener(new SelectionAdapter() {
 			@Override

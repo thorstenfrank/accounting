@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2012 thorsten frank (thorsten.frank@gmx.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,37 +20,41 @@ import java.io.Serializable;
 import de.togginho.accounting.Messages;
 
 /**
- * Describes how a payment is to be made.
+ * An {@link Expense} is either operational ("OPEX") or capital ("CAPEX").
  * 
  * @author thorsten
  *
  */
-public enum PaymentType implements Serializable {
+public enum ExpenseType implements Serializable {
 
 	/**
-	 * Credit purchase, Zielkauf.
-	 * Net payments are payments of the total due amount of an invoice, usually by way of bank transfer.
+	 * Operating Expense.
 	 */
-	TRADE_CREDIT(Messages.PaymentType_TRADE_CREDIT);
+	OPEX(Messages.ExpenseType_OPEX), 
 	
 	/**
-	 * Translated name of this payment type.
+	 * Capital Expense.
+	 */
+	CAPEX(Messages.ExpenseType_CAPEX);
+	
+	/**
+	 * Translated name of this type.
 	 */
 	private String translated;
-		
+	
 	/**
-	 * Creates a new {@link PaymentType}.
-     * @param translated translated name of this payment type
-     */
-    private PaymentType(String translated) {
-	    this.translated = translated;
-    }
-
+	 * Creates a new ExpenseType.
+	 * @param translation
+	 */
+	private ExpenseType(String translation) {
+		this.translated = translation;
+	}
+	
 	/**
-	 * Returns a translated String describing this type. The locale used is the default locale derived from the
-	 * framework.
+	 * Returns a translated String describing this expense type. 
+	 * The locale used is the default locale derived from the framework.
 	 * 
-	 * @return a locale-sensitive string representation of this payment type
+	 * @return a locale-sensitive string representation of this expense type
 	 */
 	public String getTranslatedString() {
 		return translated != null ? translated : this.name();
