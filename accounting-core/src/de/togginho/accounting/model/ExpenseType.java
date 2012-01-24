@@ -30,12 +30,12 @@ public enum ExpenseType implements Serializable {
 	/**
 	 * Operating Expense.
 	 */
-	OPEX(Messages.ExpenseType_OPEX), 
+	OPEX(Messages.ExpenseType_OPEX, false), 
 	
 	/**
 	 * Capital Expense.
 	 */
-	CAPEX(Messages.ExpenseType_CAPEX);
+	CAPEX(Messages.ExpenseType_CAPEX, true);
 	
 	/**
 	 * Translated name of this type.
@@ -43,11 +43,17 @@ public enum ExpenseType implements Serializable {
 	private String translated;
 	
 	/**
+	 * Flag whether depreciation is possible with this type of expense.
+	 */
+	private boolean depreciationPossible;
+	
+	/**
 	 * Creates a new ExpenseType.
 	 * @param translation
 	 */
-	private ExpenseType(String translation) {
+	private ExpenseType(String translation, boolean depreciationPossible) {
 		this.translated = translation;
+		this.depreciationPossible = depreciationPossible;
 	}
 	
 	/**
@@ -58,5 +64,14 @@ public enum ExpenseType implements Serializable {
 	 */
 	public String getTranslatedString() {
 		return translated != null ? translated : this.name();
+	}
+
+	/**
+	 * Returns whether depreciation is possible for this type of expense.
+	 * 
+	 * @return <code>true</code> if depreciation is possible with this expense type, <code>false</code> if not
+	 */
+	public boolean isDepreciationPossible() {
+		return depreciationPossible;
 	}
 }
