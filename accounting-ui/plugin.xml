@@ -215,10 +215,10 @@
                </parameter>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
-                  icon="icons/money_add.png"
-                  label="%command.revenue.name"
-                  style="push">
+                  commandId="de.togginho.accounting.reporting.menu.pulldown"
+                  icon="icons/report.png"
+                  label="Reports..."
+                  style="pulldown">
             </command>
          </toolbar>
          <separator
@@ -405,6 +405,16 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
+         <command
+               commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+               icon="icons/money_add.png"
+               label="%command.revenue.name"
+               style="pulldown">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -541,6 +551,11 @@
       		defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
       		id="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
       		name="%command.changeExpensesViewTimeFrame.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
+            id="de.togginho.accounting.reporting.menu.pulldown"
+            name="de.togginho.accounting.reporting.menu.pulldown">
       </command>
    </extension>
    <extension
