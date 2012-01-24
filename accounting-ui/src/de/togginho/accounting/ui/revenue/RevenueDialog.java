@@ -112,6 +112,8 @@ public class RevenueDialog extends TrayDialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		getShell().setText(Messages.RevenueDialog_title);
+		
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		
 		formToolkit = new FormToolkit(parent.getDisplay());

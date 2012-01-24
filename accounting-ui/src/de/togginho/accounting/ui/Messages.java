@@ -149,6 +149,7 @@ public class Messages extends NLS {
 	public static String RevenueDialog_paymentDate;
 	public static String RevenueDialog_search;
 	public static String RevenueDialog_tax;
+	public static String RevenueDialog_title;
 	public static String RevenueDialog_totals;
 	
 	public static String SendInvoiceCommand_message;
