@@ -128,6 +128,10 @@
                   label="%command.editUser.label"
                   style="push">
             </command>
+            <separator
+                  name="viewMenuSep1"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.views.showView"
                   icon="icons/group.png"
@@ -158,12 +162,20 @@
                      value="de.togginho.accounting.ui.expense.ExpensesView">
                </parameter>
             </command>
-            <command
-                  commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
-                  icon="icons/money_add.png"
-                  label="%command.revenue.name"
-                  style="push">
-            </command>
+            <separator
+                  name="viewMenuSep2"
+                  visible="true">
+            </separator>
+            <menu
+                  icon="icons/report.png"
+                  label="%command.reports.label">
+               <command
+                     commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+                     icon="icons/money_add.png"
+                     label="%command.revenue.name"
+                     style="push">
+               </command>
+            </menu>
          </menu>
          <menu
                label="%menu.help.label"
@@ -217,7 +229,7 @@
             <command
                   commandId="de.togginho.accounting.reporting.menu.pulldown"
                   icon="icons/report.png"
-                  label="Reports..."
+                  label="%command.reports.label"
                   style="pulldown">
             </command>
          </toolbar>
