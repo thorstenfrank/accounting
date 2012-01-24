@@ -97,13 +97,14 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	
 		DataBindingContext bindingContext = new DataBindingContext();
 		
-		WidgetHelper.createLabel(composite, "Expense Type");
+		WidgetHelper.createLabel(composite, Messages.labelExpenseType);
 		final Combo expenseTypeCombo = new Combo(composite, SWT.READ_ONLY);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(expenseTypeCombo);
 
+		expenseTypeCombo.add(Constants.EMPTY_STRING);
 		final List<ExpenseType> expenseTypes = new ArrayList<ExpenseType>();
 		expenseTypes.add(null);
-		int index = 0;
+		int index = 1;
 		for (ExpenseType expenseType : ExpenseType.values()) {
 			expenseTypes.add(expenseType);
 			expenseTypeCombo.add(expenseType.getTranslatedString());
@@ -118,8 +119,7 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Combo combo = (Combo) e.getSource();
-				ExpenseType expenseType = expenseTypes.get(combo.getSelectionIndex());
-				expense.setExpenseType(expenseType);
+				expense.setExpenseType(expenseTypes.get(combo.getSelectionIndex()));
 			}
 		});
 		

@@ -197,6 +197,7 @@ public class Messages extends NLS {
 	public static String labelDescription;
 	public static String labelEmail;
 	public static String labelExpense;
+	public static String labelExpenseType;
 	public static String labelFax;
 	public static String labelGross;
 	public static String labelIBAN;
