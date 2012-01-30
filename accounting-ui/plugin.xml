@@ -426,6 +426,12 @@
                label="%command.revenue.name"
                style="pulldown">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
+               icon="icons/money_delete.png"
+               label="Expenses"
+               style="pulldown">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -568,6 +574,12 @@
             defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
             id="de.togginho.accounting.reporting.menu.pulldown"
             name="de.togginho.accounting.reporting.menu.pulldown">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.expense"
+            defaultHandler="de.togginho.accounting.ui.expense.OpenExpenseDialogHandler"
+            id="de.togginho.accounting.ui.expense.OpenExpenseDialog"
+            name="Expenses">
       </command>
    </extension>
    <extension

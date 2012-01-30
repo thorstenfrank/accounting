@@ -16,11 +16,8 @@
 package de.togginho.accounting.ui.revenue;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -36,10 +33,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -53,9 +48,9 @@ import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.ui.AbstractReportDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -66,7 +61,7 @@ import de.togginho.accounting.util.TimeFrame;
  * @author thorsten
  *
  */
-public class RevenueDialog extends TrayDialog {
+public class RevenueDialog extends AbstractReportDialog {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".RevenueDialog"; //$NON-NLS-1$
 	
@@ -82,8 +77,6 @@ public class RevenueDialog extends TrayDialog {
 	private Text netTotal;
 	private Text grossTotal;
 	private Text taxTotal;
-	private DateTime fromDate;
-	private DateTime untilDate;
 	private TableViewer tableViewer;
 	private Revenue revenue;
 	
@@ -93,19 +86,8 @@ public class RevenueDialog extends TrayDialog {
 	 */
 	public RevenueDialog(Shell parentShell) {
 		super(parentShell);
-		setHelpAvailable(true);
 	}
-	
-	/**
-	 * Always returns <code>true</code>.
-	 * {@inheritDoc}.
-	 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
-	 */
-	@Override
-	protected boolean isResizable() {
-	    return true;
-	}
-	
+		
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -127,76 +109,9 @@ public class RevenueDialog extends TrayDialog {
 		createInvoicesSection(container);
 
 		// get an initial revenue for the current year
-		updateInvoices();
+		updateModel();
 		
 		return container;
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 */
-	private void createQuerySection(Composite parent) {
-		Section querySection = formToolkit.createSection(parent, Section.TITLE_BAR);
-		querySection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		formToolkit.paintBordersFor(querySection);
-		querySection.setText(Messages.labelTimeFrame);
-		
-		Composite sectionClient = new Composite(querySection, SWT.NONE);
-		formToolkit.adapt(sectionClient);
-		formToolkit.paintBordersFor(sectionClient);
-		querySection.setClient(sectionClient);
-		sectionClient.setLayout(new GridLayout(5, false));
-		
-		formToolkit.createLabel(sectionClient, Messages.labelFrom);
-		fromDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
-		formToolkit.adapt(fromDate);
-		formToolkit.paintBordersFor(fromDate);
-		fromDate.setDay(1);
-		fromDate.setMonth(Calendar.JANUARY);
-		
-		formToolkit.createLabel(sectionClient, Messages.labelUntil);
-		untilDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
-//		formToolkit.adapt(untilDate);
-//		formToolkit.paintBordersFor(untilDate);
-		untilDate.setDay(31);
-		untilDate.setMonth(Calendar.DECEMBER);
-				
-		final Button btnSearch = formToolkit.createButton(sectionClient, Messages.RevenueDialog_search, SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(btnSearch);
-		btnSearch.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateInvoices();
-			}
-		});
-		
-		final Button thisYear = formToolkit.createButton(sectionClient, Messages.labelThisYear, SWT.RADIO);
-		thisYear.setSelection(true);
-		thisYear.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (thisYear.getSelection()) {
-					TimeFrame period = TimeFrame.thisYear();
-					WidgetHelper.dateToWidget(period.getFrom(), fromDate);
-					WidgetHelper.dateToWidget(period.getUntil(), untilDate);
-					updateInvoices(period);
-				}
-			}
-		});
-		
-		final Button lastYear = formToolkit.createButton(sectionClient, Messages.labelLastYear, SWT.RADIO);
-		lastYear.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (lastYear.getSelection()) {
-					TimeFrame period = TimeFrame.lastYear();
-					WidgetHelper.dateToWidget(period.getFrom(), fromDate);
-					WidgetHelper.dateToWidget(period.getUntil(), untilDate);
-					updateInvoices(period);
-				}
-			}
-		});
 	}
 	
 	/**
@@ -207,7 +122,7 @@ public class RevenueDialog extends TrayDialog {
 		Section totalsSection = formToolkit.createSection(parent, Section.TITLE_BAR);
 		totalsSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		formToolkit.paintBordersFor(totalsSection);
-		totalsSection.setText(Messages.RevenueDialog_totals);
+		totalsSection.setText(Messages.labelTotals);
 		
 		Composite sectionClient = new Composite(totalsSection, SWT.NONE);
 		formToolkit.adapt(sectionClient);
@@ -259,9 +174,9 @@ public class RevenueDialog extends TrayDialog {
 		createColumn(COLUMN_INDEX_INVOICE_DATE, Messages.RevenueDialog_invoiceDate, SWT.CENTER, tcl);
 		createColumn(COLUMN_INDEX_PAYMENT_DATE, Messages.RevenueDialog_paymentDate, SWT.CENTER, tcl);
 		createColumn(COLUMN_INDEX_CLIENT, Messages.RevenueDialog_client, SWT.CENTER, tcl);
-		createColumn(COLUMN_INDEX_NET_PRICE, Messages.RevenueDialog_net, SWT.RIGHT, tcl);
-		createColumn(COLUMN_INDEX_TAX_AMOUNT, Messages.RevenueDialog_tax, SWT.RIGHT, tcl);
-		createColumn(COLUMN_INDEX_GROSS_PRICE, Messages.RevenueDialog_gross, SWT.RIGHT, tcl);
+		createColumn(COLUMN_INDEX_NET_PRICE, Messages.labelNet, SWT.RIGHT, tcl);
+		createColumn(COLUMN_INDEX_TAX_AMOUNT, Messages.labelTaxes, SWT.RIGHT, tcl);
+		createColumn(COLUMN_INDEX_GROSS_PRICE, Messages.labelGross, SWT.RIGHT, tcl);
 		
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(new ArrayContentProvider());
@@ -296,19 +211,13 @@ public class RevenueDialog extends TrayDialog {
 		
 		return viewerColumn;
 	}
-	
+		
 	/**
-	 * 
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
 	 */
-	private void updateInvoices() {
-		updateInvoices(new TimeFrame(WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate)));
-	}
-	
-	/**
-	 * 
-	 * @param timeFrame
-	 */
-	private void updateInvoices(TimeFrame timeFrame) {
+	@Override
+	protected void updateModel(TimeFrame timeFrame) {
 		revenue = AccountingUI.getAccountingService().getRevenue(timeFrame);
 		List<InvoiceWrapper> invoices = new ArrayList<InvoiceWrapper>();
 		for (Invoice invoice : revenue.getInvoices()) {
@@ -324,32 +233,23 @@ public class RevenueDialog extends TrayDialog {
 	}
 	
 	/**
-	 * Create contents of the button bar.
-	 * @param parent
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractReportDialog#getToolkit()
 	 */
 	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		if (parent.getLayout() instanceof GridLayout) {
-			GridLayout layout = (GridLayout) parent.getLayout();
-			layout.makeColumnsEqualWidth = false;
-		}
-		final Button exportButton = createButton(parent, -1, Messages.RevenueDialog_export, false);
-		exportButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsExportToPdf).createImage());
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+	protected FormToolkit getToolkit() {
+		return formToolkit;
 	}
-	
+
 	/**
-	 * 
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractReportDialog#handleExport()
 	 */
 	@Override
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == -1) {
-			ReportGenerationUtil.executeReportGeneration(new RevenueExportHandler(), getShell());
-		} else {
-			super.buttonPressed(buttonId);
-		}
+	protected void handleExport() {
+		ReportGenerationUtil.executeReportGeneration(new RevenueExportHandler(), getShell());
 	}
-	
+
 	/**
 	 * Return the initial size of the dialog.
 	 */

@@ -21,24 +21,20 @@ import java.util.Set;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
-import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.ui.AccountingUI;
@@ -52,15 +48,9 @@ import de.togginho.accounting.util.TimeFrame;
  *
  */
 public class ExpensesView extends ViewPart implements IDoubleClickListener, ModelChangeListener {
-	
-	protected static final int COL_INDEX_DATE = 0;
-	protected static final int COL_INDEX_DESC = 1;
-	protected static final int COL_INDEX_NET = 2;
-	protected static final int COL_INDEX_TAX = 3;
-	protected static final int COL_INDEX_GROSS = 4;
-	
+		
 	private TableViewer tableViewer;
-	private ExpensesViewTableSorter sorter;
+	private ExpenseTableSorter sorter;
 	private TimeFrame currentTimeFrame;
 	
 	/**
@@ -78,47 +68,47 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		tableViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
 		getSite().setSelectionProvider(tableViewer);
 		
-		sorter = new ExpensesViewTableSorter();
+		sorter = new ExpenseTableSorter();
 		
 		Table table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_DATE);
+		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DATE);
 		final TableColumn col1col = col1.getColumn();
 		col1col.setText(Messages.labelDate);
 		tcl.setColumnData(col1col, new ColumnWeightData(20, true));
-		sorter.addSortingSupport(tableViewer, col1col, COL_INDEX_DATE);
+		sorter.addSortingSupport(tableViewer, col1col, ExpenseTableSorter.COL_INDEX_DATE);
 		
-		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_DESC);
+		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DESC);
 		final TableColumn col2col = col2.getColumn();
 		col2col.setText(Messages.labelDescription);
 		tcl.setColumnData(col2col, new ColumnWeightData(20, true));
-		sorter.addSortingSupport(tableViewer, col2col, COL_INDEX_DESC);
+		sorter.addSortingSupport(tableViewer, col2col, ExpenseTableSorter.COL_INDEX_DESC);
 		
-		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_NET);
+		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_NET);
 		final TableColumn col3col = col3.getColumn();
 		col3col.setText(Messages.labelNet);
 		tcl.setColumnData(col3col, new ColumnWeightData(20, true));
-		sorter.addSortingSupport(tableViewer, col3col, COL_INDEX_NET);
+		sorter.addSortingSupport(tableViewer, col3col, ExpenseTableSorter.COL_INDEX_NET);
 		
-		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_TAX);
+		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_TAX);
 		final TableColumn col4col = col4.getColumn();
 		col4col.setText(Messages.labelTaxRate);
 		tcl.setColumnData(col4col, new ColumnWeightData(20, true));
-		sorter.addSortingSupport(tableViewer, col4col, COL_INDEX_TAX);
+		sorter.addSortingSupport(tableViewer, col4col, ExpenseTableSorter.COL_INDEX_TAX);
 
-		TableViewerColumn col5 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_GROSS);
+		TableViewerColumn col5 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_GROSS);
 		final TableColumn col5col = col5.getColumn();
 		col5col.setText(Messages.labelGross);
 		tcl.setColumnData(col5col, new ColumnWeightData(20, true));
-		sorter.addSortingSupport(tableViewer, col5col, COL_INDEX_GROSS);
+		sorter.addSortingSupport(tableViewer, col5col, ExpenseTableSorter.COL_INDEX_GROSS);
 		
-		tableViewer.setLabelProvider(new ExpenseLabelProvider());
+		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.currentTimeFrame = TimeFrame.thisMonth();
 		tableViewer.setInput(getExpenses());
-		sorter.setSortColumnIndex(COL_INDEX_DATE);
+		sorter.setSortColumnIndex(ExpenseTableSorter.COL_INDEX_DATE);
 		tableViewer.setComparator(sorter);
 		table.setSortColumn(col1col);
 		
@@ -202,43 +192,5 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		if (newTimeFrame != null) {
 			this.currentTimeFrame = newTimeFrame;
 		}
-	}
-
-	/**
-	 *
-	 */
-	private class ExpenseLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
-
-		/**
-		 * {@inheritDoc}
-		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-		 */
-		@Override
-		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-		 */
-		@Override
-		public String getColumnText(Object element, int columnIndex) {
-			ExpenseWrapper wrapper = (ExpenseWrapper) element;
-			switch (columnIndex) {
-			case COL_INDEX_DATE:
-				return wrapper.getPaymentDateFormatted();
-			case COL_INDEX_DESC:
-				return wrapper.getDescription();
-			case COL_INDEX_NET:
-				return wrapper.getNetAmountFormatted();
-			case COL_INDEX_TAX:
-				return wrapper.getTaxAmountFormatted();
-			case COL_INDEX_GROSS:
-				return wrapper.getGrossAmountFormatted();
-			default:
-				return Constants.HYPHEN;
-			}
-		}	
 	}
 }

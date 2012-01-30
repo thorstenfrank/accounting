@@ -140,17 +140,11 @@ public class Messages extends NLS {
 	
 	public static String RevenueDialog_client;
 	public static String RevenueDialog_defaultFilename;
-	public static String RevenueDialog_export;
-	public static String RevenueDialog_gross;
 	public static String RevenueDialog_invoiceDate;
 	public static String RevenueDialog_invoiceNo;
 	public static String RevenueDialog_invoices;
-	public static String RevenueDialog_net;
 	public static String RevenueDialog_paymentDate;
-	public static String RevenueDialog_search;
-	public static String RevenueDialog_tax;
 	public static String RevenueDialog_title;
-	public static String RevenueDialog_totals;
 	
 	public static String SendInvoiceCommand_message;
 	public static String SendInvoiceCommand_title;
@@ -198,7 +192,9 @@ public class Messages extends NLS {
 	public static String labelDescription;
 	public static String labelEmail;
 	public static String labelExpense;
+	public static String labelExpenses;
 	public static String labelExpenseType;
+	public static String labelExport;
 	public static String labelFax;
 	public static String labelGross;
 	public static String labelIBAN;
@@ -216,13 +212,16 @@ public class Messages extends NLS {
 	public static String labelPricePerUnit;
 	public static String labelQuantity;
 	public static String labelRevenueRelevant;
+	public static String labelSearch;
 	public static String labelStreet;
 	public static String labelSubtotal;
+	public static String labelTaxes;
 	public static String labelTaxId;
 	public static String labelTaxRate;
 	public static String labelTotalGross;
 	public static String labelTotalNet;
 	public static String labelTotalTax;
+	public static String labelTotals;
 	public static String labelUnit;
 	
 	//
