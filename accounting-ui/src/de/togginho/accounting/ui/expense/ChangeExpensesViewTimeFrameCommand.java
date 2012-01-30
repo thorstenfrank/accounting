@@ -46,7 +46,14 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 
 	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewTimeFrameCommand.class);
 	
+	private static final int TIMEFRAME_THIS_MONTH = 0;
+	private static final int TIMEFRAME_LAST_MONTH = 1;
+	private static final int TIMEFRAME_THIS_YEAR = 2;
+	private static final int TIMEFRAME_LAST_YEAR = 3;
+	
 	private TimeFrame currentTimeFrame;
+	
+	private int timeFrameMarker = TIMEFRAME_THIS_MONTH;
 	
 	/**
 	 * {@inheritDoc}
@@ -54,7 +61,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		LOG.debug("ChangeExpensesViewTimeFrameCommand"); //$NON-NLS-1$
+		LOG.debug("ChangeExpensesViewTimeFrameCommand: " + timeFrameMarker); //$NON-NLS-1$
 		IViewPart viewPart = getActivePage(event).findView(IDs.VIEW_EXPENSES_ID);
 		ExpensesView expensesView = null;
 		if (viewPart != null && viewPart instanceof ExpensesView) {
@@ -96,40 +103,67 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.thisMonth();
+						timeFrameMarker = TIMEFRAME_THIS_MONTH;
 					}
 				});
+        		
+        		if (timeFrameMarker == TIMEFRAME_THIS_MONTH) {
+        			currentMonth.setSelection(true);
+        		} else {
+        			currentMonth.setSelection(false);
+        		}
         		
         		
         		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelLastMonth));
         		Button lastMonth = new Button(composite, SWT.RADIO);
         		gdf.applyTo(lastMonth);
-        		currentMonth.addSelectionListener(new SelectionAdapter() {
+        		lastMonth.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.lastMonth();
+						timeFrameMarker = TIMEFRAME_LAST_MONTH;
 					}
 				});
+        		
+        		if (timeFrameMarker == TIMEFRAME_LAST_MONTH) {
+        			lastMonth.setSelection(true);
+        		} else {
+        			lastMonth.setSelection(false);
+        		}
         		
         		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelThisYear));
         		Button currentYear = new Button(composite, SWT.RADIO);
         		gdf.applyTo(currentYear);
-        		currentMonth.addSelectionListener(new SelectionAdapter() {
+        		currentYear.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.thisYear();
+						timeFrameMarker = TIMEFRAME_THIS_YEAR;
 					}
 				});
         		
+        		if (timeFrameMarker == TIMEFRAME_THIS_YEAR) {
+        			currentYear.setSelection(true);
+        		} else {
+        			currentYear.setSelection(false);
+        		}
         		
         		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelLastYear));
         		Button lastYear = new Button(composite, SWT.RADIO);
         		gdf.applyTo(lastYear);
-        		currentMonth.addSelectionListener(new SelectionAdapter() {
+        		lastYear.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.lastYear();
+						timeFrameMarker = TIMEFRAME_LAST_YEAR;
 					}
 				});
+
+        		if (timeFrameMarker == TIMEFRAME_LAST_YEAR) {
+        			lastYear.setSelection(true);
+        		} else {
+        			lastYear.setSelection(false);
+        		}
         		
         		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
         		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
