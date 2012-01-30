@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
@@ -144,5 +145,26 @@ public class PredicateTests extends BaseTestFixture {
 		
 		invoice.setClient(client);
 		assertTrue(predicate.match(invoice));
+	}
+	
+	/**
+	 * Test for {@link FindExpensesPredicate}.
+	 */
+	@Test
+	public void testFindExpensesPredicate() {
+		FindExpensesPredicate predicate = new FindExpensesPredicate(TimeFrame.thisMonth());
+		Calendar cal = Calendar.getInstance();
+		Expense expense = new Expense();
+		expense.setPaymentDate(cal.getTime());
+		
+		assertTrue(predicate.match(expense));
+		
+		cal.add(Calendar.MONTH, -1);
+		expense.setPaymentDate(cal.getTime());
+		assertFalse(predicate.match(expense));
+		
+		cal.add(Calendar.MONTH, 2);
+		expense.setPaymentDate(cal.getTime());
+		assertFalse(predicate.match(expense));
 	}
 }
