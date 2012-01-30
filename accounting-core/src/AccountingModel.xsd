@@ -11,6 +11,7 @@
     		<xs:element name="taxRates" type="xmlTaxRates" minOccurs="0" maxOccurs="1" />
     		<xs:element name="clients" type="xmlClients" minOccurs="0" maxOccurs="1" />
     		<xs:element name="invoices" type="xmlInvoices" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="expenses" type="xmlExpenses" minOccurs="0" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required"/>
     	<xs:attribute name="taxId" type="xs:string" use="optional"/>
@@ -54,7 +55,7 @@
 
     <xs:simpleType name="xmlPaymentType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="net" />
+            <xs:enumeration value="NET" />
         </xs:restriction>
     </xs:simpleType>
     
@@ -115,5 +116,28 @@
             <xs:element name="unit" type="xs:string" maxOccurs="1"/>
             <xs:element name="revenueRelevant" type="xs:boolean" maxOccurs="1"/>
         </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="xmlExpenseType">
+    	<xs:restriction base="xs:string">
+    		<xs:enumeration value="OPEX" />
+    		<xs:enumeration value="CAPEX" />
+    	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="xmlExpenses">
+    	<xs:sequence>
+    		<xs:element name="expenses" type="xmlExpense" minOccurs="1" maxOccurs="unbounded" />
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="xmlExpense">
+    	<xs:sequence>
+    		<xs:element name="description" type="xs:string" maxOccurs="1" />
+    		<xs:element name="expenseType" type="xmlExpenseType" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="netAmount" type="xs:decimal" maxOccurs="1" />
+    		<xs:element name="paymentDate" type="xs:date" />
+    		<xs:element name="taxRate" type="xmlTaxRate" />
+    	</xs:sequence>
     </xs:complexType>
 </xs:schema>

@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.xml.generated.XmlUser;
@@ -55,16 +56,18 @@ public class ModelMapper {
 	 * 
 	 * @param user
 	 * @param invoices
+	 * @param expenses
 	 * @param targetFile
 	 */
-	public static void modelToXml(User user, Set<Client> clients, Set<Invoice> invoices, String targetFile) {
+	public static void modelToXml(
+			User user, Set<Client> clients, Set<Invoice> invoices, Set<Expense> expenses, String targetFile) {
 		try {
 	        Marshaller marshaller = JAXBContext.newInstance(JAXB_CONTEXT).createMarshaller();
 	        
 	        marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
 	        
 	        LOG.info("Exporting model data to file " + targetFile); //$NON-NLS-1$
-	        marshaller.marshal(new ModelToXml().convertToXml(user, clients, invoices), new File(targetFile));
+	        marshaller.marshal(new ModelToXml().convertToXml(user, clients, invoices, expenses), new File(targetFile));
 	        LOG.info("export finished successfully"); //$NON-NLS-1$
         } catch (Exception e) {
         	LOG.error("Error exporting data to xml", e); //$NON-NLS-1$
@@ -89,6 +92,7 @@ public class ModelMapper {
 	        importResult.setImportedUser(xmlToModel.getUser());
 	        importResult.setImportedClients(xmlToModel.getClients());
 	        importResult.setImportedInvoices(xmlToModel.getInvoices());
+	        importResult.setImportedExpenses(xmlToModel.getExpenses());
 	        LOG.info("import finished successfully"); //$NON-NLS-1$
 	        return importResult;
         } catch (Exception e) {

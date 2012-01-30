@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.PaymentTerms;
@@ -37,6 +38,9 @@ import de.togginho.accounting.xml.generated.XmlAddress;
 import de.togginho.accounting.xml.generated.XmlBankAccount;
 import de.togginho.accounting.xml.generated.XmlClient;
 import de.togginho.accounting.xml.generated.XmlClients;
+import de.togginho.accounting.xml.generated.XmlExpense;
+import de.togginho.accounting.xml.generated.XmlExpenseType;
+import de.togginho.accounting.xml.generated.XmlExpenses;
 import de.togginho.accounting.xml.generated.XmlInvoice;
 import de.togginho.accounting.xml.generated.XmlInvoicePosition;
 import de.togginho.accounting.xml.generated.XmlInvoicePositions;
@@ -76,7 +80,7 @@ class ModelToXml {
 	 * @param invoices
 	 * @return
 	 */
-	protected XmlUser convertToXml(User user, Set<Client> clients, Set<Invoice> invoices) {
+	protected XmlUser convertToXml(User user, Set<Client> clients, Set<Invoice> invoices, Set<Expense> expenses) {
 		LOG.info("Exporting User to XML: " + user.getName()); //$NON-NLS-1$
 		
 		xmlUser = new XmlUser();
@@ -105,6 +109,8 @@ class ModelToXml {
 		} else {
 			LOG.debug("No invoices to convert!"); //$NON-NLS-1$
 		}
+		
+		convertExpenses(expenses);
 		
 		return xmlUser;
 	}
@@ -245,6 +251,36 @@ class ModelToXml {
 		}
 		
 		return xmlInvoice;
+	}
+	
+	/**
+	 * 
+	 * @param expenses
+	 */
+	private void convertExpenses(Set<Expense> expenses) {
+		if (expenses != null && expenses.size() > 0) {
+			XmlExpenses xmlExpenses = new XmlExpenses();
+			for (Expense expense : expenses) {
+				XmlExpense xmlExpense = new XmlExpense();
+				xmlExpense.setDescription(expense.getDescription());
+				if (expense.getExpenseType() != null) {
+					switch (expense.getExpenseType()) {
+					case OPEX:
+						xmlExpense.setExpenseType(XmlExpenseType.OPEX);
+						break;
+					case CAPEX:
+						xmlExpense.setExpenseType(XmlExpenseType.CAPEX);
+						break;
+					}
+				}
+				xmlExpense.setNetAmount(expense.getNetAmount());
+				xmlExpense.setPaymentDate(convertDate(expense.getPaymentDate()));
+				xmlExpense.setTaxRate(converTaxRate(expense.getTaxRate()));
+				xmlExpenses.getExpenses().add(xmlExpense);
+			}
+			
+			xmlUser.setExpenses(xmlExpenses);
+		}
 	}
 	
 	/**

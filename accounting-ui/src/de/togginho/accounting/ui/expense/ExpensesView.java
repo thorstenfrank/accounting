@@ -40,6 +40,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
@@ -134,10 +135,10 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	 * @return
 	 */
 	private Set<ExpenseWrapper> getExpenses() {
-		final Set<Expense> expenses = AccountingUI.getAccountingService().getExpenses(currentTimeFrame);
-		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(expenses.size());
+		final ExpenseCollection ec = AccountingUI.getAccountingService().getExpenses(currentTimeFrame);
+		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(ec.getExpenses().size());
 		
-		for (Expense expense : expenses) {
+		for (Expense expense : ec.getExpenses()) {
 			wrappers.add(new ExpenseWrapper(expense));
 		}
 		

@@ -52,6 +52,7 @@ import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -718,12 +719,12 @@ public class AccountingServiceImpl implements AccountingService {
 	    return expense;
     }
 
-	/**
-     * {@inheritDoc}.
-     * @see de.togginho.accounting.AccountingService#getExpenses(de.togginho.accounting.util.TimeFrame)
+    /**
+     * 
+     * @param timeFrame
+     * @return
      */
-    @Override
-    public Set<Expense> getExpenses(TimeFrame timeFrame) {
+    private Set<Expense> getExpensesAsSet(TimeFrame timeFrame) {
     	Set<Expense> expenses = null;
     	try {
 	        expenses = new HashSet<Expense>(objectContainer.query(new FindExpensesPredicate(timeFrame)));
@@ -734,6 +735,18 @@ public class AccountingServiceImpl implements AccountingService {
         }
     	return expenses;
     }
+    
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#getExpenses(de.togginho.accounting.util.TimeFrame)
+     */
+    @Override
+    public ExpenseCollection getExpenses(TimeFrame timeFrame) {
+    	ExpenseCollection ec = new ExpenseCollection();
+    	ec.setTimeFrame(timeFrame);
+    	ec.setExpenses(getExpensesAsSet(timeFrame));
+    	return ec;
+    }
 
 	/**
      * 
@@ -742,7 +755,7 @@ public class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public void exportModelToXml(String targetFileName) {
-    	ModelMapper.modelToXml(getCurrentUser(), getClients(), findInvoices(), targetFileName);
+    	ModelMapper.modelToXml(getCurrentUser(), getClients(), findInvoices(), getExpensesAsSet(null), targetFileName);
     }
     
     /**
@@ -788,6 +801,16 @@ public class AccountingServiceImpl implements AccountingService {
     		}
     	} else {
     		LOG.info("No invoices to import"); //$NON-NLS-1$
+    	}
+    	
+    	final Set<Expense> importedExpenses = importResult.getImportedExpenses();
+    	if (importedExpenses != null && importedExpenses.isEmpty()) {
+    		LOG.info("Now saving imported Expenses to DB file: " + importedExpenses.size()); //$NON-NLS-1$
+    		for (Expense expense : importedExpenses) {
+    			objectContainer.store(expense);
+    		}
+    	} else {
+    		LOG.info("No expenses to import"); //$NON-NLS-1$
     	}
     	
     	objectContainer.commit();

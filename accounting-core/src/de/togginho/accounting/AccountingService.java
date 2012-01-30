@@ -20,6 +20,7 @@ import java.util.Set;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -299,9 +300,9 @@ public interface AccountingService {
 	 * @param timeFrame	the time frame within which the {@link Expense#getPaymentDate()} needs to be in order to be
 	 * 		  part of the returned {@link Set}
 	 * 
-	 * @return	a {@link Set} of {@link Expense}s from within the supplied {@link TimeFrame}
+	 * @return	a collection of expenses from within the supplied {@link TimeFrame}
 	 */
-	Set<Expense> getExpenses(TimeFrame timeFrame);
+	ExpenseCollection getExpenses(TimeFrame timeFrame);
 	
 	/**
 	 * Exports the entire database to the specified XML file. This file can later be used to re-create the DB.

@@ -80,7 +80,7 @@ public class ModelToXmlTest extends XmlTestBase {
 		final Set<Invoice> invoices = new HashSet<Invoice>();
 		invoices.add(createInvoice());
 		
-		XmlUser xmlUser = modelToXml.convertToXml(user, clients, invoices);
+		XmlUser xmlUser = modelToXml.convertToXml(user, clients, invoices, null);
 		assertUserSame(user, xmlUser);
 		
 		assertNotNull(xmlUser.getClients());
@@ -91,7 +91,7 @@ public class ModelToXmlTest extends XmlTestBase {
 		assertEquals(1, xmlUser.getInvoices().getInvoice().size());
 		
 		// test writing to XML
-		ModelMapper.modelToXml(user, clients, invoices, XML_TEST_FILE);
+		ModelMapper.modelToXml(user, clients, invoices, null, XML_TEST_FILE);
 		File file = new File(XML_TEST_FILE);
 		assertTrue(file.exists());
 	}

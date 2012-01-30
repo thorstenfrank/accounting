@@ -28,6 +28,8 @@ import org.apache.log4j.Logger;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.PaymentTerms;
@@ -38,6 +40,7 @@ import de.togginho.accounting.xml.generated.XmlAddress;
 import de.togginho.accounting.xml.generated.XmlBankAccount;
 import de.togginho.accounting.xml.generated.XmlClient;
 import de.togginho.accounting.xml.generated.XmlClients;
+import de.togginho.accounting.xml.generated.XmlExpense;
 import de.togginho.accounting.xml.generated.XmlInvoice;
 import de.togginho.accounting.xml.generated.XmlInvoicePosition;
 import de.togginho.accounting.xml.generated.XmlPaymentTerms;
@@ -68,6 +71,9 @@ class XmlToModel {
 	/** Target invoices. */
 	private Set<Invoice> invoices;
 	
+	/** Target expenses. */
+	private Set<Expense> expenses;
+	
 	/**
 	 * 
 	 * @param xmlUser
@@ -89,8 +95,11 @@ class XmlToModel {
     	// then the clients
     	convertClients();
     	
-    	// finally the invoices
+    	// the invoices
     	convertInvoices();
+    	
+    	// and the expenses
+    	convertExpenses();
     }
 	
 	/**
@@ -115,6 +124,13 @@ class XmlToModel {
     	return invoices;
     }
     
+	/**
+	 * @return the expenses
+	 */
+	Set<Expense> getExpenses() {
+		return expenses;
+	}
+
 	/**
 	 * 
 	 */
@@ -167,15 +183,45 @@ class XmlToModel {
 						pos.setQuantity(xmlPos.getQuantity());
 						pos.setRevenueRelevant(xmlPos.isRevenueRelevant());
 						pos.setUnit(xmlPos.getUnit());
-						if (xmlPos.getTaxRate() != null) {
-							pos.setTaxRate(findOrCreateTaxRate(xmlPos.getTaxRate()));
-						}
+						pos.setTaxRate(findOrCreateTaxRate(xmlPos.getTaxRate()));
 						invoice.getInvoicePositions().add(pos);
 					}
 				}
 			}
 		} else {
-			LOG.debug("Not invoices to convert."); //$NON-NLS-1$
+			LOG.debug("No invoices to convert."); //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void convertExpenses() {
+		if (xmlUser.getExpenses() != null) {
+			LOG.debug("Converting expenses..."); //$NON-NLS-1$
+			this.expenses = new HashSet<Expense>();
+			
+			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpenses()) {
+				Expense expense = new Expense();
+				expense.setDescription(xmlExpense.getDescription());
+				switch (xmlExpense.getExpenseType()) {
+				case OPEX:
+					expense.setExpenseType(ExpenseType.OPEX);
+					break;
+				case CAPEX:
+					expense.setExpenseType(ExpenseType.CAPEX);
+					break;
+				default:
+					break;
+				}
+				expense.setNetAmount(xmlExpense.getNetAmount());
+				expense.setPaymentDate(convertDate(xmlExpense.getPaymentDate()));
+				expense.setTaxRate(findOrCreateTaxRate(xmlExpense.getTaxRate()));
+				this.expenses.add(expense);
+			}
+			
+		} else {
+			LOG.debug("No expenses to convert."); //$NON-NLS-1$
 		}
 	}
 	
@@ -184,7 +230,10 @@ class XmlToModel {
 	 * @param xmlTaxRate
 	 * @return
 	 */
-	private TaxRate findOrCreateTaxRate(XmlTaxRate xmlTaxRate) {		
+	private TaxRate findOrCreateTaxRate(XmlTaxRate xmlTaxRate) {
+		if (xmlTaxRate == null) {
+			return null;
+		}
 		for (TaxRate existing : user.getTaxRates()) {
 			if (existing.getLongName().equals(xmlTaxRate.getName()) 
 				&& existing.getShortName().equals(xmlTaxRate.getAbbreviation()) 
@@ -289,6 +338,7 @@ class XmlToModel {
 		}
     }
     
+		
 	/**
 	 * 
 	 * @param xmlAddress
@@ -330,9 +380,8 @@ class XmlToModel {
 	 */
 	private PaymentTerms convertPaymentTerms(XmlPaymentTerms xmlTerms) {
 		if (xmlTerms == null) {
-			return null;
+			return PaymentTerms.getDefault();
 		}
-		
 		return new PaymentTerms(PaymentType.TRADE_CREDIT, xmlTerms.getFullPaymentTargetInDays());
 	}
 }

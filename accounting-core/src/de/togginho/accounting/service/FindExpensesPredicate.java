@@ -42,8 +42,10 @@ class FindExpensesPredicate extends Predicate<Expense> {
      * @param timeFrame
      */
     FindExpensesPredicate(TimeFrame timeFrame) {
-	    this.from = timeFrame.getFrom();
-	    this.until = timeFrame.getUntil();
+    	if (timeFrame != null) {
+    	    this.from = timeFrame.getFrom();
+    	    this.until = timeFrame.getUntil();
+    	}
     }
     
 	/**
@@ -52,6 +54,9 @@ class FindExpensesPredicate extends Predicate<Expense> {
 	 */
 	@Override
 	public boolean match(Expense candidate) {
+		if (from == null || until == null) {
+			return true;
+		}
 		if (candidate.getPaymentDate() != null) {
 			return candidate.getPaymentDate().compareTo(from) >= 0
 					&& candidate.getPaymentDate().compareTo(until) <= 0;

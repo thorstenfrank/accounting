@@ -34,7 +34,7 @@
                 <email>JUnit@client-email.com</email>
             </address>
             <defaultPaymentTerms>
-                <type>net</type>
+                <type>NET</type>
                 <fullPaymentTargetInDays>60</fullPaymentTargetInDays>
             </defaultPaymentTerms>
         </client>
@@ -44,7 +44,7 @@
             <creationDate>2011-01-01</creationDate>
             <invoiceDate>2011-01-01</invoiceDate>
             <paymentTerms>
-                <type>net</type>
+                <type>NET</type>
                 <fullPaymentTargetInDays>60</fullPaymentTargetInDays>
             </paymentTerms>
             <sentDate>2011-01-01</sentDate>
