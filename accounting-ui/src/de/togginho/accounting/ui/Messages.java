@@ -229,9 +229,9 @@ public class Messages extends NLS {
 	public static String labelFrom;
 	public static String labelUntil;
 	public static String labelLastMonth;
-	public static String labelThisMonth;
+	public static String labelCurrentMonth;
 	public static String labelLastYear;
-	public static String labelThisYear;
+	public static String labelCurrentYear;
 	
 	public static String labelAdd;
 	public static String labelRemove;

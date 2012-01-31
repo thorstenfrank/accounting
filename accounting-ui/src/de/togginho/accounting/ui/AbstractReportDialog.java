@@ -68,7 +68,7 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 * 
 	 * @param parent
 	 */
-	protected void createQuerySection(Composite parent) {
+	protected Section createQuerySection(Composite parent) {
 		final FormToolkit formToolkit = getToolkit();
 		Section querySection = formToolkit.createSection(parent, Section.TITLE_BAR);
 		querySection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -90,8 +90,8 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		
 		formToolkit.createLabel(sectionClient, Messages.labelUntil);
 		untilDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
-//		formToolkit.adapt(untilDate);
-//		formToolkit.paintBordersFor(untilDate);
+		formToolkit.adapt(untilDate);
+		formToolkit.paintBordersFor(untilDate);
 		untilDate.setDay(31);
 		untilDate.setMonth(Calendar.DECEMBER);
 				
@@ -104,29 +104,37 @@ public abstract class AbstractReportDialog extends TrayDialog {
 			}
 		});
 		
-		final Button thisYear = formToolkit.createButton(sectionClient, Messages.labelThisYear, SWT.RADIO);
-		thisYear.setSelection(true);
-		thisYear.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (thisYear.getSelection()) {
-					TimeFrame period = TimeFrame.thisYear();
-					WidgetHelper.dateToWidget(period.getFrom(), fromDate);
-					WidgetHelper.dateToWidget(period.getUntil(), untilDate);
-					updateModel(period);
-				}
-			}
-		});
+		Composite timeFrameShortcuts = new Composite(sectionClient, SWT.NONE);
+		formToolkit.adapt(timeFrameShortcuts);
+		timeFrameShortcuts.setLayout(new GridLayout(4, false));
+		GridDataFactory.fillDefaults().span(5, 1).applyTo(timeFrameShortcuts);
 		
-		final Button lastYear = formToolkit.createButton(sectionClient, Messages.labelLastYear, SWT.RADIO);
-		lastYear.addSelectionListener(new SelectionAdapter() {
+		// TODO make the default selected timeframe configurable per subclass
+		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelCurrentYear, TimeFrame.currentYear(), true);
+		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelLastYear, TimeFrame.lastYear(), false);
+		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelCurrentMonth, TimeFrame.currentMonth(), false);
+		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelLastMonth, TimeFrame.lastMonth(), false);
+				
+		return querySection;
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param label
+	 * @param timeFrame
+	 * @param initallySelected
+	 */
+	private void createTimeFrameRadioButton(Composite parent, String label, final TimeFrame timeFrame, boolean initallySelected) {
+		final Button button = getToolkit().createButton(parent, label, SWT.RADIO);
+		button.setSelection(initallySelected);
+		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (lastYear.getSelection()) {
-					TimeFrame period = TimeFrame.lastYear();
-					WidgetHelper.dateToWidget(period.getFrom(), fromDate);
-					WidgetHelper.dateToWidget(period.getUntil(), untilDate);
-					updateModel(period);
+				if (button.getSelection()) {
+					WidgetHelper.dateToWidget(timeFrame.getFrom(), fromDate);
+					WidgetHelper.dateToWidget(timeFrame.getUntil(), untilDate);
+					updateModel(timeFrame);					
 				}
 			}
 		});

@@ -101,11 +101,10 @@ public class PredicateTests extends BaseTestFixture {
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
 		cal.set(Calendar.YEAR, 2012);
 		
-		TimeFrame timeFrame = new TimeFrame();
-		timeFrame.setFrom(cal.getTime());
-		
+		final Date from = cal.getTime();
 		cal.set(Calendar.DAY_OF_MONTH, 30);
-		timeFrame.setUntil(cal.getTime());
+		final Date until = cal.getTime();
+		TimeFrame timeFrame = new TimeFrame(from, until);
 		
 		FindInvoicesForRevenuePredicate predicate = new FindInvoicesForRevenuePredicate(timeFrame);
 		
@@ -152,7 +151,7 @@ public class PredicateTests extends BaseTestFixture {
 	 */
 	@Test
 	public void testFindExpensesPredicate() {
-		FindExpensesPredicate predicate = new FindExpensesPredicate(TimeFrame.thisMonth());
+		FindExpensesPredicate predicate = new FindExpensesPredicate(TimeFrame.currentMonth());
 		Calendar cal = Calendar.getInstance();
 		Expense expense = new Expense();
 		expense.setPaymentDate(cal.getTime());

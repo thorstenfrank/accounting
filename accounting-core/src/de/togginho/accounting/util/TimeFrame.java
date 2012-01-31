@@ -25,7 +25,7 @@ import java.util.Date;
  *
  */
 public class TimeFrame {
-
+	
 	/**
 	 * Start (inclusive).
 	 */
@@ -35,14 +35,19 @@ public class TimeFrame {
 	 * End (inclusive).
 	 */
 	private Date until;
+    
+	/**
+	 * 
+	 */
+	private TimeFrameType type;
 	
 	/**
-     * Creates an empty time frame.
-     */
-    public TimeFrame() {
-    	// TODO do we really need this?
-    }
-    
+	 * This constructor is private, since it's only needed the static convenience methods.
+	 */
+	private TimeFrame(TimeFrameType type) {
+		this.type = type;
+	}
+	
 	/**
 	 * Creates a new time frame.
 	 * 
@@ -50,6 +55,7 @@ public class TimeFrame {
      * @param until End (inclusive)
      */
     public TimeFrame(Date from, Date until) {
+    	type = TimeFrameType.CUSTOM;
 	    this.from = from;
 	    this.until = until;
     }
@@ -81,13 +87,33 @@ public class TimeFrame {
     public void setUntil(Date until) {
     	this.until = until;
     }
+    
+    /**
+	 * @return the type
+	 */
+	public TimeFrameType getType() {
+		return type;
+	}
 
+	/**
+     * Returns whether the supplied date is within this timeframe.
+     * 
+     * @param date the {@link Date} to check
+     * @return <code>true</code> if the supplied date is within this timeframe, <code>false</code> otherwise
+     */
+    public boolean isInTimeFrame(Date date) {
+    	if (date == null) {
+    		return false;
+    	}
+    	return (from.compareTo(date) <= 0 && until.compareTo(date) >= 0);
+    }
+        
 	/**
 	 * This month, starting on the first day at 00:00:00:000, ending on the last day at 23:59:59:999.
 	 * @return
 	 */
-	public static TimeFrame thisMonth() {
-		TimeFrame thisMonth = new TimeFrame();
+	public static TimeFrame currentMonth() {
+		TimeFrame thisMonth = new TimeFrame(TimeFrameType.CURRENT_MONTH);
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -107,7 +133,7 @@ public class TimeFrame {
      * @return a {@link TimeFrame} starting at the first day of last month, ending on the last day of it
      */
 	public static TimeFrame lastMonth() {
-		TimeFrame lastMonth = new TimeFrame();
+		TimeFrame lastMonth = new TimeFrame(TimeFrameType.LAST_MONTH);
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -129,8 +155,8 @@ public class TimeFrame {
 	 * 
 	 * @return the {@link TimeFrame} between 1 January and 31 December of this year
 	 */
-	public static TimeFrame thisYear() {
-		TimeFrame thisYear = new TimeFrame();
+	public static TimeFrame currentYear() {
+		TimeFrame thisYear = new TimeFrame(TimeFrameType.CURRENT_YEAR);
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, 0);
@@ -152,7 +178,7 @@ public class TimeFrame {
 	 * @return the {@link TimeFrame} between 1 January and 31 December of last year
 	 */
 	public static TimeFrame lastYear() {
-		TimeFrame lastYear = new TimeFrame();
+		TimeFrame lastYear = new TimeFrame(TimeFrameType.LAST_YEAR);
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, Calendar.JANUARY);

@@ -106,7 +106,7 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		
 		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-		this.currentTimeFrame = TimeFrame.thisMonth();
+		this.currentTimeFrame = TimeFrame.currentMonth();
 		tableViewer.setInput(getExpenses());
 		sorter.setSortColumnIndex(ExpenseTableSorter.COL_INDEX_DATE);
 		tableViewer.setComparator(sorter);

@@ -37,6 +37,7 @@ import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
+import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -45,15 +46,8 @@ import de.togginho.accounting.util.TimeFrame;
 public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandler {
 
 	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewTimeFrameCommand.class);
-	
-	private static final int TIMEFRAME_THIS_MONTH = 0;
-	private static final int TIMEFRAME_LAST_MONTH = 1;
-	private static final int TIMEFRAME_THIS_YEAR = 2;
-	private static final int TIMEFRAME_LAST_YEAR = 3;
-	
+		
 	private TimeFrame currentTimeFrame;
-	
-	private int timeFrameMarker = TIMEFRAME_THIS_MONTH;
 	
 	/**
 	 * {@inheritDoc}
@@ -61,7 +55,8 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		LOG.debug("ChangeExpensesViewTimeFrameCommand: " + timeFrameMarker); //$NON-NLS-1$
+		LOG.debug("ChangeExpensesViewTimeFrameCommand"); //$NON-NLS-1$
+		
 		IViewPart viewPart = getActivePage(event).findView(IDs.VIEW_EXPENSES_ID);
 		ExpensesView expensesView = null;
 		if (viewPart != null && viewPart instanceof ExpensesView) {
@@ -96,18 +91,17 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         		
         		GridDataFactory gdf = GridDataFactory.fillDefaults().indent(5, 0);
         		
-        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelThisMonth));
+        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelCurrentMonth));
         		Button currentMonth = new Button(composite, SWT.RADIO);
         		gdf.applyTo(currentMonth);
         		currentMonth.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						currentTimeFrame = TimeFrame.thisMonth();
-						timeFrameMarker = TIMEFRAME_THIS_MONTH;
+						currentTimeFrame = TimeFrame.currentMonth();
 					}
 				});
         		
-        		if (timeFrameMarker == TIMEFRAME_THIS_MONTH) {
+        		if (currentTimeFrame.getType() == TimeFrameType.CURRENT_MONTH) {
         			currentMonth.setSelection(true);
         		} else {
         			currentMonth.setSelection(false);
@@ -121,28 +115,26 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.lastMonth();
-						timeFrameMarker = TIMEFRAME_LAST_MONTH;
 					}
 				});
         		
-        		if (timeFrameMarker == TIMEFRAME_LAST_MONTH) {
+        		if (currentTimeFrame.getType() == TimeFrameType.LAST_MONTH) {
         			lastMonth.setSelection(true);
         		} else {
         			lastMonth.setSelection(false);
         		}
         		
-        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelThisYear));
+        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelCurrentYear));
         		Button currentYear = new Button(composite, SWT.RADIO);
         		gdf.applyTo(currentYear);
         		currentYear.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						currentTimeFrame = TimeFrame.thisYear();
-						timeFrameMarker = TIMEFRAME_THIS_YEAR;
+						currentTimeFrame = TimeFrame.currentYear();
 					}
 				});
         		
-        		if (timeFrameMarker == TIMEFRAME_THIS_YEAR) {
+        		if (currentTimeFrame.getType() == TimeFrameType.CURRENT_YEAR) {
         			currentYear.setSelection(true);
         		} else {
         			currentYear.setSelection(false);
@@ -155,11 +147,10 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.lastYear();
-						timeFrameMarker = TIMEFRAME_LAST_YEAR;
 					}
 				});
 
-        		if (timeFrameMarker == TIMEFRAME_LAST_YEAR) {
+        		if (currentTimeFrame.getType() == TimeFrameType.LAST_YEAR) {
         			lastYear.setSelection(true);
         		} else {
         			lastYear.setSelection(false);

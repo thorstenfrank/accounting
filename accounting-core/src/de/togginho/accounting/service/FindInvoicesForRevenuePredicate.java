@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.service;
 
-import java.util.Date;
-
 import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Invoice;
@@ -34,16 +32,13 @@ class FindInvoicesForRevenuePredicate extends Predicate<Invoice> {
      */
     private static final long serialVersionUID = -7375474511194166527L;
 
-    private Date from;
-    
-    private Date until;
+    private TimeFrame timeFrame;
         
 	/**
      * @param timeFrame
      */
     FindInvoicesForRevenuePredicate(TimeFrame timeFrame) {
-	    this.from = timeFrame.getFrom();
-	    this.until = timeFrame.getUntil();
+    	this.timeFrame = timeFrame;
     }
 
 	/**
@@ -53,8 +48,7 @@ class FindInvoicesForRevenuePredicate extends Predicate<Invoice> {
 	@Override
 	public boolean match(Invoice candidate) {
 		if (InvoiceState.PAID.equals(candidate.getState())) {
-			return candidate.getPaymentDate().compareTo(from) >= 0
-				&& candidate.getPaymentDate().compareTo(until) <= 0;
+			return timeFrame.isInTimeFrame(candidate.getPaymentDate());
 		}
 		return false;
 	}
