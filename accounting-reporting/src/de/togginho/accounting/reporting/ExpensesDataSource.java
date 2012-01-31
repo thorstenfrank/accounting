@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2012 thorsten frank (thorsten.frank@gmx.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,47 +18,43 @@ package de.togginho.accounting.reporting;
 import java.util.Map;
 
 /**
- * Jasperreport data source to produce revenue reports.
- * 
- * @author thorsten frank
+ * @author thorsten
  *
  */
-public class RevenueReportDataSource extends AbstractReportDataSource {
+public class ExpensesDataSource extends AbstractReportDataSource {
 
-	private static final String REVENUE_KEY = "revenue";
-	/**
-	 * 
-	 */
-	private RevenueWrapper wrapper;
+	private static final String EXPENSES_KEY = "expenses";
 	
+	private ExpensesWrapper wrapper;
+		
 	/**
-	 * 
 	 * @param wrapper
 	 */
-	public RevenueReportDataSource(RevenueWrapper wrapper) {
+	public ExpensesDataSource(ExpensesWrapper wrapper) {
 		this.wrapper = wrapper;
 	}
 
+
+
 	/**
-	 * 
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.reporting.AbstractReportDataSource#addFieldsToMap(java.util.Map)
 	 */
 	@Override
 	protected void addFieldsToMap(Map<String, Object> fieldMap) {
-		fieldMap.put(REVENUE_KEY, wrapper);
+		fieldMap.put(EXPENSES_KEY, wrapper);
 		
-		fieldMap.put("revenue.title", Messages.RevenueReportGenerator_revenueTitle); //$NON-NLS-1$
+		fieldMap.put("expenses.title", Messages.ExpensesDataSource_expensesTitle); //$NON-NLS-1$
+		fieldMap.put("expense.description.title", Messages.descriptionTitle); //$NON-NLS-1$
+		
+		fieldMap.put("payment.date.title", Messages.dateTitle); //$NON-NLS-1$
 		fieldMap.put("from.title", Messages.fromTitle); //$NON-NLS-1$
 		fieldMap.put("until.title", Messages.untilTitle); //$NON-NLS-1$
-		fieldMap.put("invoice.date.title", Messages.RevenueReportGenerator_invoiceDate); //$NON-NLS-1$
-		fieldMap.put("invoice.no.title", Messages.RevenueReportGenerator_invoiceNumberTitle); //$NON-NLS-1$
-		fieldMap.put("client.name.title", Messages.RevenueReportGenerator_clientTitle); //$NON-NLS-1$
-		fieldMap.put("payment.date.title", Messages.RevenueReportGenerator_paymentDateTitle); //$NON-NLS-1$
 		fieldMap.put("net.price.title", Messages.netPriceTitle); //$NON-NLS-1$
 		fieldMap.put("taxRate.title", Messages.taxRateTitle); //$NON-NLS-1$
 		fieldMap.put("tax.amount.title", Messages.taxAmountTitle); //$NON-NLS-1$
 		fieldMap.put("gross.price.title", Messages.grossPriceTitle); //$NON-NLS-1$
 		fieldMap.put("sum.title", Messages.sumTitle); //$NON-NLS-1$
 	}
+
 }

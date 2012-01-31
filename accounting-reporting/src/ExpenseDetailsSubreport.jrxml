@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RevenueDetailsSubreport" pageWidth="802" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
+	<field name="expenseDescription" class="java.lang.String">
+		<fieldDescription><![CDATA[expenseDescription]]></fieldDescription>
+	</field>
+	<field name="paymentDate" class="java.lang.String">
+		<fieldDescription><![CDATA[paymentDate]]></fieldDescription>
+	</field>
+	<field name="netPrice" class="java.lang.String">
+		<fieldDescription><![CDATA[netPrice]]></fieldDescription>
+	</field>
+	<field name="taxRate" class="java.lang.String">
+		<fieldDescription><![CDATA[taxRate]]></fieldDescription>
+	</field>
+	<field name="taxAmount" class="java.lang.String">
+		<fieldDescription><![CDATA[taxAmount]]></fieldDescription>
+	</field>
+	<field name="grossPrice" class="java.lang.String">
+		<fieldDescription><![CDATA[grossPrice]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="544" y="0" width="58" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{taxRate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="444" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{netPrice}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="602" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{taxAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="702" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{grossPrice}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{paymentDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="100" y="0" width="344" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenseDescription}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

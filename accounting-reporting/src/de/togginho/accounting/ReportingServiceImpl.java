@@ -15,8 +15,10 @@
  */
 package de.togginho.accounting;
 
+import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.reporting.ExpensesReportGenerator;
 import de.togginho.accounting.reporting.InvoiceGenerator;
 import de.togginho.accounting.reporting.RevenueReportGenerator;
 
@@ -46,5 +48,14 @@ class ReportingServiceImpl implements ReportingService {
 	    generator.generateReportToFile(fileLocation, monitor);
     }
 
-	
+    /**
+     * 
+     * {@inheritDoc}
+     * @see ReportingService#generateExpensesToPdf(ExpenseCollection, String, ReportGenerationMonitor)
+     */
+    @Override
+    public void generateExpensesToPdf(ExpenseCollection expenseCollection, String fileLocation, ReportGenerationMonitor monitor) {
+    	ExpensesReportGenerator generator = new ExpensesReportGenerator(expenseCollection);
+    	generator.generateReportToFile(fileLocation, monitor);
+    }
 }

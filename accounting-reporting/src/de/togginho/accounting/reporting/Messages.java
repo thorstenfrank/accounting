@@ -29,6 +29,8 @@ public class Messages extends NLS {
 	public static String AbstractReportGenerator_errorFillingReport;
 	public static String AbstractReportGenerator_errorCreatingReport;
 	
+	public static String ExpensesDataSource_expensesTitle;
+	
 	public static String InvoiceDataSource_invoiceDateTitle;
 	public static String InvoiceDataSource_invoiceNumberTitle;
 	public static String InvoiceDataSource_invoiceTitle;
@@ -48,17 +50,21 @@ public class Messages extends NLS {
 	public static String InvoiceDataSource_paymentConditionTradeCredit;
 	
 	public static String RevenueReportGenerator_clientTitle;
-	public static String RevenueReportGenerator_fromTitle;
-	public static String RevenueReportGenerator_grossPriceTitle;
+
 	public static String RevenueReportGenerator_invoiceDate;
 	public static String RevenueReportGenerator_invoiceNumberTitle;
-	public static String RevenueReportGenerator_netPriceTitle;
 	public static String RevenueReportGenerator_paymentDateTitle;
 	public static String RevenueReportGenerator_revenueTitle;
-	public static String RevenueReportGenerator_sumTitle;
-	public static String RevenueReportGenerator_taxAmountTitle;
-	public static String RevenueReportGenerator_taxRateTitle;
-	public static String RevenueReportGenerator_untilTitle;
+
+	public static String dateTitle;
+	public static String descriptionTitle;
+	public static String fromTitle;
+	public static String grossPriceTitle;
+	public static String netPriceTitle;
+	public static String sumTitle;
+	public static String taxAmountTitle;
+	public static String taxRateTitle;
+	public static String untilTitle;
 
 	public static String TaxId;
 	public static String Phone;

@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting;
 
+import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
 
@@ -39,4 +40,12 @@ public interface ReportingService {
 	 * @param monitor
 	 */
 	void generateRevenueToPdf(Revenue revenue, String fileLocation, ReportGenerationMonitor monitor);
+	
+	/**
+	 * 
+	 * @param expenseCollection
+	 * @param fileLocation
+	 * @param monitor
+	 */
+	void generateExpensesToPdf(ExpenseCollection expenseCollection, String fileLocation, ReportGenerationMonitor monitor);
 }

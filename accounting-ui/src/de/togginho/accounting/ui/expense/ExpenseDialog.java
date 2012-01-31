@@ -39,12 +39,16 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.ReportGenerationMonitor;
+import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AbstractReportDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.reports.ReportGenerationHandler;
+import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
 
@@ -244,6 +248,31 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected void handleExport() {
-		// to come...
+		ReportGenerationUtil.executeReportGeneration(new ExpensesExportHandler(), getShell());
+	}
+	
+	/**
+	 *
+	 */
+	class ExpensesExportHandler implements ReportGenerationHandler {
+
+		/**
+		 * {@inheritDoc}
+		 * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getTargetFileNameSuggestion()
+		 */
+		@Override
+		public String getTargetFileNameSuggestion() {
+			return "Expenses.pdf";
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#handleReportGeneration(de.togginho.accounting.ReportingService, java.lang.String, de.togginho.accounting.ReportGenerationMonitor)
+		 */
+		@Override
+		public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
+			reportingService.generateExpensesToPdf(expenseCollection, targetFileName, monitor);
+		}
+		
 	}
 }
