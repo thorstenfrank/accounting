@@ -72,8 +72,8 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 			@Override
 			public void create() {
 			    super.create();
-			    setTitle("Timeframe configuration");
-			    setMessage("Select the timeframe for expenses to be displayed");
+			    setTitle(Messages.ChangeExpensesViewTimeFrameCommand_title);
+			    setMessage(Messages.ChangeExpensesViewTimeFrameCommand_message);
 			}
 			
 			@Override

@@ -45,6 +45,9 @@ public class Messages extends NLS {
 	public static String CancelInvoiceCommand_confirmMessage;
 	public static String CancelInvoiceCommand_confirmText;
 	
+	public static String ChangeExpensesViewTimeFrameCommand_message;
+	public static String ChangeExpensesViewTimeFrameCommand_title;
+	
 	public static String ChangeInvoicesFilterCommand_message;
 	public static String ChangeInvoicesFilterCommand_title;
 
