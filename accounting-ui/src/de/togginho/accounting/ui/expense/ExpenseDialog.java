@@ -77,7 +77,8 @@ public class ExpenseDialog extends AbstractReportDialog {
 		
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText("Expenses");
+		getShell().setText(Messages.labelExpenses);
+		getShell().setImage(AccountingUI.getImageDescriptor(Messages.iconsExpenses).createImage());
 		
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		

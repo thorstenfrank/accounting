@@ -95,6 +95,7 @@ public class RevenueDialog extends AbstractReportDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		getShell().setText(Messages.RevenueDialog_title);
+		getShell().setImage(AccountingUI.getImageDescriptor(Messages.iconsRevenue).createImage());
 		
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		

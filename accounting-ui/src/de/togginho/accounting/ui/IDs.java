@@ -44,14 +44,17 @@ public interface IDs {
 // COMMANDS / ACTIONS / EVENTS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	// User
 	public static final String CMD_OPEN_USER_EDITOR = "de.togginho.accounting.ui.user.OpenUserEditor"; //$NON-NLS-1$
 	
+	// Clients
 	public static final String CMD_NEW_CLIENT_WIZARD = "de.togginho.accounting.ui.client.NewClientCommand"; //$NON-NLS-1$
 	
 	public static final String CMD_EDIT_CLIENT = "de.togginho.accounting.ui.client.EditClientCommand"; //$NON-NLS-1$
 		
 	public static final String CMD_DELETE_CLIENT = "de.togginho.accounting.ui.client.DeleteClientCommand"; //$NON-NLS-1$
 	
+	// Invoices
 	public static final String CMD_NEW_INVOICE = "de.togginho.accounting.ui.invoice.NewInvoiceCommand"; //$NON-NLS-1$
 	
 	public static final String CMD_EDIT_INVOICE = "de.togginho.accounting.ui.invoice.EditInvoiceCommand"; //$NON-NLS-1$
@@ -72,7 +75,12 @@ public interface IDs {
 
 	public static final String CMD_FIND_INVOICE = "de.togginho.accounting.ui.invoice.FindInvoiceCommand"; //$NON-NLS-1$
 	
+	// Expenses
 	public static final String CMD_EDIT_EXPENSE = "de.togginho.accounting.ui.expense.EditExpenseCommand"; //$NON-NLS-1$
 	
 	public static final String CMD_CHANGE_EXPENSES_VIEW_TIME_FRAME = "de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"; //$NON-NLS-1$
+	
+	// Reporting
+	public static final String CMD_OPEN_REVENUE_DIALOG = "de.togginho.accounting.ui.revenue.OpenRevenueCommand"; //$NON-NLS-1$
+	public static final String CMD_OPEN_EXPENSES_DIALOG = "de.togginho.accounting.ui.expense.OpenExpenseDialog"; //$NON-NLS-1$
 }

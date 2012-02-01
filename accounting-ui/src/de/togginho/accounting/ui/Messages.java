@@ -51,6 +51,9 @@ public class Messages extends NLS {
 	public static String ChangeInvoicesFilterCommand_message;
 	public static String ChangeInvoicesFilterCommand_title;
 
+	public static String ChooseReportCommand_message;
+	public static String ChooseReportCommand_title;
+	
 	public static String ClientEditorInput_tooltip;
 	
 	public static String ClientNameWizardPage_title;
@@ -255,6 +258,9 @@ public class Messages extends NLS {
 	public static String iconsInvoiceOverdue;
 	public static String iconsInvoicePaid;
 	public static String iconsInvoiceSend;
+	public static String iconsRevenue;
+	public static String iconsExpenses;
+	public static String iconsReports;
 
 	static {
 		// initialize resource bundle

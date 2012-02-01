@@ -571,7 +571,7 @@
       		name="%command.changeExpensesViewTimeFrame.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
+            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportCommand"
             id="de.togginho.accounting.reporting.menu.pulldown"
             name="de.togginho.accounting.reporting.menu.pulldown">
       </command>
@@ -579,7 +579,12 @@
             categoryId="de.togginho.accounting.ui.expense"
             defaultHandler="de.togginho.accounting.ui.expense.OpenExpenseDialogHandler"
             id="de.togginho.accounting.ui.expense.OpenExpenseDialog"
-            name="Expenses">
+            name="%command.openExpenseDialog.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportCommand"
+            id="de.togginho.accounting.reports.ChooseReportCommand"
+            name="Reports...">
       </command>
    </extension>
    <extension
