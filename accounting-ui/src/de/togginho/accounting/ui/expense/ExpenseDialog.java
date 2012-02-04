@@ -44,9 +44,9 @@ import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.Price;
-import de.togginho.accounting.ui.AbstractReportDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.reports.AbstractReportDialog;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -214,7 +214,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.AbstractReportDialog#getToolkit()
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getToolkit()
 	 */
 	@Override
 	protected FormToolkit getToolkit() {
@@ -223,7 +223,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
 	 */
 	@Override
 	protected void updateModel(TimeFrame timeFrame) {
@@ -245,7 +245,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.AbstractReportDialog#handleExport()
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#handleExport()
 	 */
 	@Override
 	protected void handleExport() {

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui;
+package de.togginho.accounting.ui.reports;
 
 import java.util.Calendar;
 
@@ -34,6 +34,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
 
 /**
