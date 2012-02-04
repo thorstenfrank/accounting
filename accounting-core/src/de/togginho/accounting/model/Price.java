@@ -105,5 +105,65 @@ public class Price implements Serializable{
      */
     public void setGross(BigDecimal gross) {
     	this.gross = gross;
-    }	
+    }
+    
+    /**
+     * 
+     * @param net
+     */
+    public void addToNet(BigDecimal net) {
+    	if (net == null) {
+    		return;
+    	}
+    	
+    	if (this.net == null) {
+    		this.net = BigDecimal.ZERO;
+    	}
+    	
+    	this.net = this.net.add(net);
+    }
+    
+    /**
+     * 
+     * @param tax
+     */
+    public void addToTax(BigDecimal tax) {
+    	if (tax == null) {
+    		return;
+    	}
+    	
+    	if (this.tax == null) {
+    		this.tax = BigDecimal.ZERO;
+    	}
+    	
+    	this.tax = this.tax.add(tax);
+    }
+    
+    /**
+     * 
+     * @param gross
+     */
+    public void addToGross(BigDecimal gross) {
+    	if (gross == null) {
+    		return;
+    	}
+    	
+    	if (this.gross == null) {
+    		this.gross = BigDecimal.ZERO;
+    	}
+    	this.gross = this.gross.add(gross);
+    }
+    
+    /**
+     * 
+     * @param price
+     */
+    public void add(Price price) {
+    	if (price == null) {
+    		return;
+    	}
+    	addToNet(price.getNet());
+    	addToTax(price.getTax());
+    	addToGross(price.getGross());
+    }
 }

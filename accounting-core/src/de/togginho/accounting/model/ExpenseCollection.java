@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.model;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import de.togginho.accounting.util.CalculationUtil;
@@ -30,6 +29,8 @@ public class ExpenseCollection {
 	private TimeFrame timeFrame;
 	
 	private Price totalCost;
+	
+	private Price operatingCosts;
 	
 	private Set<Expense> expenses;
 	
@@ -55,6 +56,13 @@ public class ExpenseCollection {
 	}
 
 	/**
+	 * @return the operatingCosts
+	 */
+	public Price getOperatingCosts() {
+		return operatingCosts;
+	}
+
+	/**
 	 * @return the expenses
 	 */
 	public Set<Expense> getExpenses() {
@@ -67,19 +75,15 @@ public class ExpenseCollection {
 	public void setExpenses(Set<Expense> expenses) {
 		this.expenses = expenses;
 		
-		BigDecimal totalGross = BigDecimal.ZERO;
-		BigDecimal totalNet = BigDecimal.ZERO;
-		BigDecimal totalTax = BigDecimal.ZERO;
+		this.totalCost = new Price();
+		this.operatingCosts = new Price();
 		
 		for (Expense expense : expenses) {
 			final Price price = CalculationUtil.calculatePrice(expense);
-			totalNet = totalNet.add(price.getNet());
-			totalGross = totalGross.add(price.getGross());
-			if (price.getTax() != null) {
-				totalTax = totalTax.add(price.getTax());
+			totalCost.add(price);
+			if (ExpenseType.OPEX.equals(expense.getExpenseType())) {
+				operatingCosts.add(price);
 			}
 		}
-		
-		this.totalCost = new Price(totalNet, totalTax, totalGross);
 	}
 }
