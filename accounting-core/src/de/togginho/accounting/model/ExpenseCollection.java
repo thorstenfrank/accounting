@@ -75,15 +75,20 @@ public class ExpenseCollection {
 	public void setExpenses(Set<Expense> expenses) {
 		this.expenses = expenses;
 		
-		this.totalCost = new Price();
-		this.operatingCosts = new Price();
-		
-		for (Expense expense : expenses) {
-			final Price price = CalculationUtil.calculatePrice(expense);
-			totalCost.add(price);
-			if (ExpenseType.OPEX.equals(expense.getExpenseType())) {
-				operatingCosts.add(price);
-			}
+		if (expenses.size() < 1) {
+			totalCost = null;
+			operatingCosts = null;			
+		} else {
+			totalCost = new Price();
+			operatingCosts = new Price();
+			
+			for (Expense expense : expenses) {
+				final Price price = CalculationUtil.calculatePrice(expense);
+				totalCost.add(price);
+				if (ExpenseType.OPEX.equals(expense.getExpenseType())) {
+					operatingCosts.add(price);
+				}
+			}			
 		}
 	}
 }
