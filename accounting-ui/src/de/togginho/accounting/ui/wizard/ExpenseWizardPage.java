@@ -62,6 +62,7 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	 * 
 	 */
 	private Expense expense;
+	private Text taxAmount;
 	private Text grossAmount;
 	
 	/**
@@ -97,9 +98,11 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	
 		DataBindingContext bindingContext = new DataBindingContext();
 		
+		GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, false);
+		
 		WidgetHelper.createLabel(composite, Messages.labelExpenseType);
 		final Combo expenseTypeCombo = new Combo(composite, SWT.READ_ONLY);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(expenseTypeCombo);
+		gdf.applyTo(expenseTypeCombo);
 
 		expenseTypeCombo.add(Constants.EMPTY_STRING);
 		final List<ExpenseType> expenseTypes = new ArrayList<ExpenseType>();
@@ -140,12 +143,12 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		
 		WidgetHelper.createLabel(composite, Messages.labelDescription);
 		final Text description = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(description);
+		gdf.applyTo(description);
 		bind(bindingContext, description, Expense.FIELD_DESCRIPTION, false);
 		
 		WidgetHelper.createLabel(composite, Messages.labelNet);
 		final Text net = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(net);
+		gdf.applyTo(net);
 		
 		IObservableValue widgetObservable = SWTObservables.observeText(net, SWT.Modify);
 		IObservableValue pojoObservable = PojoObservables.observeValue(expense, Expense.FIELD_NET_AMOUNT);
@@ -158,7 +161,7 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		
 		WidgetHelper.createLabel(composite, Messages.labelTaxRate);
 		final Combo taxRate = new Combo(composite, SWT.READ_ONLY);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(taxRate);
+		gdf.applyTo(taxRate);
 		
 		Set<TaxRate> origRates = AccountingUI.getAccountingService().getCurrentUser().getTaxRates();
 		final List<TaxRate> taxRates = new ArrayList<TaxRate>(origRates.size() + 1);
@@ -190,10 +193,17 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 			
 		});
 		
+		WidgetHelper.createLabel(composite, Messages.labelTaxes);
+		taxAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		gdf.applyTo(taxAmount);
+		taxAmount.setEditable(false);
+		taxAmount.setEnabled(false);
+		
 		WidgetHelper.createLabel(composite, Messages.labelGross);
 		grossAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(grossAmount);
+		gdf.applyTo(grossAmount);
 		grossAmount.setEditable(false);
+		grossAmount.setEnabled(false);
 		
 		setControl(composite);
 		handleValueChange(null);
@@ -223,6 +233,11 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	public void handleValueChange(ValueChangeEvent event) {
 		final Price price = CalculationUtil.calculatePrice(expense);
 		grossAmount.setText(FormatUtil.formatCurrency(price.getGross()));
+		if (price.getTax() != null) {
+			taxAmount.setText(FormatUtil.formatCurrency(price.getTax()));
+		} else {
+			taxAmount.setText(Constants.HYPHEN);
+		}
 		checkIfPageComplete();
 	}
 
