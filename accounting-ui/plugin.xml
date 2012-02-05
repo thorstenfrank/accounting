@@ -55,7 +55,6 @@
                <command
                      commandId="org.eclipse.ui.newWizard"
                      icon="icons/group_add.png"
-                     label="%menu.file.new.client.label"
                      style="push">
                   <parameter
                         name="newWizardId"
@@ -65,7 +64,6 @@
                <command
                      commandId="org.eclipse.ui.newWizard"
                      icon="icons/page_add.png"
-                     label="%menu.file.new.invoice.label"
                      style="push">
                   <parameter
                         name="newWizardId"
@@ -75,7 +73,6 @@
                <command
                      commandId="org.eclipse.ui.newWizard"
                      icon="icons/tag_blue_add.png"
-                     label="%menu.file.new.expense.label"
                      style="push">
                   <parameter
                         name="newWizardId"
@@ -125,7 +122,6 @@
             <command
                   commandId="de.togginho.accounting.ui.user.OpenUserEditor"
                   icon="icons/user_suit.png"
-                  label="%command.editUser.label"
                   style="push">
             </command>
             <separator
@@ -168,12 +164,21 @@
             </separator>
             <menu
                   icon="icons/report.png"
-                  label="%command.reports.label">
+                  label="%command.reports.name">
+               <command
+                     commandId="de.togginho.accounting.reports.OpenProfitDialogCommand"
+                     icon="icons/report_user.png"
+                     style="push">
+               </command>
                <command
                      commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
                      icon="icons/money_add.png"
-                     label="%command.revenue.name"
                      style="push">
+               </command>
+               <command
+                     commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
+                     icon="icons/money_delete.png"
+                     style="pulldown">
                </command>
             </menu>
          </menu>
@@ -229,7 +234,7 @@
             <command
                   commandId="de.togginho.accounting.reporting.menu.pulldown"
                   icon="icons/report.png"
-                  label="%command.reports.label"
+                  label="%command.reports.name"
                   style="pulldown">
             </command>
          </toolbar>
@@ -421,15 +426,18 @@
             allPopups="false"
             locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
          <command
+               commandId="de.togginho.accounting.reports.OpenProfitDialogCommand"
+               icon="icons/report_user.png"
+               style="push">
+         </command>
+         <command
                commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
                icon="icons/money_add.png"
-               label="%command.revenue.name"
                style="pulldown">
          </command>
          <command
                commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
                icon="icons/money_delete.png"
-               label="Expenses"
                style="pulldown">
          </command>
       </menuContribution>
@@ -584,7 +592,12 @@
       <command
             defaultHandler="de.togginho.accounting.ui.reports.ChooseReportCommand"
             id="de.togginho.accounting.reports.ChooseReportCommand"
-            name="Reports...">
+            name="%command.reports.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.reports.OpenProfitDialogCommand"
+            id="de.togginho.accounting.reports.OpenProfitDialogCommand"
+            name="%command.profit.name">
       </command>
    </extension>
    <extension
