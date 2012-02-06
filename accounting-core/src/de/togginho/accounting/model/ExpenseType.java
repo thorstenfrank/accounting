@@ -35,7 +35,12 @@ public enum ExpenseType implements Serializable {
 	/**
 	 * Capital Expense.
 	 */
-	CAPEX(Messages.ExpenseType_CAPEX, true);
+	CAPEX(Messages.ExpenseType_CAPEX, true),
+	
+	/**
+	 * Other expenses.
+	 */
+	OTHER(Messages.ExpenseType_OTHER, false);
 	
 	/**
 	 * Translated name of this type.

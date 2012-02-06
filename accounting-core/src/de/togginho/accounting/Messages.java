@@ -68,6 +68,7 @@ public class Messages extends NLS {
 	
 	public static String ExpenseType_OPEX;
 	public static String ExpenseType_CAPEX;
+	public static String ExpenseType_OTHER;
 	
 	static {
 		// initialize resource bundle
