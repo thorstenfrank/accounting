@@ -50,6 +50,7 @@ public class Price implements Serializable{
      * Creates a new price with no values.
      */
     public Price() {
+    	this (BigDecimal.ZERO, null, BigDecimal.ZERO);
     }
     
 	/**

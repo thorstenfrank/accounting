@@ -87,6 +87,19 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
         		
         		GridDataFactory gdf = GridDataFactory.fillDefaults().span(2, 1).grab(true, true).indent(5, 0);
         		
+        		final Button profitButton = new Button(composite, SWT.RADIO);
+        		profitButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsCashFlowStatement).createImage());
+        		profitButton.setText(Messages.CashFlowDialog_title);
+        		gdf.applyTo(profitButton);
+        		profitButton.addSelectionListener(new SelectionAdapter() {
+        			@Override
+        			public void widgetSelected(SelectionEvent e) {
+        				if (profitButton.getSelection()) {
+        					commandIdToRun = IDs.CMD_OPEN_CASH_FLOW_DIALOG;
+        				}
+        			}
+				});
+        		
         		final Button revenueButton = new Button(composite, SWT.RADIO);
         		revenueButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsRevenue).createImage());
         		revenueButton.setText(Messages.RevenueDialog_title);

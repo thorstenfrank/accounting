@@ -86,6 +86,13 @@ public class Revenue implements Serializable {
 	}
 
 	/**
+	 * @return the totalRevenue
+	 */
+	public Price getTotalRevenue() {
+		return totalRevenue;
+	}
+
+	/**
      * @return the revenueNet
      */
     public BigDecimal getRevenueNet() {

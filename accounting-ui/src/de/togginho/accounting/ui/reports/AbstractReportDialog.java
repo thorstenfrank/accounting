@@ -72,9 +72,19 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 * @param parent
 	 */
 	protected Section createQuerySection(Composite parent) {
+		return createQuerySection(parent, new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param gridData
+	 * @return
+	 */
+	protected Section createQuerySection(Composite parent, GridData gridData) {
 		final FormToolkit formToolkit = getToolkit();
 		Section querySection = formToolkit.createSection(parent, Section.TITLE_BAR);
-		querySection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		querySection.setLayoutData(gridData);
 		formToolkit.paintBordersFor(querySection);
 		querySection.setText(Messages.labelTimeFrame);
 		
@@ -118,7 +128,7 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelCurrentMonth, TimeFrame.currentMonth(), false);
 		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelLastMonth, TimeFrame.lastMonth(), false);
 				
-		return querySection;
+		return querySection;		
 	}
 	
 	/**

@@ -45,6 +45,22 @@ public class Messages extends NLS {
 	public static String CancelInvoiceCommand_confirmMessage;
 	public static String CancelInvoiceCommand_confirmText;
 	
+	public static String CashFlowDialog_grossProfit;
+
+	public static String CashFlowDialog_inputTax;
+
+	public static String CashFlowDialog_operatingExpenses;
+
+	public static String CashFlowDialog_outputTax;
+
+	public static String CashFlowDialog_Result;
+
+	public static String CashFlowDialog_sum;
+
+	public static String CashFlowDialog_title;
+
+	public static String CashFlowDialog_totalExpenses;
+
 	public static String ChangeExpensesViewTimeFrameCommand_message;
 	public static String ChangeExpensesViewTimeFrameCommand_title;
 	
@@ -217,6 +233,7 @@ public class Messages extends NLS {
 	public static String labelPostalCode;
 	public static String labelPricePerUnit;
 	public static String labelQuantity;
+	public static String labelRevenue;
 	public static String labelRevenueRelevant;
 	public static String labelSearch;
 	public static String labelStreet;
@@ -261,6 +278,7 @@ public class Messages extends NLS {
 	public static String iconsRevenue;
 	public static String iconsExpenses;
 	public static String iconsReports;
+	public static String iconsCashFlowStatement;
 
 	static {
 		// initialize resource bundle

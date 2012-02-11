@@ -595,9 +595,9 @@
             name="%command.reports.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.OpenProfitDialogCommand"
+            defaultHandler="de.togginho.accounting.ui.reports.OpenCashFlowDialogCommand"
             id="de.togginho.accounting.reports.OpenProfitDialogCommand"
-            name="%command.profit.name">
+            name="%command.cashFlow.name">
       </command>
    </extension>
    <extension

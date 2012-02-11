@@ -50,6 +50,7 @@ import de.togginho.accounting.AccountingContextFactory;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
+import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -747,6 +748,18 @@ public class AccountingServiceImpl implements AccountingService {
     	ec.setExpenses(getExpensesAsSet(timeFrame));
     	return ec;
     }
+    
+	/**
+	 * {@inheritDoc}
+	 * @see AccountingService#getCashFlowStatement(TimeFrame)
+	 */
+	@Override
+	public CashFlowStatement getCashFlowStatement(TimeFrame timeFrame) {
+		final CashFlowStatement statement = new CashFlowStatement(timeFrame);
+		statement.setRevenue(getRevenue(timeFrame));
+		statement.setExpenses(getExpenses(timeFrame));
+		return statement;
+	}
 
 	/**
      * 

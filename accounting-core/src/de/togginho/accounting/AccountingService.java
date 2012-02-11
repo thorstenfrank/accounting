@@ -18,6 +18,7 @@ package de.togginho.accounting;
 import java.util.Date;
 import java.util.Set;
 
+import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -303,6 +304,15 @@ public interface AccountingService {
 	 * @return	a collection of expenses from within the supplied {@link TimeFrame}
 	 */
 	ExpenseCollection getExpenses(TimeFrame timeFrame);
+	
+	/**
+	 * Returns the cash flow overview for the supplied time frame.
+	 * The cash flow statement will include both revenue and expense totals, along with figures like gross profit.
+	 *  
+	 * @param timeFrame the time frame for which to prepare a cash flow statement
+	 * @return the {@link CashFlowStatement} for the supplied time frame
+	 */
+	CashFlowStatement getCashFlowStatement(TimeFrame timeFrame);
 	
 	/**
 	 * Exports the entire database to the specified XML file. This file can later be used to re-create the DB.
