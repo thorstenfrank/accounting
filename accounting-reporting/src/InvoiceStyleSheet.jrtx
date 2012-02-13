@@ -7,5 +7,7 @@
 	<style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_12" markup="styled" fontSize="12" pdfFontName="fonts/TitilliumMaps29L.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_12B" markup="styled" fontSize="12" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_14" markup="styled" fontSize="14" pdfFontName="fonts/TitilliumMaps29L.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_14B" markup="styled" fontSize="14" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_18B" markup="styled" fontSize="18" isBold="true" pdfFontName="fonts/TitilliumMaps29L001.otf" isPdfEmbedded="true"/>
 </jasperTemplate>
