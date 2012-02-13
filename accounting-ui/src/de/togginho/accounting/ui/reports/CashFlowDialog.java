@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -45,6 +46,8 @@ import de.togginho.accounting.util.TimeFrame;
  */
 public class CashFlowDialog extends AbstractReportDialog {
 
+	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".CashFlowDialog"; //$NON-NLS-1$
+	
 	private FormToolkit formToolkit;
 	
 	private CashFlowStatement cashFlow;
@@ -78,6 +81,8 @@ public class CashFlowDialog extends AbstractReportDialog {
     protected Control createDialogArea(Composite parent) {
     	getShell().setText(Messages.CashFlowDialog_title);
     	getShell().setImage(AccountingUI.getImageDescriptor(Messages.iconsCashFlowStatement).createImage());
+    	
+    	PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
     	
         formToolkit = new FormToolkit(parent.getDisplay());
         Composite container = new Composite(parent, SWT.NONE);

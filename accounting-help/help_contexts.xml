@@ -33,7 +33,13 @@ Note that the name of a client cannot be changed</description>
     <context id="ClientsView">
        <description>A list of your clients</description>
     </context>
-    <context id="RevenueDialog">
+    <context id="RevenueDialog" title="Revenue">
        <description>Search for, view and export revenue (turnover) data</description>
+    </context>
+    <context id="ExpenseDialog" title="Expenses">
+       <description>Search for, view and export expenses</description>
+    </context>
+    <context id="CashFlowDialog" title="Periodical Cash Flow">
+       <description>Provides a periodical overview of cash flow grouped by revenue, expenses and taxes.</description>
     </context>
 </contexts>
