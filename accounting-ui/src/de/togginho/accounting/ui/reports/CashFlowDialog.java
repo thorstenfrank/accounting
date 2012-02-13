@@ -30,6 +30,8 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.ReportGenerationMonitor;
+import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
@@ -44,6 +46,8 @@ import de.togginho.accounting.util.TimeFrame;
 public class CashFlowDialog extends AbstractReportDialog {
 
 	private FormToolkit formToolkit;
+	
+	private CashFlowStatement cashFlow;
 	
 	private Text revenueNet;
 	private Text revenueTax;
@@ -298,11 +302,11 @@ public class CashFlowDialog extends AbstractReportDialog {
 	protected void updateModel(TimeFrame timeFrame) {
 		AccountingService service = AccountingUI.getAccountingService();
 		
-		CashFlowStatement cashFlowStatement = service.getCashFlowStatement(timeFrame);
+		cashFlow = service.getCashFlowStatement(timeFrame);
 		
-		Price revenue = cashFlowStatement.getTotalRevenue();
-		Price totalExpenses = cashFlowStatement.getTotalCosts();
-		Price opex = cashFlowStatement.getOperatingCosts();
+		Price revenue = cashFlow.getTotalRevenue();
+		Price totalExpenses = cashFlow.getTotalCosts();
+		Price opex = cashFlow.getOperatingCosts();
 		
 		setCurrencyValue(revenueNet, revenue.getNet());
 		setCurrencyValue(revenueGross, revenue.getGross());
@@ -316,11 +320,11 @@ public class CashFlowDialog extends AbstractReportDialog {
 		setCurrencyValue(opexGross, opex.getGross());
 		setCurrencyValue(opexTax, opex.getTax());
 		
-		setCurrencyValue(grossProfit, cashFlowStatement.getGrossProfit());
+		setCurrencyValue(grossProfit, cashFlow.getGrossProfit());
 		
 		setCurrencyValue(outputTax, revenue.getTax());
 		setCurrencyValue(inputTax, totalExpenses.getTax());
-		setCurrencyValue(taxPayable, cashFlowStatement.getTaxSum());
+		setCurrencyValue(taxPayable, cashFlow.getTaxSum());
 	}
 
 	/**
@@ -341,6 +345,31 @@ public class CashFlowDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected void handleExport() {
-		// TODO Auto-generated method stub
+		ReportGenerationUtil.executeReportGeneration(new CashFlowExportHandler(), getShell());
+	}
+	
+	/**
+	 *
+	 */
+	private class CashFlowExportHandler implements ReportGenerationHandler {
+
+		/**
+         * {@inheritDoc}.
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getTargetFileNameSuggestion()
+         */
+        @Override
+        public String getTargetFileNameSuggestion() {
+	        return "CashFlow";
+        }
+
+		/**
+         * {@inheritDoc}.
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#handleReportGeneration(de.togginho.accounting.ReportingService, java.lang.String, de.togginho.accounting.ReportGenerationMonitor)
+         */
+        @Override
+        public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
+        	reportingService.generateCashFlowToPdf(cashFlow, targetFileName, monitor);
+        }
+		
 	}
 }
