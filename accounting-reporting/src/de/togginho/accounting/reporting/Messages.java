@@ -28,6 +28,21 @@ public class Messages extends NLS {
 	public static String AbstractReportGenerator_errorTemplateNotFound;
 	public static String AbstractReportGenerator_errorFillingReport;
 	public static String AbstractReportGenerator_errorCreatingReport;
+
+	public static String CashFlowDataSource_cashFlow;
+	public static String CashFlowDataSource_expenses;
+	public static String CashFlowDataSource_gross;
+	public static String CashFlowDataSource_grossProfit;
+	public static String CashFlowDataSource_inputTax;
+	public static String CashFlowDataSource_net;
+	public static String CashFlowDataSource_operatingExpenses;
+	public static String CashFlowDataSource_outputTax;
+	public static String CashFlowDataSource_revenue;
+	public static String CashFlowDataSource_tax;
+	public static String CashFlowDataSource_taxSum;
+	public static String CashFlowDataSource_totalExpenses;
+	public static String CashFlowDataSource_vat;
+	public static String CashFlowDataSource_vatSum;
 	
 	public static String ExpensesDataSource_expensesTitle;
 	

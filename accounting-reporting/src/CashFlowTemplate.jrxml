@@ -16,6 +16,11 @@
 	<field name="operating.expenses.title" class="java.lang.String"/>
 	<field name="total.expenses.title" class="java.lang.String"/>
 	<field name="vat.title" class="java.lang.String"/>
+	<field name="output.tax.title" class="java.lang.String"/>
+	<field name="input.tax.title" class="java.lang.String"/>
+	<field name="tax.sum.title" class="java.lang.String"/>
+	<field name="result.title" class="java.lang.String"/>
+	<field name="gross.profit.title" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -56,7 +61,7 @@
 		<band height="10" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="215" splitType="Stretch">
+		<band height="365" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="459" height="1"/>
 			</line>
@@ -79,121 +84,172 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTotalRevenueNet()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="155" y="25" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="0" y="45" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{gross.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="210" y="25" width="75" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="55" y="45" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTotalRevenueGross()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="325" y="25" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="0" y="65" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{tax.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="380" y="25" width="75" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="55" y="65" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTotalRevenueTaxes()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="49" width="459" height="1"/>
+				<reportElement x="0" y="90" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement style="INVOICE_TX_14B" x="0" y="50" width="459" height="20"/>
+				<reportElement style="INVOICE_TX_14B" x="0" y="90" width="459" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses.title}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="69" width="459" height="1"/>
+				<reportElement x="0" y="110" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="5" y="75" width="150" height="20"/>
+				<reportElement style="INVOICE_TX_12B" x="10" y="115" width="150" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{operating.expenses.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="5" y="95" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="10" y="135" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{net.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="55" y="95" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="60" y="135" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getOpexNet()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="5" y="115" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="10" y="155" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{gross.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="55" y="115" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="60" y="155" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getOpexGross()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="5" y="135" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="10" y="175" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{tax.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="55" y="135" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="60" y="175" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getOpexTax()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="235" y="75" width="150" height="20"/>
+				<reportElement style="INVOICE_TX_12B" x="240" y="115" width="150" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{total.expenses.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="235" y="95" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="240" y="135" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{net.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="285" y="95" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="290" y="135" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTotalCostsNet()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="235" y="115" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="240" y="155" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{gross.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="285" y="115" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="290" y="155" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTotalCostsGross()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="235" y="135" width="50" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="240" y="175" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{tax.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="285" y="135" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_12" x="290" y="175" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTotalCostsTax()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="160" width="459" height="1"/>
+				<reportElement x="0" y="200" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement style="INVOICE_TX_14B" x="0" y="160" width="459" height="20"/>
+				<reportElement style="INVOICE_TX_14B" x="0" y="200" width="459" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{vat.title}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="180" width="459" height="1"/>
+				<reportElement x="0" y="220" width="459" height="1"/>
 			</line>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="0" y="225" width="100" height="20"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{output.tax.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="105" y="225" width="75" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getOutputTax()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="0" y="245" width="100" height="20"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{input.tax.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="105" y="245" width="75" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getInputTax()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="0" y="265" width="100" height="20"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tax.sum.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12" x="105" y="265" width="75" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getTaxSum()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="290" width="459" height="1"/>
+			</line>
+			<textField>
+				<reportElement style="INVOICE_TX_14B" x="0" y="290" width="459" height="20"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{result.title}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="310" width="459" height="1"/>
+			</line>
+			<textField>
+				<reportElement style="INVOICE_TX_12B" x="0" y="321" width="100" height="20"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{gross.profit.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_12B" x="105" y="321" width="75" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cashflow}.getGrossProfit()]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="150" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch"/>

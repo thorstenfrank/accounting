@@ -77,27 +77,86 @@ public class CashFlowWrapper {
     	return FormatUtil.formatCurrency(cashFlow.getTotalRevenue().getTax());
     }
     
+    /**
+     * 
+     * @return
+     */
     public String getOpexNet() {
     	return FormatUtil.formatCurrency(cashFlow.getOperatingCosts().getNet());
     }
-    
+
+    /**
+     * 
+     * @return
+     */
     public String getOpexTax() {
     	return FormatUtil.formatCurrency(cashFlow.getOperatingCosts().getTax());
     }
     
+    /**
+     * 
+     * @return
+     */
     public String getOpexGross() {
     	return FormatUtil.formatCurrency(cashFlow.getOperatingCosts().getGross());
     }
     
+    /**
+     * 
+     * @return
+     */
     public String getTotalCostsNet() {
     	return FormatUtil.formatCurrency(cashFlow.getTotalCosts().getNet());
     }
     
+    /**
+     * 
+     * @return
+     */
     public String getTotalCostsTax() {
+    	if (cashFlow.getTotalCosts().getTax() == null) {
+    		return Constants.HYPHEN;
+    	}
     	return FormatUtil.formatCurrency(cashFlow.getTotalCosts().getTax());
     }
     
+    /**
+     * 
+     * @return
+     */
     public String getTotalCostsGross() {
     	return FormatUtil.formatCurrency(cashFlow.getTotalCosts().getGross());
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getInputTax() {
+    	return getTotalCostsTax();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getOutputTax() {
+    	return getTotalRevenueTaxes();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getTaxSum() {
+    	return FormatUtil.formatCurrency(cashFlow.getTaxSum());
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getGrossProfit() {
+    	return FormatUtil.formatCurrency(cashFlow.getGrossProfit());
     }
 }

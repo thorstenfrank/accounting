@@ -45,21 +45,22 @@ public class CashFlowDataSource extends AbstractReportDataSource {
 	@Override
 	protected void addFieldsToMap(Map<String, Object> fieldMap) {
 		fieldMap.put("cashflow", wrapper); //$NON-NLS-1$
-		fieldMap.put("cashflow.title", "Cash Flow"); //$NON-NLS-1$
+		fieldMap.put("cashflow.title", Messages.CashFlowDataSource_cashFlow); //$NON-NLS-1$
 		fieldMap.put("from.title", Messages.fromTitle); //$NON-NLS-1$
 		fieldMap.put("until.title", Messages.untilTitle); //$NON-NLS-1$
-		fieldMap.put("revenue.title", "Umsätze");
-		fieldMap.put("expenses.title", "Ausgaben");
-		fieldMap.put("operating.expenses.title", "Betriebskosten");
-		fieldMap.put("total.expenses.title", "Gesamtkosten");
-		fieldMap.put("vat.title", "Umsatzsteuer");
-		fieldMap.put("input.tax.title", "Umsatzsteuer:");
-		fieldMap.put("output.tax.title", "Vorsteuer:");
-		fieldMap.put("taxes.balance", "Saldo:");
-		
-		fieldMap.put("net.title", "Netto:");
-		fieldMap.put("gross.title", "Brutto:");
-		fieldMap.put("tax.title", "Steuern:");
+		fieldMap.put("revenue.title", Messages.CashFlowDataSource_revenue); //$NON-NLS-1$
+		fieldMap.put("expenses.title", Messages.CashFlowDataSource_expenses); //$NON-NLS-1$
+		fieldMap.put("operating.expenses.title", Messages.CashFlowDataSource_operatingExpenses); //$NON-NLS-1$
+		fieldMap.put("total.expenses.title", Messages.CashFlowDataSource_totalExpenses); //$NON-NLS-1$
+		fieldMap.put("vat.title", Messages.CashFlowDataSource_vat); //$NON-NLS-1$
+		fieldMap.put("input.tax.title", Messages.CashFlowDataSource_inputTax); //$NON-NLS-1$
+		fieldMap.put("output.tax.title", Messages.CashFlowDataSource_outputTax); //$NON-NLS-1$
+		fieldMap.put("tax.sum.title", Messages.CashFlowDataSource_taxSum); //$NON-NLS-1$
+		fieldMap.put("result.title", Messages.CashFlowDataSource_vatSum); //$NON-NLS-1$
+		fieldMap.put("gross.profit.title", Messages.CashFlowDataSource_grossProfit); //$NON-NLS-1$
+		fieldMap.put("net.title", Messages.CashFlowDataSource_net); //$NON-NLS-1$
+		fieldMap.put("gross.title", Messages.CashFlowDataSource_gross); //$NON-NLS-1$
+		fieldMap.put("tax.title", Messages.CashFlowDataSource_tax); //$NON-NLS-1$
 	}
 
 }
