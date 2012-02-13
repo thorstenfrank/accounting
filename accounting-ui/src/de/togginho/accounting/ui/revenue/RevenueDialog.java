@@ -55,6 +55,7 @@ import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
+import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * 
@@ -240,6 +241,15 @@ public class RevenueDialog extends AbstractReportDialog {
 	@Override
 	protected FormToolkit getToolkit() {
 		return formToolkit;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getDefaultTimeFrameType()
+	 */
+	@Override
+	protected TimeFrameType getDefaultTimeFrameType() {
+		return TimeFrameType.CURRENT_YEAR;
 	}
 
 	/**

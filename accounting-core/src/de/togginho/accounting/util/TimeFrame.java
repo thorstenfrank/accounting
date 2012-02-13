@@ -165,7 +165,7 @@ public class TimeFrame {
 		thisYear.from = cal.getTime();
 		
 		cal.set(Calendar.MONTH, 11);
-		cal.set(Calendar.DAY_OF_MONTH, 31);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		setToEndOfDay(cal);
 		thisYear.until = cal.getTime();
 		
@@ -188,7 +188,7 @@ public class TimeFrame {
 		lastYear.from = cal.getTime();
 		
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		cal.set(Calendar.DAY_OF_MONTH, 31);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		setToEndOfDay(cal);
 		lastYear.until = cal.getTime();
 		

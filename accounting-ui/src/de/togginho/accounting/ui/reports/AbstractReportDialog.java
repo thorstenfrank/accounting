@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.ui.reports;
 
-import java.util.Calendar;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -38,6 +36,7 @@ import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
+import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -98,15 +97,11 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		fromDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
 		formToolkit.adapt(fromDate);
 		formToolkit.paintBordersFor(fromDate);
-		fromDate.setDay(1);
-		fromDate.setMonth(Calendar.JANUARY);
 		
 		formToolkit.createLabel(sectionClient, Messages.labelUntil);
 		untilDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
 		formToolkit.adapt(untilDate);
 		formToolkit.paintBordersFor(untilDate);
-		untilDate.setDay(31);
-		untilDate.setMonth(Calendar.DECEMBER);
 				
 		final Button btnSearch = formToolkit.createButton(sectionClient, Messages.labelSearch, SWT.PUSH);
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(btnSearch);
@@ -122,12 +117,11 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		timeFrameShortcuts.setLayout(new GridLayout(4, false));
 		GridDataFactory.fillDefaults().span(5, 1).applyTo(timeFrameShortcuts);
 		
-		// TODO make the default selected timeframe configurable per subclass
-		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelCurrentYear, TimeFrame.currentYear(), true);
-		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelLastYear, TimeFrame.lastYear(), false);
-		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelCurrentMonth, TimeFrame.currentMonth(), false);
-		createTimeFrameRadioButton(timeFrameShortcuts, Messages.labelLastMonth, TimeFrame.lastMonth(), false);
-				
+		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.CURRENT_YEAR);
+		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.LAST_YEAR);
+		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.CURRENT_MONTH);
+		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.LAST_MONTH);
+		
 		return querySection;		
 	}
 	
@@ -138,9 +132,41 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 * @param timeFrame
 	 * @param initallySelected
 	 */
-	private void createTimeFrameRadioButton(Composite parent, String label, final TimeFrame timeFrame, boolean initallySelected) {
+	private void createTimeFrameRadioButton(Composite parent, TimeFrameType timeFrameType) {
+		final TimeFrame timeFrame;
+		String label = null;
+		boolean selected = timeFrameType.equals(getDefaultTimeFrameType());
+		
+		switch (timeFrameType) {
+		case CURRENT_MONTH:
+			timeFrame = TimeFrame.currentMonth();
+			label = Messages.labelCurrentMonth;
+			break;
+		case LAST_MONTH:
+			timeFrame = TimeFrame.lastMonth();
+			label = Messages.labelLastMonth;
+			break;
+		case CURRENT_YEAR:
+			timeFrame = TimeFrame.currentYear();
+			label = Messages.labelCurrentYear;
+			break;
+		case LAST_YEAR:
+			timeFrame = TimeFrame.lastYear();
+			label = Messages.labelLastYear;
+			break;
+		default:
+			timeFrame = TimeFrame.currentMonth();
+			label = Messages.labelCurrentMonth;
+			break;
+		}
+		
+		if (selected) {
+			WidgetHelper.dateToWidget(timeFrame.getFrom(), fromDate);
+			WidgetHelper.dateToWidget(timeFrame.getUntil(), untilDate);
+		}
+		
 		final Button button = getToolkit().createButton(parent, label, SWT.RADIO);
-		button.setSelection(initallySelected);
+		button.setSelection(selected);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -158,6 +184,8 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 * @return
 	 */
 	protected abstract FormToolkit getToolkit();
+	
+	protected abstract TimeFrameType getDefaultTimeFrameType();
 	
 	/**
 	 * 

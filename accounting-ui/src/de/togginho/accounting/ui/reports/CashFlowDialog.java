@@ -39,6 +39,7 @@ import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
+import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -101,7 +102,7 @@ public class CashFlowDialog extends AbstractReportDialog {
         
         createProfitSection(container);
         
-        updateModel(TimeFrame.lastMonth());
+        updateModel();
         
         return container;
     }
@@ -297,6 +298,15 @@ public class CashFlowDialog extends AbstractReportDialog {
 	@Override
 	protected FormToolkit getToolkit() {
 		return formToolkit;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getDefaultTimeFrameType()
+	 */
+	@Override
+	protected TimeFrameType getDefaultTimeFrameType() {
+		return TimeFrameType.LAST_MONTH;
 	}
 
 	/**
