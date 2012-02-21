@@ -74,7 +74,7 @@ public class Revenue implements Serializable {
 		BigDecimal revenueTax = BigDecimal.ZERO;
 		
 		for (Invoice invoice : invoices) {
-			final Price price = CalculationUtil.calculateTotalPrice(invoice);
+			final Price price = CalculationUtil.calculateRevenue(invoice);
 			revenueNet = revenueNet.add(price.getNet());
 			revenueGross = revenueGross.add(price.getGross());
 			if (price.getTax() != null) {

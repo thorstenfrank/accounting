@@ -67,6 +67,37 @@ public final class CalculationUtil {
     }
     
     /**
+     * Calculates total revenue of an invoice. The revenue amount may differ from the price of an invoice in that it
+     * only considers invoice positions that are revenue relevant, i.e. where 
+     * {@link InvoicePosition#isRevenueRelevant()} returns <code>true</code>.
+     * 
+     * @param invoice
+     * @return
+     * 
+     * @see #calculateTotalPrice(Invoice)
+     */
+    public static Price calculateRevenue(Invoice invoice) {
+    	BigDecimal totalNet = BigDecimal.ZERO;
+    	BigDecimal totalGross = BigDecimal.ZERO;
+    	BigDecimal totalTax = BigDecimal.ZERO;
+    	
+    	if (invoice != null && invoice.getInvoicePositions() != null) {
+        	for (InvoicePosition position : invoice.getInvoicePositions()) {
+        		if (position.isRevenueRelevant()) {
+            		final Price singlePrice = calculatePrice(position);
+            		totalNet = totalNet.add(singlePrice.getNet());
+            		totalGross = totalGross.add(singlePrice.getGross());
+            		if (singlePrice.getTax() != null) {
+            			totalTax = totalTax.add(singlePrice.getTax());
+            		}        			
+        		}
+        	}    		
+    	}
+    	
+    	return new Price(totalNet, totalTax, totalGross);    	
+    }
+    
+    /**
      * Calculates the price of a single invoice position.
      * @param invoicePosition
      * @return

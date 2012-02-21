@@ -39,13 +39,16 @@ import de.togginho.accounting.model.TaxRate;
  */
 public class CalculationUtilTest {
 	
-	private static final BigDecimal TOTAL_NET = new BigDecimal("1071");
-	private static final BigDecimal TOTAL_TAX = new BigDecimal("3.99");
-	private static final BigDecimal TOTAL_GROSS = new BigDecimal("1074.99");
+	private static final BigDecimal TOTAL_NET = new BigDecimal("1171");
+	private static final BigDecimal TOTAL_TAX = new BigDecimal("22.99");
+	private static final BigDecimal TOTAL_GROSS = new BigDecimal("1193.99");
 	private static final BigDecimal NET_ONE = new BigDecimal("21");
 	private static final BigDecimal TAX_ONE = new BigDecimal("3.99");
 	private static final BigDecimal GROSS_ONE = new BigDecimal("24.99");
 	private static final BigDecimal NET_TWO = new BigDecimal("1050");
+	private static final BigDecimal REVENUE_NET = new BigDecimal("1071");
+	private static final BigDecimal REVENUE_TAX = new BigDecimal("3.99");
+	private static final BigDecimal REVENUE_GROSS = new BigDecimal("1074.99");
 	
 	private static final Invoice TEST_INVOICE = new Invoice();
 	
@@ -62,14 +65,23 @@ public class CalculationUtilTest {
         ip1.setQuantity(new BigDecimal("2"));
         ip1.setPricePerUnit(new BigDecimal("10.5"));
         ip1.setTaxRate(taxRate);
+        ip1.setRevenueRelevant(true);
 
         InvoicePosition ip2 = new InvoicePosition();
         ip2.setQuantity(new BigDecimal("10.5"));
         ip2.setPricePerUnit(new BigDecimal("100.00"));
+        ip2.setRevenueRelevant(true);
+
+        InvoicePosition ip3 = new InvoicePosition();
+        ip3.setQuantity(new BigDecimal("1"));
+        ip3.setPricePerUnit(new BigDecimal("100.00"));
+        ip3.setTaxRate(taxRate);
+        ip3.setRevenueRelevant(false);
         
         List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
         positions.add(ip1);
         positions.add(ip2);
+        positions.add(ip3);
         
         TEST_INVOICE.setInvoicePositions(positions);
 	}
@@ -117,5 +129,16 @@ public class CalculationUtilTest {
     	assertEquals(0, NET_TWO.compareTo(price.getNet()));
     	assertNull(price.getTax());
     	assertEquals(price.getNet(), price.getGross());
+    }
+    
+    /**
+     * Test method for {@link CalculationUtil#calculateRevenue(Invoice)}.
+     */
+    @Test
+    public void testCalculateRevenue() {
+    	Price price = CalculationUtil.calculateRevenue(TEST_INVOICE);
+    	assertEquals(0, REVENUE_GROSS.compareTo(price.getGross()));
+    	assertEquals(0, REVENUE_NET.compareTo(price.getNet()));
+    	assertEquals(0, REVENUE_TAX.compareTo(price.getTax()));
     }
 }
