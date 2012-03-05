@@ -64,6 +64,9 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	private Expense expense;
 	private Text taxAmount;
 	private Text grossAmount;
+	private Combo depreciationMethod;
+	private Text depreciationPeriod;
+	private Text salvageValue;
 	
 	/**
 	 * 
@@ -122,7 +125,9 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Combo combo = (Combo) e.getSource();
-				expense.setExpenseType(expenseTypes.get(combo.getSelectionIndex()));
+				final ExpenseType selected = expenseTypes.get(combo.getSelectionIndex());
+				expense.setExpenseType(selected);
+				enableOrDisableDepreciation(selected.isDepreciationPossible());
 			}
 		});
 		
@@ -205,8 +210,49 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		grossAmount.setEditable(false);
 		grossAmount.setEnabled(false);
 		
+		WidgetHelper.createLabel(composite, "Abschreibungsmethode");
+		depreciationMethod = new Combo(composite, SWT.READ_ONLY);
+		gdf.applyTo(depreciationMethod);
+		depreciationMethod.add("Keine Abschreibung");
+		depreciationMethod.add("Linear");
+		
+		WidgetHelper.createLabel(composite, "Nutzungsdauer (Jahre)");
+		depreciationPeriod = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		gdf.applyTo(depreciationPeriod);
+		
+		WidgetHelper.createLabel(composite, "Restwert");
+		salvageValue = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		gdf.applyTo(salvageValue);
+		
 		setControl(composite);
+		
+		if (expense.getExpenseType() != null) {
+			enableOrDisableDepreciation(expense.getExpenseType().isDepreciationPossible());
+		} else {
+			enableOrDisableDepreciation(false);
+		}
+		
 		handleValueChange(null);
+	}
+	
+	/**
+	 * 
+	 * @param enable
+	 */
+	private void enableOrDisableDepreciation(boolean enable) {
+		depreciationMethod.setEnabled(enable);
+		depreciationPeriod.setEnabled(enable);
+		salvageValue.setEnabled(enable);
+		
+		if (false == enable) {
+			depreciationMethod.select(0);
+			depreciationPeriod.setText("");
+			salvageValue.setText("");
+		} else {
+			depreciationMethod.select(1);
+			depreciationPeriod.setText("3");
+			salvageValue.setText("1");			
+		}
 	}
 	
 	/**
