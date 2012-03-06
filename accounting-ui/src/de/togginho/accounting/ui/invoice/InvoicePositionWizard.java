@@ -40,11 +40,14 @@ import org.eclipse.swt.widgets.Text;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
+import de.togginho.accounting.util.CalculationUtil;
+import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -128,6 +131,16 @@ class InvoicePositionWizard extends Wizard implements Constants {
 	}
 
 	private class InvoicePositionWizardPage extends WizardPage implements IValueChangeListener {
+		
+		private Text netAmount;
+		private Text taxAmount;
+		private Text grossAmount;
+		
+		/**
+		 * 
+		 * @param title
+		 * @param desc
+		 */
 		InvoicePositionWizardPage(String title, String desc) {
 			super("InvoicePositionWizardPage"); //$NON-NLS-1$
 			setTitle(title);
@@ -145,6 +158,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			final boolean editable = invoice.canBeEdited();
 			
+			GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, false);
+			
 			// REVENUE RELEVANT
 			WidgetHelper.createLabel(composite, EMPTY_STRING);
 			Button revenueRelevant = new Button(composite, SWT.CHECK);
@@ -160,7 +175,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			WidgetHelper.createLabel(composite, Messages.labelQuantity);
 			Text quantity = new Text(composite, SWT.SINGLE | SWT.BORDER);
 			quantity.setEnabled(editable);
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(quantity);
+			gdf.applyTo(quantity);
 			
 			IObservableValue quantityWidgetObservable = SWTObservables.observeText(quantity, SWT.Modify);
 			IObservableValue quantityPojoObservable = PojoObservables.observeValue(position, InvoicePosition.FIELD_QUANTITY);
@@ -175,7 +190,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			WidgetHelper.createLabel(composite, Messages.labelUnit);
 			Text unit = new Text(composite, SWT.SINGLE | SWT.BORDER);
 			unit.setEnabled(editable);
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(unit);
+			gdf.applyTo(unit);
 			IObservableValue unitWidgetObservable = SWTObservables.observeText(unit, SWT.Modify);
 			bindingContext.bindValue(
 					unitWidgetObservable, 
@@ -186,7 +201,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			WidgetHelper.createLabel(composite, Messages.labelPricePerUnit);
 			Text pricePerUnit = new Text(composite, SWT.SINGLE | SWT.BORDER);
 			pricePerUnit.setEnabled(editable);
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(pricePerUnit);
+			gdf.applyTo(pricePerUnit);
 			
 			IObservableValue priceWidgetObservable = SWTObservables.observeText(pricePerUnit, SWT.Modify);
 			IObservableValue pricePojoObservable = PojoObservables.observeValue(position, InvoicePosition.FIELD_PRICE_PER_UNIT);
@@ -196,13 +211,20 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			fromPrice.setConverter(BigDecimalToStringConverter.getInstance()); //CurrencyToStringConverter.getInstance());
 			bindingContext.bindValue(priceWidgetObservable, pricePojoObservable, toPrice, fromPrice);
 			priceWidgetObservable.addValueChangeListener(this);
+
+			// NET AMOUNT (INFO ONLY)
+			WidgetHelper.createLabel(composite, Messages.labelNet);
+			netAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			gdf.applyTo(netAmount);
+			netAmount.setEnabled(false);
+			netAmount.setEditable(false);
 			
 			// TAX RATE
 			WidgetHelper.createLabel(composite, Messages.labelTaxRate);
 			Combo taxRate = new Combo(composite, SWT.READ_ONLY);
 			taxRate.setEnabled(editable);
 			taxRate.add(EMPTY_STRING);
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(taxRate);
+			gdf.applyTo(taxRate);
 			
 			if (invoice.getUser().getTaxRates() != null) {
 				TaxRate existing = position != null && position.getTaxRate() != null ? position.getTaxRate() : null;
@@ -232,10 +254,24 @@ class InvoicePositionWizard extends Wizard implements Constants {
 						} else {
 							position.setTaxRate(descToRateMap.get(selected));
 						}
-						checkIfPageComplete();
+						handleValueChange(null);
 					}
 				});				
 			}
+			
+			// TAX AMOUNT (INFO ONLY)
+			WidgetHelper.createLabel(composite, Messages.labelTaxes);
+			taxAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			taxAmount.setEnabled(false);
+			taxAmount.setEditable(false);
+			gdf.applyTo(taxAmount);
+			
+			// GROSS AMOUNT (INFO ONLY)
+			WidgetHelper.createLabel(composite, Messages.labelGross);
+			grossAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			grossAmount.setEnabled(false);
+			grossAmount.setEditable(false);
+			gdf.applyTo(grossAmount);
 			
 			// DESCRIPTION
 			WidgetHelper.createLabel(composite, Messages.labelDescription);
@@ -249,7 +285,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			descriptionWidgetObservable.addValueChangeListener(this);			
 			
 			setControl(composite);
-			setPageComplete(false);
+			//setPageComplete(false);			
+			handleValueChange(null);
 		}
 		
 		/**
@@ -272,6 +309,15 @@ class InvoicePositionWizard extends Wizard implements Constants {
 		 */
 		@Override
 		public void handleValueChange(ValueChangeEvent event) {
+			final Price price = CalculationUtil.calculatePrice(position);
+			netAmount.setText(FormatUtil.formatCurrency(price.getNet()));
+			if (price.getTax() != null) {
+				taxAmount.setText(FormatUtil.formatCurrency(price.getTax()));
+			} else {
+				taxAmount.setText(HYPHEN);
+			}
+			
+			grossAmount.setText(FormatUtil.formatCurrency(price.getGross()));
 			checkIfPageComplete();
 		}
 	}
