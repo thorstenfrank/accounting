@@ -41,8 +41,8 @@ public class Perspective implements IPerspectiveFactory {
 		
 		layout.addView(IDs.VIEW_CLIENTS_ID, IPageLayout.LEFT, 0.5f, IPageLayout.ID_EDITOR_AREA);
 		
-		layout.addView(IDs.VIEW_INVOICES_ID, IPageLayout.BOTTOM, 0.5f, IDs.VIEW_CLIENTS_ID);
+		layout.addView(IDs.VIEW_INVOICES_ID, IPageLayout.BOTTOM, 0.5f, IPageLayout.ID_EDITOR_AREA);
 		
-		layout.addView(IDs.VIEW_EXPENSES_ID, IPageLayout.LEFT, 0.5f, IDs.VIEW_EXPENSES_ID);
+		layout.addView(IDs.VIEW_EXPENSES_ID, IPageLayout.BOTTOM, 0.5f, IDs.VIEW_CLIENTS_ID);
 	}
 }
