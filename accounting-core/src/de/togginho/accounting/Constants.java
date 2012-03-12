@@ -28,6 +28,9 @@ public interface Constants {
 	/** An empty string. */
 	public static final String EMPTY_STRING = "";
 	
+	/** A blank. */
+	public static final String BLANK_STRING = " ";
+	
 	/** A hyphen (-). */
 	public static final String HYPHEN = " - ";
 	

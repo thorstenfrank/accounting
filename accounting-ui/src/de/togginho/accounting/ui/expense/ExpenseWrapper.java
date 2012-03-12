@@ -87,22 +87,50 @@ class ExpenseWrapper {
 		return FormatUtil.formatCurrency(price.getNet());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	protected String getTaxRateFormatted() {
 		return expense.getTaxRate() != null ? expense.getTaxRate().toShortString() : Constants.HYPHEN;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	protected BigDecimal getTaxAmount() {
 		return price.getTax();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	protected String getTaxAmountFormatted() {
-		return price.getTax() != null ? FormatUtil.formatCurrency(price.getTax()) : Constants.HYPHEN;
+		if (price.getTax() == null) {
+			return Constants.HYPHEN;
+		}
+		
+		StringBuilder sb = new StringBuilder(FormatUtil.formatPercentValue(expense.getTaxRate().getRate()));
+		sb.append(Constants.BLANK_STRING).append(Constants.HYPHEN).append(Constants.BLANK_STRING);
+		sb.append(FormatUtil.formatCurrency(price.getTax()));
+		
+		return sb.toString();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	protected BigDecimal getGrossAmount() {
 		return price.getGross();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	protected String getGrossAmountFormatted() {
 		return FormatUtil.formatCurrency(price.getGross());
 	}

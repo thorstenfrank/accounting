@@ -77,31 +77,34 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DATE);
 		final TableColumn col1col = col1.getColumn();
 		col1col.setText(Messages.labelDate);
-		tcl.setColumnData(col1col, new ColumnWeightData(20, true));
+		tcl.setColumnData(col1col, new ColumnWeightData(18, true));
 		sorter.addSortingSupport(tableViewer, col1col, ExpenseTableSorter.COL_INDEX_DATE);
 		
 		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DESC);
 		final TableColumn col2col = col2.getColumn();
 		col2col.setText(Messages.labelDescription);
-		tcl.setColumnData(col2col, new ColumnWeightData(20, true));
+		tcl.setColumnData(col2col, new ColumnWeightData(28, true));
 		sorter.addSortingSupport(tableViewer, col2col, ExpenseTableSorter.COL_INDEX_DESC);
 		
 		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_NET);
 		final TableColumn col3col = col3.getColumn();
 		col3col.setText(Messages.labelNet);
-		tcl.setColumnData(col3col, new ColumnWeightData(20, true));
+		col3col.setAlignment(SWT.RIGHT);
+		tcl.setColumnData(col3col, new ColumnWeightData(18, true));
 		sorter.addSortingSupport(tableViewer, col3col, ExpenseTableSorter.COL_INDEX_NET);
 		
 		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_TAX);
 		final TableColumn col4col = col4.getColumn();
-		col4col.setText(Messages.labelTaxRate);
-		tcl.setColumnData(col4col, new ColumnWeightData(20, true));
+		col4col.setText(Messages.labelTaxes);
+		col4col.setAlignment(SWT.RIGHT);
+		tcl.setColumnData(col4col, new ColumnWeightData(18, true));
 		sorter.addSortingSupport(tableViewer, col4col, ExpenseTableSorter.COL_INDEX_TAX);
 
 		TableViewerColumn col5 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_GROSS);
 		final TableColumn col5col = col5.getColumn();
 		col5col.setText(Messages.labelGross);
-		tcl.setColumnData(col5col, new ColumnWeightData(20, true));
+		col5col.setAlignment(SWT.RIGHT);
+		tcl.setColumnData(col5col, new ColumnWeightData(18, true));
 		sorter.addSortingSupport(tableViewer, col5col, ExpenseTableSorter.COL_INDEX_GROSS);
 		
 		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());
