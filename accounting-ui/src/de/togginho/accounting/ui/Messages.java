@@ -211,6 +211,8 @@ public class Messages extends NLS {
 	public static String labelClientName;
 	public static String labelClientNumber;
 	public static String labelDate;
+	public static String labelDepreciationMethod;
+	public static String labelDepreciationPeriodInYears;
 	public static String labelDescription;
 	public static String labelEmail;
 	public static String labelExpense;
@@ -235,6 +237,7 @@ public class Messages extends NLS {
 	public static String labelQuantity;
 	public static String labelRevenue;
 	public static String labelRevenueRelevant;
+	public static String labelScrapValue;
 	public static String labelSearch;
 	public static String labelStreet;
 	public static String labelSubtotal;

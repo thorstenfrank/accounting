@@ -210,17 +210,17 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		grossAmount.setEditable(false);
 		grossAmount.setEnabled(false);
 		
-		WidgetHelper.createLabel(composite, "Abschreibungsmethode");
+		WidgetHelper.createLabel(composite, Messages.labelDepreciationMethod);
 		depreciationMethod = new Combo(composite, SWT.READ_ONLY);
 		gdf.applyTo(depreciationMethod);
 		depreciationMethod.add("Keine Abschreibung");
 		depreciationMethod.add("Linear");
 		
-		WidgetHelper.createLabel(composite, "Nutzungsdauer (Jahre)");
+		WidgetHelper.createLabel(composite, Messages.labelDepreciationPeriodInYears);
 		depreciationPeriod = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gdf.applyTo(depreciationPeriod);
 		
-		WidgetHelper.createLabel(composite, "Restwert");
+		WidgetHelper.createLabel(composite, Messages.labelScrapValue);
 		salvageValue = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gdf.applyTo(salvageValue);
 		
