@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Expense;
 
@@ -33,7 +34,7 @@ import de.togginho.accounting.model.Expense;
  * @author thorsten
  *
  */
-public class StraightlineDepreciationTest {
+public class StraightlineDepreciationTest extends BaseTestFixture {
 
 	private StraightlineDepreciation depreciation;
 
@@ -201,9 +202,5 @@ public class StraightlineDepreciationTest {
 		assertAreEqual(depreciationAmount, ad.getDepreciationAmount());
 		assertAreEqual(new BigDecimal("5000"), ad.getAccumulatedDepreciation());
 		assertAreEqual(BigDecimal.ZERO, ad.getEndOfYearBookValue());
-	}
-	
-	private void assertAreEqual(BigDecimal expected, BigDecimal actual) {
-		assertEquals("Expected: " + expected.toString() + ", actual: " + actual.toString(), 0, actual.compareTo(expected));
 	}
 }

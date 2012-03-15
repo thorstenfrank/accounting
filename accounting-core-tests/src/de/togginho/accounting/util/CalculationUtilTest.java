@@ -22,10 +22,12 @@ import static org.junit.Assert.assertNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
@@ -37,7 +39,7 @@ import de.togginho.accounting.model.TaxRate;
  * @author thorsten
  *
  */
-public class CalculationUtilTest {
+public class CalculationUtilTest extends BaseTestFixture {
 	
 	private static final BigDecimal TOTAL_NET = new BigDecimal("1171");
 	private static final BigDecimal TOTAL_TAX = new BigDecimal("22.99");
@@ -50,21 +52,22 @@ public class CalculationUtilTest {
 	private static final BigDecimal REVENUE_TAX = new BigDecimal("3.99");
 	private static final BigDecimal REVENUE_GROSS = new BigDecimal("1074.99");
 	
+	private static final TaxRate TEST_VAT = new TaxRate();
+	
 	private static final Invoice TEST_INVOICE = new Invoice();
 	
 	@BeforeClass
 	public static void createTestInvoice() {
-    	final TaxRate taxRate = new TaxRate();
-    	taxRate.setShortName("USt.");
-    	taxRate.setLongName("Umsatzsteuer");
-    	taxRate.setRate(new BigDecimal("0.19"));
+    	TEST_VAT.setShortName("USt.");
+    	TEST_VAT.setLongName("Umsatzsteuer");
+    	TEST_VAT.setRate(new BigDecimal("0.19"));
     	
     	TEST_INVOICE.setNumber("JUnitTestInvoice");
     	
         InvoicePosition ip1 = new InvoicePosition();
         ip1.setQuantity(new BigDecimal("2"));
         ip1.setPricePerUnit(new BigDecimal("10.5"));
-        ip1.setTaxRate(taxRate);
+        ip1.setTaxRate(TEST_VAT);
         ip1.setRevenueRelevant(true);
 
         InvoicePosition ip2 = new InvoicePosition();
@@ -75,7 +78,7 @@ public class CalculationUtilTest {
         InvoicePosition ip3 = new InvoicePosition();
         ip3.setQuantity(new BigDecimal("1"));
         ip3.setPricePerUnit(new BigDecimal("100.00"));
-        ip3.setTaxRate(taxRate);
+        ip3.setTaxRate(TEST_VAT);
         ip3.setRevenueRelevant(false);
         
         List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
@@ -93,9 +96,8 @@ public class CalculationUtilTest {
     public void testCalculateNetPrice() {
     	// check null handling
     	assertEquals(BigDecimal.ZERO, CalculationUtil.calculateNetPrice(new InvoicePosition()));
-    	        
-        assertEquals(0, NET_ONE.compareTo(CalculationUtil.calculateNetPrice(TEST_INVOICE.getInvoicePositions().get(0))));
-        assertEquals(0, NET_TWO.compareTo(CalculationUtil.calculateNetPrice(TEST_INVOICE.getInvoicePositions().get(1))));
+        assertAreEqual(NET_ONE, CalculationUtil.calculateNetPrice(TEST_INVOICE.getInvoicePositions().get(0)));
+        assertAreEqual(NET_TWO, CalculationUtil.calculateNetPrice(TEST_INVOICE.getInvoicePositions().get(1)));
     }
     
     /**
@@ -105,9 +107,24 @@ public class CalculationUtilTest {
     public void testCalculateTotalPrice() {
     	Price price = CalculationUtil.calculateTotalPrice(TEST_INVOICE);
     	assertNotNull(price);
-    	assertEquals(0, TOTAL_GROSS.compareTo(price.getGross()));
-    	assertEquals(0, TOTAL_NET.compareTo(price.getNet()));
-    	assertEquals(0, TOTAL_TAX.compareTo(price.getTax()));
+    	
+    	assertAreEqual(TOTAL_GROSS, price.getGross());
+    	assertAreEqual(TOTAL_NET, price.getNet());
+    	assertAreEqual(TOTAL_TAX, price.getTax());
+    }
+    
+    /**
+     * Test method for {@link CalculationUtil#calculateSubTotalsByTaxRate(Invoice)}.
+     */    
+    @Test
+    public void testCalculateSubTotalsByTaxRate() {
+    	final Map<TaxRate, BigDecimal> subtotals = CalculationUtil.calculateSubTotalsByTaxRate(TEST_INVOICE);
+    	assertNotNull(subtotals);
+    	assertEquals(2, subtotals.size());
+    	assertNotNull(subtotals.get(null));
+    	assertAreEqual(NET_TWO, subtotals.get(null));
+    	assertNotNull(subtotals.get(TEST_VAT));
+    	assertAreEqual(new BigDecimal("121"), subtotals.get(TEST_VAT));
     }
     
     /**
@@ -121,12 +138,12 @@ public class CalculationUtilTest {
     	assertNull(price.getTax());
     	
     	price = CalculationUtil.calculatePrice(TEST_INVOICE.getInvoicePositions().get(0));
-    	assertEquals(0, NET_ONE.compareTo(price.getNet()));
-    	assertEquals(0, TAX_ONE.compareTo(price.getTax()));
-    	assertEquals(0, GROSS_ONE.compareTo(price.getGross()));
+    	assertAreEqual(NET_ONE, price.getNet());
+    	assertAreEqual(TAX_ONE, price.getTax());
+    	assertAreEqual(GROSS_ONE, price.getGross());
     	
     	price = CalculationUtil.calculatePrice(TEST_INVOICE.getInvoicePositions().get(1));
-    	assertEquals(0, NET_TWO.compareTo(price.getNet()));
+    	assertAreEqual(NET_TWO, price.getNet());
     	assertNull(price.getTax());
     	assertEquals(price.getNet(), price.getGross());
     }
@@ -137,8 +154,8 @@ public class CalculationUtilTest {
     @Test
     public void testCalculateRevenue() {
     	Price price = CalculationUtil.calculateRevenue(TEST_INVOICE);
-    	assertEquals(0, REVENUE_GROSS.compareTo(price.getGross()));
-    	assertEquals(0, REVENUE_NET.compareTo(price.getNet()));
-    	assertEquals(0, REVENUE_TAX.compareTo(price.getTax()));
+    	assertAreEqual(REVENUE_GROSS, price.getGross());
+    	assertAreEqual(REVENUE_NET, price.getNet());
+    	assertAreEqual(REVENUE_TAX, price.getTax());
     }
 }

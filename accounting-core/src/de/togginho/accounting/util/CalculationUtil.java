@@ -16,6 +16,8 @@
 package de.togginho.accounting.util;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +25,7 @@ import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
+import de.togginho.accounting.model.TaxRate;
 
 /**
  * Utility class for calculating prices of {@link InvoicePosition} and and entire {@link Invoice}.
@@ -64,6 +67,30 @@ public final class CalculationUtil {
     	}
     	
     	return new Price(totalNet, totalTax, totalGross);
+    }
+    
+    /**
+     * 
+     * @param invoice
+     * @return
+     */
+    public static Map<TaxRate, BigDecimal> calculateSubTotalsByTaxRate(Invoice invoice) {
+    	final Map<TaxRate, BigDecimal> subtotals = new HashMap<TaxRate, BigDecimal>();
+    	
+    	if (invoice != null && invoice.getInvoicePositions() != null) {
+    		for (InvoicePosition ip : invoice.getInvoicePositions()) {
+    			final Price singlePrice = calculatePrice(ip);
+    			BigDecimal subtotal = BigDecimal.ZERO;
+    			if (subtotals.containsKey(ip.getTaxRate())) {
+    				subtotal = subtotals.get(ip.getTaxRate());
+    			}
+    			subtotal = subtotal.add(singlePrice.getNet());
+    			subtotals.put(ip.getTaxRate(), subtotal);
+    		}
+    	}
+    	
+    	
+    	return subtotals;
     }
     
     /**

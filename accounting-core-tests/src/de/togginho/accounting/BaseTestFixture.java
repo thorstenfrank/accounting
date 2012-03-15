@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -121,5 +123,14 @@ public abstract class BaseTestFixture {
 			testClient.setDefaultPaymentTerms(new PaymentTerms(PaymentType.TRADE_CREDIT, 60));
 		}
 		return testClient;
+	}
+	
+	/**
+	 * 
+	 * @param expected
+	 * @param actual
+	 */
+	protected void assertAreEqual(BigDecimal expected, BigDecimal actual) {
+		assertEquals("Expected: " + expected.toString() + ", actual: " + actual.toString(), 0, actual.compareTo(expected));
 	}
 }
