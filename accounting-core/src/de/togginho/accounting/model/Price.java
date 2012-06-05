@@ -15,8 +15,12 @@
  */
 package de.togginho.accounting.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  * A container for a price including tax, which applies to both an {@link InvoicePosition} and an entire {@link Invoice}.
@@ -33,19 +37,26 @@ import java.math.BigDecimal;
  * @see de.togginho.accounting.util.CalculationUtil#calculatePrice(InvoicePosition)
  * @see de.togginho.accounting.util.CalculationUtil#calculateTotalPrice(Invoice)
  */
-public class Price implements Serializable{
+public class Price implements Serializable {
 
 	/**
      * 
      */
     private static final long serialVersionUID = -58766435614756711L;
 
+    /** **/
+    private static final MathContext MATH_CONTEXT = new MathContext(34, RoundingMode.HALF_UP);
+    private static final int SCALE = 2;
+    
+    
 	private BigDecimal net;
 	
 	private BigDecimal tax;
 	
 	private BigDecimal gross;
 
+	private PropertyChangeSupport propertyChangeSupport;
+	
 	/**
      * Creates a new price with no values.
      */
@@ -61,6 +72,7 @@ public class Price implements Serializable{
      * @param gross gross price
      */
     public Price(BigDecimal net, BigDecimal tax, BigDecimal gross) {
+    	propertyChangeSupport = new PropertyChangeSupport(this);
 	    this.net = net;
 	    this.tax = tax;
 	    this.gross = gross;
@@ -77,7 +89,9 @@ public class Price implements Serializable{
      * @param net the net price
      */
     public void setNet(BigDecimal net) {
+    	final BigDecimal oldValue = this.net;
     	this.net = net;
+    	propertyChangeSupport.firePropertyChange("net", oldValue, net);
     }
 
 	/**
@@ -91,7 +105,9 @@ public class Price implements Serializable{
      * @param tax the tax amount
      */
     public void setTax(BigDecimal tax) {
+    	final BigDecimal oldValue = this.tax;
     	this.tax = tax;
+    	propertyChangeSupport.firePropertyChange("tax", oldValue, this.tax);
     }
 
 	/**
@@ -105,7 +121,9 @@ public class Price implements Serializable{
      * @param gross the gross price
      */
     public void setGross(BigDecimal gross) {
+    	final BigDecimal oldValue = this.gross;
     	this.gross = gross;
+    	propertyChangeSupport.firePropertyChange("gross", oldValue, this.gross);
     }
     
     /**
@@ -118,10 +136,10 @@ public class Price implements Serializable{
     	}
     	
     	if (this.net == null) {
-    		this.net = BigDecimal.ZERO;
+    		setNet(BigDecimal.ZERO);
     	}
     	
-    	this.net = this.net.add(net);
+    	setNet(this.net.add(net));
     }
     
     /**
@@ -134,10 +152,10 @@ public class Price implements Serializable{
     	}
     	
     	if (this.tax == null) {
-    		this.tax = BigDecimal.ZERO;
+    		setTax(BigDecimal.ZERO);
     	}
     	
-    	this.tax = this.tax.add(tax);
+    	setTax(this.tax.add(tax));
     }
     
     /**
@@ -150,9 +168,9 @@ public class Price implements Serializable{
     	}
     	
     	if (this.gross == null) {
-    		this.gross = BigDecimal.ZERO;
+    		setGross(BigDecimal.ZERO);
     	}
-    	this.gross = this.gross.add(gross);
+    	setGross(this.gross.add(gross));
     }
     
     /**
@@ -167,4 +185,76 @@ public class Price implements Serializable{
     	addToTax(price.getTax());
     	addToGross(price.getGross());
     }
+    
+    /**
+     * 
+     * @param taxRate may be <code>null</code>
+     */
+    public void calculateGrossFromNet(TaxRate taxRate) {
+    	if (taxRate == null || taxRate.getRate() == null) {
+    		setTax(null);
+    		setGross(net);
+    	} else if (net == null) {
+    		setNet(BigDecimal.ZERO);
+    		setGross(net);
+    	} else {
+    		setTax(net.multiply(taxRate.getRate()));
+    		setGross(net.add(tax));
+    	}
+    }
+    
+    /**
+     * 
+     * @param taxRate may be <code>null</code>
+     */
+    public void calculateNetFromGross(TaxRate taxRate) {
+    	if (taxRate == null || taxRate.getRate() == null) {
+    		setTax(null);
+    		setNet(gross);
+    	} else if (gross == null) {
+    		setGross(BigDecimal.ZERO);
+    		setNet(gross);
+    	} else {
+    		// Net = Gross / (1 + taxRate)
+    		setNet(gross.divide(BigDecimal.ONE.add(taxRate.getRate()), MATH_CONTEXT).setScale(SCALE, MATH_CONTEXT.getRoundingMode()));
+    		setTax(gross.subtract(net));
+    	}
+    }
+    
+	/**
+	 * @param listener
+	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
+	 */
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	/**
+	 * @param listener
+	 * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)
+	 */
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	/**
+	 * @param propertyName
+	 * @param listener
+	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+	 */
+	public void addPropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	/**
+	 * @param propertyName
+	 * @param listener
+	 * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+	 */
+	public void removePropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName,
+				listener);
+	}
 }

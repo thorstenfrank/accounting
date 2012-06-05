@@ -68,11 +68,9 @@ public class EditExpenseWizard extends Wizard implements IWorkbenchWizard {
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
-	public boolean performFinish() {
-		Expense expense = page.getExpense();
-		
+	public boolean performFinish() {		
 		try {
-			AccountingUI.getAccountingService().saveExpense(expense);
+			AccountingUI.getAccountingService().saveExpense(page.getExpense());
 		} catch (AccountingException e) {
         	MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
         	msgBox.setMessage(Messages.labelError);

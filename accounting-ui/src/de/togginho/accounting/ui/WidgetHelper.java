@@ -19,6 +19,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
@@ -65,6 +69,7 @@ public class WidgetHelper {
 		if (text != null) {
 			theText.setText(text);
 		}
+		selectAllOnEntry(theText);
 		return theText;
 	}
 
@@ -109,5 +114,25 @@ public class WidgetHelper {
 	 */
 	public static void dateToWidget(Calendar cal, DateTime dateTime) {
 		dateTime.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+	}
+	
+	/**
+	 * 
+	 * @param text
+	 */
+	public static void selectAllOnEntry(final Text text) {
+		text.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				text.selectAll();
+			}
+		});
+		
+		text.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				text.selectAll();
+			}
+		});
 	}
 }

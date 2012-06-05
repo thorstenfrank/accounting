@@ -23,14 +23,23 @@ import java.util.Set;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -47,10 +56,9 @@ import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
-import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
+import de.togginho.accounting.ui.conversion.CurrencyToStringConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
 import de.togginho.accounting.util.CalculationUtil;
-import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -58,6 +66,10 @@ import de.togginho.accounting.util.FormatUtil;
  */
 class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 
+	private enum EditedPriceType {
+		NET, GROSS;
+	};
+	
 	/**
 	 * 
 	 */
@@ -67,6 +79,11 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	private Combo depreciationMethod;
 	private Text depreciationPeriod;
 	private Text salvageValue;
+	
+	private Price price;
+	
+	private EditedPriceType editedPrice = EditedPriceType.NET;
+	private boolean changeByUserInProgress = false;
 	
 	/**
 	 * 
@@ -98,39 +115,43 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(2, false);
 		composite.setLayout(layout);
-	
+		
+		price = CalculationUtil.calculatePrice(expense);
+		
 		DataBindingContext bindingContext = new DataBindingContext();
+		UpdateValueStrategy toPrice = new UpdateValueStrategy();
+		toPrice.setConverter(StringToBigDecimalConverter.getInstance());
+		UpdateValueStrategy fromPrice = new UpdateValueStrategy();
+		fromPrice.setConverter(CurrencyToStringConverter.getInstance());
 		
 		GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, false);
 		
+		// EXPENSE TYPE
 		WidgetHelper.createLabel(composite, Messages.labelExpenseType);
-		final Combo expenseTypeCombo = new Combo(composite, SWT.READ_ONLY);
-		gdf.applyTo(expenseTypeCombo);
-
-		expenseTypeCombo.add(Constants.EMPTY_STRING);
-		final List<ExpenseType> expenseTypes = new ArrayList<ExpenseType>();
-		expenseTypes.add(null);
-		int index = 1;
-		for (ExpenseType expenseType : ExpenseType.values()) {
-			expenseTypes.add(expenseType);
-			expenseTypeCombo.add(expenseType.getTranslatedString());
-			if (expenseType.equals(expense.getExpenseType())) {
-				expenseTypeCombo.select(index);
-			} else {
-				index++;
-			}
-		}
-		
-		expenseTypeCombo.addSelectionListener(new SelectionAdapter() {
+		ComboViewer expenseTypeCombo = new ComboViewer(composite, SWT.READ_ONLY);
+		gdf.applyTo(expenseTypeCombo .getCombo());
+		expenseTypeCombo.setContentProvider(new ArrayContentProvider());
+		expenseTypeCombo.setInput(ExpenseType.values());
+		expenseTypeCombo.setLabelProvider(new LabelProvider() {
+			
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				final Combo combo = (Combo) e.getSource();
-				final ExpenseType selected = expenseTypes.get(combo.getSelectionIndex());
-				expense.setExpenseType(selected);
-				enableOrDisableDepreciation(selected.isDepreciationPossible());
+			public String getText(Object element) {
+				return ((ExpenseType) element).getTranslatedString();
+			}
+			
+		});
+		expenseTypeCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				checkIfPageComplete();
 			}
 		});
+		bindingContext.bindValue(
+				ViewersObservables.observeSinglePostSelection(expenseTypeCombo), 
+				PojoObservables.observeValue(expense, Expense.FIELD_TYPE));
+
 		
+		// PAYMENT DATE
 		WidgetHelper.createLabel(composite, Messages.labelDate);
 		if (expense.getPaymentDate() == null) {
 			expense.setPaymentDate(new Date());
@@ -146,35 +167,52 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 			}
 		});
 		
+		// DESCRIPTION
 		WidgetHelper.createLabel(composite, Messages.labelDescription);
-		final Text description = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		final Text description = WidgetHelper.createSingleBorderText(composite, null);
 		gdf.applyTo(description);
 		bind(bindingContext, description, Expense.FIELD_DESCRIPTION, false);
+		description.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				checkIfPageComplete();
+			}
+		});
 		
+		
+		// NET VALUE
 		WidgetHelper.createLabel(composite, Messages.labelNet);
-		final Text net = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		final Text net = WidgetHelper.createSingleBorderText(composite, null);
 		gdf.applyTo(net);
 		
-		IObservableValue widgetObservable = SWTObservables.observeText(net, SWT.Modify);
-		IObservableValue pojoObservable = PojoObservables.observeValue(expense, Expense.FIELD_NET_AMOUNT);
-		UpdateValueStrategy toPrice = new UpdateValueStrategy();
-		toPrice.setConverter(StringToBigDecimalConverter.getInstance());
-		UpdateValueStrategy fromPrice = new UpdateValueStrategy();
-		fromPrice.setConverter(BigDecimalToStringConverter.getInstance());
-		bindingContext.bindValue(widgetObservable, pojoObservable, toPrice, fromPrice);
-		widgetObservable.addValueChangeListener(this);
+		IObservableValue netObservable = SWTObservables.observeText(net, SWT.Modify);
+		bindingContext.bindValue(
+				netObservable, 
+				BeansObservables.observeValue(price, "net"), 
+				toPrice, fromPrice);
+		netObservable.addValueChangeListener(new IValueChangeListener() {
+			
+			@Override
+			public void handleValueChange(ValueChangeEvent event) {
+				if (!changeByUserInProgress) {
+					editedPrice = EditedPriceType.NET;					
+				}
+			}
+		});
+		netObservable.addValueChangeListener(this);
 		
 		WidgetHelper.createLabel(composite, Messages.labelTaxRate);
 		final Combo taxRate = new Combo(composite, SWT.READ_ONLY);
 		gdf.applyTo(taxRate);
 		
+		// TAX RATE
 		Set<TaxRate> origRates = AccountingUI.getAccountingService().getCurrentUser().getTaxRates();
 		final List<TaxRate> taxRates = new ArrayList<TaxRate>(origRates.size() + 1);
 		
 		String[] taxRateItems = new String[origRates.size() + 1]; 
 		taxRateItems[0] = Constants.EMPTY_STRING;
 		taxRates.add(null);
-		index = 1;
+		int index = 1;
 		Iterator<TaxRate> iter = origRates.iterator();
 		int selection = 0;
 		while (iter.hasNext()) {
@@ -192,34 +230,52 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		taxRate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				expense.setTaxRate(taxRates.get(taxRate.getSelectionIndex()));
-				handleValueChange(null);
+				if (!changeByUserInProgress) {
+					expense.setTaxRate(taxRates.get(taxRate.getSelectionIndex()));
+					handleValueChange(null);					
+				}
 			}
 			
 		});
 		
+		// TAX AMOUNT
 		WidgetHelper.createLabel(composite, Messages.labelTaxes);
 		taxAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gdf.applyTo(taxAmount);
 		taxAmount.setEditable(false);
 		taxAmount.setEnabled(false);
+		IObservableValue taxObservable = SWTObservables.observeText(taxAmount, SWT.None);
+		bindingContext.bindValue(taxObservable, BeansObservables.observeValue(price, "tax"), toPrice, fromPrice);
 		
+		// GROSS AMOUNT
 		WidgetHelper.createLabel(composite, Messages.labelGross);
-		grossAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		grossAmount = WidgetHelper.createSingleBorderText(composite, null);
 		gdf.applyTo(grossAmount);
-		grossAmount.setEditable(false);
-		grossAmount.setEnabled(false);
+		IObservableValue grossObservable = SWTObservables.observeText(grossAmount, SWT.Modify);
+		bindingContext.bindValue(grossObservable, BeansObservables.observeValue(price, "gross"), toPrice, fromPrice);
+		grossObservable.addValueChangeListener(new IValueChangeListener() {
+			@Override
+			public void handleValueChange(ValueChangeEvent event) {
+				if (!changeByUserInProgress) {
+					editedPrice = EditedPriceType.GROSS;					
+				}
+			}
+		});
+		grossObservable.addValueChangeListener(this);
 		
+		// DEPRECIATION METHOD
 		WidgetHelper.createLabel(composite, Messages.labelDepreciationMethod);
 		depreciationMethod = new Combo(composite, SWT.READ_ONLY);
 		gdf.applyTo(depreciationMethod);
 		depreciationMethod.add("Keine Abschreibung");
 		depreciationMethod.add("Linear");
 		
+		// DEPRECIATION PERIOD
 		WidgetHelper.createLabel(composite, Messages.labelDepreciationPeriodInYears);
 		depreciationPeriod = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gdf.applyTo(depreciationPeriod);
 		
+		// SALVAGE VALUE
 		WidgetHelper.createLabel(composite, Messages.labelScrapValue);
 		salvageValue = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gdf.applyTo(salvageValue);
@@ -273,17 +329,23 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see org.eclipse.core.databinding.observable.value.IValueChangeListener#handleValueChange(org.eclipse.core.databinding.observable.value.ValueChangeEvent)
+	 * @see IValueChangeListener#handleValueChange(ValueChangeEvent)
 	 */
 	@Override
 	public void handleValueChange(ValueChangeEvent event) {
-		final Price price = CalculationUtil.calculatePrice(expense);
-		grossAmount.setText(FormatUtil.formatCurrency(price.getGross()));
-		if (price.getTax() != null) {
-			taxAmount.setText(FormatUtil.formatCurrency(price.getTax()));
-		} else {
-			taxAmount.setText(Constants.HYPHEN);
+		changeByUserInProgress = true;
+		switch (editedPrice) {
+		case NET:
+			price.calculateGrossFromNet(expense.getTaxRate());
+			break;
+		case GROSS:
+			price.calculateNetFromGross(expense.getTaxRate());
+			break;
 		}
+		
+		expense.setNetAmount(price.getNet());
+		changeByUserInProgress = false;
+		
 		checkIfPageComplete();
 	}
 
