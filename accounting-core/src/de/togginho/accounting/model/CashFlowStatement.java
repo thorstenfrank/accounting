@@ -126,7 +126,10 @@ public class CashFlowStatement implements Serializable {
 					grossProfit = revenue.getRevenueNet().subtract(expenses.getOperatingCosts().getNet());
 				}
 				
-				taxSum = revenue.getRevenueTax().subtract(expenses.getTotalCost().getTax());
+				taxSum = revenue.getRevenueTax() != null ? revenue.getRevenueTax() : BigDecimal.ZERO;
+				if (expenses.getTotalCost().getTax() != null) {
+					taxSum = taxSum.subtract(expenses.getTotalCost().getTax());
+				}
 			}
 		}
 	}
