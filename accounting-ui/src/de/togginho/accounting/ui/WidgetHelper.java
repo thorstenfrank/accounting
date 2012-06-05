@@ -18,12 +18,14 @@ package de.togginho.accounting.ui;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -34,6 +36,8 @@ import org.eclipse.swt.widgets.Text;
  * @author tfrank1
  */
 public class WidgetHelper {
+	
+	private static final GridDataFactory GDF = GridDataFactory.fillDefaults().grab(true, false);
 	
 	/**
 	 * Private since this is only a utility class.
@@ -69,6 +73,7 @@ public class WidgetHelper {
 		if (text != null) {
 			theText.setText(text);
 		}
+		GDF.applyTo(theText);
 		selectAllOnEntry(theText);
 		return theText;
 	}
@@ -114,6 +119,13 @@ public class WidgetHelper {
 	 */
 	public static void dateToWidget(Calendar cal, DateTime dateTime) {
 		dateTime.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+	}
+	
+	/**
+	 * The same as <code>GridDataFactory.fillDefaults().grab(true, false).applyTo(control)</code>.
+	 */
+	public static void grabHorizontal(Control control) {
+		GDF.applyTo(control);
 	}
 	
 	/**

@@ -23,7 +23,6 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.PojoObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -213,7 +212,8 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	 */
 	protected Text createText(Composite parent, String text) {
 		Text textField = getToolkit().createText(parent, text, SWT.SINGLE | SWT.BORDER);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(textField);
+		WidgetHelper.grabHorizontal(textField);
+		WidgetHelper.selectAllOnEntry(textField);
 		return textField;
 	}
 	

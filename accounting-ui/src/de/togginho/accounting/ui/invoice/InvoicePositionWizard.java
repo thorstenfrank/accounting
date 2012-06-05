@@ -158,8 +158,6 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			final boolean editable = invoice.canBeEdited();
 			
-			GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, false);
-			
 			// REVENUE RELEVANT
 			WidgetHelper.createLabel(composite, EMPTY_STRING);
 			Button revenueRelevant = new Button(composite, SWT.CHECK);
@@ -173,9 +171,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			// QUANTITY
 			WidgetHelper.createLabel(composite, Messages.labelQuantity);
-			Text quantity = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			Text quantity = WidgetHelper.createSingleBorderText(composite, null);
 			quantity.setEnabled(editable);
-			gdf.applyTo(quantity);
 			
 			IObservableValue quantityWidgetObservable = SWTObservables.observeText(quantity, SWT.Modify);
 			IObservableValue quantityPojoObservable = PojoObservables.observeValue(position, InvoicePosition.FIELD_QUANTITY);
@@ -188,9 +185,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			// UNIT
 			WidgetHelper.createLabel(composite, Messages.labelUnit);
-			Text unit = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			Text unit = WidgetHelper.createSingleBorderText(composite, null);
 			unit.setEnabled(editable);
-			gdf.applyTo(unit);
 			IObservableValue unitWidgetObservable = SWTObservables.observeText(unit, SWT.Modify);
 			bindingContext.bindValue(
 					unitWidgetObservable, 
@@ -199,9 +195,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			// PRICE PER UNIT
 			WidgetHelper.createLabel(composite, Messages.labelPricePerUnit);
-			Text pricePerUnit = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			Text pricePerUnit = WidgetHelper.createSingleBorderText(composite, null);
 			pricePerUnit.setEnabled(editable);
-			gdf.applyTo(pricePerUnit);
 			
 			IObservableValue priceWidgetObservable = SWTObservables.observeText(pricePerUnit, SWT.Modify);
 			IObservableValue pricePojoObservable = PojoObservables.observeValue(position, InvoicePosition.FIELD_PRICE_PER_UNIT);
@@ -214,8 +209,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 
 			// NET AMOUNT (INFO ONLY)
 			WidgetHelper.createLabel(composite, Messages.labelNet);
-			netAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
-			gdf.applyTo(netAmount);
+			netAmount = WidgetHelper.createSingleBorderText(composite, null);
 			netAmount.setEnabled(false);
 			netAmount.setEditable(false);
 			
@@ -224,7 +218,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			Combo taxRate = new Combo(composite, SWT.READ_ONLY);
 			taxRate.setEnabled(editable);
 			taxRate.add(EMPTY_STRING);
-			gdf.applyTo(taxRate);
+			WidgetHelper.grabHorizontal(taxRate);
 			
 			if (invoice.getUser().getTaxRates() != null) {
 				TaxRate existing = position != null && position.getTaxRate() != null ? position.getTaxRate() : null;
@@ -261,17 +255,15 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			// TAX AMOUNT (INFO ONLY)
 			WidgetHelper.createLabel(composite, Messages.labelTaxes);
-			taxAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			taxAmount = WidgetHelper.createSingleBorderText(composite, null);
 			taxAmount.setEnabled(false);
 			taxAmount.setEditable(false);
-			gdf.applyTo(taxAmount);
 			
 			// GROSS AMOUNT (INFO ONLY)
 			WidgetHelper.createLabel(composite, Messages.labelGross);
-			grossAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			grossAmount = WidgetHelper.createSingleBorderText(composite, null);
 			grossAmount.setEnabled(false);
 			grossAmount.setEditable(false);
-			gdf.applyTo(grossAmount);
 			
 			// DESCRIPTION
 			WidgetHelper.createLabel(composite, Messages.labelDescription);

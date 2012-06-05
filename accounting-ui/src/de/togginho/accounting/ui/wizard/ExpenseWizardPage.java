@@ -30,7 +30,6 @@ import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -123,13 +122,11 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		toPrice.setConverter(StringToBigDecimalConverter.getInstance());
 		UpdateValueStrategy fromPrice = new UpdateValueStrategy();
 		fromPrice.setConverter(CurrencyToStringConverter.getInstance());
-		
-		GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, false);
-		
+				
 		// EXPENSE TYPE
 		WidgetHelper.createLabel(composite, Messages.labelExpenseType);
 		ComboViewer expenseTypeCombo = new ComboViewer(composite, SWT.READ_ONLY);
-		gdf.applyTo(expenseTypeCombo .getCombo());
+		WidgetHelper.grabHorizontal(expenseTypeCombo.getCombo());
 		expenseTypeCombo.setContentProvider(new ArrayContentProvider());
 		expenseTypeCombo.setInput(ExpenseType.values());
 		expenseTypeCombo.setLabelProvider(new LabelProvider() {
@@ -170,7 +167,6 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		// DESCRIPTION
 		WidgetHelper.createLabel(composite, Messages.labelDescription);
 		final Text description = WidgetHelper.createSingleBorderText(composite, null);
-		gdf.applyTo(description);
 		bind(bindingContext, description, Expense.FIELD_DESCRIPTION, false);
 		description.addKeyListener(new KeyAdapter() {
 			@Override
@@ -183,8 +179,6 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		// NET VALUE
 		WidgetHelper.createLabel(composite, Messages.labelNet);
 		final Text net = WidgetHelper.createSingleBorderText(composite, null);
-		gdf.applyTo(net);
-		
 		IObservableValue netObservable = SWTObservables.observeText(net, SWT.Modify);
 		bindingContext.bindValue(
 				netObservable, 
@@ -201,11 +195,10 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		});
 		netObservable.addValueChangeListener(this);
 		
+		// TAX RATE
 		WidgetHelper.createLabel(composite, Messages.labelTaxRate);
 		final Combo taxRate = new Combo(composite, SWT.READ_ONLY);
-		gdf.applyTo(taxRate);
-		
-		// TAX RATE
+		WidgetHelper.grabHorizontal(taxRate);
 		Set<TaxRate> origRates = AccountingUI.getAccountingService().getCurrentUser().getTaxRates();
 		final List<TaxRate> taxRates = new ArrayList<TaxRate>(origRates.size() + 1);
 		
@@ -240,8 +233,7 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		
 		// TAX AMOUNT
 		WidgetHelper.createLabel(composite, Messages.labelTaxes);
-		taxAmount = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		gdf.applyTo(taxAmount);
+		taxAmount = WidgetHelper.createSingleBorderText(composite, null);
 		taxAmount.setEditable(false);
 		taxAmount.setEnabled(false);
 		IObservableValue taxObservable = SWTObservables.observeText(taxAmount, SWT.None);
@@ -250,7 +242,6 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		// GROSS AMOUNT
 		WidgetHelper.createLabel(composite, Messages.labelGross);
 		grossAmount = WidgetHelper.createSingleBorderText(composite, null);
-		gdf.applyTo(grossAmount);
 		IObservableValue grossObservable = SWTObservables.observeText(grossAmount, SWT.Modify);
 		bindingContext.bindValue(grossObservable, BeansObservables.observeValue(price, "gross"), toPrice, fromPrice);
 		grossObservable.addValueChangeListener(new IValueChangeListener() {
@@ -266,19 +257,17 @@ class ExpenseWizardPage extends WizardPage implements IValueChangeListener {
 		// DEPRECIATION METHOD
 		WidgetHelper.createLabel(composite, Messages.labelDepreciationMethod);
 		depreciationMethod = new Combo(composite, SWT.READ_ONLY);
-		gdf.applyTo(depreciationMethod);
+		WidgetHelper.grabHorizontal(depreciationMethod);
 		depreciationMethod.add("Keine Abschreibung");
 		depreciationMethod.add("Linear");
 		
 		// DEPRECIATION PERIOD
 		WidgetHelper.createLabel(composite, Messages.labelDepreciationPeriodInYears);
-		depreciationPeriod = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		gdf.applyTo(depreciationPeriod);
+		depreciationPeriod = WidgetHelper.createSingleBorderText(composite, null);
 		
 		// SALVAGE VALUE
 		WidgetHelper.createLabel(composite, Messages.labelScrapValue);
-		salvageValue = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		gdf.applyTo(salvageValue);
+		salvageValue = WidgetHelper.createSingleBorderText(composite, null);
 		
 		setControl(composite);
 		
