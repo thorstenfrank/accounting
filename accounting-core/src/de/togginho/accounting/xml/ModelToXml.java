@@ -276,7 +276,7 @@ class ModelToXml {
 				xmlExpense.setNetAmount(expense.getNetAmount());
 				xmlExpense.setPaymentDate(convertDate(expense.getPaymentDate()));
 				xmlExpense.setTaxRate(converTaxRate(expense.getTaxRate()));
-				xmlExpenses.getExpenses().add(xmlExpense);
+				xmlExpenses.getExpense().add(xmlExpense);
 			}
 			
 			xmlUser.setExpenses(xmlExpenses);
