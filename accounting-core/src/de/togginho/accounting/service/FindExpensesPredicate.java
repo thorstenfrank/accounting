@@ -47,6 +47,10 @@ class FindExpensesPredicate extends Predicate<Expense> {
 	 */
 	@Override
 	public boolean match(Expense candidate) {
+		if (timeFrame == null) {
+			return true;
+		}
+		
 		return timeFrame.isInTimeFrame(candidate.getPaymentDate());
 	}
 }
