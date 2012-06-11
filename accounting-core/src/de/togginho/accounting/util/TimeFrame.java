@@ -72,6 +72,7 @@ public class TimeFrame {
      */
     public void setFrom(Date from) {
     	this.from = from;
+    	this.type = TimeFrameType.CUSTOM;
     }
 
 	/**
@@ -86,6 +87,7 @@ public class TimeFrame {
      */
     public void setUntil(Date until) {
     	this.until = until;
+    	this.type = TimeFrameType.CUSTOM;
     }
     
     /**
