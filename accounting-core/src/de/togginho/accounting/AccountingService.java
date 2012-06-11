@@ -306,6 +306,13 @@ public interface AccountingService {
 	ExpenseCollection getExpenses(TimeFrame timeFrame);
 	
 	/**
+	 * Permanently removed the supplied {@link Expense} from persistence.
+	 * 
+	 * @param expense the {@link Expense} to delete
+	 */
+	void deleteExpense(Expense expense);
+	
+	/**
 	 * Returns the cash flow overview for the supplied time frame.
 	 * The cash flow statement will include both revenue and expense totals, along with figures like gross profit.
 	 *  

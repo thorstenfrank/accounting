@@ -719,7 +719,19 @@ public class AccountingServiceImpl implements AccountingService {
     	doStoreEntity(expense);
 	    return expense;
     }
-
+    
+	/**
+     * {@inheritDoc}.
+     * @see AccountingService#getExpenses(TimeFrame)
+     */
+    @Override
+    public ExpenseCollection getExpenses(TimeFrame timeFrame) {
+    	ExpenseCollection ec = new ExpenseCollection();
+    	ec.setTimeFrame(timeFrame);
+    	ec.setExpenses(getExpensesAsSet(timeFrame));
+    	return ec;
+    }
+    
     /**
      * 
      * @param timeFrame
@@ -738,17 +750,14 @@ public class AccountingServiceImpl implements AccountingService {
     }
     
 	/**
-     * {@inheritDoc}.
-     * @see de.togginho.accounting.AccountingService#getExpenses(de.togginho.accounting.util.TimeFrame)
-     */
-    @Override
-    public ExpenseCollection getExpenses(TimeFrame timeFrame) {
-    	ExpenseCollection ec = new ExpenseCollection();
-    	ec.setTimeFrame(timeFrame);
-    	ec.setExpenses(getExpensesAsSet(timeFrame));
-    	return ec;
-    }
-    
+	 * {@inheritDoc}
+	 * @see AccountingService#deleteExpense(Expense)
+	 */
+	@Override
+	public void deleteExpense(Expense expense) {
+		doDeleteEntity(expense);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see AccountingService#getCashFlowStatement(TimeFrame)

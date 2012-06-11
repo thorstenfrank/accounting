@@ -18,6 +18,8 @@ package de.togginho.accounting;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -132,5 +134,20 @@ public abstract class BaseTestFixture {
 	 */
 	protected void assertAreEqual(BigDecimal expected, BigDecimal actual) {
 		assertEquals("Expected: " + expected.toString() + ", actual: " + actual.toString(), 0, actual.compareTo(expected));
+	}
+	
+	/**
+	 * 
+	 * @param day
+	 * @param month
+	 * @param year
+	 * @return
+	 */
+	protected Date buildDate(int day, int month, int year) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, day);
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.YEAR, year);
+		return cal.getTime();
 	}
 }
