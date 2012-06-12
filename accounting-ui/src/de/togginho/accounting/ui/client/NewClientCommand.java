@@ -21,7 +21,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.wizard.WizardDialog;
 
 import de.togginho.accounting.ui.AbstractAccountingHandler;
-import de.togginho.accounting.ui.wizard.NewClientWizard;
 
 /**
  * @author thorsten

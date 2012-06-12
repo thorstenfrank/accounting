@@ -40,7 +40,6 @@ import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
-import de.togginho.accounting.ui.wizard.EditExpenseWizard;
 import de.togginho.accounting.util.TimeFrame;
 
 /**
@@ -166,7 +165,7 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	public void doubleClick(DoubleClickEvent event) {
 		IStructuredSelection structuredSelection = (IStructuredSelection) event.getSelection();
 		ExpenseWrapper wrapper = (ExpenseWrapper) structuredSelection.getFirstElement();
-		EditExpenseWizard wizard = new EditExpenseWizard(wrapper.getExpense());
+		ExpenseWizard wizard = new ExpenseWizard(wrapper.getExpense());
 		WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
 		dialog.open();
 	}

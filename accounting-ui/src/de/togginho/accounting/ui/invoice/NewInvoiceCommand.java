@@ -23,7 +23,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import de.togginho.accounting.ui.wizard.NewInvoiceWizard;
 
 /**
  * @author thorsten

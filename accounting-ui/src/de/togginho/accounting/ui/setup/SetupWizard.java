@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui.wizard;
+package de.togginho.accounting.ui.setup;
 
 import java.io.File;
 
 import org.eclipse.jface.wizard.Wizard;
 
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.AddressWizardPage;
 import de.togginho.accounting.ui.Messages;
 
 /**

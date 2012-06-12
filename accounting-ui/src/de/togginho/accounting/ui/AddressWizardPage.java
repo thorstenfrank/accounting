@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui.wizard;
+package de.togginho.accounting.ui;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.WizardPage;
@@ -24,14 +24,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Address;
-import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
 
 /**
+ * A {@link WizardPage} to capture an {@link Address}.
+ * 
  * @author thorsten
  *
  */
-class AddressWizardPage extends WizardPage {
+public class AddressWizardPage extends WizardPage {
 
 	private String helpContextId;
 	private Text street;
@@ -43,9 +43,11 @@ class AddressWizardPage extends WizardPage {
 	private Text fax;
 	
 	/**
-	 * @param pageName
+	 * Creates a new wizard page for an {@link Address}.
+	 * 
+	 * @param helpContextId the help context id - may be <code>null</code>
 	 */
-	AddressWizardPage(final String helpContextId) {
+	public AddressWizardPage(final String helpContextId) {
 		super("AddressWizardPage"); //$NON-NLS-1$
 		setTitle(Messages.AddressWizardPage_title);
 		setDescription(Messages.AddressWizardPage_desc);
@@ -53,11 +55,15 @@ class AddressWizardPage extends WizardPage {
 	}
 
 	/**
+	 * {@inheritDoc}.
+	 * 
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, helpContextId);
+		if (helpContextId != null) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, helpContextId);
+		}
 		
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout(2, false));
@@ -108,10 +114,12 @@ class AddressWizardPage extends WizardPage {
 	}
 	
 	/**
+	 * Returns the {@link Address} represented by this {@link WizardPage}. If no information has been entered,
+	 * <code>null</code> is returned.
 	 * 
-	 * @return
+	 * @return the edited {@link Address} or <code>null</code> if no values were supplied by the user
 	 */
-	protected Address getAddress() {
+	public Address getAddress() {
 		Address address = new Address();
 		boolean hasValue = false;
 		

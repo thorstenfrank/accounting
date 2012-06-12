@@ -30,9 +30,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.splash.AbstractSplashHandler;
 
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.ui.wizard.ImportFromXmlWizard;
-import de.togginho.accounting.ui.wizard.SetupExistingDataWizard;
-import de.togginho.accounting.ui.wizard.SetupWizard;
+import de.togginho.accounting.ui.setup.ImportFromXmlWizard;
+import de.togginho.accounting.ui.setup.SetupExistingDataWizard;
+import de.togginho.accounting.ui.setup.SetupWizard;
 
 /**
  * Handles basic init of the application.

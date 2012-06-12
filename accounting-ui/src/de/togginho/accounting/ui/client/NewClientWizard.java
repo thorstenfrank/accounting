@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui.wizard;
+package de.togginho.accounting.ui.client;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -27,9 +27,9 @@ import org.eclipse.ui.PlatformUI;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.ui.AddressWizardPage;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.client.ClientEditorInput;
 
 /**
  * @author thorsten

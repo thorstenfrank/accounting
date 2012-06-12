@@ -628,21 +628,21 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             category="de.togginho.accounting.ui.wizard"
-            class="de.togginho.accounting.ui.wizard.NewClientWizard"
+            class="de.togginho.accounting.ui.client.NewClientWizard"
             icon="icons/group_add.png"
             id="de.togginho.accounting.ui.wizard.NewClientWizard"
             name="%new.client.wizard.label">
       </wizard>
       <wizard
             category="de.togginho.accounting.ui.wizard"
-            class="de.togginho.accounting.ui.wizard.NewInvoiceWizard"
+            class="de.togginho.accounting.ui.invoice.NewInvoiceWizard"
             icon="icons/page_add.png"
             id="de.togginho.accounting.ui.wizard.NewInvoiceWizard"
             name="%new.invoice.wizard.label">
       </wizard>
       <wizard
             category="de.togginho.accounting.ui.wizard"
-            class="de.togginho.accounting.ui.wizard.EditExpenseWizard"
+            class="de.togginho.accounting.ui.expense.ExpenseWizard"
             icon="icons/tag_blue_add.png"
             id="de.togginho.accounting.ui.wizard.NewExpenseWizard"
             name="%new.expense.wizard.label">

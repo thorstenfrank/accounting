@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui.wizard;
+package de.togginho.accounting.ui.invoice;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -32,7 +32,6 @@ import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.invoice.InvoiceEditorInput;
 
 /**
  * @author thorsten

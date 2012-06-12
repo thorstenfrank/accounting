@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2012 thorsten frank (thorsten.frank@gmx.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui.wizard;
+package de.togginho.accounting.ui.expense;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -22,7 +22,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
-import de.togginho.accounting.model.TaxRate;
+import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 
@@ -30,33 +31,24 @@ import de.togginho.accounting.ui.Messages;
  * @author thorsten
  *
  */
-public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
+public class ExpenseWizard extends Wizard implements IWorkbenchWizard {
 
-	/**
-	 * 
-	 */
-	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewTaxRateWizard"; //$NON-NLS-1$
+	private ExpenseWizardPage page;
 	
-	/**
-	 * 
-	 */
-	private TaxRate newTaxRate;
-	
-	/**
-	 * 
-	 */
-	private TaxRateWizardPage taxRateWizardPage;
-	
-	/**
-	 * 
-	 */
-	public NewTaxRateWizard() {
+	public ExpenseWizard() {
 		setNeedsProgressMonitor(false);
-		setWindowTitle(Messages.NewTaxRateWizard_windowTitle);
-		setHelpAvailable(true);
-		newTaxRate = new TaxRate();
+		setWindowTitle(Messages.EditExpenseWizard_newTitle);
+		page = new ExpenseWizardPage();
+		//setHelpAvailable(true);
 	}
 
+	public ExpenseWizard(Expense expense) {
+		setNeedsProgressMonitor(false);
+		setWindowTitle(Messages.EditExpenseWizard_editTitle);
+		page = new ExpenseWizardPage(expense);
+		//setHelpAvailable(true);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
@@ -66,43 +58,27 @@ public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 		// nothing to do here...
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.jface.wizard.Wizard#addPages()
-	 */
 	@Override
 	public void addPages() {
-		taxRateWizardPage = new TaxRateWizardPage();
-		addPage(taxRateWizardPage);
+		addPage(page);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
-	public boolean performFinish() {
-		boolean finished = false;
+	public boolean performFinish() {		
 		try {
-			newTaxRate.setShortName(taxRateWizardPage.getAbbreviation());
-			newTaxRate.setLongName(taxRateWizardPage.getLongName());
-			newTaxRate.setRate(taxRateWizardPage.getRate());
-			finished = true;
-		} catch (Exception e) {
-			MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			msgBox.setMessage(e.getLocalizedMessage());
-			msgBox.setText(Messages.NewTaxRateWizard_errorMessageTitle);
+			AccountingUI.getAccountingService().saveExpense(page.getExpense());
+		} catch (AccountingException e) {
+        	MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
+        	msgBox.setMessage(Messages.labelError);
+        	msgBox.setText(e.getMessage());
 			msgBox.open();
-		}
-
-		return finished;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public TaxRate getNewTaxRate() {
-		return newTaxRate;
+			return false;
+        }
+		
+		return true;
 	}
 }

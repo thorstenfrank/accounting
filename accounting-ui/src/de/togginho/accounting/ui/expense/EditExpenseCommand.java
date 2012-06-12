@@ -23,7 +23,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import de.togginho.accounting.ui.wizard.EditExpenseWizard;
 
 /**
  * @author thorsten
@@ -43,7 +42,7 @@ public class EditExpenseCommand extends AbstractHandler {
 		LOG.debug("Starting NewExpense Wizard"); //$NON-NLS-1$
 		
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		EditExpenseWizard wizard = new EditExpenseWizard();
+		ExpenseWizard wizard = new ExpenseWizard();
 		
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 		
