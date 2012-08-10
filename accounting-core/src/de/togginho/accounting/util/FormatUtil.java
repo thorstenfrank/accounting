@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.Messages;
 
 /**
@@ -154,6 +155,9 @@ public final class FormatUtil {
      * @see BigDecimal#setScale(int, RoundingMode)
      */
     public static String formatCurrency(Locale locale, BigDecimal value) {
+    	if (value == null) {
+    		return Constants.HYPHEN;
+    	}
         return getCurrencyFormatter(locale).format(value.setScale(2, RoundingMode.HALF_UP));
     }
 
