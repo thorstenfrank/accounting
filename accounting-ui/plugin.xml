@@ -412,7 +412,7 @@
       <menuContribution
             locationURI="toolbar:de.togginho.accounting.ui.expense.ExpensesView">
          <command
-               commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+               commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
                icon="icons/tag_blue_add.png"
                style="push">
          </command>
@@ -568,9 +568,15 @@
       </category>
       <command
             categoryId="de.togginho.accounting.ui.expense"
-            defaultHandler="de.togginho.accounting.ui.expense.EditExpenseCommand"
-            id="de.togginho.accounting.ui.expense.EditExpenseCommand"
+            defaultHandler="de.togginho.accounting.ui.expense.NewExpenseHandler"
+            id="de.togginho.accounting.ui.expense.NewExpenseCommand"
             name="%command.newExpense.name">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.expense"
+            defaultHandler="de.togginho.accounting.ui.expense.EditExpenseHandler"
+            id="de.togginho.accounting.ui.expense.EditExpenseCommand"
+            name="%command.editExpense.name">
       </command>
       <command
       		categoryId="de.togginho.accounting.ui.expense"

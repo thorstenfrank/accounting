@@ -28,10 +28,10 @@ import org.eclipse.ui.PlatformUI;
  * @author thorsten
  *
  */
-public class EditExpenseCommand extends AbstractHandler {
+public class NewExpenseHandler extends AbstractHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(EditExpenseCommand.class);
+	private static final Logger LOG = Logger.getLogger(NewExpenseHandler.class);
 			
 	/**
 	 * {@inheritDoc}
