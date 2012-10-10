@@ -423,6 +423,23 @@
          </command>
       </menuContribution>
       <menuContribution
+            locationURI="popup:de.togginho.accounting.ui.expense.ExpensesView">
+         <command
+               commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
+               icon="icons/tag_blue_add.png"
+               style="push">
+         </command>
+         <separator
+               name="expensesView.popupMenu.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+               icon="icons/tag_blue_edit.png"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
             allPopups="false"
             locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
          <command
