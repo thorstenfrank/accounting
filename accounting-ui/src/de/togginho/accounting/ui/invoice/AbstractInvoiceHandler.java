@@ -48,7 +48,7 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 	 * @return
 	 */
 	protected Invoice getInvoiceFromSelection(ExecutionEvent event) {
-		ISelectionProvider selectionProvider = getActivePage(event).getActivePart().getSite().getSelectionProvider();
+		ISelectionProvider selectionProvider = getSelectionProvider(event);
 		
 		Invoice invoice = null;
 		if (selectionProvider != null && !selectionProvider.getSelection().isEmpty()) {

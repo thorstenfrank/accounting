@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -97,4 +98,12 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 	 * @return
 	 */
 	protected abstract Logger getLogger();
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	protected ISelectionProvider getSelectionProvider(ExecutionEvent event) {
+		return getActivePage(event).getActivePart().getSite().getSelectionProvider();
+	}
 }
