@@ -76,7 +76,7 @@
                      style="push">
                   <parameter
                         name="newWizardId"
-                        value="de.togginho.accounting.ui.wizard.EditExpenseWizard">
+                        value="de.togginho.accounting.ui.wizard.NewExpenseWizard">
                   </parameter>
                </command>
                <separator
@@ -254,7 +254,7 @@
                   style="push">
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+                  commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
                   icon="icons/tag_blue_add.png"
                   style="push">
             </command>
