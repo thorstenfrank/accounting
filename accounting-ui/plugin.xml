@@ -438,6 +438,11 @@
                icon="icons/tag_blue_edit.png"
                style="push">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand"
+               icon="icons/page_copy.png"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -594,6 +599,12 @@
             defaultHandler="de.togginho.accounting.ui.expense.EditExpenseHandler"
             id="de.togginho.accounting.ui.expense.EditExpenseCommand"
             name="%command.editExpense.name">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.expense"
+            defaultHandler="de.togginho.accounting.ui.expense.CopyExpenseHandler"
+            id="de.togginho.accounting.ui.expense.CopyExpenseCommand"
+            name="%command.copyExpense.name">
       </command>
       <command
       		categoryId="de.togginho.accounting.ui.expense"

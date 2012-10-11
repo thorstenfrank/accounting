@@ -19,15 +19,16 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import de.togginho.accounting.model.Expense;
 
 /**
  * @author thorsten
  *
  */
-public class NewExpenseHandler extends AbstractExpenseHandler{
-
+public class CopyExpenseHandler extends AbstractExpenseHandler {
+	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(NewExpenseHandler.class);
+	private static final Logger LOG = Logger.getLogger(CopyExpenseHandler.class);
 	
 	/**
 	 * {@inheritDoc}
@@ -35,7 +36,16 @@ public class NewExpenseHandler extends AbstractExpenseHandler{
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		openExpenseWizard(event);
+		Expense expense = getExpenseFromSelection(event);
+		
+		Expense newExpense = new Expense();
+		newExpense.setDescription(expense.getDescription());
+		newExpense.setExpenseType(expense.getExpenseType());
+		newExpense.setNetAmount(expense.getNetAmount());
+		newExpense.setPaymentDate(expense.getPaymentDate());
+		newExpense.setTaxRate(expense.getTaxRate());
+		
+		openExpenseWizard(event, newExpense);
 	}
 
 	/**
@@ -45,5 +55,5 @@ public class NewExpenseHandler extends AbstractExpenseHandler{
 	@Override
 	protected Logger getLogger() {
 		return LOG;
-	}	
+	}
 }

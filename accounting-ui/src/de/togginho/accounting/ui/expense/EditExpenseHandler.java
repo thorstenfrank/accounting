@@ -18,20 +18,13 @@ package de.togginho.accounting.ui.expense;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
-
-import de.togginho.accounting.model.Expense;
-import de.togginho.accounting.ui.AbstractAccountingHandler;
 
 
 /**
  * @author thorsten
  *
  */
-public class EditExpenseHandler extends AbstractAccountingHandler {
+public class EditExpenseHandler extends AbstractExpenseHandler {
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(EditExpenseHandler.class);
@@ -43,34 +36,9 @@ public class EditExpenseHandler extends AbstractAccountingHandler {
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		LOG.debug("Opening wizard for existing expense"); //$NON-NLS-1$
-		
-		ISelectionProvider selectionProvider = getActivePage(event).getActivePart().getSite().getSelectionProvider();
-		
-		if (selectionProvider != null && !selectionProvider.getSelection().isEmpty()) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-						
-			if (structuredSelection.getFirstElement() instanceof ExpenseWrapper) {
-				Shell shell = getShell(event);
-				Expense expense = ((ExpenseWrapper) structuredSelection.getFirstElement()).getExpense();
-				
-				ExpenseWizard wizard = new ExpenseWizard(expense);
-				WizardDialog dialog = new WizardDialog(shell, wizard);
-				
-				int returnCode = dialog.open();
-				
-				if (returnCode == WizardDialog.CANCEL) {
-					LOG.debug("Editing Expense was cancelled"); //$NON-NLS-1$
-				} else {
-					LOG.debug("Edited Expense was saved"); //$NON-NLS-1$
-				}
-			} else {
-				getLogger().warn("Current selection is not of type Ivoice: "  //$NON-NLS-1$
-						+ structuredSelection.getFirstElement().getClass());
-			}
-		} else {
-			getLogger().warn("Current selection is empty, cannot run this command!"); //$NON-NLS-1$
-		}
+		openExpenseWizard(event, getExpenseFromSelection(event));
 	}
+
 	
 	/**
 	 * {@inheritDoc}
