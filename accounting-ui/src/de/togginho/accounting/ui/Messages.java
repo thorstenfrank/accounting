@@ -268,6 +268,9 @@ public class Messages extends NLS {
 	public static String labelError;
 	public static String labelUnknownError;
 	
+	public static String labelUp;
+	public static String labelDown;
+	
 	// ICONS
 	public static String iconsGroupEdit;
 	public static String iconsUserEdit;
