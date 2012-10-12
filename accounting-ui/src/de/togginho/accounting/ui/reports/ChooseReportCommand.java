@@ -51,6 +51,13 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 	 */
 	private static final Logger LOG = Logger.getLogger(ChooseReportCommand.class);
 	
+	private static final String[][] REPORT_CONFIG = {
+		{Messages.CashFlowDialog_title, Messages.iconsCashFlowStatement, IDs.CMD_OPEN_CASH_FLOW_DIALOG},
+		{Messages.RevenueDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_DIALOG},
+		{Messages.RevenueByYearDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_BY_YEAR_DIALOG},
+		{Messages.labelExpenses, Messages.iconsExpenses, IDs.CMD_OPEN_EXPENSES_DIALOG}
+	};
+	
 	/**
 	 * The dialog opening command to run - default is the revenue dialog.
 	 */
@@ -85,47 +92,11 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
         		final Label topSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
         		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(topSeparator);
         		
-        		GridDataFactory gdf = GridDataFactory.fillDefaults().span(2, 1).grab(true, true).indent(5, 0);
-        		
-        		final Button profitButton = new Button(composite, SWT.RADIO);
-        		profitButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsCashFlowStatement).createImage());
-        		profitButton.setText(Messages.CashFlowDialog_title);
-        		gdf.applyTo(profitButton);
-        		profitButton.addSelectionListener(new SelectionAdapter() {
-        			@Override
-        			public void widgetSelected(SelectionEvent e) {
-        				if (profitButton.getSelection()) {
-        					commandIdToRun = IDs.CMD_OPEN_CASH_FLOW_DIALOG;
-        				}
-        			}
-				});
-        		
-        		final Button revenueButton = new Button(composite, SWT.RADIO);
-        		revenueButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsRevenue).createImage());
-        		revenueButton.setText(Messages.RevenueDialog_title);
-        		gdf.applyTo(revenueButton);
-        		revenueButton.addSelectionListener(new SelectionAdapter() {
-        			@Override
-        			public void widgetSelected(SelectionEvent e) {
-        				if (revenueButton.getSelection()) {
-        					commandIdToRun = IDs.CMD_OPEN_REVENUE_DIALOG;
-        				}
-        			}
-				});
-        		
-        		final Button expensesButton = new Button(composite, SWT.RADIO);
-        		expensesButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsExpenses).createImage());
-        		expensesButton.setText(Messages.labelExpenses);
-        		gdf.applyTo(expensesButton);
-        		expensesButton.addSelectionListener(new SelectionAdapter() {
-        			@Override
-        			public void widgetSelected(SelectionEvent e) {
-        				if (expensesButton.getSelection()) {
-        					commandIdToRun = IDs.CMD_OPEN_EXPENSES_DIALOG;
-        				}
-        			}
-				});
-        		
+        		// create the radio buttons for dialog selection
+        		for(int x = 0; x < REPORT_CONFIG.length; x++) {
+        			createDialogSelectorButton(composite, REPORT_CONFIG[x][0], REPORT_CONFIG[x][1], REPORT_CONFIG[x][2]);
+        		}
+        		        		
         		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
         		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
         		
@@ -150,6 +121,28 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 		}
 	}
 
+	/**
+	 * 
+	 * @param parent
+	 * @param title
+	 * @param imgDesc
+	 * @param commandToRun
+	 */
+	private void createDialogSelectorButton(Composite parent, String title, String imgDesc, final String commandToRun) {
+		final Button button = new Button(parent, SWT.RADIO);
+		button.setImage(AccountingUI.getImageDescriptor(imgDesc).createImage());
+		button.setText(title);
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).indent(5, 0).applyTo(button);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (button.getSelection()) {
+					commandIdToRun = commandToRun;
+				}
+			}
+		});
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()

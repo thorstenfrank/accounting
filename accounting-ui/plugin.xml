@@ -458,6 +458,11 @@
                style="pulldown">
          </command>
          <command
+               commandId="de.togginho.accounting.ui.revenue.RevenueByYearCommand"
+               icon="icons/money_add.png"
+               style="pulldown">
+         </command>
+         <command
                commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
                icon="icons/money_delete.png"
                style="pulldown">
@@ -572,6 +577,12 @@
             defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
             id="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
             name="%command.revenue.name">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.revenue"
+            defaultHandler="de.togginho.accounting.ui.revenue.RevenueByYearHandler"
+            id="de.togginho.accounting.ui.revenue.RevenueByYearCommand"
+            name="%command.revenueByYear.name">
       </command>
       <command
             defaultHandler="de.togginho.accounting.ui.ExportModelToXmlHandler"

@@ -46,19 +46,12 @@ public class Messages extends NLS {
 	public static String CancelInvoiceCommand_confirmText;
 	
 	public static String CashFlowDialog_grossProfit;
-
 	public static String CashFlowDialog_inputTax;
-
 	public static String CashFlowDialog_operatingExpenses;
-
 	public static String CashFlowDialog_outputTax;
-
 	public static String CashFlowDialog_Result;
-
 	public static String CashFlowDialog_sum;
-
 	public static String CashFlowDialog_title;
-
 	public static String CashFlowDialog_totalExpenses;
 
 	public static String ChangeExpensesViewTimeFrameCommand_message;
@@ -160,6 +153,10 @@ public class Messages extends NLS {
 	public static String ReportGenerationUtil_successMsg;
 	public static String ReportGenerationUtil_successText;
 	
+	public static String RevenueByYearDialog_title;
+	public static String RevenueByYearDialog_details;
+	public static String RevenueByYearDialog_years;
+	
 	public static String RevenueDialog_client;
 	public static String RevenueDialog_defaultFilename;
 	public static String RevenueDialog_invoiceDate;
@@ -249,6 +246,7 @@ public class Messages extends NLS {
 	public static String labelTotalTax;
 	public static String labelTotals;
 	public static String labelUnit;
+	public static String labelYear;
 	
 	//
 	public static String labelTimeFrame;

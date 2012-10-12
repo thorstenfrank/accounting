@@ -688,17 +688,7 @@ public class AccountingServiceImpl implements AccountingService {
     	try {
     		List<Invoice> invoices = new ArrayList<Invoice>(
     				objectContainer.query(new FindInvoicesForRevenuePredicate(timeFrame)));
-    		Collections.sort(invoices, new Comparator<Invoice>() {
-    				/**
-                     * {@inheritDoc}.
-                     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-                     */
-                    @Override
-                    public int compare(Invoice o1, Invoice o2) {
-    	                return o1.getPaymentDate().compareTo(o2.getPaymentDate());
-                    }
-    	        	
-    			});
+    		sortInvoicesByPaymentDateAscending(invoices);
 	        revenue.setInvoices(invoices);
         } catch (Db4oIOException e) {
         	throwDb4oIoException(e);
@@ -709,6 +699,78 @@ public class AccountingServiceImpl implements AccountingService {
 	    return revenue;
     }
 
+    /**
+     * 
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#getRevenueByYears()
+     */
+    @Override
+    public List<Revenue> getRevenueByYears() {
+    	List<Revenue> totalRevenue = new ArrayList<Revenue>();
+    	
+    	// get all invoices
+    	List<Invoice> allInvoices = new ArrayList<Invoice>(findInvoices(InvoiceState.PAID));
+    	
+    	// sort ascending
+    	sortInvoicesByPaymentDateAscending(allInvoices);
+    	
+    	int currentYear = -1;
+    	Revenue currentRevenue = null;
+    	List<Invoice> currentInvoices = new ArrayList<Invoice>();
+    	
+    	for (Invoice invoice : allInvoices) {
+    		// get year
+    		Calendar cal = Calendar.getInstance();
+    		cal.setTime(invoice.getPaymentDate());
+    		int tempCurrentYear = cal.get(Calendar.YEAR);
+    		
+    		if (tempCurrentYear != currentYear) {
+    			if (currentYear > 0) {
+        			// wrap up the last year
+        			currentRevenue.setInvoices(currentInvoices);
+        			totalRevenue.add(currentRevenue);
+        			LOG.debug("Finishing year " + currentYear);
+        			LOG.debug("Total net revenue: " + FormatUtil.formatCurrency(currentRevenue.getRevenueNet()));
+    			}
+    			
+    			LOG.debug("Collecting revenue for new year: " + tempCurrentYear);
+    			// start up the new year
+    			currentRevenue = new Revenue();
+    			currentRevenue.setTimeFrame(new TimeFrame(invoice.getPaymentDate(), invoice.getPaymentDate()));
+    			currentInvoices = new ArrayList<Invoice>();
+    			currentYear = tempCurrentYear;
+    		}
+    		
+    		currentRevenue.getTimeFrame().setUntil(invoice.getPaymentDate());
+    		currentInvoices.add(invoice);
+    	}
+    	
+    	// need to wrap up the final year...
+		currentRevenue.setInvoices(currentInvoices);
+		totalRevenue.add(currentRevenue);
+		LOG.debug("Finishing year " + currentYear);
+		LOG.debug("Total net revenue: " + FormatUtil.formatCurrency(currentRevenue.getRevenueNet()));
+		
+    	return totalRevenue;
+    }
+    
+    /**
+     * 
+     * @param invoices
+     */
+    private void sortInvoicesByPaymentDateAscending(List<Invoice> invoices) {
+		Collections.sort(invoices, new Comparator<Invoice>() {
+			/**
+             * {@inheritDoc}.
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+            @Override
+            public int compare(Invoice o1, Invoice o2) {
+                return o1.getPaymentDate().compareTo(o2.getPaymentDate());
+            }
+        	
+		});    	
+    }
     
     /**
      * {@inheritDoc}.

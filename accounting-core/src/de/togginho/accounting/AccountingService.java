@@ -16,6 +16,7 @@
 package de.togginho.accounting;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import de.togginho.accounting.model.CashFlowStatement;
@@ -285,6 +286,14 @@ public interface AccountingService {
 	 * @return a {@link Revenue} instance that contains all paid invoices within the given timeframe
 	 */
 	Revenue getRevenue(TimeFrame timeFrame);
+	
+	/**
+	 * Returns a complete list of all known paid invoices sorted by year. For every year, a {@link Revenue} object is
+	 * compiled.
+	 * 
+	 * @return a {@link List} of {@link Revenue} objects representing individual yearly revenue
+	 */
+	List<Revenue> getRevenueByYears();
 	
 	/**
 	 * Saves an {@link Expense}.
