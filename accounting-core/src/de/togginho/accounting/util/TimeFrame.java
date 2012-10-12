@@ -56,8 +56,15 @@ public class TimeFrame {
      */
     public TimeFrame(Date from, Date until) {
     	type = TimeFrameType.CUSTOM;
-	    this.from = from;
-	    this.until = until;
+    	
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(from);
+    	setToStartOfDay(cal);
+    	this.from = cal.getTime();
+    	
+    	cal.setTime(until);
+    	setToEndOfDay(cal);
+    	this.until = cal.getTime();
     }
 
 	/**
@@ -72,6 +79,7 @@ public class TimeFrame {
      */
     public void setFrom(Date from) {
     	this.from = from;
+    	this.type = TimeFrameType.CUSTOM;
     }
 
 	/**
@@ -86,6 +94,7 @@ public class TimeFrame {
      */
     public void setUntil(Date until) {
     	this.until = until;
+    	this.type = TimeFrameType.CUSTOM;
     }
     
     /**

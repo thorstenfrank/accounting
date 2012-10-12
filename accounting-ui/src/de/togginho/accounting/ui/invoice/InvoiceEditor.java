@@ -516,6 +516,42 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		});
 		
 		section.setClient(sectionClient);
+		
+		Button up = toolkit.createButton(buttons, Messages.labelUp, SWT.PUSH);
+		up.setEnabled(invoiceCanBeEdited);
+		up.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
+				if (!selection.isEmpty()) {
+					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
+					LOG.info("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
+					List<InvoicePosition> ips = getEditorInput().getInvoice().getInvoicePositions();
+					int index = ips.indexOf(pos);
+					InvoicePosition ip = ips.remove(index);
+					ips.add(index - 1, ip);
+					refreshInvoicePositionsAndFireDirty();
+				}				
+			}
+		});
+		
+		Button down = toolkit.createButton(buttons, Messages.labelDown, SWT.PUSH);
+		down.setEnabled(invoiceCanBeEdited);
+		down.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
+				if (!selection.isEmpty()) {
+					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
+					LOG.info("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
+					List<InvoicePosition> ips = getEditorInput().getInvoice().getInvoicePositions();
+					int index = ips.indexOf(pos);
+					InvoicePosition ip = ips.remove(index);
+					ips.add(index + 1, ip);
+					refreshInvoicePositionsAndFireDirty();
+				}				
+			}
+		});
 	}
 	
 	/**

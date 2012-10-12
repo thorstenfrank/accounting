@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="expenses" type="{}xmlExpense" maxOccurs="unbounded"/>
+ *         &lt;element name="expense" type="{}xmlExpense" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,12 +37,12 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "xmlExpenses", propOrder = {
-    "expenses"
+    "expense"
 })
 public class XmlExpenses {
 
     @XmlElement(required = true)
-    protected List<XmlExpense> expenses;
+    protected List<XmlExpense> expense;
 
     /**
      * Gets the value of the expenses property.
@@ -56,7 +56,7 @@ public class XmlExpenses {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getExpenses().add(newItem);
+     *    getExpense().add(newItem);
      * </pre>
      * 
      * 
@@ -66,11 +66,11 @@ public class XmlExpenses {
      * 
      * 
      */
-    public List<XmlExpense> getExpenses() {
-        if (expenses == null) {
-            expenses = new ArrayList<XmlExpense>();
+    public List<XmlExpense> getExpense() {
+        if (expense == null) {
+            expense = new ArrayList<XmlExpense>();
         }
-        return this.expenses;
+        return this.expense;
     }
 
 }

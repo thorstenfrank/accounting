@@ -15,10 +15,7 @@
  */
 package de.togginho.accounting.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -39,6 +36,9 @@ import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -46,6 +46,7 @@ import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.service.AccountingServiceImpl;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * Tests for {@link AccountingServiceImpl} that use a temporary DB file.
@@ -342,6 +343,62 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
 		sequence++;
 		assertEquals(new Integer(sequence), new Integer(invoiceNumber.substring(7)));
+	}
+	
+	/**
+	 * Tests for expenses persistence.
+	 * @see AccountingService#getExpenses(de.togginho.accounting.util.TimeFrame)
+	 * @see AccountingService#saveExpense(de.togginho.accounting.model.Expense)
+	 * @see AccountingService#deleteExpense(de.togginho.accounting.model.Expense) 
+	 */
+	@Test
+	public void testExpenses() {
+		ExpenseCollection ec = serviceUnderTest.getExpenses(null);
+		
+		assertNull(ec.getTimeFrame());
+		assertNotNull(ec.getExpenses());
+		assertTrue(ec.getExpenses().isEmpty());
+		
+		Expense e1 = new Expense();
+		e1.setDescription("Expense 1");
+		e1.setExpenseType(ExpenseType.OPEX);
+		e1.setNetAmount(new BigDecimal("125"));
+		e1.setPaymentDate(buildDate(1, 0, 2012));
+		
+		serviceUnderTest.saveExpense(e1);
+		
+		ec = serviceUnderTest.getExpenses(null);
+		assertEquals(1, ec.getExpenses().size());
+		
+		Expense e2 = new Expense();
+		e2.setDescription("Expense 2");
+		e2.setExpenseType(ExpenseType.OPEX);
+		e2.setNetAmount(new BigDecimal("200"));
+		e2.setPaymentDate(buildDate(31, 0, 2012));
+		
+		serviceUnderTest.saveExpense(e2);
+		
+		ec = serviceUnderTest.getExpenses(null);
+		assertEquals(2, ec.getExpenses().size());
+		
+		ec = serviceUnderTest.getExpenses(new TimeFrame(buildDate(1, 0, 2012), buildDate(30, 0, 2012)));
+		assertEquals(1, ec.getExpenses().size());
+		
+		Expense fromService = ec.getExpenses().iterator().next();
+		assertEquals(e1.getDescription(), fromService.getDescription());
+		assertEquals(e1.getExpenseType(), fromService.getExpenseType());
+		assertEquals(e1.getPaymentDate(), fromService.getPaymentDate());
+		assertAreEqual(e1.getNetAmount(), fromService.getNetAmount());
+		
+		serviceUnderTest.deleteExpense(fromService);
+		
+		ec = serviceUnderTest.getExpenses(null);
+		assertEquals(1, ec.getExpenses().size());
+		
+		serviceUnderTest.deleteExpense(ec.getExpenses().iterator().next());
+		
+		ec = serviceUnderTest.getExpenses(null);
+		assertEquals(0, ec.getExpenses().size());
 	}
 	
 	/**

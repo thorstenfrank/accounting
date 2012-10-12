@@ -201,7 +201,7 @@ class XmlToModel {
 			LOG.debug("Converting expenses..."); //$NON-NLS-1$
 			this.expenses = new HashSet<Expense>();
 			
-			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpenses()) {
+			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpense()) {
 				Expense expense = new Expense();
 				expense.setDescription(xmlExpense.getDescription());
 				switch (xmlExpense.getExpenseType()) {

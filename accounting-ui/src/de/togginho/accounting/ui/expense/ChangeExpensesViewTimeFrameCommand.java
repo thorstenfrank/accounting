@@ -25,9 +25,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IViewPart;
 
@@ -69,6 +71,9 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 		currentTimeFrame = expensesView.getCurrentTimeFrame();
 		
 		TitleAreaDialog tad = new TitleAreaDialog(getShell(event)) {
+			private DateTime from;
+			private DateTime until;
+			
 			@Override
 			public void create() {
 			    super.create();
@@ -91,15 +96,16 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         		
         		GridDataFactory gdf = GridDataFactory.fillDefaults().indent(5, 0);
         		
-        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelCurrentMonth));
         		Button currentMonth = new Button(composite, SWT.RADIO);
         		gdf.applyTo(currentMonth);
         		currentMonth.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.currentMonth();
+						currentTimeFrameChanged();
 					}
 				});
+        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelCurrentMonth));
         		
         		if (currentTimeFrame.getType() == TimeFrameType.CURRENT_MONTH) {
         			currentMonth.setSelection(true);
@@ -107,16 +113,16 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         			currentMonth.setSelection(false);
         		}
         		
-        		
-        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelLastMonth));
         		Button lastMonth = new Button(composite, SWT.RADIO);
         		gdf.applyTo(lastMonth);
         		lastMonth.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.lastMonth();
+						currentTimeFrameChanged();
 					}
 				});
+        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelLastMonth));
         		
         		if (currentTimeFrame.getType() == TimeFrameType.LAST_MONTH) {
         			lastMonth.setSelection(true);
@@ -124,15 +130,16 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         			lastMonth.setSelection(false);
         		}
         		
-        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelCurrentYear));
         		Button currentYear = new Button(composite, SWT.RADIO);
         		gdf.applyTo(currentYear);
         		currentYear.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.currentYear();
+						currentTimeFrameChanged();
 					}
 				});
+        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelCurrentYear));
         		
         		if (currentTimeFrame.getType() == TimeFrameType.CURRENT_YEAR) {
         			currentYear.setSelection(true);
@@ -140,21 +147,55 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         			currentYear.setSelection(false);
         		}
         		
-        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelLastYear));
         		Button lastYear = new Button(composite, SWT.RADIO);
         		gdf.applyTo(lastYear);
         		lastYear.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						currentTimeFrame = TimeFrame.lastYear();
+						currentTimeFrameChanged();
 					}
 				});
-
+        		gdf.applyTo(WidgetHelper.createLabel(composite, Messages.labelLastYear));
+        		
         		if (currentTimeFrame.getType() == TimeFrameType.LAST_YEAR) {
         			lastYear.setSelection(true);
         		} else {
         			lastYear.setSelection(false);
         		}
+        		
+        		final Button custom = new Button(composite, SWT.RADIO);
+        		gdf.applyTo(custom);
+        		if (currentTimeFrame.getType() == TimeFrameType.CUSTOM) {
+        			custom.setSelection(true);
+        		} else {
+        			custom.setSelection(false);
+        		}
+        		
+        		Composite dates = new Composite(composite, SWT.NONE);
+        		dates.setLayout(new RowLayout());
+        		WidgetHelper.createLabel(dates, Messages.labelFrom);
+        		from = new DateTime(dates, SWT.DROP_DOWN);
+        		from.addSelectionListener(new SelectionAdapter() {
+        			@Override
+        			public void widgetSelected(SelectionEvent e) {
+        				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(from));
+        				custom.setSelection(true);
+        			}
+				});
+        		
+        		WidgetHelper.createLabel(dates, Messages.labelUntil);
+        		until = new DateTime(dates, SWT.DROP_DOWN);
+        		until.addSelectionListener(new SelectionAdapter() {
+        			@Override
+        			public void widgetSelected(SelectionEvent e) {
+        				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(until));
+        				custom.setSelection(true);
+        			}
+				});
+        		gdf.applyTo(dates);
+        		
+        		currentTimeFrameChanged();
         		
         		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
         		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
@@ -163,6 +204,14 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);
         		
         		return composite;
+			}
+			
+			/**
+			 * 
+			 */
+			private void currentTimeFrameChanged() {
+				WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
+				WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), until);
 			}
 		};
 		

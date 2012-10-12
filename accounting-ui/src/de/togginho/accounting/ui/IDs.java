@@ -77,8 +77,8 @@ public interface IDs {
 	
 	// Expenses
 	public static final String CMD_EDIT_EXPENSE = "de.togginho.accounting.ui.expense.EditExpenseCommand"; //$NON-NLS-1$
-	
 	public static final String CMD_CHANGE_EXPENSES_VIEW_TIME_FRAME = "de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"; //$NON-NLS-1$
+	public static final String CMD_NEW_EXPENSE = "de.togginho.accounting.ui.expense.NewExpenseCommand"; //$NON-NLS-1$
 	
 	// Reporting
 	public static final String CMD_OPEN_REVENUE_DIALOG = "de.togginho.accounting.ui.revenue.OpenRevenueCommand"; //$NON-NLS-1$

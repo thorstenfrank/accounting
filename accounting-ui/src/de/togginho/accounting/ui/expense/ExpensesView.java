@@ -18,29 +18,31 @@ package de.togginho.accounting.ui.expense;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
-import de.togginho.accounting.ui.wizard.EditExpenseWizard;
 import de.togginho.accounting.util.TimeFrame;
 
 /**
@@ -48,7 +50,9 @@ import de.togginho.accounting.util.TimeFrame;
  *
  */
 public class ExpensesView extends ViewPart implements IDoubleClickListener, ModelChangeListener {
-		
+	
+	private static final Logger LOG = Logger.getLogger(ExpensesView.class);
+	
 	private TableViewer tableViewer;
 	private ExpenseTableSorter sorter;
 	private TimeFrame currentTimeFrame;
@@ -163,12 +167,21 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	 * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
 	 */
 	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		IStructuredSelection structuredSelection = (IStructuredSelection) event.getSelection();
-		ExpenseWrapper wrapper = (ExpenseWrapper) structuredSelection.getFirstElement();
-		EditExpenseWizard wizard = new EditExpenseWizard(wrapper.getExpense());
-		WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
-		dialog.open();
+	public void doubleClick(DoubleClickEvent event) {		
+		IHandlerService handlerService = 
+			(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+		
+		try {
+			handlerService.executeCommand(IDs.CMD_EDIT_EXPENSE, new Event());
+		} catch (Exception e) {
+			LOG.error("Error opening invoice editor", e); //$NON-NLS-1$
+		}
+		
+//		IStructuredSelection structuredSelection = (IStructuredSelection) event.getSelection();
+//		ExpenseWrapper wrapper = (ExpenseWrapper) structuredSelection.getFirstElement();
+//		ExpenseWizard wizard = new ExpenseWizard(wrapper.getExpense());
+//		WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
+//		dialog.open();
 	}
 
 	/**

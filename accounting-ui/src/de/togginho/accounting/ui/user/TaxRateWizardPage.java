@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui.wizard;
+package de.togginho.accounting.ui.user;
 
 import java.math.BigDecimal;
 
