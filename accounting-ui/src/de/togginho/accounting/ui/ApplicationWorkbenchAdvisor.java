@@ -25,8 +25,6 @@ import org.eclipse.ui.commands.ICommandService;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "de.togginho.accounting.ui.perspective"; //$NON-NLS-1$
-
 	private static final Logger LOG = Logger.getLogger(ApplicationWorkbenchAdvisor.class);
 	
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
@@ -52,7 +50,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * @see org.eclipse.ui.application.WorkbenchAdvisor#getInitialWindowPerspectiveId()
 	 */
 	public String getInitialWindowPerspectiveId() {
-		return PERSPECTIVE_ID;
+		return IDs.PERSPECTIVE_ACCOUNTING_ID;
 	}
 	
 	/**

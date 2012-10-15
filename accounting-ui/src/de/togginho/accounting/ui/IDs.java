@@ -22,7 +22,7 @@ package de.togginho.accounting.ui;
 public interface IDs {
 
 	/** The main perspective. */
-	public static final String PERSPECTIVE_ID = "de.togginho.accounting.ui.rcp.perspective"; //$NON-NLS-1$
+	public static final String PERSPECTIVE_ACCOUNTING_ID = "de.togginho.accounting.ui.accountingPerspective"; //$NON-NLS-1$
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VIEWS / EDITORS

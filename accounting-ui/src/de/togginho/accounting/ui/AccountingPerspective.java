@@ -24,12 +24,10 @@ import org.eclipse.ui.IPerspectiveFactory;
  * @author thorsten frank
  *
  */
-public class Perspective implements IPerspectiveFactory {
-
-	public static final String PERSPECTIVE_ID = "de.togginho.accounting.ui.perspective"; //$NON-NLS-1$
+public class AccountingPerspective implements IPerspectiveFactory {
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(Perspective.class);
+	private static final Logger LOG = Logger.getLogger(AccountingPerspective.class);
 		
 	/**
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
