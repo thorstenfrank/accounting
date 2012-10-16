@@ -50,7 +50,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * @see org.eclipse.ui.application.WorkbenchAdvisor#getInitialWindowPerspectiveId()
 	 */
 	public String getInitialWindowPerspectiveId() {
-		return IDs.PERSPECTIVE_ACCOUNTING_ID;
+		return AccountingPerspective.ID;
 	}
 	
 	/**

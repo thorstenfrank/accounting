@@ -28,7 +28,12 @@ public class AccountingPerspective implements IPerspectiveFactory {
 	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingPerspective.class);
-		
+	
+	/**
+	 * ID of this perspective.
+	 */
+	public static final String ID = "de.togginho.accounting.ui.perspective"; //$NON-NLS-1$
+	
 	/**
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 */
@@ -38,9 +43,7 @@ public class AccountingPerspective implements IPerspectiveFactory {
 		layout.setEditorAreaVisible(true);
 		
 		layout.addView(IDs.VIEW_CLIENTS_ID, IPageLayout.LEFT, 0.5f, IPageLayout.ID_EDITOR_AREA);
-		
 		layout.addView(IDs.VIEW_INVOICES_ID, IPageLayout.BOTTOM, 0.5f, IPageLayout.ID_EDITOR_AREA);
-		
 		layout.addView(IDs.VIEW_EXPENSES_ID, IPageLayout.BOTTOM, 0.5f, IDs.VIEW_CLIENTS_ID);
 	}
 }

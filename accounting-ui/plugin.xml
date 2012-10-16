@@ -14,9 +14,10 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="%perspective.accounting.name"
             class="de.togginho.accounting.ui.AccountingPerspective"
-            id="de.togginho.accounting.ui.accountingPerspective">
+            icon="icons/money.png"
+            id="de.togginho.accounting.ui.perspective"
+            name="%perspective.accounting.name">
       </perspective>
    </extension>
    <extension
