@@ -205,6 +205,9 @@ class ModelToXml {
 	 * @return
 	 */
 	private XmlTaxRate converTaxRate(TaxRate taxRate) {
+		if (taxRate == null) {
+			return null;
+		}
 		LOG.debug("Converting tax rate " + taxRate.toLongString()); //$NON-NLS-1$
 		XmlTaxRate xmlTaxRate = new XmlTaxRate();
 		xmlTaxRate.setAbbreviation(taxRate.getShortName());
