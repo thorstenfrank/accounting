@@ -482,6 +482,15 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		invoicePositionViewer.setInput(invoice.getInvoicePositions());
 				
 		// buttons for adding / removing invoice positions
+		createInvoicePositionButtons(sectionClient);
+		
+		section.setClient(sectionClient);
+	}
+
+	/**
+	 * @param sectionClient
+	 */
+	private void createInvoicePositionButtons(Composite sectionClient) {
 		Composite buttons = toolkit.createComposite(sectionClient);
 		buttons.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		buttons.setLayout(new FillLayout(SWT.VERTICAL));
@@ -514,8 +523,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				}
 			}
 		});
-		
-		section.setClient(sectionClient);
 		
 		Button up = toolkit.createButton(buttons, Messages.labelUp, SWT.PUSH);
 		up.setEnabled(invoiceCanBeEdited);
