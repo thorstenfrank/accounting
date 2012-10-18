@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.BaseLabelProvider;
@@ -55,6 +54,7 @@ import de.togginho.accounting.model.User;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -171,7 +171,7 @@ public class UserEditor extends AbstractAccountingEditor {
 		
 		toolkit.createLabel(basicSectionClient, Messages.labelDescription);
 		Text description = toolkit.createText(basicSectionClient, user.getDescription(), SWT.MULTI | SWT.BORDER);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(description);
+		WidgetHelper.grabBoth(description);
 		createBindings(description, user, User.FIELD_DESCRIPTION);
 		
 		basicSection.setClient(basicSectionClient);
@@ -220,7 +220,7 @@ public class UserEditor extends AbstractAccountingEditor {
 		client.setLayout(new GridLayout(2, false));
 		
 		Composite tableComposite = toolkit.createComposite(client);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
+		WidgetHelper.grabBoth(tableComposite);
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
 		

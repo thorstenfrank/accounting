@@ -37,7 +37,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class WidgetHelper {
 	
-	private static final GridDataFactory GDF = GridDataFactory.fillDefaults().grab(true, false);
+	private static final GridDataFactory GRAB_HORIZONTAL = GridDataFactory.fillDefaults().grab(true, false);
+	
+	private static final GridDataFactory GRAB_BOTH = GridDataFactory.fillDefaults().grab(true, true);
 	
 	/**
 	 * Private since this is only a utility class.
@@ -73,7 +75,7 @@ public class WidgetHelper {
 		if (text != null) {
 			theText.setText(text);
 		}
-		GDF.applyTo(theText);
+		GRAB_HORIZONTAL.applyTo(theText);
 		selectAllOnEntry(theText);
 		return theText;
 	}
@@ -123,9 +125,20 @@ public class WidgetHelper {
 	
 	/**
 	 * The same as <code>GridDataFactory.fillDefaults().grab(true, false).applyTo(control)</code>.
+	 * 
+	 * @param control the {@link Control} to apply the grid layout data to
 	 */
 	public static void grabHorizontal(Control control) {
-		GDF.applyTo(control);
+		GRAB_HORIZONTAL.applyTo(control);
+	}
+	
+	/**
+	 * The same as <code>GridDataFactory.fillDefaults().grab(true, true).applyTo(control)</code>.
+	 * 
+	 * @param control the {@link Control} to apply the grid layout data to
+	 */
+	public static void grabBoth(Control control) {
+		GRAB_BOTH.applyTo(control);
 	}
 	
 	/**

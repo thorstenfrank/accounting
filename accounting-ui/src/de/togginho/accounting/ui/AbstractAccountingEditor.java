@@ -201,6 +201,15 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+	 */
+	@Override
+	public void setFocus() {
+		getForm().getBody().setFocus();
+	}
+
+	/**
 	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}.
 	 * 
 	 * <p>The created text is configured to grab all available horizontal space using 

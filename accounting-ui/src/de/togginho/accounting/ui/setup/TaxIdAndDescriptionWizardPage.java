@@ -65,7 +65,7 @@ class TaxIdAndDescriptionWizardPage extends WizardPage {
 		// User description
 		WidgetHelper.createLabel(composite, Messages.labelDescription);
 		userDescription = new Text(composite, SWT.BORDER | SWT.MULTI);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(userDescription);
+		WidgetHelper.grabBoth(userDescription);
 		
 		setControl(composite);
 		setPageComplete(true);

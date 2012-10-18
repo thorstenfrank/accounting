@@ -446,6 +446,14 @@
          </command>
       </menuContribution>
       <menuContribution
+            locationURI="toolbar:de.togginho.accounting.ui.expense.ExpenseEditor">
+         <command
+               commandId="org.eclipse.ui.file.save"
+               label="%command.save.label"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
             allPopups="false"
             locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
          <command
@@ -492,6 +500,13 @@
             icon="icons/page_edit.png"
             id="de.togginho.accounting.ui.invoice.InvoiceEditor"
             name="%editor.invoice.name">
+      </editor>
+      <editor
+            class="de.togginho.accounting.ui.expense.ExpenseEditor"
+            default="false"
+            icon="icons/tag_blue_edit.png"
+            id="de.togginho.accounting.ui.expense.ExpenseEditor"
+            name="Expense">
       </editor>
    </extension>
    <extension

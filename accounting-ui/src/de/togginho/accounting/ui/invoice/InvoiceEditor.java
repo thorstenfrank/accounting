@@ -409,7 +409,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		sectionClient.setLayout(new GridLayout(2, false));
 		
 		Composite tableComposite = toolkit.createComposite(sectionClient);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
+		WidgetHelper.grabBoth(tableComposite);
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
 		
@@ -570,15 +570,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-		form.getBody().setFocus();
-	}
-
 	/**
 	 * 
 	 * {@inheritDoc}.

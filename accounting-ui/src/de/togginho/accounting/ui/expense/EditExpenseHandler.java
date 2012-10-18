@@ -18,6 +18,9 @@ package de.togginho.accounting.ui.expense;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.PartInitException;
+
+import de.togginho.accounting.ui.IDs;
 
 
 /**
@@ -36,7 +39,14 @@ public class EditExpenseHandler extends AbstractExpenseHandler {
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		LOG.debug("Opening wizard for existing expense"); //$NON-NLS-1$
-		openExpenseWizard(event, getExpenseFromSelection(event));
+		
+		ExpenseEditorInput input = new ExpenseEditorInput(getExpenseFromSelection(event));
+		try {
+			getActivePage(event).openEditor(input, IDs.EDIT_EXPENSE_ID);
+		} catch (PartInitException e) {
+			getLogger().error("Error opening editor for expense", e); //$NON-NLS-1$
+			throw new ExecutionException("Error opening editor for expense", e);
+		}
 	}
 
 	

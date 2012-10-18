@@ -91,6 +91,8 @@ public class Messages extends NLS {
 	public static String EditInvoiceCommand_uneditableMessage;
 	public static String EditInvoiceCommand_uneditableText;
 	
+	public static String ExpenseEditor_title;
+	
 	public static String ExportInvoiceCommand_addingReportParameters;
 	public static String ExportInvoiceCommand_exportingReportToFile;
 	public static String ExportInvoiceCommand_fillingReport;
@@ -281,6 +283,7 @@ public class Messages extends NLS {
 	public static String iconsInvoiceSend;
 	public static String iconsRevenue;
 	public static String iconsExpenses;
+	public static String iconsExpenseEdit;
 	public static String iconsReports;
 	public static String iconsCashFlowStatement;
 

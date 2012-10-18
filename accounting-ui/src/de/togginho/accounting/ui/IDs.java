@@ -31,6 +31,7 @@ public interface IDs {
 	public static final String VIEW_INVOICES_ID = "de.togginho.accounting.ui.invoice.InvoiceView"; //$NON-NLS-1$
 	public static final String EDIT_INVOIDCE_ID = "de.togginho.accounting.ui.invoice.InvoiceEditor"; //$NON-NLS-1$
 	public static final String VIEW_EXPENSES_ID = "de.togginho.accounting.ui.expense.ExpensesView"; //$NON-NLS-1$
+	public static final String EDIT_EXPENSE_ID = "de.togginho.accounting.ui.expense.ExpenseEditor"; //$NON-NLS-1$
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMANDS / ACTIONS / EVENTS

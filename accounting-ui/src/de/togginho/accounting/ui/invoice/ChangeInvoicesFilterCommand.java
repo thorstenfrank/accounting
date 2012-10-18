@@ -115,7 +115,7 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
         		}
         		
         		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
-        		GridDataFactory.fillDefaults().grab(true, true).applyTo(fillToBottom);
+        		WidgetHelper.grabHorizontal(fillToBottom);
         		
         		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
         		GridDataFactory.fillDefaults().grab(true, false).applyTo(bottomSeparator);

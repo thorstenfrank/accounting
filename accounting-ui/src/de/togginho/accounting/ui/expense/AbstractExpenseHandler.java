@@ -77,6 +77,7 @@ abstract class AbstractExpenseHandler extends AbstractAccountingHandler {
 	 * @param wizard
 	 */
 	private void openExpenseWizard(ExecutionEvent event, ExpenseWizard wizard) {
+		getLogger().debug("Opening expense editor");
 		Shell shell = getShell(event);
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 		

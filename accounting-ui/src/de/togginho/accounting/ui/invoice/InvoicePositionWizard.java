@@ -25,7 +25,6 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -269,7 +268,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			WidgetHelper.createLabel(composite, Messages.labelDescription);
 			Text description = new Text(composite, SWT.MULTI | SWT.BORDER);
 			description.setEnabled(editable);
-			GridDataFactory.fillDefaults().grab(true, true).applyTo(description);
+			WidgetHelper.grabBoth(description);
 			IObservableValue descriptionWidgetObservable = SWTObservables.observeText(description, SWT.Modify);
 			bindingContext.bindValue(
 					descriptionWidgetObservable, 

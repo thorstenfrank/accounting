@@ -43,12 +43,15 @@ public class Price implements Serializable {
      * 
      */
     private static final long serialVersionUID = -58766435614756711L;
-
+    
+    public static final String FIELD_NET = "net";
+    public static final String FIELD_TAX = "tax";
+    public static final String FIELD_GROSS = "gross";
+    
     /** **/
     private static final MathContext MATH_CONTEXT = new MathContext(34, RoundingMode.HALF_UP);
     private static final int SCALE = 2;
-    
-    
+           
 	private BigDecimal net;
 	
 	private BigDecimal tax;
