@@ -315,7 +315,7 @@ public interface AccountingService {
 	ExpenseCollection getExpenses(TimeFrame timeFrame);
 	
 	/**
-	 * Permanently removed the supplied {@link Expense} from persistence.
+	 * Permanently remove the supplied {@link Expense} from persistence.
 	 * 
 	 * @param expense the {@link Expense} to delete
 	 */

@@ -77,6 +77,9 @@ public class Messages extends NLS {
 	public static String DeleteClientCommand_confirmMessage;
 	public static String DeleteClientCommand_confirmText;
 	
+	public static String DeleteExpenseCommand_confirmMessage;
+	public static String DeleteExpenseCommand_confirmText;
+	
 	public static String DeleteInvoiceCommand_confirmMessage;
 	public static String DeleteInvoiceCommand_confirmText;
 	

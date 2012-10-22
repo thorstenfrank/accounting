@@ -444,6 +444,11 @@
                icon="icons/page_copy.png"
                style="push">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+               icon="icons/tag_blue_delete.png"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:de.togginho.accounting.ui.expense.ExpenseEditor">
@@ -632,6 +637,11 @@
             defaultHandler="de.togginho.accounting.ui.expense.CopyExpenseHandler"
             id="de.togginho.accounting.ui.expense.CopyExpenseCommand"
             name="%command.copyExpense.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.expense.DeleteExpenseHandler"
+            id="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+            name="Delete...">
       </command>
       <command
       		categoryId="de.togginho.accounting.ui.expense"

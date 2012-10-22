@@ -18,8 +18,6 @@ package de.togginho.accounting.ui.invoice;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 
@@ -105,7 +103,6 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 	 */
 	protected void deleteInvoice(Invoice invoice, ExecutionEvent event) {
 		final boolean areYouSure =  showWarningMessage(
-				invoice, 
 				event, 
 				Messages.bind(Messages.DeleteInvoiceCommand_confirmMessage, invoice.getNumber()), 
 				Messages.DeleteInvoiceCommand_confirmText);
@@ -130,7 +127,6 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 	 */
 	protected void cancelInvoice(Invoice invoice, ExecutionEvent event) {
 		final boolean areYouSure = showWarningMessage(
-				invoice, 
 				event, 
 				Messages.bind(Messages.CancelInvoiceCommand_confirmMessage, invoice.getNumber()), 
 				Messages.CancelInvoiceCommand_confirmText);
@@ -142,21 +138,6 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 		} else {
 			getLogger().info("CancelInvoice was cancelled by user"); //$NON-NLS-1$
 		}
-	}
-	
-	/**
-	 * 
-	 * @param invoice
-	 * @param event
-	 * @return
-	 */
-	private boolean showWarningMessage(Invoice invoice, ExecutionEvent event, final String message, final String text) {
-		MessageBox msgBox = new MessageBox(
-				getShell(event), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-		msgBox.setMessage(message);
-		msgBox.setText(text);
-		
-		return (msgBox.open() == SWT.OK);
 	}
 	
 	/**

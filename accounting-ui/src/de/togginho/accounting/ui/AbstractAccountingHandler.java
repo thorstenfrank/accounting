@@ -106,4 +106,18 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 	protected ISelectionProvider getSelectionProvider(ExecutionEvent event) {
 		return getActivePage(event).getActivePart().getSite().getSelectionProvider();
 	}
+	
+	/**
+	 * 
+	 * @param event
+	 * @return
+	 */
+	protected boolean showWarningMessage(ExecutionEvent event, final String message, final String text) {
+		MessageBox msgBox = new MessageBox(
+				getShell(event), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+		msgBox.setMessage(message);
+		msgBox.setText(text);
+		
+		return (msgBox.open() == SWT.OK);
+	}
 }
