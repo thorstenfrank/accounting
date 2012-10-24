@@ -18,9 +18,12 @@ package de.togginho.accounting.ui.expense;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 
 /**
@@ -52,12 +55,29 @@ public class DeleteExpenseHandler extends AbstractExpenseHandler {
 			AccountingUI.getAccountingService().deleteExpense(expense);
 			
 			// close any open editors for the deleted invoice
-			//removeOpenEditorForInvoice(invoice, event);
+			closeOpenEditorForExpense(expense, event);
 		} else {
 			getLogger().info("Delete was cancelled by user"); //$NON-NLS-1$
 		}
 	}
 
+	/**
+	 * 
+	 * @param closeMe
+	 * @param event
+	 */
+	private void closeOpenEditorForExpense(Expense closeMe, ExecutionEvent event) {
+		getLogger().debug("Checking for open editors for expense " + closeMe.getDescription()); //$NON-NLS-1$
+		IWorkbenchPage page = getActivePage(event);
+		
+		for (IEditorReference editorRef : page.findEditors(null, IDs.EDIT_EXPENSE_ID, IWorkbenchPage.MATCH_ID)) {
+			if (editorRef.getName().equals(closeMe.getDescription())) {
+				getLogger().debug("Closing editor for expense: " + editorRef.getName()); //$NON-NLS-1$
+				page.closeEditor(editorRef.getEditor(false), false);
+			}
+		}		
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()

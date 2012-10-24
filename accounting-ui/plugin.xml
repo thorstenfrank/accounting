@@ -444,6 +444,10 @@
                icon="icons/page_copy.png"
                style="push">
          </command>
+         <separator
+               name="expensesView.popupMenu.separator2"
+               visible="true">
+         </separator>
          <command
                commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
                icon="icons/tag_blue_delete.png"
@@ -641,7 +645,7 @@
       <command
             defaultHandler="de.togginho.accounting.ui.expense.DeleteExpenseHandler"
             id="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
-            name="Delete...">
+            name="%command.deleteExpense.name">
       </command>
       <command
       		categoryId="de.togginho.accounting.ui.expense"
