@@ -52,7 +52,8 @@ public class InvoicePropertyTester extends PropertyTester {
 			//LOG.debug("testing from editor input"); //$NON-NLS-1$
 			invoice = ((InvoiceEditorInput) receiver).getInvoice();
 		} else {
-			LOG.warn("Unknown receiver type: " + receiver.getClass().getName()); //$NON-NLS-1$
+			//LOG.warn("Unknown receiver type: " + receiver.getClass().getName()); //$NON-NLS-1$
+			return false;
 		}
 		
 		return doTest(invoice, property);
