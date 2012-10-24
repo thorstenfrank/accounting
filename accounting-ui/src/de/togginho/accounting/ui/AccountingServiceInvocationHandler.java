@@ -124,7 +124,17 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
      * @param accountingContext the accountingContext to set
      */
     protected void setAccountingContext(AccountingContext accountingContext) {
+    	if (this.accountingContext != null) {
+    		LOG.warn("Overwriting accounting context");
+    	}
+    	
     	this.accountingContext = accountingContext;
+    	
+    	LOG.info("Calling init on AccountingService");
+    	
+    	// try initialising the service with the new context
+    	// --> don't need to call init() explicitly, since that is done in getService()
+    	getService();
     }
 
 	/**

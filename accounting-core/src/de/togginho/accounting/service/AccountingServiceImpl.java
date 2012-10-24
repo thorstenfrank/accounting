@@ -108,7 +108,7 @@ public class AccountingServiceImpl implements AccountingService {
 			throw new AccountingException(Messages.AccountingService_errorNoContext);
 		}
 		if (initialised) {
-			LOG.info("Service is already initialised, nothing to do here."); //$NON-NLS-1$
+			LOG.debug("Service is already initialised, nothing to do here."); //$NON-NLS-1$
 			return;
 		}
 
@@ -133,6 +133,7 @@ public class AccountingServiceImpl implements AccountingService {
 			throw new AccountingException(Messages.AccountingService_errorServiceInit, e);
 		}
 
+		LOG.info("Service is now initialised"); //$NON-NLS-1$
 		// set this service to initialised - only after all necessary processing
 		// finished successfully
 		initialised = true;
