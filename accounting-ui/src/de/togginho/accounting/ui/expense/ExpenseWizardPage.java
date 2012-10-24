@@ -76,8 +76,10 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 		expenseEditingHelper.createBasicSection(composite);
 		
 		expenseEditingHelper.createPriceSection(composite);
-		
+				
 		setControl(composite);
+		
+		checkIfPageComplete();
 	}	
 	
 	/**
@@ -121,7 +123,9 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 	 */
 	private void checkIfPageComplete() {
 		if (expense.getDescription() != null && !expense.getDescription().isEmpty() &&
-			expense.getPaymentDate() != null && expense.getNetAmount() != null) {
+			expense.getPaymentDate() != null && expense.getNetAmount() != null &&
+			expense.getExpenseType() != null) {
+			
 			setPageComplete(true);
 		} else {
 			setPageComplete(false);
