@@ -18,10 +18,7 @@ package de.togginho.accounting.ui.invoice;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -70,7 +67,6 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.Price;
-import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
@@ -106,10 +102,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	// invoice position table
 	private TableViewer invoicePositionViewer;
 	
-	// tax rate map...
-	private Map<String, TaxRate> shortStringToTaxRateMap;
-	private String[] taxRateShortNames;
-
 	// totals (read-only)
 	private Text totalNet;
 	private Text totalTax;
@@ -155,18 +147,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		Invoice invoice = getEditorInput().getInvoice();
 		
 		this.invoiceCanBeEdited = invoice.canBeEdited();
-		
-		Set<TaxRate> taxRates = invoice.getUser().getTaxRates();
-		if (taxRates != null && !taxRates.isEmpty()) {
-			shortStringToTaxRateMap = new HashMap<String, TaxRate>();
-			taxRateShortNames = new String[taxRates.size()];
-			int index = 0;
-			for (TaxRate rate : taxRates) {
-				final String shortString = rate.toShortString();
-				shortStringToTaxRateMap.put(shortString, rate);
-				taxRateShortNames[index] = shortString;
-			}
-		}
 		
 		if (invoice.getPaymentTerms() == null) {
 			if (invoice.getClient() == null || invoice.getClient().getDefaultPaymentTerms() == null) {
