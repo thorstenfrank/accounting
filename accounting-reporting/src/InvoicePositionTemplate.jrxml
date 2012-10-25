@@ -42,35 +42,35 @@
 		<band height="30" splitType="Stretch">
 			<elementGroup>
 				<textField isStretchWithOverflow="true" pattern="">
-					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="334" y="0" width="75" height="30"/>
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="334" y="0" width="75" height="30" isPrintWhenDetailOverflows="true"/>
 					<textElement textAlignment="Right">
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{totalPriceNet}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="">
-					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="55" y="0" width="55" height="30"/>
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="55" y="0" width="55" height="30" isPrintWhenDetailOverflows="true"/>
 					<textElement>
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{unit}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="0" y="0" width="55" height="30"/>
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="0" y="0" width="55" height="30" isPrintWhenDetailOverflows="true"/>
 					<textElement textAlignment="Left">
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{quantity}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="">
-					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="259" y="0" width="75" height="30"/>
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="259" y="0" width="75" height="30" isPrintWhenDetailOverflows="true"/>
 					<textElement textAlignment="Right">
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{pricePerUnit}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="110" y="0" width="149" height="30"/>
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="110" y="0" width="149" height="30" isPrintWhenDetailOverflows="true"/>
 					<textElement>
 						<font size="9"/>
 					</textElement>
@@ -78,7 +78,7 @@
 				</textField>
 			</elementGroup>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement style="INVOICE_TX_10" stretchType="RelativeToTallestObject" x="409" y="0" width="50" height="30"/>
+				<reportElement style="INVOICE_TX_10" positionType="Float" x="409" y="0" width="50" height="30" isPrintWhenDetailOverflows="true"/>
 				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>

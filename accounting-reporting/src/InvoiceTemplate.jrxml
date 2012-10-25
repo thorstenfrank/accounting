@@ -132,7 +132,7 @@
 	<detail>
 		<band height="30" splitType="Stretch">
 			<subreport>
-				<reportElement x="0" y="0" width="459" height="30"/>
+				<reportElement positionType="Float" x="0" y="0" width="459" height="30" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}.get("INVOICE_POSITION_DATASOURCE")]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA["InvoicePositionTemplate.jasper"]]></subreportExpression>
 			</subreport>
