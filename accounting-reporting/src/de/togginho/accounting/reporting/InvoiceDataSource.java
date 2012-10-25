@@ -60,24 +60,31 @@ public class InvoiceDataSource extends AbstractReportDataSource {
 		fieldMap.put("user.bank.title", Messages.InvoiceDataSource_userBankTitle); //$NON-NLS-1$
 		fieldMap.put("user.bank.account.title", Messages.InvoiceDataSource_userBankAccountTitle); //$NON-NLS-1$
 		fieldMap.put("user.bank.code.title", Messages.InvoiceDataSource_userBankCodeTitle); //$NON-NLS-1$
+		
+		// only add BIC and IBAN labels if present in bank account
+		if (wrapper.getUserBankBIC() != null && !wrapper.getUserBankBIC().isEmpty()) {
+			fieldMap.put("user.bank.bic.title", Messages.InvoiceDataSource_userBankBicTitle); //$NON-NLS-1$
+		}
+		if (wrapper.getUserBankIBAN() != null && !wrapper.getUserBankIBAN().isEmpty()) {
+			fieldMap.put("user.bank.iban.title", Messages.InvoiceDataSource_userBankIbanTitle); //$NON-NLS-1$
+		}
+
 		fieldMap.put("total.net.title", Messages.InvoiceDataSource_totalNetTitle); //$NON-NLS-1$
 		fieldMap.put("total.tax.amount.title", Messages.InvoiceDataSource_totalTaxAmountTitle); //$NON-NLS-1$
 		fieldMap.put("total.gross.title", Messages.InvoiceDataSource_totalGrossTitle); //$NON-NLS-1$
 		fieldMap.put("user.taxNumber.header", Messages.InvoiceDataSource_userTaxNumberHeader); //$NON-NLS-1$
 		
-		String paymentConditionText = null;
 		switch (wrapper.getPaymentTerms().getPaymentType()) {
 		case TRADE_CREDIT:
-			paymentConditionText = Messages.bind(
-					Messages.InvoiceDataSource_paymentConditionTradeCredit, 
-					wrapper.getPaymentTerms().getFullPaymentTargetInDays());
+			fieldMap.put(
+					"paymentConditionText", 
+					Messages.bind(
+							Messages.InvoiceDataSource_paymentConditionTradeCredit, 
+							wrapper.getPaymentTerms().getFullPaymentTargetInDays()));
 			break;
-
 		default:
-			paymentConditionText = "Gimme da Money";
+			// do nothing, since we don't want the payment conditions to be displayed
 			break;
 		}
-		
-		fieldMap.put("paymentConditionText", paymentConditionText);
 	}
 }

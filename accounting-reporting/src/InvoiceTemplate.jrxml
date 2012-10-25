@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InvoiceTemplate" pageWidth="595" pageHeight="841" columnWidth="459" leftMargin="68" rightMargin="68" topMargin="22" bottomMargin="22">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.9965000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="350"/>
 	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
 	<field name="invoice" class="de.togginho.accounting.reporting.InvoiceWrapper"/>
 	<field name="invoice.title" class="java.lang.String"/>
@@ -17,6 +17,8 @@
 	<field name="user.bank.title" class="java.lang.String"/>
 	<field name="user.bank.account.title" class="java.lang.String"/>
 	<field name="user.bank.code.title" class="java.lang.String"/>
+	<field name="user.bank.bic.title" class="java.lang.String"/>
+	<field name="user.bank.iban.title" class="java.lang.String"/>
 	<field name="total.net.title" class="java.lang.String"/>
 	<field name="total.tax.amount.title" class="java.lang.String"/>
 	<field name="total.gross.title" class="java.lang.String"/>
@@ -248,6 +250,26 @@
 				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="89" width="178" height="13" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserTaxNumberFormatted()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="2" y="41" width="113" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{user.bank.bic.title}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="115" y="41" width="113" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserBankBIC()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="2" y="54" width="113" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{user.bank.iban.title}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="115" y="54" width="113" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice}.getUserBankIBAN()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

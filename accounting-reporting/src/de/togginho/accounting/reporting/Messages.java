@@ -59,7 +59,9 @@ public class Messages extends NLS {
 	public static String InvoiceDataSource_totalNetTitle;
 	public static String InvoiceDataSource_totalTaxAmountTitle;
 	public static String InvoiceDataSource_userBankAccountTitle;
+	public static String InvoiceDataSource_userBankBicTitle;
 	public static String InvoiceDataSource_userBankCodeTitle;
+	public static String InvoiceDataSource_userBankIbanTitle;
 	public static String InvoiceDataSource_userBankTitle;
 	public static String InvoiceDataSource_userTaxNumberHeader;
 	public static String InvoiceDataSource_paymentConditionTradeCredit;

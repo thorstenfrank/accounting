@@ -229,6 +229,22 @@ public class InvoiceWrapper implements Constants {
 
     /**
      * 
+     * @return the invoice user's bank account
+     */
+    public String getUserBankBIC() {
+    	return invoice.getUser().getBankAccount().getBic();
+    }
+
+    /**
+     * 
+     * @return the invoice user's bank account
+     */
+    public String getUserBankIBAN() {
+    	return invoice.getUser().getBankAccount().getIban();
+    }
+    
+    /**
+     * 
      * @return total net price of the invoice
      */
     public String getTotalNet() {
