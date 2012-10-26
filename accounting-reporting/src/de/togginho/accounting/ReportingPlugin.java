@@ -21,18 +21,32 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * 
+ * @author thorsten
+ *
+ */
 public class ReportingPlugin implements BundleActivator {
 
+	/**
+	 * 
+	 */
 	private static final Logger LOG = Logger.getLogger(ReportingPlugin.class);
 	
+	/**
+	 * 
+	 */
 	private static BundleContext context;
 
+	/**
+	 * 
+	 * @return
+	 */
 	static BundleContext getContext() {
 		return context;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
@@ -41,11 +55,13 @@ public class ReportingPlugin implements BundleActivator {
 
 		// register the service
 		LOG.info("Registering ReportingService");
-		context.registerService(ReportingService.class.getName(), new ReportingServiceImpl(), new Hashtable<String, String>());
+		context.registerService(
+				ReportingService.class, 
+				new ReportingServiceImpl(), 
+				new Hashtable<String, String>());
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {

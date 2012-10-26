@@ -100,4 +100,12 @@ public class ExpenseEditorInput implements IEditorInput {
 	public String getToolTipText() {
 		return Messages.ExpenseEditor_title;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof ExpenseEditorInput) {
+			return expense.equals(((ExpenseEditorInput) obj).getExpense());
+		}
+	    return super.equals(obj);
+	}
 }

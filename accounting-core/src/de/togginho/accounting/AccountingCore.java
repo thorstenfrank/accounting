@@ -50,16 +50,15 @@ public class AccountingCore implements BundleActivator {
 	/**
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	@SuppressWarnings("rawtypes")
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.info("START CORE");
 		AccountingCore.context = bundleContext;
 		
-		ServiceReference reference = context.getServiceReference(Db4oService.class.getName());
+		ServiceReference<Db4oService> reference = context.getServiceReference(Db4oService.class);
 		if (reference == null) {
 			LOG.error("Cannot find DB4o service!");
 		} else {
-			Db4oService service = (Db4oService) context.getService(reference);
+			Db4oService service = context.getService(reference);
 			
 			accountingServiceImpl = new AccountingServiceImpl(service);
 						
@@ -67,7 +66,7 @@ public class AccountingCore implements BundleActivator {
 			context.registerService(
 					AccountingService.class.getName(), 
 					accountingServiceImpl, 
-					new Hashtable());
+					new Hashtable<String, String>());
 		}
 	}
 
