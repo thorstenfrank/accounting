@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.service;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -125,12 +126,19 @@ public class AccountingServiceImpl implements AccountingService {
 			throw new AccountingException(
 			        Messages.bind(Messages.AccountingService_errorFileLocked, context.getDbFileName()), e);
 		} catch (IncompatibleFileFormatException e) {
-			LOG.error(String.format("File [%s] is not a valid data file format!", e)); //$NON-NLS-1$
+			LOG.error(String.format("File [%s] is not a valid data file format!", context.getDbFileName()), e); //$NON-NLS-1$
 			throw new AccountingException(
 					Messages.bind(Messages.AccountingService_errorIllegalFileFormat, context.getDbFileName()), e);
 		} catch (Exception e) {
-			LOG.error("Error setting up DB " + context.getDbFileName(), e); //$NON-NLS-1$
-			throw new AccountingException(Messages.AccountingService_errorServiceInit, e);
+			if (e.getCause() != null && e.getCause() instanceof FileNotFoundException) {
+				LOG.error(String.format("DB file [%s] does not exist!", context.getDbFileName()), e); //$NON-NLS-1$
+				throw new AccountingException(
+						Messages.bind(Messages.AccountingService_errorDbFileNotFound, context.getDbFileName()), 
+						e.getCause());
+			} else {
+				LOG.error("Error setting up DB " + context.getDbFileName(), e); //$NON-NLS-1$
+				throw new AccountingException(Messages.AccountingService_errorServiceInit, e);				
+			}
 		}
 
 		LOG.info("Service is now initialised"); //$NON-NLS-1$

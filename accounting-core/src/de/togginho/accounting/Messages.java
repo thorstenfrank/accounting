@@ -38,6 +38,7 @@ public class Messages extends NLS {
 	public static String AccountingService_errorServiceNotInitialised;
 	public static String AccountingService_errorFileLocked;
 	public static String AccountingService_errorIllegalFileFormat;
+	public static String AccountingService_errorDbFileNotFound;
 	public static String AccountingService_errorServiceInit;
 	public static String AccountingService_errorIO;
 	public static String AccountingService_errorDatabaseClosed;

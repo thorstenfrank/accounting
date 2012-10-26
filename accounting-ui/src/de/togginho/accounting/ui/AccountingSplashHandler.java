@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.ui;
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -56,6 +58,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 	/** Error message to display at the end. */
 	private String errorMessage = null;
 	
+	/** Used to identify which type of setup the user has chosen in case the app is run for the first time. */
 	private SetupMode setupMode;
 	
 	/**
@@ -80,20 +83,36 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 			LOG.error("Error during init", e); //$NON-NLS-1$
 			initialised = false;
 			errorMessage = e.getLocalizedMessage();
+			
+			showErrorMessageDialog(splash);
+			
+			// if it's "only" a missing DB file, give the user a chance to find it
+			if (e.getCause() != null && e.getCause() instanceof FileNotFoundException) {
+				setupMode = SetupMode.USE_EXISTING;
+				runSelectedSetupType();
+			}
+
 		}
 		
 		// something went wrong, don't start up the application
 		if (!initialised) {
-			MessageBox msgBox = new MessageBox(splash, SWT.ICON_ERROR | SWT.OK);
-			msgBox.setText(Messages.labelError);
-			msgBox.setMessage(errorMessage);
-			msgBox.open();
-			
+			showErrorMessageDialog(splash);
+			// fatal error:
 			// exit the app before the main event loop starts running...
 			splash.getDisplay().close();
 			System.exit(0);
 		}
 	}
+
+	/**
+     * @param parent
+     */
+    private void showErrorMessageDialog(Shell parent) {
+	    MessageBox msgBox = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+	    msgBox.setText(Messages.labelError);
+	    msgBox.setMessage(errorMessage);
+	    msgBox.open();
+    }
 	
 	/**
 	 * 
@@ -103,19 +122,25 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 		if (returnCode == WelcomeDialog.CANCEL) {
 			handleSetupCancelledByUser();
 		} else {
-			switch (setupMode) {
-			case CREATE_NEW:
-				runSetupWizard();
-				break;
-			case USE_EXISTING:
-				runUseExistingWizard();
-				break;
-			case IMPORT_XML:
-				runImportFromXmlWizard();
-				break;
-			}
-			
+			runSelectedSetupType();
 			AccountingUI.getDefault().setFirstRun(true);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void runSelectedSetupType() {
+		switch (setupMode) {
+		case CREATE_NEW:
+			runSetupWizard();
+			break;
+		case USE_EXISTING:
+			runUseExistingWizard();
+			break;
+		case IMPORT_XML:
+			runImportFromXmlWizard();
+			break;
 		}
 	}
 	
