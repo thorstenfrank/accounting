@@ -23,6 +23,7 @@ import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -309,10 +310,12 @@ public interface AccountingService {
 	 *  
 	 * @param timeFrame	the time frame within which the {@link Expense#getPaymentDate()} needs to be in order to be
 	 * 		  part of the returned {@link Set}
+	 * @param types		optional parameter to further narrow down the result set to include only those expenses with a
+	 * 	      matching type
 	 * 
 	 * @return	a collection of expenses from within the supplied {@link TimeFrame}
 	 */
-	ExpenseCollection getExpenses(TimeFrame timeFrame);
+	ExpenseCollection findExpenses(TimeFrame timeFrame, ExpenseType...types);
 	
 	/**
 	 * Permanently remove the supplied {@link Expense} from persistence.

@@ -26,6 +26,7 @@ import org.junit.Test;
 import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
@@ -151,11 +152,16 @@ public class PredicateTests extends BaseTestFixture {
 	 */
 	@Test
 	public void testFindExpensesPredicate() {
-		FindExpensesPredicate predicate = new FindExpensesPredicate(TimeFrame.currentMonth());
+		FindExpensesPredicate predicate = new FindExpensesPredicate();
+		
 		Calendar cal = Calendar.getInstance();
 		Expense expense = new Expense();
+		expense.setExpenseType(ExpenseType.OPEX);
 		expense.setPaymentDate(cal.getTime());
 		
+		assertTrue(predicate.match(expense));
+		
+		predicate = new FindExpensesPredicate(TimeFrame.currentMonth());
 		assertTrue(predicate.match(expense));
 		
 		cal.add(Calendar.MONTH, -1);
@@ -165,5 +171,15 @@ public class PredicateTests extends BaseTestFixture {
 		cal.add(Calendar.MONTH, 2);
 		expense.setPaymentDate(cal.getTime());
 		assertFalse(predicate.match(expense));
+		
+		// and back to the original date
+		cal = Calendar.getInstance();
+		expense.setPaymentDate(cal.getTime());
+		
+		predicate = new FindExpensesPredicate(TimeFrame.currentMonth(), ExpenseType.CAPEX, ExpenseType.OTHER);
+		assertFalse(predicate.match(expense));
+		
+		predicate = new FindExpensesPredicate(TimeFrame.currentMonth(), ExpenseType.OPEX);
+		assertTrue(predicate.match(expense));
 	}
 }

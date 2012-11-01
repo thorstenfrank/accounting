@@ -15,9 +15,13 @@
  */
 package de.togginho.accounting.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.db4o.query.Predicate;
 
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.util.TimeFrame;
 
 /**
@@ -31,14 +35,31 @@ class FindExpensesPredicate extends Predicate<Expense> {
      */
     private static final long serialVersionUID = -4505472471157331493L;
 
-    private TimeFrame timeFrame;
+    private TimeFrame timeFrame = null;
+    
+    private Set<ExpenseType> expenseTypes = null;
+    
+    /**
+     * 
+     */
+    FindExpensesPredicate() {
+    	
+    }
     
     /**
      * 
      * @param timeFrame
+     * @param types
      */
-    FindExpensesPredicate(TimeFrame timeFrame) {
+    FindExpensesPredicate(TimeFrame timeFrame, ExpenseType...types) {
     	this.timeFrame = timeFrame;
+    	
+    	if (types != null && types.length > 0) {
+    		expenseTypes = new HashSet<ExpenseType>();
+    		for (ExpenseType type : types) {
+    			expenseTypes.add(type);
+    		}
+    	}
     }
     
 	/**
@@ -47,10 +68,17 @@ class FindExpensesPredicate extends Predicate<Expense> {
 	 */
 	@Override
 	public boolean match(Expense candidate) {
+		boolean matches = false;
 		if (timeFrame == null) {
-			return true;
+			matches = true;
+		} else {
+			matches = timeFrame.isInTimeFrame(candidate.getPaymentDate());
 		}
 		
-		return timeFrame.isInTimeFrame(candidate.getPaymentDate());
+		if (matches && expenseTypes != null) {
+			matches = expenseTypes.contains(candidate.getExpenseType());
+		}
+		
+		return matches;
 	}
 }

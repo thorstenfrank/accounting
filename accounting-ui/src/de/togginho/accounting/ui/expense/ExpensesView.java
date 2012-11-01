@@ -132,7 +132,7 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	 * @return
 	 */
 	private Set<ExpenseWrapper> getExpenses() {
-		final ExpenseCollection ec = AccountingUI.getAccountingService().getExpenses(currentTimeFrame);
+		final ExpenseCollection ec = AccountingUI.getAccountingService().findExpenses(currentTimeFrame);
 		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(ec.getExpenses().size());
 		
 		for (Expense expense : ec.getExpenses()) {

@@ -347,13 +347,13 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	
 	/**
 	 * Tests for expenses persistence.
-	 * @see AccountingService#getExpenses(de.togginho.accounting.util.TimeFrame)
+	 * @see AccountingService#findExpenses(de.togginho.accounting.util.TimeFrame)
 	 * @see AccountingService#saveExpense(de.togginho.accounting.model.Expense)
 	 * @see AccountingService#deleteExpense(de.togginho.accounting.model.Expense) 
 	 */
 	@Test
 	public void testExpenses() {
-		ExpenseCollection ec = serviceUnderTest.getExpenses(null);
+		ExpenseCollection ec = serviceUnderTest.findExpenses(null);
 		
 		assertNull(ec.getTimeFrame());
 		assertNotNull(ec.getExpenses());
@@ -367,7 +367,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		serviceUnderTest.saveExpense(e1);
 		
-		ec = serviceUnderTest.getExpenses(null);
+		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(1, ec.getExpenses().size());
 		
 		Expense e2 = new Expense();
@@ -378,10 +378,10 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		serviceUnderTest.saveExpense(e2);
 		
-		ec = serviceUnderTest.getExpenses(null);
+		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(2, ec.getExpenses().size());
 		
-		ec = serviceUnderTest.getExpenses(new TimeFrame(buildDate(1, 0, 2012), buildDate(30, 0, 2012)));
+		ec = serviceUnderTest.findExpenses(new TimeFrame(buildDate(1, 0, 2012), buildDate(30, 0, 2012)));
 		assertEquals(1, ec.getExpenses().size());
 		
 		Expense fromService = ec.getExpenses().iterator().next();
@@ -392,12 +392,12 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		serviceUnderTest.deleteExpense(fromService);
 		
-		ec = serviceUnderTest.getExpenses(null);
+		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(1, ec.getExpenses().size());
 		
 		serviceUnderTest.deleteExpense(ec.getExpenses().iterator().next());
 		
-		ec = serviceUnderTest.getExpenses(null);
+		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(0, ec.getExpenses().size());
 	}
 	

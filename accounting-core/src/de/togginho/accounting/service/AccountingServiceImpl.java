@@ -55,6 +55,7 @@ import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -793,13 +794,13 @@ public class AccountingServiceImpl implements AccountingService {
     
 	/**
      * {@inheritDoc}.
-     * @see AccountingService#getExpenses(TimeFrame)
+     * @see AccountingService#findExpenses(TimeFrame, ExpenseType...)
      */
     @Override
-    public ExpenseCollection getExpenses(TimeFrame timeFrame) {
+    public ExpenseCollection findExpenses(TimeFrame timeFrame, ExpenseType...types) {
     	ExpenseCollection ec = new ExpenseCollection();
     	ec.setTimeFrame(timeFrame);
-    	ec.setExpenses(getExpensesAsSet(timeFrame));
+    	ec.setExpenses(getExpensesAsSet(timeFrame, types));
     	return ec;
     }
     
@@ -808,7 +809,7 @@ public class AccountingServiceImpl implements AccountingService {
      * @param timeFrame
      * @return
      */
-    private Set<Expense> getExpensesAsSet(TimeFrame timeFrame) {
+    private Set<Expense> getExpensesAsSet(TimeFrame timeFrame, ExpenseType...types) {
     	Set<Expense> expenses = null;
     	try {
 	        expenses = new HashSet<Expense>(objectContainer.query(new FindExpensesPredicate(timeFrame)));
@@ -837,7 +838,7 @@ public class AccountingServiceImpl implements AccountingService {
 	public CashFlowStatement getCashFlowStatement(TimeFrame timeFrame) {
 		final CashFlowStatement statement = new CashFlowStatement(timeFrame);
 		statement.setRevenue(getRevenue(timeFrame));
-		statement.setExpenses(getExpenses(timeFrame));
+		statement.setExpenses(findExpenses(timeFrame));
 		return statement;
 	}
 

@@ -237,7 +237,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected void updateModel(TimeFrame timeFrame) {
-		expenseCollection = AccountingUI.getAccountingService().getExpenses(timeFrame);
+		expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame);
 		
 		List<ExpenseWrapper> wrappers = new ArrayList<ExpenseWrapper>();
 		for (Expense expense : expenseCollection.getExpenses()) {
