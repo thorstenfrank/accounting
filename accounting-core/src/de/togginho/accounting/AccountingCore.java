@@ -51,12 +51,13 @@ public class AccountingCore implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		LOG.info("START CORE");
+		LOG.info("START CORE: " + bundleContext.getBundle().getSymbolicName()); //$NON-NLS-1$
 		AccountingCore.context = bundleContext;
 		
 		ServiceReference<Db4oService> reference = context.getServiceReference(Db4oService.class);
 		if (reference == null) {
-			LOG.error("Cannot find DB4o service!");
+			LOG.error("Cannot find DB4o service!"); //$NON-NLS-1$
+			// FIXME the bundle cannot properly start without the persistence service, so don't swallow this silently!
 		} else {
 			Db4oService service = context.getService(reference);
 			
@@ -74,7 +75,7 @@ public class AccountingCore implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		LOG.info("STOP CORE");
+		LOG.info("STOP CORE: " + bundleContext.getBundle().getSymbolicName()); //$NON-NLS-1$
 		if (accountingServiceImpl != null) {
 			accountingServiceImpl.shutDown();
 		}

@@ -65,7 +65,7 @@ public class AccountingUI extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		LOG.debug("START UI"); //$NON-NLS-1$
+		LOG.debug("START UI: " + context.getBundle().getSymbolicName()); //$NON-NLS-1$
 		super.start(context);
 		plugin = this;
 		
@@ -86,7 +86,7 @@ public class AccountingUI extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		LOG.debug("STOP UI"); //$NON-NLS-1$
+		LOG.debug("STOP UI: " + context.getBundle().getSymbolicName()); //$NON-NLS-1$
 		
 		saveContext();
 		

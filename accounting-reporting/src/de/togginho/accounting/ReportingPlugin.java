@@ -50,11 +50,11 @@ public class ReportingPlugin implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		LOG.info("START REPORTING");
+		LOG.info("START REPORTING " + bundleContext.getBundle().getSymbolicName()); //$NON-NLS-1$
 		ReportingPlugin.context = bundleContext;
 
 		// register the service
-		LOG.info("Registering ReportingService");
+		LOG.info("Registering ReportingService"); //$NON-NLS-1$
 		context.registerService(
 				ReportingService.class, 
 				new ReportingServiceImpl(), 
@@ -65,7 +65,7 @@ public class ReportingPlugin implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		LOG.info("STOP REPORTING");
+		LOG.info("STOP REPORTING: " + bundleContext.getBundle().getSymbolicName());
 		ReportingPlugin.context = null;
 	}
 }
