@@ -812,7 +812,7 @@ public class AccountingServiceImpl implements AccountingService {
     private Set<Expense> getExpensesAsSet(TimeFrame timeFrame, ExpenseType...types) {
     	Set<Expense> expenses = null;
     	try {
-	        expenses = new HashSet<Expense>(objectContainer.query(new FindExpensesPredicate(timeFrame)));
+	        expenses = new HashSet<Expense>(objectContainer.query(new FindExpensesPredicate(timeFrame, types)));
         } catch (Db4oIOException e) {
         	throwDb4oIoException(e);
         } catch (DatabaseClosedException e) {

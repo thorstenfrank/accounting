@@ -20,7 +20,9 @@ import java.io.Serializable;
 import de.togginho.accounting.Messages;
 
 /**
- * An {@link Expense} is either operational ("OPEX") or capital ("CAPEX").
+ * An {@link Expense} can be grouped by its type: operational, capital or other.
+ * This type also drives whether an expense may provide tax incentives or must be depreciated or amortized over its
+ * usage period.
  * 
  * @author thorsten
  *

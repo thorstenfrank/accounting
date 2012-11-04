@@ -53,6 +53,13 @@ public class ExpensesWrapper {
 	}
 	
 	/**
+     * @return the expenseCollection
+     */
+    protected ExpenseCollection getExpenseCollection() {
+    	return expenseCollection;
+    }
+
+	/**
 	 * @return
 	 */
 	public String getFromDate() {

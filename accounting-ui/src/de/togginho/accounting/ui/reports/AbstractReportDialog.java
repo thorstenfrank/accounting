@@ -122,7 +122,29 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.CURRENT_MONTH);
 		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.LAST_MONTH);
 		
+		if (needsCustomQueryParameters()) {
+			Composite customParams = new Composite(sectionClient, SWT.NONE);
+			GridDataFactory.fillDefaults().span(5, 1).applyTo(customParams);
+			addCustomQueryParameters(customParams);			
+		}
+		
 		return querySection;		
+	}
+	
+	/**
+	 * Subclasses must overwrite this method if they want to use {@link #addCustomQueryParameters(Composite)}.
+	 * @return	<code>true</code> if custom additions to the query param section need to be made
+	 */
+	protected boolean needsCustomQueryParameters() {
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param customParams
+	 */
+	protected void addCustomQueryParameters(Composite customParams) {
+		// nothing to do in the default implementation
 	}
 	
 	/**
@@ -185,6 +207,10 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 */
 	protected abstract FormToolkit getToolkit();
 	
+	/**
+	 * 
+	 * @return
+	 */
 	protected abstract TimeFrameType getDefaultTimeFrameType();
 	
 	/**

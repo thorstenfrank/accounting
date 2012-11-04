@@ -25,9 +25,12 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -43,6 +46,7 @@ import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
@@ -68,6 +72,8 @@ public class ExpenseDialog extends AbstractReportDialog {
 	private TableViewer tableViewer;
 	private ExpenseCollection expenseCollection;
 	
+	private ExpenseType selectedType;
+	
 	/**
 	 * 
 	 * @param shell
@@ -75,7 +81,12 @@ public class ExpenseDialog extends AbstractReportDialog {
 	public ExpenseDialog(Shell shell) {
 		super(shell);
 	}
-		
+	
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		getShell().setText(Messages.labelExpenses);
@@ -97,7 +108,51 @@ public class ExpenseDialog extends AbstractReportDialog {
 		
 		return composite;
 	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see AbstractReportDialog#needsCustomQueryParameters()
+	 */
+	@Override
+	protected boolean needsCustomQueryParameters() {
+	    return true;
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see AbstractReportDialog#addCustomQueryParameters(Composite)
+	 */
+	@Override
+	protected void addCustomQueryParameters(Composite customParams) {
+		customParams.setLayout(new GridLayout(4, false));
 		
+		final Button all = formToolkit.createButton(customParams, Messages.labelAll, SWT.RADIO);
+		all.setSelection(true);
+		all.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectedType = null;
+				updateModel();
+			}
+		});
+		
+		for (final ExpenseType type : ExpenseType.values()) {
+			final Button button = formToolkit.createButton(customParams, type.getTranslatedString(), SWT.RADIO);
+			button.setSelection(false);
+			button.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                	if (button.getSelection()) {
+                		selectedType = type;
+                	}                	
+                	updateModel();
+                }
+			});
+		}
+	}
+	
 	/**
 	 * 
 	 * @param parent
@@ -237,7 +292,11 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected void updateModel(TimeFrame timeFrame) {
-		expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame);
+		if (selectedType == null) {
+			expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame);
+		} else {
+			expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame, selectedType);
+		}
 		
 		List<ExpenseWrapper> wrappers = new ArrayList<ExpenseWrapper>();
 		for (Expense expense : expenseCollection.getExpenses()) {
@@ -273,6 +332,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 		 */
 		@Override
 		public String getTargetFileNameSuggestion() {
+			// TODO make this configurable and include the time frame
 			return "Expenses.pdf";
 		}
 

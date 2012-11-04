@@ -16,6 +16,9 @@
 package de.togginho.accounting.reporting;
 
 import java.util.Map;
+import java.util.Set;
+
+import de.togginho.accounting.model.ExpenseType;
 
 /**
  * @author thorsten
@@ -44,7 +47,14 @@ public class ExpensesDataSource extends AbstractReportDataSource {
 	protected void addFieldsToMap(Map<String, Object> fieldMap) {
 		fieldMap.put(EXPENSES_KEY, wrapper);
 		
-		fieldMap.put("expenses.title", Messages.ExpensesDataSource_expensesTitle); //$NON-NLS-1$
+		Set<ExpenseType> includedTypes = wrapper.getExpenseCollection().getIncludedTypes();
+		if (includedTypes == null || includedTypes.isEmpty() || includedTypes.size() > 1) {
+			fieldMap.put("expenses.title", Messages.ExpensesDataSource_expensesTitle); //$NON-NLS-1$
+		} else {
+			ExpenseType onlyType = includedTypes.iterator().next();
+			fieldMap.put("expenses.title", onlyType.getTranslatedString()); //$NON-NLS-1$
+		}
+		
 		fieldMap.put("expense.description.title", Messages.descriptionTitle); //$NON-NLS-1$
 		
 		fieldMap.put("payment.date.title", Messages.dateTitle); //$NON-NLS-1$

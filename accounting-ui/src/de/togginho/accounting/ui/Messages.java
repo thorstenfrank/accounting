@@ -202,6 +202,7 @@ public class Messages extends NLS {
 	// COMMON LABELS
 	public static String labelAccountNumber;
 	public static String labelAddress;
+	public static String labelAll;
 	public static String labelBankAccount;
 	public static String labelBankCode;
 	public static String labelBankName;
