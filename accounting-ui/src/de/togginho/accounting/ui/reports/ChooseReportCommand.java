@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,14 +26,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 
-import de.togginho.accounting.Constants;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -69,45 +66,65 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		TitleAreaDialog tad = new TitleAreaDialog(getShell(event)) {
-			@Override
-			public void create() {
-			    super.create();
-			    setTitle(Messages.ChooseReportCommand_title);
-			    setMessage(Messages.ChooseReportCommand_message);
-			    getShell().setImage(AccountingUI.getImageDescriptor(Messages.iconsReports).createImage());
-			    getShell().setText(Messages.ChooseReportCommand_title);
-			}
+		
+		AbstractModalDialog dialog = new AbstractModalDialog(
+				getShell(event), 
+				Messages.ChooseReportCommand_title, 
+				Messages.ChooseReportCommand_message, 
+				Messages.iconsReports) {
 			
 			@Override
-			protected Control createDialogArea(Composite parent) {
-            	Composite composite = new Composite(parent, SWT.NONE);
-            	GridLayout layout = new GridLayout(2, false);
-            	layout.marginHeight = 0;
-            	layout.marginWidth = 0;
-            	
-            	composite.setLayout(layout);
-            	GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
-            	
-        		final Label topSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-        		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(topSeparator);
+			protected void createMainContents(Composite parent) {
+				Composite composite = new Composite(parent, SWT.NONE);
+				composite.setLayout(new GridLayout(2, false));
+				WidgetHelper.grabHorizontal(composite);
         		
-        		// create the radio buttons for dialog selection
-        		for(int x = 0; x < REPORT_CONFIG.length; x++) {
+				for(int x = 0; x < REPORT_CONFIG.length; x++) {
         			createDialogSelectorButton(composite, REPORT_CONFIG[x][0], REPORT_CONFIG[x][1], REPORT_CONFIG[x][2]);
         		}
-        		        		
-        		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
-        		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
-        		
-        		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-        		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);
-        		
-        		return composite;
 			}
 		};
+		
+		
+//		TitleAreaDialog tad = new TitleAreaDialog(getShell(event)) {
+//			@Override
+//			public void create() {
+//			    super.create();
+//			    setTitle(Messages.ChooseReportCommand_title);
+//			    setMessage(Messages.ChooseReportCommand_message);
+//			    getShell().setImage(AccountingUI.getImageDescriptor(Messages.iconsReports).createImage());
+//			    getShell().setText(Messages.ChooseReportCommand_title);
+//			}
+//			
+//			@Override
+//			protected Control createDialogArea(Composite parent) {
+//            	Composite composite = new Composite(parent, SWT.NONE);
+//            	GridLayout layout = new GridLayout(2, false);
+//            	layout.marginHeight = 0;
+//            	layout.marginWidth = 0;
+//            	
+//            	composite.setLayout(layout);
+//            	GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
+//            	
+//        		final Label topSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+//        		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(topSeparator);
+//        		
+//        		// create the radio buttons for dialog selection
+//        		for(int x = 0; x < REPORT_CONFIG.length; x++) {
+//        			createDialogSelectorButton(composite, REPORT_CONFIG[x][0], REPORT_CONFIG[x][1], REPORT_CONFIG[x][2]);
+//        		}
+//        		        		
+//        		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
+//        		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
+//        		
+//        		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+//        		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);
+//        		
+//        		return composite;
+//			}
+//		};
 
-		if (tad.open() == IDialogConstants.OK_ID) {
+		if (dialog.open() == IDialogConstants.OK_ID) {
 			LOG.debug("Opening dialog: " + commandIdToRun); //$NON-NLS-1$
 			IHandlerService handlerService = 
 					(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
