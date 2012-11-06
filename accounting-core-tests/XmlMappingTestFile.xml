@@ -66,4 +66,25 @@
             </invoicePositions>
         </invoice>
     </invoices>
+    <expenses>
+        <expense>
+            <description>ExpenseDescription</description>
+            <expenseType>OPEX</expenseType>
+            <netAmount>20.23</netAmount>
+            <paymentDate>2011-01-01</paymentDate>
+            <taxRate>
+                <abbreviation>JUT</abbreviation>
+                <name>JUnitTax</name>
+                <rate>0.15</rate>
+            </taxRate>
+            <category>ExpenseCategory</category>
+        </expense>
+        <expense>
+            <description>ExpenseDescription</description>
+            <expenseType>OTHER</expenseType>
+            <netAmount>20.23</netAmount>
+            <paymentDate>2011-01-01</paymentDate>
+            <category>ExpenseCategory</category>
+        </expense>
+    </expenses>
 </xmlUser>

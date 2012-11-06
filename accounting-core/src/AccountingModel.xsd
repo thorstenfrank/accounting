@@ -122,6 +122,7 @@
     	<xs:restriction base="xs:string">
     		<xs:enumeration value="OPEX" />
     		<xs:enumeration value="CAPEX" />
+    		<xs:enumeration value="OTHER" />
     	</xs:restriction>
     </xs:simpleType>
     
@@ -133,11 +134,12 @@
     
     <xs:complexType name="xmlExpense">
     	<xs:sequence>
-    		<xs:element name="description" type="xs:string" maxOccurs="1" />
+    		<xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1" />
     		<xs:element name="expenseType" type="xmlExpenseType" minOccurs="0" maxOccurs="1"/>
-    		<xs:element name="netAmount" type="xs:decimal" maxOccurs="1" />
-    		<xs:element name="paymentDate" type="xs:date" />
-    		<xs:element name="taxRate" type="xmlTaxRate" />
+    		<xs:element name="netAmount" type="xs:decimal" minOccurs="1" maxOccurs="1" />
+    		<xs:element name="paymentDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="taxRate" type="xmlTaxRate" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1"/>
     	</xs:sequence>
     </xs:complexType>
 </xs:schema>

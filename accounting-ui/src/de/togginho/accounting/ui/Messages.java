@@ -208,6 +208,7 @@ public class Messages extends NLS {
 	public static String labelBankName;
 	public static String labelBasicInformation;
 	public static String labelBIC;
+	public static String labelCategory;
 	public static String labelCity;
 	public static String labelClient;
 	public static String labelClientDetails;

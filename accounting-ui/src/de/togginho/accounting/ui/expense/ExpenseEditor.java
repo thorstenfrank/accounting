@@ -199,4 +199,9 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 			showError(e);
 		}
 	}
+	
+	@Override
+	protected void setIsDirty(boolean dirty) {
+		super.setIsDirty(dirty);
+	}
 }

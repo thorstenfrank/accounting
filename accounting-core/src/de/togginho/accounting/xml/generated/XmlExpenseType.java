@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 public enum XmlExpenseType {
 
     OPEX,
-    CAPEX;
+    CAPEX,
+    OTHER;
 
     public String value() {
         return name();

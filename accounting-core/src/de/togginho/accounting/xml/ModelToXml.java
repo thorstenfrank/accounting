@@ -267,18 +267,12 @@ class ModelToXml {
 				XmlExpense xmlExpense = new XmlExpense();
 				xmlExpense.setDescription(expense.getDescription());
 				if (expense.getExpenseType() != null) {
-					switch (expense.getExpenseType()) {
-					case OPEX:
-						xmlExpense.setExpenseType(XmlExpenseType.OPEX);
-						break;
-					case CAPEX:
-						xmlExpense.setExpenseType(XmlExpenseType.CAPEX);
-						break;
-					}
+					xmlExpense.setExpenseType(XmlExpenseType.fromValue(expense.getExpenseType().name()));
 				}
 				xmlExpense.setNetAmount(expense.getNetAmount());
 				xmlExpense.setPaymentDate(convertDate(expense.getPaymentDate()));
 				xmlExpense.setTaxRate(converTaxRate(expense.getTaxRate()));
+				xmlExpense.setCategory(expense.getCategory());
 				xmlExpenses.getExpense().add(xmlExpense);
 			}
 			

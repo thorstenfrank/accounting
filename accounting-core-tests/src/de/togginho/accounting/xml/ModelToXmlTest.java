@@ -28,8 +28,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.xml.generated.XmlExpense;
 import de.togginho.accounting.xml.generated.XmlUser;
 
 /**
@@ -80,7 +83,13 @@ public class ModelToXmlTest extends XmlTestBase {
 		final Set<Invoice> invoices = new HashSet<Invoice>();
 		invoices.add(createInvoice());
 		
-		XmlUser xmlUser = modelToXml.convertToXml(user, clients, invoices, null);
+		final Set<Expense> expenses = new HashSet<Expense>();
+		Expense opex = createExpense(ExpenseType.OPEX, true);
+		expenses.add(opex);
+		Expense other = createExpense(ExpenseType.OTHER, false);
+		expenses.add(other);
+		
+		XmlUser xmlUser = modelToXml.convertToXml(user, clients, invoices, expenses);
 		assertUserSame(user, xmlUser);
 		
 		assertNotNull(xmlUser.getClients());
@@ -90,8 +99,18 @@ public class ModelToXmlTest extends XmlTestBase {
 		assertNotNull(xmlUser.getInvoices());
 		assertEquals(1, xmlUser.getInvoices().getInvoice().size());
 		
+		assertNotNull(xmlUser.getExpenses());
+		assertEquals(2, xmlUser.getExpenses().getExpense().size());
+		for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpense()) {
+			if (xmlExpense.getTaxRate() != null) {
+				assertExpensesSame(opex, xmlExpense);
+			} else {
+				assertExpensesSame(other, xmlExpense);
+			}
+		}
+		
 		// test writing to XML
-		ModelMapper.modelToXml(user, clients, invoices, null, XML_TEST_FILE);
+		ModelMapper.modelToXml(user, clients, invoices, expenses, XML_TEST_FILE);
 		File file = new File(XML_TEST_FILE);
 		assertTrue(file.exists());
 	}

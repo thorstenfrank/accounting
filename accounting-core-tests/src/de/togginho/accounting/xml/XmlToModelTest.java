@@ -15,7 +15,9 @@
  */
 package de.togginho.accounting.xml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -23,12 +25,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.togginho.accounting.model.ExpenseType;
+import de.togginho.accounting.xml.generated.XmlExpense;
 import de.togginho.accounting.xml.generated.XmlUser;
 
 /**
@@ -41,34 +41,6 @@ public class XmlToModelTest extends XmlTestBase {
 	private static final String TEST_FILE_NAME = "XmlMappingTestFile.xml";
 	
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
 	 * Test method for {@link ModelMapper#xmlToModel(String)}.
 	 */
 	@Test
@@ -77,7 +49,8 @@ public class XmlToModelTest extends XmlTestBase {
 		assertNotNull(result);
 		assertNotNull(result.getImportedUser());
 		assertNotNull(result.getImportedClients());
-		assertNotNull(result.getImportedInvoices());		
+		assertNotNull(result.getImportedInvoices());
+		assertNotNull(result.getImportedExpenses());
 	}
 	
 	/**
@@ -88,15 +61,26 @@ public class XmlToModelTest extends XmlTestBase {
         try {
 			Unmarshaller unmarshaller = JAXBContext.newInstance(ModelMapper.JAXB_CONTEXT).createUnmarshaller();
 			final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(TEST_FILE_NAME));
-			
+			// USER
 			assertUserSame(getTestUser(), xmlUser);
-			
+			// CLIENTS
 			assertNotNull(xmlUser.getClients());
 			assertEquals(1, xmlUser.getClients().getClient().size());
 			assertClientsSame(getTestClient(), xmlUser.getClients().getClient().get(0));
+			// INVOICES
 			assertNotNull(xmlUser.getInvoices());
 			assertEquals(1, xmlUser.getInvoices().getInvoice().size());
 			assertInvoicesSame(createInvoice(), xmlUser.getInvoices().getInvoice().get(0));
+			// EXPENSES
+			assertNotNull(xmlUser.getExpenses());
+			assertEquals(2, xmlUser.getExpenses().getExpense().size());
+			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpense()) {
+				if (xmlExpense.getTaxRate() != null) {
+					assertExpensesSame(createExpense(ExpenseType.OPEX, true), xmlExpense);
+				} else {
+					assertExpensesSame(createExpense(ExpenseType.OTHER, false), xmlExpense);
+				}
+			}
 		} catch (JAXBException e) {
 			fail(e.toString());
 		}

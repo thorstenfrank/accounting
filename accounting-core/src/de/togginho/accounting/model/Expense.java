@@ -35,6 +35,7 @@ public class Expense implements Serializable {
     public static final String FIELD_NET_AMOUNT = "netAmount";
     public static final String FIELD_TAX_RATE = "taxRate";
     public static final String FIELD_TYPE = "expenseType";
+    public static final String FIELD_CATEGORY = "category";
     
     private String description;
     
@@ -45,6 +46,8 @@ public class Expense implements Serializable {
     private TaxRate taxRate;
 
     private ExpenseType expenseType;
+    
+    private String category;
     
 	/**
      * @return the description
@@ -114,5 +117,19 @@ public class Expense implements Serializable {
 	 */
 	public void setExpenseType(ExpenseType expenseType) {
 		this.expenseType = expenseType;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }
