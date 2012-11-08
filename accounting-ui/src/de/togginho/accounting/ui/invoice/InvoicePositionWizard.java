@@ -15,9 +15,6 @@
  */
 package de.togginho.accounting.ui.invoice;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.PojoObservables;
@@ -25,14 +22,14 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -40,7 +37,6 @@ import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
-import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
@@ -59,9 +55,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 	private Invoice invoice;
 	private InvoicePosition position;
 	private InvoicePositionWizardPage page;
-	private DataBindingContext bindingContext;
-	private Map<String, TaxRate> descToRateMap;
-	
+	private DataBindingContext bindingContext;	
 	private String pageTitle;
 	private String pageDesc;
 	
@@ -214,43 +208,14 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			
 			// TAX RATE
 			WidgetHelper.createLabel(composite, Messages.labelTaxRate);
-			Combo taxRate = new Combo(composite, SWT.READ_ONLY);
-			taxRate.setEnabled(editable);
-			taxRate.add(EMPTY_STRING);
-			WidgetHelper.grabHorizontal(taxRate);
-			
-			if (invoice.getUser().getTaxRates() != null) {
-				TaxRate existing = position != null && position.getTaxRate() != null ? position.getTaxRate() : null;
-				
-				int index = 1;
-				descToRateMap = new HashMap<String, TaxRate>();
-				for (TaxRate rate : invoice.getUser().getTaxRates()) {
-					final String desc = rate.toLongString();
-					descToRateMap.put(desc, rate);
-					taxRate.add(desc);
-					if (rate.equals(existing)) {
-						taxRate.select(index);
-					} else {
-						index++;
-					}
+			ComboViewer taxRateCombo = 
+					WidgetHelper.createTaxRateCombo(composite, bindingContext, position, InvoicePosition.FIELD_TAX_RATE);
+			taxRateCombo.addPostSelectionChangedListener(new ISelectionChangedListener() {
+				@Override
+				public void selectionChanged(SelectionChangedEvent event) {
+					handleValueChange(null);
 				}
-				taxRate.addSelectionListener(new SelectionAdapter() {
-					/**
-					 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-					 */
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						Combo combo = (Combo) e.getSource();
-						final String selected = combo.getItem(combo.getSelectionIndex());
-						if (selected.isEmpty()) {
-							position.setTaxRate(null);
-						} else {
-							position.setTaxRate(descToRateMap.get(selected));
-						}
-						handleValueChange(null);
-					}
-				});				
-			}
+			});
 			
 			// TAX AMOUNT (INFO ONLY)
 			WidgetHelper.createLabel(composite, Messages.labelTaxes);
@@ -296,7 +261,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 		}
 		
 		/**
-		 * @see org.eclipse.core.databinding.observable.value.IValueChangeListener#handleValueChange(org.eclipse.core.databinding.observable.value.ValueChangeEvent)
+		 * @see IValueChangeListener#handleValueChange(ValueChangeEvent)
 		 */
 		@Override
 		public void handleValueChange(ValueChangeEvent event) {

@@ -41,16 +41,18 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
-import de.togginho.accounting.model.TaxRate;
-import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.conversion.CurrencyToStringConverter;
+import de.togginho.accounting.ui.conversion.FromStructuredSelectionConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
+import de.togginho.accounting.ui.conversion.ToStructuredSelectionConverter;
+import de.togginho.accounting.ui.util.CollectionContentProvider;
 import de.togginho.accounting.util.CalculationUtil;
 
 /**
@@ -107,23 +109,32 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 * @param parent
 	 */
 	protected void createBasicSection(Composite parent) {
-
 		// TYPE
 		callback.createLabel(parent, Messages.labelExpenseType);
 		ComboViewer expenseTypeCombo = new ComboViewer(parent, SWT.READ_ONLY);
+		expenseTypeCombo.add(StructuredSelection.EMPTY);
 		expenseTypeCombo.setData(KEY_WIDGET_DATA, Expense.FIELD_TYPE);
 		WidgetHelper.grabHorizontal(expenseTypeCombo.getCombo());
-		expenseTypeCombo.setContentProvider(new ArrayContentProvider());
+		expenseTypeCombo.setContentProvider(new CollectionContentProvider(true));
 		expenseTypeCombo.setInput(ExpenseType.values());
 		expenseTypeCombo.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return ((ExpenseType) element).getTranslatedString();
+				if (element instanceof ExpenseType) {
+					return ((ExpenseType) element).getTranslatedString();
+				}
+				return Constants.HYPHEN;
 			}
 		});
+		
+		UpdateValueStrategy from = new UpdateValueStrategy();
+		from.setConverter(new FromStructuredSelectionConverter(ExpenseType.class));
+		UpdateValueStrategy to = new UpdateValueStrategy();
+		to.setConverter(new ToStructuredSelectionConverter(ExpenseType.class));
+		
 		bindingContext.bindValue(
 				ViewersObservables.observeSinglePostSelection(expenseTypeCombo), 
-				PojoObservables.observeValue(expense, Expense.FIELD_TYPE));
+				PojoObservables.observeValue(expense, Expense.FIELD_TYPE), from, to);
 		expenseTypeCombo.addSelectionChangedListener(this);
 		
 		// DATE
@@ -182,22 +193,9 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		
 		// TAX RATE
 		callback.createLabel(parent, Messages.labelTaxRate);
-		ComboViewer taxRateCombo = new ComboViewer(parent, SWT.READ_ONLY);
+		ComboViewer taxRateCombo = 
+				WidgetHelper.createTaxRateCombo(parent, bindingContext, expense, Expense.FIELD_TAX_RATE);
 		taxRateCombo.setData(KEY_WIDGET_DATA, Expense.FIELD_TAX_RATE);
-		WidgetHelper.grabHorizontal(taxRateCombo.getCombo());
-		taxRateCombo.setContentProvider(new ArrayContentProvider());
-		taxRateCombo.setInput(AccountingUI.getAccountingService().getCurrentUser().getTaxRates());
-		taxRateCombo.setLabelProvider(new LabelProvider() {
-			
-			@Override
-			public String getText(Object element) {
-				return ((TaxRate) element).toShortString();
-			}
-			
-		});
-		bindingContext.bindValue(
-				ViewersObservables.observeSinglePostSelection(taxRateCombo), 
-				PojoObservables.observeValue(expense, Expense.FIELD_TAX_RATE));
 		taxRateCombo.addPostSelectionChangedListener(this);
 		
 		// TAX AMOUNT
@@ -336,8 +334,8 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				LOG.warn("No source specified"); //$NON-NLS-1$
 			} else if (data.equals(Expense.FIELD_TYPE)) {
 				LOG.debug("Expense type changed"); //$NON-NLS-1$
-				ExpenseType newType = (ExpenseType) ((StructuredSelection) event.getSelection()).getFirstElement();
-				
+				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
+				ExpenseType newType = selection instanceof ExpenseType ? newType = (ExpenseType) selection : null;
 				if (newType == null) {
 					if (expense.getExpenseType() != null) {
 						LOG.debug("Expense type was set to <null>"); //$NON-NLS-1$
