@@ -79,6 +79,8 @@ public class AccountingServiceImpl implements AccountingService {
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingServiceImpl.class);
 	
+	private static final Logger BUSINESS_LOG = Logger.getLogger("business_log"); //$NON-NLS-1$
+	
 	private static final String INVOICE_SEQUENCER_SEMAPHORE = "INVOICE_SEQUENCER_SEMAPHORE";
 	private static final int SEMAPHORE_WAIT_TIMEOUT = 1000;
 	
@@ -218,6 +220,7 @@ public class AccountingServiceImpl implements AccountingService {
 	public User saveCurrentUser(User user) {
 		LOG.debug("saveCurrentUser"); //$NON-NLS-1$
 		doStoreEntity(user);
+		BUSINESS_LOG.info("Saved user " + user.getName()); //$NON-NLS-1$
 		return user;
 	}
 
@@ -274,8 +277,10 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Client saveClient(Client client) {
+		
 		try {
 			doStoreEntity(client);
+			BUSINESS_LOG.info("Saved client: " + client.getName()); //$NON-NLS-1$
 		} catch (UniqueFieldValueConstraintViolationException e) {
 			LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorClientExists);
@@ -292,6 +297,7 @@ public class AccountingServiceImpl implements AccountingService {
 	public void deleteClient(Client client) {
 		// TODO make sure a client can only be deleted when there are no invoices left...
 		doDeleteEntity(client);
+		BUSINESS_LOG.info("Deleted client: " + client.getName()); //$NON-NLS-1$
 	}
 
 	/**
@@ -314,7 +320,8 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		try {
 			doStoreEntity(sequencer);
-			
+			BUSINESS_LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
+			// FIXME this is hardcoded and should be configurable...
 			return String.format("RE%d-%02d", currentYear, sequencer.getCurrentSequenceNumber());
 		} finally {
 			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
@@ -366,7 +373,7 @@ public class AccountingServiceImpl implements AccountingService {
 				sequencer.setCurrentSequenceNumber(number);
 				LOG.info("Updating sequencer: "+sequencer.toString()); //$NON-NLS-1$
 				doStoreEntity(sequencer);
-				
+				BUSINESS_LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
 			}			
 		} finally {
 			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
@@ -396,6 +403,8 @@ public class AccountingServiceImpl implements AccountingService {
 		// check if an invoice with that number already exists
 		validateInvoiceNumberNotYetUsed(invoiceNumber);
 		
+		BUSINESS_LOG.info("Creating new invoice (not yet persistent!): " + invoiceNumber); //$NON-NLS-1$
+		
 		// create invoice
 		Invoice invoice = new Invoice();
 		
@@ -404,6 +413,8 @@ public class AccountingServiceImpl implements AccountingService {
 		invoice.setUser(getCurrentUser());
 		invoice.setClient(client);
 		invoice.setInvoiceDate(new Date());
+
+		// assign payment terms
 		if (client.getDefaultPaymentTerms() != null) {
 			LOG.debug("Using default payment terms of client"); //$NON-NLS-1$
 			invoice.setPaymentTerms(client.getDefaultPaymentTerms());
@@ -412,7 +423,6 @@ public class AccountingServiceImpl implements AccountingService {
 			invoice.setPaymentTerms(PaymentTerms.getDefault());
 		}
 		
-		// assign payment terms
 		return invoice;
 	}
 	
@@ -462,6 +472,8 @@ public class AccountingServiceImpl implements AccountingService {
 
 		doStoreEntity(invoice);
 
+		BUSINESS_LOG.info("Saved invoice: " + invoice.getNumber()); //$NON-NLS-1$
+		
 		return invoice;
 	}
 
@@ -505,6 +517,8 @@ public class AccountingServiceImpl implements AccountingService {
 		invoice.setSentDate(sentDate);
 		doStoreEntity(invoice);
 
+		BUSINESS_LOG.info("Invoice has been sent: " + invoice.getNumber()); //$NON-NLS-1$
+		
 		return invoice;
 	}
 		
@@ -531,6 +545,8 @@ public class AccountingServiceImpl implements AccountingService {
     	invoice.setPaymentDate(paymentDate);
     	doStoreEntity(invoice);
     	
+    	BUSINESS_LOG.info("Invoice has been paid: " + invoice.getNumber()); //$NON-NLS-1$
+    	
 	    return invoice;
     }
 
@@ -554,6 +570,8 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	invoice.setCancelledDate(new Date());
     	doStoreEntity(invoice);
+    	
+    	BUSINESS_LOG.info("Invoice was cancelled: " + invoice.getNumber()); //$NON-NLS-1$
     	
 	    return invoice;
     }
@@ -589,6 +607,8 @@ public class AccountingServiceImpl implements AccountingService {
 		}
 
 		doDeleteEntity(invoice);
+		
+		BUSINESS_LOG.info("Invoice was deleted: " + invoice.getNumber()); //$NON-NLS-1$
 	}
 
 	/**
@@ -632,6 +652,7 @@ public class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public Invoice copyInvoice(Invoice invoice, String invoiceNumber) {
+    	BUSINESS_LOG.info(String.format("Copying invoice [%s] to new invoice [%s]", invoice.getNumber(), invoiceNumber)); //$NON-NLS-1$
     	Invoice copy = createNewInvoice(invoiceNumber, invoice.getClient());
     	
     	if (invoice.getPaymentTerms() != null) {
@@ -789,6 +810,7 @@ public class AccountingServiceImpl implements AccountingService {
     @Override
     public Expense saveExpense(Expense expense) {
     	doStoreEntity(expense);
+    	BUSINESS_LOG.info(String.format("Saving expense [%s]", expense.getDescription())); //$NON-NLS-1$
 	    return expense;
     }
     
@@ -828,6 +850,7 @@ public class AccountingServiceImpl implements AccountingService {
 	@Override
 	public void deleteExpense(Expense expense) {
 		doDeleteEntity(expense);
+		BUSINESS_LOG.info(String.format("Deleted expense [%s]", expense.getDescription())); //$NON-NLS-1$
 	}
 
 	/**
@@ -863,6 +886,7 @@ public class AccountingServiceImpl implements AccountingService {
     		throw new AccountingException("Cannot import into an existing DB!");
     	}
     	
+    	BUSINESS_LOG.info(String.format("Importing data from XML file [%s] to DB file [%s]", sourceXmlFile, dbFileLocation)); //$NON-NLS-1$
     	LOG.info("Importing from " + sourceXmlFile); //$NON-NLS-1$
     	ImportResult importResult = ModelMapper.xmlToModel(sourceXmlFile);
     	
@@ -877,11 +901,14 @@ public class AccountingServiceImpl implements AccountingService {
     	LOG.info("Now saving imported user to DB file");
     	objectContainer.store(importResult.getImportedUser());
     	
+    	BUSINESS_LOG.info("Saved imported user " + importResult.getImportedUser().getName()); //$NON-NLS-1$
+    	
     	final Set<Client> importedClients = importResult.getImportedClients();
     	if (importedClients != null && !importedClients.isEmpty()) {
     		LOG.info("Now saving imported clients: " + importedClients.size()); //$NON-NLS-1$
     		for (Client client : importedClients) {
     			objectContainer.store(client);
+    			BUSINESS_LOG.info("Saved imported client " + client.getName());
     		}
     	} else {
     		LOG.info("No clients to import"); //$NON-NLS-1$
@@ -902,12 +929,15 @@ public class AccountingServiceImpl implements AccountingService {
     		LOG.info("Now saving imported Expenses to DB file: " + importedExpenses.size()); //$NON-NLS-1$
     		for (Expense expense : importedExpenses) {
     			objectContainer.store(expense);
+    			BUSINESS_LOG.info("Saved imported expense " + expense.getDescription()); //$NON-NLS-1$
     		}
     	} else {
     		LOG.info("No expenses to import"); //$NON-NLS-1$
     	}
     	
     	objectContainer.commit();
+    	
+    	BUSINESS_LOG.info("Successfully imported data!");
     	
     	return context;
     }
