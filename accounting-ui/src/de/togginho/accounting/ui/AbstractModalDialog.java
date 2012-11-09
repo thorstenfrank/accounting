@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.ui;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -130,6 +131,17 @@ public abstract class AbstractModalDialog extends TitleAreaDialog {
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);
 		
 		return composite;
+	}
+	
+	/**
+	 * Opens this dialog and returns whether or not it was closed again using the "OK" button.
+	 * This is a shortcut to
+	 * <code>if (dialog.open() == IDialogConstants.OK_ID)</code>
+	 * 
+	 * @return <code>true</code> if this dialog was closed using the OK button
+	 */
+	public boolean show() {
+		return (this.open() == IDialogConstants.OK_ID);
 	}
 	
 	/**

@@ -20,22 +20,17 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IViewPart;
 
-import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
@@ -66,29 +61,17 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
 			return;
 		}
 		
-		TitleAreaDialog tad = new TitleAreaDialog(getShell(event)) {
-			@Override
-			public void create() {
-			    super.create();
-			    setTitle(Messages.ChangeInvoicesFilterCommand_title);
-			    setMessage(Messages.ChangeInvoicesFilterCommand_message);
-			}
+		AbstractModalDialog dialog = new AbstractModalDialog(
+				getShell(event), 
+				Messages.ChangeInvoicesFilterCommand_title, 
+				Messages.ChangeInvoicesFilterCommand_message) {
 			
 			@Override
-			protected Control createDialogArea(Composite parent) {
-            	Composite composite = new Composite(parent, SWT.NONE);
-            	GridLayout layout = new GridLayout(1, false);
-            	layout.marginHeight = 0;
-            	layout.marginWidth = 0;
-            	
-            	composite.setLayout(layout);
-            	GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
-            	
-        		final Label topSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-        		GridDataFactory.fillDefaults().grab(true, false).applyTo(topSeparator);
-        		
-        		GridDataFactory gdf = GridDataFactory.fillDefaults().indent(5, 0);
-        		        		
+			protected void createMainContents(Composite parent) {
+				Composite composite = new Composite(parent, SWT.NONE);
+				composite.setLayout(new GridLayout(1, false));
+				WidgetHelper.grabHorizontal(composite);
+				        		
         		for (InvoiceState state : InvoiceState.values()) {
         			if (state.equals(InvoiceState.UNSAVED)) {
         				continue;
@@ -96,7 +79,7 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
         			Button b = new Button(composite, SWT.CHECK);
         			b.setData(state);
         			b.setText(state.getTranslatedString());
-        			gdf.applyTo(b);
+        			WidgetHelper.grabHorizontal(b);
         			if (currentFilter.contains(state)) {
         				b.setSelection(true);
         			}
@@ -113,18 +96,12 @@ public class ChangeInvoicesFilterCommand extends AbstractAccountingHandler {
         				
 					});
         		}
-        		
-        		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
-        		WidgetHelper.grabHorizontal(fillToBottom);
-        		
-        		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-        		GridDataFactory.fillDefaults().grab(true, false).applyTo(bottomSeparator);
-        		
-        		return composite;
+				
 			}
 		};
 		
-		if (tad.open() == IDialogConstants.OK_ID) {
+		
+		if (dialog.show()) {
 			StringBuilder sb = new StringBuilder("Changing invoice filter, now contains:"); //$NON-NLS-1$
 			for (InvoiceState state : currentFilter) {
 				sb.append(" [").append(state.name()).append("]"); //$NON-NLS-1$ //$NON-NLS-2$

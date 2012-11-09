@@ -19,19 +19,15 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -46,7 +42,7 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(CopyInvoiceFromSelectionHandler.class);
 	
-	private String invoiceNumber;
+	private String copyInvoiceNumber;
 	
 	/**
      * {@inheritDoc}.
@@ -55,11 +51,45 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
     @Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
     	Invoice original = getInvoiceFromSelection(event);
-    	CopyInvoiceDialog dialog = new CopyInvoiceDialog(getShell(event));
-    	invoiceNumber = null;
-    	if (dialog.open() == TitleAreaDialog.OK) {
-    		LOG.info("Creating copy of invoice with new number: " + invoiceNumber); //$NON-NLS-1$
-    		Invoice copy = AccountingUI.getAccountingService().copyInvoice(original, invoiceNumber);
+    	
+    	AbstractModalDialog dialog = new AbstractModalDialog(
+    			getShell(event), 
+    			Messages.CopyInvoiceCommand_dialogTitle,
+    			Messages.CopyInvoiceCommand_dialogMessage) {
+		
+    		Text invoiceNumber;
+    		
+			@Override
+			protected void createMainContents(Composite parent) {
+	        	Composite composite = new Composite(parent, SWT.NONE);
+	        	composite.setLayout(new GridLayout(2, false));
+	        	WidgetHelper.grabBoth(composite);
+	        		        	
+	        	WidgetHelper.createLabel(composite, Messages.labelInvoiceNo);
+	        	invoiceNumber = WidgetHelper.createSingleBorderText(
+	        			composite, AccountingUI.getAccountingService().getNextInvoiceNumber());
+			}
+			
+	        @Override
+	        protected void buttonPressed(int buttonId) {
+	        	if (buttonId == IDialogConstants.OK_ID) {
+	        		if (invoiceNumber.getText().isEmpty()) {
+	        			setErrorMessage(Messages.CopyInvoiceCommand_errorEmptyInvoiceNumber);
+	        		} else if (AccountingUI.getAccountingService().getInvoice(invoiceNumber.getText()) != null) {
+	        			setErrorMessage(Messages.CopyInvoiceCommand_errorExistingInvoice);
+	        		} else {
+	        			copyInvoiceNumber = invoiceNumber.getText();
+	        			super.buttonPressed(buttonId);
+	        		}
+	        	} else {
+	        		super.buttonPressed(buttonId);
+	        	}
+	        }
+		};
+    	
+    	if (dialog.show()) {
+    		LOG.info("Creating copy of invoice with new number: " + copyInvoiceNumber); //$NON-NLS-1$
+    		Invoice copy = AccountingUI.getAccountingService().copyInvoice(original, copyInvoiceNumber);
     		InvoiceEditorInput input = new InvoiceEditorInput(copy);
     		
     		try {
@@ -80,83 +110,5 @@ public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler impl
 	@Override
 	protected Logger getLogger() {
 		return LOG;
-	}
-	
-	/**
-	 * 
-	 * @author thorsten
-	 *
-	 */
-	private class CopyInvoiceDialog extends TitleAreaDialog {
-		
-		private Text invoiceNumberText;
-		
-		/**
-         * @param parentShell
-         */
-        private CopyInvoiceDialog(Shell parentShell) {
-	        super(parentShell);
-        }
-        
-		/**
-		 * {@inheritDoc}.
-		 * @see org.eclipse.jface.dialogs.Dialog#create()
-		 */
-		@Override
-		public void create() {
-		    super.create();
-		    setTitle(Messages.CopyInvoiceCommand_dialogTitle);
-		    setMessage(Messages.CopyInvoiceCommand_dialogMessage);
-		}
-		
-		/**
-         * {@inheritDoc}.
-         * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-         */
-        @Override
-        protected Control createDialogArea(Composite parent) {
-        	Composite composite = new Composite(parent, SWT.NONE);
-        	GridLayout layout = new GridLayout(2, false);
-//        	layout.marginHeight = 0;
-//        	layout.marginWidth = 0;
-        	
-        	composite.setLayout(layout);
-        	GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
-        	
-    		final Label topSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-    		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(topSeparator);
-        	
-        	final Label dateLabel = WidgetHelper.createLabel(composite, Messages.labelInvoiceNo);
-        	GridDataFactory.fillDefaults().indent(5, 5).applyTo(dateLabel);
-        	
-        	final String invoiceNumber = AccountingUI.getAccountingService().getNextInvoiceNumber();
-        	invoiceNumberText = WidgetHelper.createSingleBorderText(composite, invoiceNumber);
-        	GridDataFactory.fillDefaults().grab(true, false).applyTo(invoiceNumberText);
-        	invoiceNumberText.selectAll();
-        	
-    		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
-    		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
-    		
-    		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-    		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);   		
-    		
-            return composite;
-        }
-        
-        @Override
-        protected void buttonPressed(int buttonId) {
-        	if (buttonId == IDialogConstants.OK_ID) {
-        		invoiceNumber = invoiceNumberText.getText();
-        		if (invoiceNumber == null || invoiceNumber.isEmpty()) {
-        			setErrorMessage(Messages.CopyInvoiceCommand_errorEmptyInvoiceNumber);
-        		} else if (AccountingUI.getAccountingService().getInvoice(invoiceNumber) != null) {
-        			setErrorMessage(Messages.CopyInvoiceCommand_errorExistingInvoice);
-        		} else {
-        			super.buttonPressed(buttonId);
-        		}
-        	} else {
-        		super.buttonPressed(buttonId);
-        	}
-        }
 	}
 }
