@@ -37,7 +37,7 @@ import de.togginho.accounting.Constants;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 

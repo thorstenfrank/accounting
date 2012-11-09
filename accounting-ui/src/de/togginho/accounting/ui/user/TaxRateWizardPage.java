@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.FormatUtil;
 
 /**

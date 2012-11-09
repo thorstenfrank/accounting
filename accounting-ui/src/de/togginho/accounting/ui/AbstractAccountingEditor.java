@@ -43,6 +43,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.EditorPart;
 
 import de.togginho.accounting.model.Address;
+import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
  * @author tfrank1

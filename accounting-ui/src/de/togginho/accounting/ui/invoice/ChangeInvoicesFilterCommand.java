@@ -38,7 +38,7 @@ import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
  * @author thorsten

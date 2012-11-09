@@ -72,7 +72,7 @@ import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 

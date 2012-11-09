@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
  * @author tfrank1

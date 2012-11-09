@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
  * @author thorsten

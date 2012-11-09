@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.ui;
+package de.togginho.accounting.ui.util;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,9 +38,9 @@ import org.eclipse.swt.widgets.Text;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.TaxRate;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.conversion.FromStructuredSelectionConverter;
 import de.togginho.accounting.ui.conversion.ToStructuredSelectionConverter;
-import de.togginho.accounting.ui.util.CollectionContentProvider;
 
 /**
  * Simple helper class containing often used widget creation code.

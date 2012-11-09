@@ -47,12 +47,12 @@ import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.conversion.CurrencyToStringConverter;
 import de.togginho.accounting.ui.conversion.FromStructuredSelectionConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
 import de.togginho.accounting.ui.conversion.ToStructuredSelectionConverter;
 import de.togginho.accounting.ui.util.CollectionContentProvider;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.CalculationUtil;
 
 /**

@@ -34,7 +34,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 

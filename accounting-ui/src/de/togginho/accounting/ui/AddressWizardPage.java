@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import de.togginho.accounting.model.Address;
+import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
  * A {@link WizardPage} to capture an {@link Address}.

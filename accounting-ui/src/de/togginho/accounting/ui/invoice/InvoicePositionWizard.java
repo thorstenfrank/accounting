@@ -38,9 +38,9 @@ import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.WidgetHelper;
 import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
