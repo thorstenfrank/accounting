@@ -15,12 +15,21 @@
  */
 package de.togginho.accounting.ui;
 
+
 /**
+ * A listener that is called whenever changes to a model object are persisted using the 
+ * {@link de.togginho.accounting.AccountingService} provided by the bundle activator {@link AccountingUI}. 
+ * Recipients may register and unregister using {@link AccountingUI#addModelChangeListener(ModelChangeListener)} and
+ * {@link AccountingUI#removeModelChangeListener(ModelChangeListener)}.
+ * 
  * @author thorsten
  *
  */
 public interface ModelChangeListener {
 
+	/**
+	 * Notifies of persistent changes to the model through the accounting service.
+	 */
 	void modelChanged();
 
 }
