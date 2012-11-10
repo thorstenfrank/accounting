@@ -18,6 +18,8 @@ package de.togginho.accounting.util;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.togginho.accounting.Constants;
+
 /**
  * A period of time. Unless otherwise mentioned, all dates/ points in time in this class are <b>inclusive</b>.
  * 
@@ -116,7 +118,22 @@ public class TimeFrame {
     	}
     	return (from.compareTo(date) <= 0 && until.compareTo(date) >= 0);
     }
-        
+    
+    /**
+     * 
+     * {@inheritDoc}.
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder(getClass().getName());
+    	sb.append(Constants.BLANK_STRING);
+    	sb.append(FormatUtil.formatDate(from));
+    	sb.append(Constants.BLANK_STRING).append(Constants.HYPHEN).append(Constants.BLANK_STRING);
+    	sb.append(FormatUtil.formatDate(until));
+        return sb.toString();
+    }
+    
 	/**
 	 * This month, starting on the first day at 00:00:00:000, ending on the last day at 23:59:59:999.
 	 * @return
