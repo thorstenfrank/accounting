@@ -58,6 +58,8 @@ public class SendInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		final Invoice invoice = getInvoice(event);
 		
+		sentDate = invoice.getInvoiceDate();
+		
 		AbstractModalDialog dialog = new AbstractModalDialog(
 				getShell(event), 
 				Messages.SendInvoiceCommand_title, 

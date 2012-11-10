@@ -61,8 +61,6 @@ public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 		AbstractModalDialog dialog = new AbstractModalDialog(
 				getShell(event), Messages.MarkInvoiceAsPaidCommand_title, Messages.MarkInvoiceAsPaidCommand_message) {
 			
-			DateTime dateTime;
-			
 			@Override
 			protected void createMainContents(Composite parent) {
 				Composite composite = new Composite(parent, SWT.NONE);
@@ -70,11 +68,12 @@ public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 
 				WidgetHelper.createLabel(composite, Messages.MarkInvoiceAsPaidCommand_paymentDateLabel);
 				
-				dateTime = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
-				dateTime.addSelectionListener(new SelectionAdapter() {
+				final DateTime paymentDateWidget = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
+				paymentDate = WidgetHelper.widgetToDate(paymentDateWidget);
+				paymentDateWidget.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						paymentDate = WidgetHelper.widgetToDate(dateTime);
+						paymentDate = WidgetHelper.widgetToDate(paymentDateWidget);
 						boolean okEnabled = false;
 						if (paymentDate.after(new Date())) {
 							setErrorMessage(Messages.MarkInvoiceAsPaidCommand_errorPaymentDateInTheFuture);
