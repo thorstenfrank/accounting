@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PeriodicalRevenue" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PeriodicalRevenue" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d879a14b-8649-4d00-9ba2-4737c03f34fa">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -9,6 +9,7 @@
 	<field name="from.title" class="java.lang.String"/>
 	<field name="until.title" class="java.lang.String"/>
 	<field name="expense.description.title" class="java.lang.String"/>
+	<field name="expense.category.title" class="java.lang.String"/>
 	<field name="payment.date.title" class="java.lang.String"/>
 	<field name="net.price.title" class="java.lang.String"/>
 	<field name="taxRate.title" class="java.lang.String"/>
@@ -18,120 +19,124 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="32" splitType="Stretch">
-			<textField>
-				<reportElement style="INVOICE_TX_18B" x="0" y="0" width="183" height="32"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses.title}]]></textFieldExpression>
-			</textField>
-		</band>
-	</title>
 	<pageHeader>
-		<band height="30" splitType="Stretch">
+		<band height="60" splitType="Stretch">
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="0" y="5" width="40" height="20"/>
+				<reportElement uuid="07aff601-c50a-4a95-ab60-cd31f46d9921" style="INVOICE_TX_18B" x="0" y="0" width="183" height="32"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{from.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{expenses.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="45" y="5" width="70" height="20"/>
+				<reportElement uuid="ce08c997-aa43-4995-8847-78f429e76a79" style="INVOICE_TX_12" x="0" y="35" width="40" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses}.getFromDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{from.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="120" y="5" width="40" height="20"/>
+				<reportElement uuid="b8e15327-83c6-4b14-801d-fc1fb8eb31fd" style="INVOICE_TX_12" x="45" y="35" width="70" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{until.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{expenses}.getFromDate()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12" x="165" y="5" width="70" height="20"/>
+				<reportElement uuid="e854a7b6-5a25-4d1c-ac70-99643d7f646c" style="INVOICE_TX_12" x="120" y="35" width="40" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses}.getUntilDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{until.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b1472643-16d1-4b70-a618-d02a76b17d95" style="INVOICE_TX_12" x="165" y="35" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{expenses}.getUntilDate()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b1472643-16d1-4b70-a618-d02a76b17d95" style="INVOICE_TX_10" x="777" y="0" width="15" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + "/"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="b1472643-16d1-4b70-a618-d02a76b17d95" style="INVOICE_TX_10" x="792" y="0" width="10" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="30" splitType="Stretch">
+			<line>
+				<reportElement uuid="ae5b046e-5504-4983-94ec-3dc19b1cff71" x="0" y="0" width="802" height="1"/>
+			</line>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="100" y="5" width="344" height="20"/>
+				<reportElement uuid="c26da9f2-ed1e-4f3d-834b-d5bd376da8d5" style="INVOICE_TX_12B" x="100" y="5" width="230" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expense.description.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{expense.description.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="0" y="5" width="100" height="20"/>
+				<reportElement uuid="c52a3fcc-77b6-459a-814f-65dd668ae30d" style="INVOICE_TX_12B" x="0" y="5" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{payment.date.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{payment.date.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="444" y="5" width="100" height="20"/>
+				<reportElement uuid="c694f790-df05-42fc-8104-54789353f80f" style="INVOICE_TX_12B" x="444" y="5" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{net.price.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{net.price.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="544" y="5" width="58" height="20"/>
+				<reportElement uuid="9e4c876d-06eb-4808-85a1-338805aee207" style="INVOICE_TX_12B" x="544" y="5" width="58" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{taxRate.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{taxRate.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="602" y="5" width="100" height="20"/>
+				<reportElement uuid="acef87f7-ad14-4ef6-9674-e95c3379e680" style="INVOICE_TX_12B" x="602" y="5" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{tax.amount.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tax.amount.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="702" y="5" width="100" height="20"/>
+				<reportElement uuid="749c78f7-686c-42dc-8da1-e7d867197ad4" style="INVOICE_TX_12B" x="702" y="5" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{gross.price.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{gross.price.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c26da9f2-ed1e-4f3d-834b-d5bd376da8d5" style="INVOICE_TX_12B" x="330" y="5" width="114" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{expense.category.title}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="0" width="802" height="1"/>
+				<reportElement uuid="63859de0-3754-4246-b8e7-552cf4d20665" x="0" y="29" width="802" height="1"/>
 			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="35" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="0" width="802" height="1"/>
-			</line>
 			<subreport>
-				<reportElement x="0" y="5" width="802" height="30"/>
+				<reportElement uuid="aa170f25-53ea-4aef-b4de-ed501e1b764a" x="0" y="5" width="802" height="30"/>
 				<dataSourceExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}.get( "EXPENSE_DETAILS_DATASOURCE" )]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA["ExpenseDetailsSubreport.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["ExpenseDetailsSubreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="50">
+	</detail>
+	<summary>
+		<band height="30">
 			<line>
-				<reportElement x="0" y="0" width="802" height="1"/>
+				<reportElement uuid="ae5b046e-5504-4983-94ec-3dc19b1cff71" x="0" y="0" width="802" height="1"/>
 			</line>
 			<textField>
-				<reportElement style="INVOICE_TX_12B" x="702" y="5" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses}.getTotalGross()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_12B" x="602" y="5" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses}.getTotalTaxAmount()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_12B" x="444" y="5" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{expenses}.getTotalNet()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_12B" x="344" y="5" width="100" height="20"/>
+				<reportElement uuid="751c3233-3d08-4167-8611-ffd45e9e1817" style="INVOICE_TX_12B" x="344" y="5" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{sum.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{sum.title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="002205cc-b104-4a18-85c9-59f3a3370374" style="INVOICE_TX_12B" x="444" y="5" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{expenses}.getTotalNet()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="94351fdd-1aab-4449-b7c4-6897a78b92a8" style="INVOICE_TX_12B" x="602" y="5" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{expenses}.getTotalTaxAmount()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="94351fdd-1aab-4449-b7c4-6897a78b92a8" style="INVOICE_TX_12B" x="702" y="5" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{expenses}.getTotalGross()]]></textFieldExpression>
 			</textField>
 		</band>
-	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
 	</summary>
 </jasperReport>

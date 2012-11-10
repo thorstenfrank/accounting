@@ -45,6 +45,7 @@ public class Messages extends NLS {
 	public static String CashFlowDataSource_vatSum;
 	
 	public static String ExpensesDataSource_expensesTitle;
+	public static String ExpensesDataSource_expenseCategory;
 	
 	public static String InvoiceDataSource_invoiceDateTitle;
 	public static String InvoiceDataSource_invoiceNumberTitle;

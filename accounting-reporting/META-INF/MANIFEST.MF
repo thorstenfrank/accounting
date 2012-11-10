@@ -10,8 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
- lib/commons-digester-1.7.jar,
+ lib/commons-digester-2.1.jar,
  lib/iText-2.1.7.jar,
- lib/jasperreports-4.0.2.jar,
+ lib/jasperreports-4.8.0.jar,
  .
 Export-Package: de.togginho.accounting

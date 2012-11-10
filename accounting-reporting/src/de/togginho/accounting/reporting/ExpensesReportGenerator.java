@@ -54,7 +54,7 @@ public class ExpensesReportGenerator extends AbstractReportGenerator {
 	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#addReportParameters(java.util.Map)
 	 */
 	@Override
-	protected void addReportParameters(Map<Object, Object> params) {
+	protected void addReportParameters(Map<String, Object> params) {
 		params.put(EXPENSE_DETAILS_DATASOURCE, new JRBeanCollectionDataSource(wrapper.getExpenseDetails()));
 	}
 

@@ -56,7 +56,7 @@ public class ExpensesDataSource extends AbstractReportDataSource {
 		}
 		
 		fieldMap.put("expense.description.title", Messages.descriptionTitle); //$NON-NLS-1$
-		
+		fieldMap.put("expense.category.title", Messages.ExpensesDataSource_expenseCategory); //$NON-NLS-1$
 		fieldMap.put("payment.date.title", Messages.dateTitle); //$NON-NLS-1$
 		fieldMap.put("from.title", Messages.fromTitle); //$NON-NLS-1$
 		fieldMap.put("until.title", Messages.untilTitle); //$NON-NLS-1$

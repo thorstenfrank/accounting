@@ -40,6 +40,13 @@ public class ExpenseDetailWrapper {
 	}
 	
 	/**
+     * @return the expense
+     */
+    protected Expense getExpense() {
+    	return expense;
+    }
+
+	/**
 	 * 
 	 * @return
 	 */
@@ -80,6 +87,13 @@ public class ExpenseDetailWrapper {
 	 */
 	public String getExpenseDescription() {
 		return expense.getDescription();
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getExpenseCategory() {
+		return expense.getCategory();
 	}
 	
 	/**

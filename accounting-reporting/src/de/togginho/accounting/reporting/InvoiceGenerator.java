@@ -51,7 +51,7 @@ public class InvoiceGenerator extends AbstractReportGenerator {
 	}
 
 	@Override
-	protected void addReportParameters(Map<Object, Object> params) {
+	protected void addReportParameters(Map<String, Object> params) {
 		params.put(INVOICE_POSITION_DATASOURCE, new JRBeanCollectionDataSource(wrapper.getPositions()));
 	}
 

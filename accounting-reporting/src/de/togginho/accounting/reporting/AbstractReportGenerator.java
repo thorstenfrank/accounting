@@ -82,7 +82,7 @@ public abstract class AbstractReportGenerator {
 		
 		monitor.addingReportParameters();		
 		// add report params
-		Map<Object, Object> params = new HashMap<Object, Object>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		addReportParameters(params);
 		
 		monitor.fillingReport();
@@ -149,7 +149,7 @@ public abstract class AbstractReportGenerator {
 	 * @return
 	 * @throws JRException
 	 */
-	private JasperPrint fillReport(InputStream in, Map<Object, Object> params) throws JRException {
+	private JasperPrint fillReport(InputStream in, Map<String, Object> params) throws JRException {
 		AbstractReportDataSource dataSource = getReportDataSource();
 		if (dataSource != null) {
 			LOG.debug(String.format("Found data source and will now init: [%s]", dataSource.getClass().getName()));
@@ -195,7 +195,7 @@ public abstract class AbstractReportGenerator {
 	 * 
 	 * @param params the map to add parameters to
 	 */
-	protected abstract void addReportParameters(Map<Object, Object> params);
+	protected abstract void addReportParameters(Map<String, Object> params);
 	
 	/**
 	 * The fully accessible path to a precompiled Jasper template, used by {@link #generateReportToFile(String)} to

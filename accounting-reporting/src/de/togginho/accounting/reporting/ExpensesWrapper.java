@@ -15,8 +15,10 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -44,11 +46,23 @@ public class ExpensesWrapper {
 	 * 
 	 * @return
 	 */
-	public Set<ExpenseDetailWrapper> getExpenseDetails() {
-		Set<ExpenseDetailWrapper> wrappers = new HashSet<ExpenseDetailWrapper>();
+	public List<ExpenseDetailWrapper> getExpenseDetails() {
+		List<ExpenseDetailWrapper> wrappers = new ArrayList<ExpenseDetailWrapper>();
 		for (Expense expense : expenseCollection.getExpenses()) {
 			wrappers.add(new ExpenseDetailWrapper(expense));
 		}
+		Collections.sort(wrappers, new Comparator<ExpenseDetailWrapper>() {
+
+			/**
+             * {@inheritDoc}.
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+            @Override
+            public int compare(ExpenseDetailWrapper o1, ExpenseDetailWrapper o2) {
+	            return o1.getExpense().getPaymentDate().compareTo(o2.getExpense().getPaymentDate());
+            }
+			
+		});
 		return wrappers;
 	}
 	

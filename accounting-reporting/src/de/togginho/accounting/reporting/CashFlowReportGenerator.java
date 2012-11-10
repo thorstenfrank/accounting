@@ -40,7 +40,7 @@ public class CashFlowReportGenerator extends AbstractReportGenerator {
 	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#addReportParameters(java.util.Map)
 	 */
 	@Override
-	protected void addReportParameters(Map<Object, Object> params) {
+	protected void addReportParameters(Map<String, Object> params) {
 
 	}
 
