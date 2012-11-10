@@ -107,6 +107,9 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 	private Text totalTax;
 	private Text totalGross;
 	private DateTime dueDate;
+	private Text sentDate;
+	private Text paymentDate;
+	private Text cancelledDate;
 	
 	private boolean invoiceCanBeEdited;
 	
@@ -139,12 +142,12 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		AccountingUI.addModelChangeListener(this);
 		
+		Invoice invoice = getEditorInput().getInvoice();
+		
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
-		form.setText(Messages.InvoiceEditor_header);
-		form.getBody().setLayout(new GridLayout(2, true));
 		
-		Invoice invoice = getEditorInput().getInvoice();
+		form.getBody().setLayout(new GridLayout(2, true));
 		
 		this.invoiceCanBeEdited = invoice.canBeEdited();
 		
@@ -164,42 +167,19 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		createInvoicePositionsSection();
 		
-		// calculate the prices for display
-		calculateTotals();
-		
-		updateDueDate();
-		
-//		CommandContributionItemParameter deleteInvoiceParam = new CommandContributionItemParameter(
-//				getSite().getWorkbenchWindow(), 
-//				"de.togginho.accounting.ui.invoice.DeleteInvoiceCommandItem", 
-//				IDs.CMD_DELETE_INVOICE, 
-//				CommandContributionItem.STYLE_PUSH);
-//		deleteInvoiceParam.icon = AccountingUI.getImageDescriptor(Messages.iconsDeleteInvoice);
-		//deleteInvoiceParam.visibleEnabled = true;
-//		CommandContributionItem deleteInvoice = new CommandContributionItem(deleteInvoiceParam);
-//		form.getToolBarManager().add(deleteInvoice);
-		
 		// build the toolbar
 		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
 		menuService.populateContributionManager(
 				(ToolBarManager) form.getToolBarManager(), MenuUtil.toolbarUri(IDs.EDIT_INVOIDCE_ID));
-		
-//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_DELETE_INVOICE, Messages.iconsDeleteInvoice));
-//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_INVOICE_TO_PDF, Messages.iconsInvoiceToPdf));
-//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_SEND_INVOICE, Messages.iconsSendInvoice));
-//		form.getToolBarManager().add(new SimpleCommandCallingAction(IDs.CMD_MARK_INVOICE_AS_PAID, Messages.iconsMarkInvoiceAsPaid));
-		
-//		form.getToolBarManager().add(ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
-		form.getToolBarManager().update(true);
-		
-		toolkit.decorateFormHeading(form.getForm());
-		form.reflow(true);
 		
 		// if this invoice isn't saved yet, mark myself as dirty
 		if (InvoiceState.UNSAVED.equals(invoice.getState())) {
 			setIsDirty(true);
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		}
+		
+		// make sure all calculated and derived fields are properly initialised
+		modelChanged();
 	}
 
 	/**
@@ -264,6 +244,24 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 			}
 		});
 		
+		// SENT DATE
+		toolkit.createLabel(left, InvoiceState.SENT.getTranslatedString());
+		sentDate = createText(left, Constants.HYPHEN);
+		sentDate.setEnabled(false);
+		sentDate.setEditable(false);			
+		
+		// PAYMENT DATE
+		toolkit.createLabel(left, InvoiceState.PAID.getTranslatedString());
+		paymentDate = createText(left, Constants.HYPHEN);
+		paymentDate.setEnabled(false);
+		paymentDate.setEditable(false);
+		
+		// CANCELLED
+		toolkit.createLabel(left, InvoiceState.CANCELLED.getTranslatedString());
+		cancelledDate = createText(left, Constants.HYPHEN);
+		cancelledDate.setEnabled(false);
+		cancelledDate.setEditable(false);
+		
 		Composite right = toolkit.createComposite(sectionClient);
 		right.setLayout(new GridLayout(2, false));
 		grabHorizontal.applyTo(right);
@@ -308,7 +306,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 	    Section paymentTermsSection = toolkit.createSection(getForm().getBody(), Section.TITLE_BAR);
 		paymentTermsSection.setText(Messages.labelPaymentTerms);
-		
 		paymentTermsSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		Composite sectionClient = toolkit.createComposite(paymentTermsSection);
@@ -350,7 +347,6 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		spinner.setIncrement(1);
 		spinner.setMinimum(0);
 		spinner.setSelection(paymentTerms.getFullPaymentTargetInDays());
-		
 		spinner.addModifyListener(new ModifyListener() {
 			
 			@Override
@@ -497,7 +493,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
 				if (!selection.isEmpty()) {
 					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
-					LOG.info("Removing invoice position " + pos.getDescription()); //$NON-NLS-1$
+					LOG.debug("Removing invoice position " + pos.getDescription()); //$NON-NLS-1$
 					getEditorInput().getInvoice().getInvoicePositions().remove(pos);
 					refreshInvoicePositionsAndFireDirty();
 				}
@@ -512,7 +508,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
 				if (!selection.isEmpty()) {
 					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
-					LOG.info("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
+					LOG.debug("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
 					List<InvoicePosition> ips = getEditorInput().getInvoice().getInvoicePositions();
 					int index = ips.indexOf(pos);
 					InvoicePosition ip = ips.remove(index);
@@ -530,7 +526,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
 				if (!selection.isEmpty()) {
 					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
-					LOG.info("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
+					LOG.debug("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
 					List<InvoicePosition> ips = getEditorInput().getInvoice().getInvoicePositions();
 					int index = ips.indexOf(pos);
 					InvoicePosition ip = ips.remove(index);
@@ -582,9 +578,30 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
      */
     @Override
     public void modelChanged() {
+    	updateHeaderText();
 	    refreshInvoicePositions();
+	    updateDateFields();
+//		IEvaluationService evaluationService = (IEvaluationService) getSite().getService(IEvaluationService.class);
+//		for (String property : InvoicePropertyTester.PROPERTIES) {
+//			evaluationService.requestEvaluation(property);
+//		}
+	    form.getToolBarManager().update(true);
+		toolkit.decorateFormHeading(form.getForm());
+		form.reflow(true);
     }
 
+    /**
+     * 
+     */
+    private void updateHeaderText() {
+    	Invoice invoice = getEditorInput().getInvoice();
+		StringBuilder sb = new StringBuilder(Messages.InvoiceEditor_header);
+		sb.append(": ").append(invoice.getNumber()).append(Constants.BLANK_STRING);
+		sb.append("(").append(invoice.getState().getTranslatedString()).append(")");
+		
+		form.setText(sb.toString());
+    }
+    
 	/**
 	 * 
 	 */
@@ -610,6 +627,23 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		totalNet.setText(FormatUtil.formatCurrency(total.getNet()));
 		totalTax.setText(FormatUtil.formatCurrency(total.getTax()));
 		totalGross.setText(FormatUtil.formatCurrency(total.getGross()));
+	}
+	
+	/**
+	 * 
+	 */
+	private void updateDateFields() {
+		Invoice invoice = getEditorInput().getInvoice();
+		if (invoice.getSentDate() != null) {
+			sentDate.setText(FormatUtil.formatDate(invoice.getSentDate()));
+		}
+		if (invoice.getPaymentDate() != null) {
+			paymentDate.setText(FormatUtil.formatDate(invoice.getPaymentDate()));
+		}
+		if (invoice.getCancelledDate() != null) {
+			cancelledDate.setText(FormatUtil.formatDate(invoice.getCancelledDate()));
+		}
+		
 	}
 	
 	/**
