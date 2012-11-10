@@ -40,6 +40,7 @@ public class CopyExpenseHandler extends AbstractExpenseHandler {
 		
 		Expense newExpense = new Expense();
 		newExpense.setDescription(expense.getDescription());
+		newExpense.setCategory(expense.getCategory());
 		newExpense.setExpenseType(expense.getExpenseType());
 		newExpense.setNetAmount(expense.getNetAmount());
 		newExpense.setPaymentDate(expense.getPaymentDate());
