@@ -222,17 +222,22 @@ public class ExpenseDialog extends AbstractReportDialog {
 		
 		sorter.addSortingSupport(
 				tableViewer, 
-				createColumn(ExpenseTableSorter.COL_INDEX_NET, Messages.labelNet, SWT.CENTER, tcl).getColumn(), 
+				createColumn(ExpenseTableSorter.COL_INDEX_CATEGORY, Messages.labelCategory, SWT.CENTER, tcl).getColumn(), 
+				ExpenseTableSorter.COL_INDEX_CATEGORY);
+		
+		sorter.addSortingSupport(
+				tableViewer, 
+				createColumn(ExpenseTableSorter.COL_INDEX_NET, Messages.labelNet, SWT.RIGHT, tcl).getColumn(), 
 				ExpenseTableSorter.COL_INDEX_NET);
 
 		sorter.addSortingSupport(
 				tableViewer, 
-				createColumn(ExpenseTableSorter.COL_INDEX_TAX, Messages.labelTaxes, SWT.CENTER, tcl).getColumn(), 
+				createColumn(ExpenseTableSorter.COL_INDEX_TAX, Messages.labelTaxes, SWT.RIGHT, tcl).getColumn(), 
 				ExpenseTableSorter.COL_INDEX_TAX);
 		
 		sorter.addSortingSupport(
 				tableViewer, 
-				createColumn(ExpenseTableSorter.COL_INDEX_GROSS, Messages.labelGross, SWT.CENTER, tcl).getColumn(), 
+				createColumn(ExpenseTableSorter.COL_INDEX_GROSS, Messages.labelGross, SWT.RIGHT, tcl).getColumn(), 
 				ExpenseTableSorter.COL_INDEX_GROSS);
 		
 		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());

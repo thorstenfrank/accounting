@@ -48,6 +48,8 @@ class ExpenseTableLabelProvider extends BaseLabelProvider implements ITableLabel
 			return wrapper.getPaymentDateFormatted();
 		case ExpenseTableSorter.COL_INDEX_DESC:
 			return wrapper.getDescription();
+		case ExpenseTableSorter.COL_INDEX_CATEGORY:
+			return wrapper.getCategory() != null ? wrapper.getCategory() : Constants.BLANK_STRING;
 		case ExpenseTableSorter.COL_INDEX_NET:
 			return wrapper.getNetAmountFormatted();
 		case ExpenseTableSorter.COL_INDEX_TAX:

@@ -80,6 +80,14 @@ class ExpenseWrapper {
 	}
 
 	/**
+     * @return
+     * @see de.togginho.accounting.model.Expense#getCategory()
+     */
+    protected String getCategory() {
+	    return expense.getCategory();
+    }
+
+	/**
 	 * 
 	 * @return
 	 */

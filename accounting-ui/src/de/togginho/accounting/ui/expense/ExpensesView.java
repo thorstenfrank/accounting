@@ -78,38 +78,38 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DATE);
-		final TableColumn col1col = col1.getColumn();
-		col1col.setText(Messages.labelDate);
-		tcl.setColumnData(col1col, new ColumnWeightData(18, true));
-		sorter.addSortingSupport(tableViewer, col1col, ExpenseTableSorter.COL_INDEX_DATE);
+		final TableColumn colDate = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DATE).getColumn();
+		colDate.setText(Messages.labelDate);
+		tcl.setColumnData(colDate, new ColumnWeightData(1, true));
+		sorter.addSortingSupport(tableViewer, colDate, ExpenseTableSorter.COL_INDEX_DATE);
 		
-		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DESC);
-		final TableColumn col2col = col2.getColumn();
-		col2col.setText(Messages.labelDescription);
-		tcl.setColumnData(col2col, new ColumnWeightData(28, true));
-		sorter.addSortingSupport(tableViewer, col2col, ExpenseTableSorter.COL_INDEX_DESC);
+		final TableColumn colDesc = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DESC).getColumn();
+		colDesc.setText(Messages.labelDescription);
+		tcl.setColumnData(colDesc, new ColumnWeightData(2, true));
+		sorter.addSortingSupport(tableViewer, colDesc, ExpenseTableSorter.COL_INDEX_DESC);
 		
-		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_NET);
-		final TableColumn col3col = col3.getColumn();
-		col3col.setText(Messages.labelNet);
-		col3col.setAlignment(SWT.RIGHT);
-		tcl.setColumnData(col3col, new ColumnWeightData(18, true));
-		sorter.addSortingSupport(tableViewer, col3col, ExpenseTableSorter.COL_INDEX_NET);
+		final TableColumn colCategory = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_CATEGORY).getColumn();
+		colCategory.setText(Messages.labelCategory);
+		tcl.setColumnData(colCategory, new ColumnWeightData(1, true));
+		sorter.addSortingSupport(tableViewer, colCategory, ExpenseTableSorter.COL_INDEX_CATEGORY);
 		
-		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_TAX);
-		final TableColumn col4col = col4.getColumn();
-		col4col.setText(Messages.labelTaxes);
-		col4col.setAlignment(SWT.RIGHT);
-		tcl.setColumnData(col4col, new ColumnWeightData(18, true));
-		sorter.addSortingSupport(tableViewer, col4col, ExpenseTableSorter.COL_INDEX_TAX);
+		final TableColumn colNet = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_NET).getColumn();
+		colNet.setText(Messages.labelNet);
+		colNet.setAlignment(SWT.RIGHT);
+		tcl.setColumnData(colNet, new ColumnWeightData(1, true));
+		sorter.addSortingSupport(tableViewer, colNet, ExpenseTableSorter.COL_INDEX_NET);
+		
+		final TableColumn colTax = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_TAX).getColumn();
+		colTax.setText(Messages.labelTaxes);
+		colTax.setAlignment(SWT.RIGHT);
+		tcl.setColumnData(colTax, new ColumnWeightData(1, true));
+		sorter.addSortingSupport(tableViewer, colTax, ExpenseTableSorter.COL_INDEX_TAX);
 
-		TableViewerColumn col5 = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_GROSS);
-		final TableColumn col5col = col5.getColumn();
-		col5col.setText(Messages.labelGross);
-		col5col.setAlignment(SWT.RIGHT);
-		tcl.setColumnData(col5col, new ColumnWeightData(18, true));
-		sorter.addSortingSupport(tableViewer, col5col, ExpenseTableSorter.COL_INDEX_GROSS);
+		final TableColumn colGross = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_GROSS).getColumn();
+		colGross.setText(Messages.labelGross);
+		colGross.setAlignment(SWT.RIGHT);
+		tcl.setColumnData(colGross, new ColumnWeightData(1, true));
+		sorter.addSortingSupport(tableViewer, colGross, ExpenseTableSorter.COL_INDEX_GROSS);
 		
 		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -117,7 +117,7 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		tableViewer.setInput(getExpenses());
 		sorter.setSortColumnIndex(ExpenseTableSorter.COL_INDEX_DATE);
 		tableViewer.setComparator(sorter);
-		table.setSortColumn(col1col);
+		table.setSortColumn(colDate);
 		
 		tableViewer.addDoubleClickListener(this);
 		
