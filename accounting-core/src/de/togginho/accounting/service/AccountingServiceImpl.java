@@ -919,13 +919,14 @@ public class AccountingServiceImpl implements AccountingService {
     		LOG.info("Now saving imported Invoices to DB file: " + importedInvoices.size()); //$NON-NLS-1$
     		for (Invoice invoice : importedInvoices) {
     			objectContainer.store(invoice);
+    			BUSINESS_LOG.info("Saved imported invoice: " + invoice.getNumber()); //$NON-NLS-1$
     		}
     	} else {
     		LOG.info("No invoices to import"); //$NON-NLS-1$
     	}
     	
     	final Set<Expense> importedExpenses = importResult.getImportedExpenses();
-    	if (importedExpenses != null && importedExpenses.isEmpty()) {
+    	if (importedExpenses != null && !importedExpenses.isEmpty()) {
     		LOG.info("Now saving imported Expenses to DB file: " + importedExpenses.size()); //$NON-NLS-1$
     		for (Expense expense : importedExpenses) {
     			objectContainer.store(expense);
@@ -937,7 +938,7 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	objectContainer.commit();
     	
-    	BUSINESS_LOG.info("Successfully imported data!");
+    	LOG.info("Successfully imported data!");
     	
     	return context;
     }

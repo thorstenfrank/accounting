@@ -57,7 +57,7 @@ class XmlToModel {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ModelMapper.class);
+	private static final Logger LOG = Logger.getLogger(XmlToModel.class);
 	
 	/** Source XML data. */
 	private XmlUser xmlUser;
@@ -202,6 +202,7 @@ class XmlToModel {
 			this.expenses = new HashSet<Expense>();
 			
 			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpense()) {
+				LOG.debug("Converting expense " + xmlExpense.getDescription());
 				Expense expense = new Expense();
 				expense.setDescription(xmlExpense.getDescription());
 				switch (xmlExpense.getExpenseType()) {
