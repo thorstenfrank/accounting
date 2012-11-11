@@ -44,7 +44,9 @@ import de.togginho.accounting.util.TimeFrameType;
 public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandler {
 
 	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewTimeFrameCommand.class);
-		
+	
+	private static final String PARAMETER_NAME = "timeFrame";
+	
 	private TimeFrame currentTimeFrame;
 	private DateTime from;
 	private DateTime to;
@@ -65,10 +67,68 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 			LOG.warn("No active invoice view found! This command should not have been fired..."); //$NON-NLS-1$
 			return;
 		}
-	
-		currentTimeFrame = expensesView.getCurrentTimeFrame();
 		
-		AbstractModalDialog dialog = new AbstractModalDialog(
+		if (!extractTimeFrameFromParameter(event)) {
+			LOG.debug("No time frame supplied as parameter, now showing chooser dialog"); //$NON-NLS-1$
+			
+			currentTimeFrame = expensesView.getCurrentTimeFrame();
+			if (!extractTimeFrameFromPopup(event)) {
+				LOG.debug("Choosing time frame was cancelled by user"); //$NON-NLS-1$
+				return;
+			}
+		}
+		
+		if (currentTimeFrame != null) {
+			LOG.info("Changing expenses view"); //$NON-NLS-1$
+			expensesView.setCurrentTimeFrame(currentTimeFrame);
+			expensesView.modelChanged();			
+		} else {
+			LOG.warn("No time frame provided, cancelling execution of this command!"); //$NON-NLS-1$
+		}
+	}
+
+	/**
+     * @param event
+     */
+    private boolean extractTimeFrameFromParameter(ExecutionEvent event) {
+	    final String param = event.getParameter(PARAMETER_NAME);
+		if (param != null) {
+			LOG.debug(String.format("Found command param [%s]: %s", PARAMETER_NAME, param));
+            try {
+            	TimeFrameType type = TimeFrameType.valueOf(param);
+            	switch (type) {
+				case CURRENT_MONTH:
+					currentTimeFrame = TimeFrame.currentMonth();
+					break;
+				case CURRENT_YEAR:
+					currentTimeFrame = TimeFrame.currentYear();
+					break;
+				case LAST_MONTH:
+					currentTimeFrame = TimeFrame.lastMonth();
+					break;
+				case LAST_YEAR:
+					currentTimeFrame = TimeFrame.lastYear();
+					break;
+				default:
+					currentTimeFrame = null;
+					break;
+				}
+            } catch (Exception e) {
+            	LOG.error("Error trying to retrieve TimeFrameType for parameter " + param, e); //$NON-NLS-1$
+            	currentTimeFrame = null;
+            }
+		} else {
+			currentTimeFrame = null;
+		}
+		
+		return currentTimeFrame != null;
+    }
+
+	/**
+     * @param event
+     */
+    private boolean extractTimeFrameFromPopup(ExecutionEvent event) {
+	    AbstractModalDialog dialog = new AbstractModalDialog(
 				getShell(event), 
 				Messages.ChangeExpensesViewTimeFrameCommand_title, 
 				Messages.ChangeExpensesViewTimeFrameCommand_message) {
@@ -79,10 +139,10 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 				composite.setLayout(new GridLayout(2, false));
 				WidgetHelper.grabHorizontal(composite);
 				
-				buildButtonForTimeFrame(composite, Messages.labelCurrentMonth, TimeFrameType.CURRENT_MONTH);
-				buildButtonForTimeFrame(composite, Messages.labelLastMonth, TimeFrameType.LAST_MONTH);
-				buildButtonForTimeFrame(composite, Messages.labelCurrentYear, TimeFrameType.CURRENT_YEAR);
-				buildButtonForTimeFrame(composite, Messages.labelLastYear, TimeFrameType.LAST_YEAR);
+				buildButtonForTimeFrame(composite, TimeFrameType.CURRENT_MONTH);
+				buildButtonForTimeFrame(composite, TimeFrameType.LAST_MONTH);
+				buildButtonForTimeFrame(composite, TimeFrameType.CURRENT_YEAR);
+				buildButtonForTimeFrame(composite, TimeFrameType.LAST_YEAR);
         		
         		final Button custom = new Button(composite, SWT.RADIO);
         		custom.setSelection(currentTimeFrame.getType() == TimeFrameType.CUSTOM);
@@ -113,26 +173,18 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         		currentTimeFrameChanged();
 			}
 		};
-
-		if (dialog.show()) {
-			LOG.info("Changing expenses view"); //$NON-NLS-1$
-			expensesView.setCurrentTimeFrame(currentTimeFrame);
-			expensesView.modelChanged();			
-		} else {
-			LOG.info("Changing expenses timeframe was cancelled by user"); //$NON-NLS-1$
-		}
 		
-	}
-
+		return dialog.show();
+    }
+    
 	/**
 	 * 
 	 * @param parent
-	 * @param label
 	 * @param type
 	 */
-	private void buildButtonForTimeFrame(Composite parent, String label, TimeFrameType type) {
+	private void buildButtonForTimeFrame(Composite parent, TimeFrameType type) {
 		Button button = new Button(parent, SWT.RADIO);
-		button.setText(label);
+		button.setText(type.getTranslatedName());
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(button);
 		final TimeFrame timeFrame;
 		switch (type) {

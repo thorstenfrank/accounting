@@ -156,29 +156,23 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 */
 	private void createTimeFrameRadioButton(Composite parent, TimeFrameType timeFrameType) {
 		final TimeFrame timeFrame;
-		String label = null;
 		boolean selected = timeFrameType.equals(getDefaultTimeFrameType());
 		
 		switch (timeFrameType) {
 		case CURRENT_MONTH:
 			timeFrame = TimeFrame.currentMonth();
-			label = Messages.labelCurrentMonth;
 			break;
 		case LAST_MONTH:
 			timeFrame = TimeFrame.lastMonth();
-			label = Messages.labelLastMonth;
 			break;
 		case CURRENT_YEAR:
 			timeFrame = TimeFrame.currentYear();
-			label = Messages.labelCurrentYear;
 			break;
 		case LAST_YEAR:
 			timeFrame = TimeFrame.lastYear();
-			label = Messages.labelLastYear;
 			break;
 		default:
 			timeFrame = TimeFrame.currentMonth();
-			label = Messages.labelCurrentMonth;
 			break;
 		}
 		
@@ -187,7 +181,7 @@ public abstract class AbstractReportDialog extends TrayDialog {
 			WidgetHelper.dateToWidget(timeFrame.getUntil(), untilDate);
 		}
 		
-		final Button button = getToolkit().createButton(parent, label, SWT.RADIO);
+		final Button button = getToolkit().createButton(parent, timeFrame.getType().getTranslatedName(), SWT.RADIO);
 		button.setSelection(selected);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override

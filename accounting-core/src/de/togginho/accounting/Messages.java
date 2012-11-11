@@ -74,6 +74,12 @@ public class Messages extends NLS {
 	public static String DepreciationMethod_NONE;
 	public static String DepreciationMethod_STRAIGHTLINE;
 	
+	public static String TimeFrameType_currentMonth;
+	public static String TimeFrameType_lastMonth;
+	public static String TimeFrameType_currentYear;
+	public static String TimeFrameType_lastYear;
+	public static String TimeFrameType_custom;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

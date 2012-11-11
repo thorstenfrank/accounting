@@ -417,9 +417,63 @@
                icon="icons/tag_blue_add.png"
                style="push">
          </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:de.togginho.accounting.ui.expense.ExpensesView">
+         <command
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               label="%command.changeTimeFrame.currentMonth"
+               style="push">
+            <parameter
+                  name="timeFrame"
+                  value="CURRENT_MONTH">
+            </parameter>
+         </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               label="%command.changeTimeFrame.lastMonth"
+               style="push">
+            <parameter
+                  name="timeFrame"
+                  value="LAST_MONTH">
+            </parameter>
+         </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               label="%command.changeTimeFrame.currentYear"
+               style="push">
+            <parameter
+                  name="timeFrame"
+                  value="CURRENT_YEAR">
+            </parameter>
+         </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               label="%command.changeTimeFrame.lastYear"
+               style="push">
+            <parameter
+                  name="timeFrame"
+                  value="LAST_YEAR">
+            </parameter>
+         </command>
          <command
                commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
                icon="icons/table_gear.png"
+               label="%command.changeTimeFrame.custom"
+               style="push">
+            <parameter
+                  name="timeFrame"
+                  value="CUSTOM">
+            </parameter>
+         </command>
+         <separator
+               name="expensesView.pulldown.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
+               icon="icons/tag_blue_add.png"
                style="push">
          </command>
       </menuContribution>
@@ -652,6 +706,11 @@
       		defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
       		id="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
       		name="%command.changeExpensesViewTimeFrame.name">
+         <commandParameter
+               id="timeFrame"
+               name="timeFrame"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             defaultHandler="de.togginho.accounting.ui.reports.ChooseReportCommand"

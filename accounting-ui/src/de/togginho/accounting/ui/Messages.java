@@ -96,6 +96,8 @@ public class Messages extends NLS {
 	
 	public static String ExpenseEditor_title;
 	
+	public static String ExpensesView_title;
+	
 	public static String ExportInvoiceCommand_addingReportParameters;
 	public static String ExportInvoiceCommand_exportingReportToFile;
 	public static String ExportInvoiceCommand_fillingReport;
@@ -259,10 +261,6 @@ public class Messages extends NLS {
 	public static String labelTimeFrame;
 	public static String labelFrom;
 	public static String labelUntil;
-	public static String labelLastMonth;
-	public static String labelCurrentMonth;
-	public static String labelLastYear;
-	public static String labelCurrentYear;
 	
 	public static String labelAdd;
 	public static String labelRemove;

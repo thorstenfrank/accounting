@@ -15,11 +15,33 @@
  */
 package de.togginho.accounting.util;
 
+import de.togginho.accounting.Messages;
+
 /**
  * @author thorsten
  *
  */
 public enum TimeFrameType {
 
-	CUSTOM, CURRENT_MONTH, CURRENT_YEAR, LAST_MONTH, LAST_YEAR;
+	CUSTOM(Messages.TimeFrameType_custom), 
+	CURRENT_MONTH(Messages.TimeFrameType_currentMonth),
+	CURRENT_YEAR(Messages.TimeFrameType_currentYear),
+	LAST_MONTH(Messages.TimeFrameType_lastMonth),
+	LAST_YEAR(Messages.TimeFrameType_lastYear);
+	
+	private String translated;
+
+	/**
+     * @param translated
+     */
+    private TimeFrameType(String translated) {
+	    this.translated = translated;
+    }
+
+	/**
+     * @return the translated name of this time frame type
+     */
+    public String getTranslatedName() {
+    	return translated;
+    }
 }

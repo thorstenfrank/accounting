@@ -37,13 +37,16 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
+import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
+import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -114,7 +117,6 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.currentTimeFrame = TimeFrame.currentMonth();
-		tableViewer.setInput(getExpenses());
 		sorter.setSortColumnIndex(ExpenseTableSorter.COL_INDEX_DATE);
 		tableViewer.setComparator(sorter);
 		table.setSortColumn(colDate);
@@ -125,6 +127,8 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		Menu menu = menuManager.createContextMenu(tableViewer.getControl());
 		tableViewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, tableViewer);
+		
+		modelChanged();
 	}
 	
 	/**
@@ -176,12 +180,6 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		} catch (Exception e) {
 			LOG.error("Error opening invoice editor", e); //$NON-NLS-1$
 		}
-		
-//		IStructuredSelection structuredSelection = (IStructuredSelection) event.getSelection();
-//		ExpenseWrapper wrapper = (ExpenseWrapper) structuredSelection.getFirstElement();
-//		ExpenseWizard wizard = new ExpenseWizard(wrapper.getExpense());
-//		WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
-//		dialog.open();
 	}
 
 	/**
@@ -192,6 +190,16 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 	public void modelChanged() {
 		tableViewer.setInput(getExpenses());
 		tableViewer.refresh();
+		
+		String titlePart = currentTimeFrame.getType().getTranslatedName();
+		if (currentTimeFrame.getType() == TimeFrameType.CUSTOM) {
+			StringBuilder sb = new StringBuilder(FormatUtil.formatDate(currentTimeFrame.getFrom()));
+			sb.append(Constants.HYPHEN);
+			sb.append(FormatUtil.formatDate(currentTimeFrame.getUntil()));
+			titlePart = sb.toString();
+		}
+		
+		setPartName(Messages.bind(Messages.ExpensesView_title, titlePart));
 	}	
 	
 	/**
