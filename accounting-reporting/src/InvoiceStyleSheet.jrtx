@@ -10,4 +10,13 @@
 	<style name="INVOICE_TX_14" markup="styled" fontSize="14" pdfFontName="fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_14B" markup="styled" fontSize="14" isBold="true" pdfFontName="fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_18B" markup="styled" fontSize="18" isBold="true" pdfFontName="fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
+	<style name="TEXT_BOX_10" markup="styled" fontSize="10" pdfFontName="fonts/TitilliumText25L003.otf" isPdfEmbedded="true">
+		<box>
+			<pen lineWidth="0.1"/>
+			<topPen lineWidth="0.1"/>
+			<leftPen lineWidth="0.1"/>
+			<bottomPen lineWidth="0.1"/>
+			<rightPen lineWidth="0.1"/>
+		</box>
+	</style>	
 </jasperTemplate>
