@@ -35,7 +35,7 @@ public class RevenueReportGenerator extends AbstractReportGenerator {
 	/**
 	 * 
 	 */
-	private static final String JASPER_PATH = "PeriodicalRevenue.jasper"; //$NON-NLS-1$
+	private static final String JASPER_PATH = "RevenueTemplate.jasper"; //$NON-NLS-1$
 	
 	/**
 	 * 
