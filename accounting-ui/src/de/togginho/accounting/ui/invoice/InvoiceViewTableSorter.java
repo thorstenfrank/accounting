@@ -55,12 +55,16 @@ public class InvoiceViewTableSorter extends AbstractTableSorter<Invoice> {
 		switch (columnIndex) {
 		case InvoiceView.COL_INDEX_INVOICE_NUMBER:
 			result = i1.getNumber().compareTo(i2.getNumber());
+			break;
 		case InvoiceView.COL_INDEX_INVOICE_STATE:
 			result = i1.getState().compareTo(i2.getState());
+			break;
 		case InvoiceView.COL_INDEX_CLIENT:
 			result = compareClients(i1.getClient(), i2.getClient());
+			break;
 		case InvoiceView.COL_INDEX_DUE_DATE:
 			result = i1.getDueDate().compareTo(i2.getDueDate());
+			break;
 		default:
 			break;
 		}
