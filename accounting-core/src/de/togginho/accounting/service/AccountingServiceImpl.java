@@ -220,7 +220,9 @@ public class AccountingServiceImpl implements AccountingService {
 	public User saveCurrentUser(User user) {
 		LOG.debug("saveCurrentUser"); //$NON-NLS-1$
 		doStoreEntity(user);
-		BUSINESS_LOG.info("Saved user " + user.getName()); //$NON-NLS-1$
+		if (user != null) {
+			BUSINESS_LOG.info("Saved user " + user.getName()); //$NON-NLS-1$
+		}
 		return user;
 	}
 
