@@ -15,7 +15,9 @@
  */
 package de.togginho.accounting.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.togginho.accounting.util.CalculationUtil;
@@ -31,7 +33,7 @@ public class ExpenseCollection {
 	
 	private Price totalCost;
 	
-	private Price operatingCosts;
+	private Map<ExpenseType, Price> expensesByType;
 	
 	private Set<Expense> expenses;
 		
@@ -48,7 +50,7 @@ public class ExpenseCollection {
     public void setTimeFrame(TimeFrame timeFrame) {
     	this.timeFrame = timeFrame;
     }
-
+    
 	/**
 	 * @return the totalPrice
 	 */
@@ -57,12 +59,16 @@ public class ExpenseCollection {
 	}
 
 	/**
-	 * @return the operatingCosts
+	 * 
+	 * @param type
+	 * @return
 	 */
-	public Price getOperatingCosts() {
-		return operatingCosts;
-	}
-
+    public Price getCost(ExpenseType type) {
+    	final Price cost = expensesByType.get(type);
+    	
+    	return cost != null ? cost : new Price();
+    }
+	
 	/**
 	 * @return the expenses
 	 */
@@ -75,16 +81,18 @@ public class ExpenseCollection {
 	 */
 	public void setExpenses(Set<Expense> expenses) {
 		this.expenses = expenses;
-
 		totalCost = new Price();
-		operatingCosts = new Price();
-			
+		expensesByType = new HashMap<ExpenseType, Price>();
+		
 		for (Expense expense : expenses) {
 			final Price price = CalculationUtil.calculatePrice(expense);
 			totalCost.add(price);
-			if (ExpenseType.OPEX.equals(expense.getExpenseType())) {
-				operatingCosts.add(price);
+			
+			if (false == expensesByType.containsKey(expense.getExpenseType())) {
+				expensesByType.put(expense.getExpenseType(), new Price());
 			}
+			
+			expensesByType.get(expense.getExpenseType()).add(price);
 		}
 	}
 	

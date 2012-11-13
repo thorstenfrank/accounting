@@ -83,23 +83,39 @@ public class ExpenseCollectionTest extends BaseTestFixture {
 		opex2.setExpenseType(ExpenseType.OPEX);
 		opex2.setNetAmount(new BigDecimal("200"));
 		
+		Expense nullEx = new Expense();
+		nullEx.setNetAmount(new BigDecimal("0"));
+		
 		Set<Expense> expenses = new HashSet<Expense>();
 		expenses.add(capex);
 		expenses.add(opex1);
 		expenses.add(opex2);
+		expenses.add(nullEx);
 		
 		ExpenseCollection ec = new ExpenseCollection();
 		ec.setExpenses(expenses);
 		
 		Price total = ec.getTotalCost();
-		assertEquals(0, new BigDecimal("1300").compareTo(total.getNet()));
-		assertEquals(0, new BigDecimal("1465").compareTo(total.getGross()));
-		assertEquals(0, new BigDecimal("165").compareTo(total.getTax()));
 		
-		Price operating = ec.getOperatingCosts();
-		assertEquals(0, new BigDecimal("300").compareTo(operating.getNet()));
-		assertEquals(0, new BigDecimal("315").compareTo(operating.getGross()));
-		assertEquals(0, new BigDecimal("15").compareTo(operating.getTax()));
+		assertAreEqual(new BigDecimal("1300"), total.getNet());
+		assertAreEqual(new BigDecimal("1465"), total.getGross());
+		assertAreEqual(new BigDecimal("165"), total.getTax());
+		
+		Price operating = ec.getCost(ExpenseType.OPEX);
+		assertAreEqual(new BigDecimal("300"), operating.getNet());
+		assertAreEqual(new BigDecimal("315"), operating.getGross());
+		assertAreEqual(new BigDecimal("15"), operating.getTax());
+		
+		Price capital = ec.getCost(ExpenseType.CAPEX);
+		assertAreEqual(new BigDecimal("1000"), capital.getNet());
+		assertAreEqual(new BigDecimal("150"), capital.getTax());
+		assertAreEqual(new BigDecimal("1150"), capital.getGross());
+		
+		Price nullExp = ec.getCost(null);
+		assertNotNull(nullExp);
+		assertAreEqual(BigDecimal.ZERO, nullExp.getNet());
+		assertNull(nullExp.getTax());
+		assertAreEqual(BigDecimal.ZERO, nullExp.getGross());
 	}
 
 }

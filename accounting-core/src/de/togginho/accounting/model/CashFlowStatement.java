@@ -100,7 +100,7 @@ public class CashFlowStatement implements Serializable {
 	
 	public Price getOperatingCosts() {
 		if (expenses != null) {
-			return expenses.getOperatingCosts();
+			return expenses.getCost(ExpenseType.OPEX);
 		}
 		return new Price();
 	}
@@ -119,17 +119,26 @@ public class CashFlowStatement implements Serializable {
 		return taxSum;
 	}
 
+	/**
+	 * 
+	 */
 	private void calculateTotals() {
+		BigDecimal totalRevenue;
+		BigDecimal taxSum = BigDecimal.ZERO;
 		if (revenue != null && revenue.getRevenueNet() != null) {
-			if (expenses != null) {
-				if(expenses.getOperatingCosts() != null) {
-					grossProfit = revenue.getRevenueNet().subtract(expenses.getOperatingCosts().getNet());
-				}
-				
-				taxSum = revenue.getRevenueTax() != null ? revenue.getRevenueTax() : BigDecimal.ZERO;
-				if (expenses.getTotalCost().getTax() != null) {
-					taxSum = taxSum.subtract(expenses.getTotalCost().getTax());
-				}
+			totalRevenue = revenue.getRevenueNet();
+			taxSum = revenue.getRevenueTax() != null ? revenue.getRevenueTax() : BigDecimal.ZERO;
+		} else {
+			totalRevenue = BigDecimal.ZERO;
+		}
+		
+		if (expenses != null) {
+			Price opex = expenses.getCost(ExpenseType.OPEX);
+			if(opex != null) {
+				grossProfit = totalRevenue.subtract(opex.getNet());
+			}			
+			if (expenses.getTotalCost().getTax() != null) {
+				taxSum = taxSum.subtract(expenses.getTotalCost().getTax());
 			}
 		}
 	}

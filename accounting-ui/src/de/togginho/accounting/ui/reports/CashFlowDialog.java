@@ -340,6 +340,11 @@ public class CashFlowDialog extends AbstractReportDialog {
 		setCurrencyValue(outputTax, revenue.getTax());
 		setCurrencyValue(inputTax, totalExpenses.getTax());
 		setCurrencyValue(taxPayable, cashFlow.getTaxSum());
+//		
+//		if (BigDecimal.ZERO.compareTo(cashFlow.getGrossProfit()) > 0) {
+//			grossProfit.setEnabled(true);
+//			grossProfit.setForeground(getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+//		}
 	}
 
 	/**
