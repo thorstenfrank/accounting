@@ -226,15 +226,21 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		if (parent.getLayout() instanceof GridLayout) {
-			GridLayout layout = (GridLayout) parent.getLayout();
-			layout.makeColumnsEqualWidth = false;
-		}
 		final Button exportButton = createButton(parent, IDialogConstants.PROCEED_ID, Messages.labelExport, false);
 		exportButton.setImage(AccountingUI.getImageDescriptor(Messages.iconsExportToPdf).createImage());
 		
 		// the ID is OK, because IDialogConstants.CLOSE_ID won't cause the dialog to close - for whatever reason
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.CLOSE_LABEL, true);
+	}
+	
+	/**
+	 * The super() implementation for some reason cut the size of the button too small - hence the override.
+	 * {@inheritDoc}
+	 * @see Dialog#setButtonLayoutData(Button)
+	 */
+	@Override
+	protected void setButtonLayoutData(Button button) {
+		WidgetHelper.grabHorizontal(button);
 	}
 	
 	/**
