@@ -124,7 +124,7 @@ public class CashFlowStatement implements Serializable {
 	 */
 	private void calculateTotals() {
 		BigDecimal totalRevenue;
-		BigDecimal taxSum = BigDecimal.ZERO;
+		taxSum = BigDecimal.ZERO;
 		if (revenue != null && revenue.getRevenueNet() != null) {
 			totalRevenue = revenue.getRevenueNet();
 			taxSum = revenue.getRevenueTax() != null ? revenue.getRevenueTax() : BigDecimal.ZERO;
