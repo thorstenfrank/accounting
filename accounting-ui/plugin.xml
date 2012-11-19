@@ -494,6 +494,11 @@
                style="push">
          </command>
          <command
+               commandId="de.togginho.accounting.ui.expense.MultiEditExpenseCommand"
+               icon="icons/tag_blue_edit.png"
+               style="push">
+         </command>
+         <command
                commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand"
                icon="icons/page_copy.png"
                style="push">
@@ -686,18 +691,21 @@
       </command>
       <command
             categoryId="de.togginho.accounting.ui.expense"
-            defaultHandler="de.togginho.accounting.ui.expense.EditExpenseHandler"
             id="de.togginho.accounting.ui.expense.EditExpenseCommand"
             name="%command.editExpense.name">
       </command>
       <command
             categoryId="de.togginho.accounting.ui.expense"
-            defaultHandler="de.togginho.accounting.ui.expense.CopyExpenseHandler"
+            id="de.togginho.accounting.ui.expense.MultiEditExpenseCommand"
+            name="%command.editMultipleExpenses.name">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.expense"
             id="de.togginho.accounting.ui.expense.CopyExpenseCommand"
             name="%command.copyExpense.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.expense.DeleteExpenseHandler"
+            categoryId="de.togginho.accounting.ui.expense"
             id="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
             name="%command.deleteExpense.name">
       </command>
@@ -820,6 +828,34 @@
                   value="de.togginho.accounting.model.Client">
             </instanceof>
          </iterate>
+      </definition>
+      <definition
+            id="selectionIsSingleExpense">
+            <and>
+                <iterate
+                    ifEmpty="false">
+                    <instanceof
+                        value="de.togginho.accounting.ui.expense.ExpenseWrapper">
+                    </instanceof>
+                </iterate>
+                <count
+                      value="1">
+                </count>
+            </and>
+      </definition>
+      <definition
+            id="selectionIsMultipleExpenses">
+            <and>
+                <iterate
+                    ifEmpty="false">
+                    <instanceof
+                        value="de.togginho.accounting.ui.expense.ExpenseWrapper">
+                    </instanceof>
+                </iterate>
+                <count
+                      value="(1-">
+                </count>
+            </and>
       </definition>
    </extension>
    <extension
@@ -991,6 +1027,42 @@
                     property="de.togginho.accounting.ui.invoice.canBeCancelled">
               </test>
            </iterate>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.expense.EditExpenseHandler"
+            commandId="de.togginho.accounting.ui.expense.EditExpenseCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsSingleExpense">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.expense.CopyExpenseHandler"
+            commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsSingleExpense">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.expense.DeleteExpenseHandler"
+            commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsSingleExpense">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.togginho.accounting.ui.expense.MultiEditExpensesHandler"
+            commandId="de.togginho.accounting.ui.expense.MultiEditExpenseCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsMultipleExpenses">
+            </reference>
          </enabledWhen>
       </handler>
    </extension>

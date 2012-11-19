@@ -72,7 +72,7 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		TableColumnLayout tcl = new TableColumnLayout();
 		tableComposite.setLayout(tcl);
 		
-		tableViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
+		tableViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION | SWT.MULTI);
 		getSite().setSelectionProvider(tableViewer);
 		
 		sorter = new ExpenseTableSorter();
