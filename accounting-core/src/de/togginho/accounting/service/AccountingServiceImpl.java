@@ -830,6 +830,26 @@ public class AccountingServiceImpl implements AccountingService {
     
     /**
      * 
+     * {@inheritDoc}
+     * @see AccountingService#findExpenseCategories()
+     */
+    @Override
+    public List<String> findExpenseCategories() {
+    	List<String> categories = new ArrayList<String>();
+    	
+    	for (Expense expense : getExpensesAsSet(null)) {
+    		if (expense.getCategory() != null && !categories.contains(expense.getCategory())) {
+    			categories.add(expense.getCategory());
+    		}
+    	}
+    	
+    	Collections.sort(categories);
+    	
+    	return categories;
+    }
+    
+    /**
+     * 
      * @param timeFrame
      * @return
      */

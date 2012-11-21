@@ -87,6 +87,8 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		INVOICE1.setClient(getTestClient());
 		service.saveInvoice(INVOICE1);
 		
+		service.saveClient(getTestClient());
+		
 		// for some reason, this causes strange behavior sometimes... just leave the container open for the
 		// duration of the tests...
 		//service.shutDown();
@@ -190,24 +192,48 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	}
 	
 	/**
-	 * 
+	 * Test for {@link Client} handling.
+	 *  
+	 * @see AccountingService#saveClient(Client)
+	 * @see AccountingService#getClients()
+	 * @see AccountingService#deleteClient(Client)
 	 */
 	@Test
-	public void testSavingClient() {
+	public void testClient() {
+		// make sure the setup was ok - the default test client should be in the DB
+		Set<Client> clients = serviceUnderTest.getClients();
+		assertNotNull(clients);
+		assertEquals(1, clients.size());
+		assertEquals(getTestClient(), clients.iterator().next());
+		
+		// save another client
 		Client client = new Client();
 		client.setName("The Client");
-		
 		serviceUnderTest.saveClient(client);
+		clients = serviceUnderTest.getClients();
+		assertEquals(2, clients.size());
+		for (Client saved : clients) {
+			if (!getTestClient().equals(saved)) {
+				assertEquals(client, saved);
+			}
+		}
 		
+		// check Unique name constraint
 		Client another = new Client();
 		another.setName(client.getName());
-		
 		try {
 			serviceUnderTest.saveClient(another);
 			fail("Should have caught exception because of unique key violation");
 		} catch (AccountingException e) {
 			// this is what we want
 		}
+		
+		// check delete...
+		serviceUnderTest.deleteClient(client);
+		clients = serviceUnderTest.getClients();
+		assertNotNull(clients);
+		assertEquals(1, clients.size());
+		assertEquals(getTestClient(), clients.iterator().next());
 	}
 	
 	/**
@@ -399,6 +425,42 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(0, ec.getExpenses().size());
+	}
+	
+	/**
+	 * Test for {@link AccountingService#findExpenseCategories()}.
+	 */
+	@Test
+	public void testFindExpenseCategories() {
+		final String cat1 = "Category1";
+		final String cat2 = "Category2";
+		
+		Expense expense = new Expense();
+		expense.setDescription("Desc1");
+		expense.setCategory(cat2);
+		serviceUnderTest.saveExpense(expense);
+		
+		expense = new Expense();
+		expense.setDescription("Desc2");
+		expense.setCategory(cat2);
+		serviceUnderTest.saveExpense(expense);
+		
+		expense = new Expense();
+		expense.setDescription("Desc3");
+		expense.setCategory(cat1);
+		serviceUnderTest.saveExpense(expense);
+
+		expense = new Expense();
+		expense.setDescription("Desc4");
+		expense.setCategory(null);
+		serviceUnderTest.saveExpense(expense);
+		
+		List<String> categories = serviceUnderTest.findExpenseCategories();
+		assertNotNull(categories);
+		assertEquals(2, categories.size());
+		// check if sorting was done properly
+		assertEquals(cat1, categories.get(0));
+		assertEquals(cat2, categories.get(1));
 	}
 	
 	/**

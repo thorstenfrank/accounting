@@ -318,6 +318,14 @@ public interface AccountingService {
 	ExpenseCollection findExpenses(TimeFrame timeFrame, ExpenseType...types);
 	
 	/**
+	 * Returns a distinct list of all categories of {@link Expense} objects currently stored in the database.
+	 * The list is sorted alphabetically.
+	 *   
+	 * @return a list of category strings
+	 */
+	List<String> findExpenseCategories();
+	
+	/**
 	 * Permanently remove the supplied {@link Expense} from persistence.
 	 * 
 	 * @param expense the {@link Expense} to delete
