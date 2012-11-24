@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -83,6 +84,7 @@ public interface AccountingService {
 	 * 
 	 * @return the saved instance - clients should use this for any further work 
 	 */
+	@ModelChanging
 	User saveCurrentUser(User user);
 	
 	/**
@@ -101,6 +103,7 @@ public interface AccountingService {
 	 * 
 	 * @return the saved instance - clients should use this for any further work
 	 */
+	@ModelChanging
 	Client saveClient(Client client);
 	
 	/**
@@ -110,6 +113,7 @@ public interface AccountingService {
 	 * 
 	 * @param client the {@link Client} instance to delete
 	 */
+	@ModelChanging
 	void deleteClient(Client client);
 	
 	/**
@@ -154,6 +158,7 @@ public interface AccountingService {
 	 * @see #sendInvoice(Invoice)
 	 * @see #markAsPaid(Invoice, Date)
 	 */
+	@ModelChanging
 	Invoice saveInvoice(Invoice invoice);
 	
 	/**
@@ -169,6 +174,7 @@ public interface AccountingService {
 	 * @see InvoiceState#CANCELLED
 	 * @see Invoice#getDueDate() 
 	 */
+	@ModelChanging
 	Invoice sendInvoice(Invoice invoice, Date sentDate);
 	
 	/**
@@ -185,6 +191,7 @@ public interface AccountingService {
 	 * @see Invoice#getPaymentDate()
 	 * @see Invoice#canBePaid()
 	 */
+	@ModelChanging
 	Invoice markAsPaid(Invoice invoice, Date paymentDate);
 	
 	/**
@@ -203,6 +210,7 @@ public interface AccountingService {
 	 * @return the cancelled and saved invoice
 	 * @see Invoice#canBeCancelled()
 	 */
+	@ModelChanging
 	Invoice cancelInvoice(Invoice invoice);
 	
 	/**
@@ -215,6 +223,7 @@ public interface AccountingService {
 	 * @param invoice the {@link Invoice} to delete
 	 * @throws AccountingException if the invoice cannot be deleted or if an error occurred during deletion
 	 */
+	@ModelChanging
 	void deleteInvoice(Invoice invoice);
 	
 	/**
@@ -303,7 +312,18 @@ public interface AccountingService {
 	 * 
 	 * @return the saved instance - this should be used by clients for any further work
 	 */
+	@ModelChanging
 	Expense saveExpense(Expense expense);
+	
+	/**
+	 * Saves a collection of expenses.
+	 * 
+	 * @param expenses the expenses to save
+	 * 
+	 * @return the saved instances
+	 */
+	@ModelChanging
+	Collection<Expense> saveExpenses(Collection<Expense> expenses);
 	
 	/**
 	 * Returns a {@link Set} of {@link Expense}s that were paid for within the supplied {@link TimeFrame}.
@@ -330,6 +350,7 @@ public interface AccountingService {
 	 * 
 	 * @param expense the {@link Expense} to delete
 	 */
+	@ModelChanging
 	void deleteExpense(Expense expense);
 	
 	/**
@@ -363,5 +384,6 @@ public interface AccountingService {
 	 * 
 	 * @see #exportModelToXml(String)
 	 */
+	@ModelChanging
 	AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation);
 }

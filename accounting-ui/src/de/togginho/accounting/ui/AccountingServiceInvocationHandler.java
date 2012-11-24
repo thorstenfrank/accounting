@@ -27,6 +27,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
+import de.togginho.accounting.ModelChanging;
 
 /**
  * @author tfrank1
@@ -35,22 +36,6 @@ import de.togginho.accounting.AccountingService;
 final class AccountingServiceInvocationHandler implements InvocationHandler {
 
 	private static final Logger LOG = Logger.getLogger(AccountingServiceInvocationHandler.class);
-	
-	private static final Set<String> MODEL_CHANGING_METHODS = new HashSet<String>();
-
-	static {
-		MODEL_CHANGING_METHODS.add("saveCurrentUser"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("saveClient"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("deleteClient"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("saveInvoice"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("sendInvoice"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("markAsPaid"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("cancelInvoice"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("deleteInvoice"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("importModelFromXml"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("saveExpense"); //$NON-NLS-1$
-		MODEL_CHANGING_METHODS.add("deleteExpense"); //$NON-NLS-1$
-	}
 	
 	/** */
 	private Set<ModelChangeListener> modelChangeListeners; 
@@ -93,7 +78,8 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 		
 		try {
 			Object result = method.invoke(getService(), args);
-			if (MODEL_CHANGING_METHODS.contains(method.getName())) {
+			ModelChanging modelChanging = method.getAnnotation(ModelChanging.class);
+			if (modelChanging != null) {
 				LOG.debug("Broadcasting model changes to registered listeners"); //$NON-NLS-1$
 				for (ModelChangeListener listener : modelChangeListeners) {
 					listener.modelChanged();

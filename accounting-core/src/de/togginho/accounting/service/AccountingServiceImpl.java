@@ -18,6 +18,7 @@ package de.togginho.accounting.service;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -812,10 +813,23 @@ public class AccountingServiceImpl implements AccountingService {
     @Override
     public Expense saveExpense(Expense expense) {
     	doStoreEntity(expense);
-    	BUSINESS_LOG.info(String.format("Saving expense [%s]", expense.getDescription())); //$NON-NLS-1$
+    	BUSINESS_LOG.info(String.format("Saved expense [%s]", expense.getDescription())); //$NON-NLS-1$
 	    return expense;
     }
-    
+        
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.AccountingService#saveExpenses(java.util.Collection)
+     */
+    @Override
+    public Collection<Expense> saveExpenses(Collection<Expense> expenses) {
+    	doStoreEntities(expenses);
+    	for (Expense expense : expenses) {
+    		BUSINESS_LOG.info(String.format("Saved expense [%s]", expense.getDescription())); //$NON-NLS-1$
+    	}
+	    return expenses;
+    }
+
 	/**
      * {@inheritDoc}.
      * @see AccountingService#findExpenses(TimeFrame, ExpenseType...)
@@ -972,6 +986,27 @@ public class AccountingServiceImpl implements AccountingService {
 	 * @throws Db4oException
 	 */
 	private void doStoreEntity(Object entity) {
+		doStoreEntityWithoutCommit(entity);
+		objectContainer.commit();
+	}
+
+	/**
+	 * 
+	 * @param entities
+	 */
+	private void doStoreEntities(Collection<? extends Object> entities) {
+		for (Object entity : entities) {
+			doStoreEntityWithoutCommit(entity);
+		}
+		
+		objectContainer.commit();
+	}
+	
+	/**
+	 * 
+	 * @param entity
+	 */
+	private void doStoreEntityWithoutCommit(Object entity) {
 		if (entity == null) {
 			LOG.warn("Call to doStoreEntity with param [null]!"); //$NON-NLS-1$
 			return;
@@ -979,7 +1014,6 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		try {
 			objectContainer.store(entity);
-			objectContainer.commit();
 		} catch (DatabaseClosedException e) {
 			throwDbClosedException(e);
 		} catch (DatabaseReadOnlyException e) {
@@ -990,9 +1024,9 @@ public class AccountingServiceImpl implements AccountingService {
 			LOG.error("Error while trying so store entity: " + entity, e); //$NON-NLS-1$
 			objectContainer.rollback();
 			throw e;
-		}
+		}		
 	}
-
+	
 	/**
 	 * 
 	 * @param entity
