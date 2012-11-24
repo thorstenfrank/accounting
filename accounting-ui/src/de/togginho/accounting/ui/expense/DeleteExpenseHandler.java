@@ -43,12 +43,11 @@ public class DeleteExpenseHandler extends AbstractExpenseHandler {
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		Expense expense = getExpenseFromSelection(event);
 		
-		final boolean areYouSure =  showWarningMessage(
+		if (showWarningMessage(
 				event, 
 				Messages.bind(Messages.DeleteExpenseCommand_confirmMessage, expense.getDescription()), 
-				Messages.DeleteExpenseCommand_confirmText);
-				
-		if (areYouSure) {
+				Messages.DeleteExpenseCommand_confirmText,
+				true)) {
 			getLogger().info("Deleting expense " + expense.getDescription()); //$NON-NLS-1$
 			
 			// do the actual work

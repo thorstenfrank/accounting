@@ -102,12 +102,11 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 	 * @param event
 	 */
 	protected void deleteInvoice(Invoice invoice, ExecutionEvent event) {
-		final boolean areYouSure =  showWarningMessage(
+		if (showWarningMessage(
 				event, 
 				Messages.bind(Messages.DeleteInvoiceCommand_confirmMessage, invoice.getNumber()), 
-				Messages.DeleteInvoiceCommand_confirmText);
-				
-		if (areYouSure) {
+				Messages.DeleteInvoiceCommand_confirmText,
+				true)) {
 			getLogger().info("Deleting invoice " + invoice.getNumber()); //$NON-NLS-1$
 			
 			// do the actual work
@@ -126,12 +125,11 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 	 * @param event
 	 */
 	protected void cancelInvoice(Invoice invoice, ExecutionEvent event) {
-		final boolean areYouSure = showWarningMessage(
+		if (showWarningMessage(
 				event, 
 				Messages.bind(Messages.CancelInvoiceCommand_confirmMessage, invoice.getNumber()), 
-				Messages.CancelInvoiceCommand_confirmText);
-		
-		if (areYouSure) {
+				Messages.CancelInvoiceCommand_confirmText,
+				false)) {
 			getLogger().info("Cancelling invoice " + invoice.getNumber()); //$NON-NLS-1$
 			// do the actual work
 			AccountingUI.getAccountingService().cancelInvoice(invoice);

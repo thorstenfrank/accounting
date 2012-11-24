@@ -110,13 +110,21 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 	/**
 	 * 
 	 * @param event
+	 * @param message
+	 * @param title
+	 * @param includeCancelButton
 	 * @return
 	 */
-	protected boolean showWarningMessage(ExecutionEvent event, final String message, final String text) {
+	protected boolean showWarningMessage(
+			ExecutionEvent event, final String message, final String title, boolean includeCancelButton) {
+		int style = SWT.ICON_WARNING | SWT.OK;
+		if (includeCancelButton) {
+			style = style | SWT.CANCEL;
+		}
 		MessageBox msgBox = new MessageBox(
-				getShell(event), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+				getShell(event), style);
 		msgBox.setMessage(message);
-		msgBox.setText(text);
+		msgBox.setText(title);
 		
 		return (msgBox.open() == SWT.OK);
 	}
