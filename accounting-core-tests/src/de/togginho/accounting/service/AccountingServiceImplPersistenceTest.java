@@ -148,13 +148,18 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testSaveAndDeleteInvoice() {
-		Invoice saved = serviceUnderTest.saveInvoice(
-				serviceUnderTest.createNewInvoice(serviceUnderTest.getNextInvoiceNumber(), getTestClient()));
 		
-		assertEquals(InvoiceState.CREATED, saved.getState());
+		Invoice invoice = serviceUnderTest.saveInvoice(
+				serviceUnderTest.createNewInvoice(serviceUnderTest.getNextInvoiceNumber(), getTestClient()));
+		assertEquals(InvoiceState.CREATED, invoice.getState());
+		
+		Invoice saved = serviceUnderTest.getInvoice(invoice.getNumber());
+		assertNotNull(saved);
 		
 		// delete the invoice again to make sure other tests can continue working 
 		serviceUnderTest.deleteInvoice(saved);
+		
+		assertNull(serviceUnderTest.getInvoice(invoice.getNumber()));
 	}
 	
 	/**
@@ -209,7 +214,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		// save another client
 		Client client = new Client();
 		client.setName("The Client");
-		serviceUnderTest.saveClient(client);
+		client = serviceUnderTest.saveClient(client);
 		clients = serviceUnderTest.getClients();
 		assertEquals(2, clients.size());
 		for (Client saved : clients) {
@@ -391,21 +396,30 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		e1.setNetAmount(new BigDecimal("125"));
 		e1.setPaymentDate(buildDate(1, 0, 2012));
 		
-		serviceUnderTest.saveExpense(e1);
-		
-		ec = serviceUnderTest.findExpenses(null);
-		assertEquals(1, ec.getExpenses().size());
-		
 		Expense e2 = new Expense();
 		e2.setDescription("Expense 2");
 		e2.setExpenseType(ExpenseType.OPEX);
 		e2.setNetAmount(new BigDecimal("200"));
 		e2.setPaymentDate(buildDate(31, 0, 2012));
 		
-		serviceUnderTest.saveExpense(e2);
+		List<Expense> expenses = new ArrayList<Expense>();
+		expenses.add(e1);
+		expenses.add(e2);
+		
+		serviceUnderTest.saveExpenses(expenses);
 		
 		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(2, ec.getExpenses().size());
+		
+		Expense e3 = new Expense();
+		e3.setDescription("Expense 3");
+		e3.setExpenseType(ExpenseType.CAPEX);
+		e3.setNetAmount(new BigDecimal("300"));
+		e3.setPaymentDate(buildDate(31, 1, 2012));		
+		serviceUnderTest.saveExpense(e3);
+
+		ec = serviceUnderTest.findExpenses(null);
+		assertEquals(3, ec.getExpenses().size());
 		
 		ec = serviceUnderTest.findExpenses(new TimeFrame(buildDate(1, 0, 2012), buildDate(30, 0, 2012)));
 		assertEquals(1, ec.getExpenses().size());
@@ -419,9 +433,10 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		serviceUnderTest.deleteExpense(fromService);
 		
 		ec = serviceUnderTest.findExpenses(null);
-		assertEquals(1, ec.getExpenses().size());
+		assertEquals(2, ec.getExpenses().size());
 		
-		serviceUnderTest.deleteExpense(ec.getExpenses().iterator().next());
+		serviceUnderTest.deleteExpense(e2);
+		serviceUnderTest.deleteExpense(e3);
 		
 		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(0, ec.getExpenses().size());

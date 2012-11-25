@@ -286,6 +286,7 @@ public class AccountingServiceImpl implements AccountingService {
 			BUSINESS_LOG.info("Saved client: " + client.getName()); //$NON-NLS-1$
 		} catch (UniqueFieldValueConstraintViolationException e) {
 			LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
+			objectContainer.rollback();
 			throw new AccountingException(Messages.AccountingService_errorClientExists);
 		}
 		
@@ -299,6 +300,7 @@ public class AccountingServiceImpl implements AccountingService {
 	@Override
 	public void deleteClient(Client client) {
 		// TODO make sure a client can only be deleted when there are no invoices left...
+		LOG.info(String.format("Deleting client [%s]", client.getName()));
 		doDeleteEntity(client);
 		BUSINESS_LOG.info("Deleted client: " + client.getName()); //$NON-NLS-1$
 	}
