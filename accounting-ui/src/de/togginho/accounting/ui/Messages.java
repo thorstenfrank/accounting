@@ -138,6 +138,12 @@ public class Messages extends NLS {
 	public static String MarkInvoiceAsPaidCommand_paymentDateLabel;
 	public static String MarkInvoiceAsPaidCommand_title;
 	
+	public static String MultiEditExpensesHandler_title;
+	public static String MultiEditExpensesHandler_message;
+	public static String MultiEditExpensesHandler_apply;
+	public static String MultiEditExpensesHandler_errorNoChanges;
+	public static String MultiEditExpensesHandler_errorNoExpensesSelected;
+	
 	public static String NewClientWizard_windowTitle;
 	public static String NewClientWizard_unknownErrorMsg;
 	public static String NewClientWizard_errorSavingTitle;
