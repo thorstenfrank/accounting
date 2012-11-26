@@ -112,7 +112,6 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		// TYPE
 		callback.createLabel(parent, Messages.labelExpenseType);
 		ComboViewer expenseTypeCombo = new ComboViewer(parent, SWT.READ_ONLY);
-		expenseTypeCombo.add(StructuredSelection.EMPTY);
 		expenseTypeCombo.setData(KEY_WIDGET_DATA, Expense.FIELD_TYPE);
 		WidgetHelper.grabHorizontal(expenseTypeCombo.getCombo());
 		expenseTypeCombo.setContentProvider(new CollectionContentProvider(true));

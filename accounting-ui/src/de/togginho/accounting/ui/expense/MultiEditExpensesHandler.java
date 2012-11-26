@@ -27,15 +27,10 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -44,6 +39,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -55,7 +51,6 @@ import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.util.CollectionContentProvider;
 import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.FormatUtil;
 
@@ -109,24 +104,22 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 				
 				// TYPE
 				WidgetHelper.createLabel(editingFields, Messages.labelExpenseType);
-				final ComboViewer type = new ComboViewer(editingFields, SWT.READ_ONLY | SWT.DROP_DOWN);
-				WidgetHelper.grabHorizontal(type.getCombo());
-				type.setContentProvider(new CollectionContentProvider(true));
-				type.setInput(ExpenseType.values());
-				type.setLabelProvider(new LabelProvider() {
-					@Override
-					public String getText(Object element) {
-						if (element instanceof ExpenseType) {
-							return ((ExpenseType) element).getTranslatedString();
-						}
-						return Constants.HYPHEN;
+				final Combo typeCombo = new Combo(editingFields, SWT.READ_ONLY | SWT.DROP_DOWN);
+				WidgetHelper.grabHorizontal(typeCombo);
+				final ExpenseType[] allTypes = new ExpenseType[ExpenseType.values().length + 1];
+				allTypes[0] = null;
+				int selected = 0;
+				int index = 1;
+				typeCombo.add(Constants.HYPHEN);
+				for (ExpenseType type : ExpenseType.values()) {
+					typeCombo.add(type.getTranslatedString());
+					allTypes[index] = type;
+					if (defaultType == type) {
+						selected = index;
 					}
-				});
-				if (defaultType != null) {
-					type.setSelection(new StructuredSelection(defaultType));
-				} else {
-					type.setSelection(StructuredSelection.EMPTY);
+					index++;
 				}
+				typeCombo.select(selected);
 				
 				final Button changeType = new Button(editingFields, SWT.CHECK);
 				changeType.addSelectionListener(new SelectionAdapter() {
@@ -138,15 +131,11 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 					}
 				});
 				
-				type.addSelectionChangedListener(new ISelectionChangedListener() {
+				typeCombo.addSelectionListener(new SelectionAdapter() {
 					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
+					public void widgetSelected(SelectionEvent e) {
 						applyNewType = true;
-						if (event.getSelection().equals(StructuredSelection.EMPTY)) {
-							defaultType = null;
-						} else {
-							defaultType = (ExpenseType)((StructuredSelection)event.getSelection()).getFirstElement();
-						}
+						defaultType = allTypes[typeCombo.getSelectionIndex()];
 						changeType.setSelection(true);
 					}
 				});
@@ -158,7 +147,7 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 				changeDescription.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						if (changeType.getSelection()) {
+						if (changeDescription.getSelection()) {
 							setErrorMessage(null);
 						}
 					}
