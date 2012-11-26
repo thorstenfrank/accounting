@@ -37,6 +37,7 @@ import com.db4o.config.Configuration;
 import com.db4o.config.ObjectClass;
 import com.db4o.config.ObjectField;
 import com.db4o.constraints.UniqueFieldValueConstraint;
+import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.ext.Db4oIOException;
@@ -210,6 +211,27 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		// call save twice, to test both exceptions
 		saveUserWithException();
 		saveUserWithException();
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void testClientExceptionHandling() {
+		serviceUnderTest.init(getTestContext());
+		
+		ocMock.store(getTestClient());
+		ocMock.commit();
+		expectLastCall().andThrow(new UniqueFieldValueConstraintViolationException(Client.class.getName(), "name"));
+		ocMock.rollback();
+		
+		setupMockForEntitySaveWithExceptions(getTestClient());
+		
+		replay(ocMock);
+		
+		saveClientWithException();
+		saveClientWithException();
+		saveClientWithException();
 	}
 	
 	/**
@@ -613,6 +635,19 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	/**
 	 * 
 	 */
+	private void saveClientWithException() {
+		try {
+			serviceUnderTest.saveClient(getTestClient());
+		} catch (AccountingException e) {
+			// this is what we want
+		} catch (Exception e) {
+			fail("Unexpected exception: " + e.toString());
+		}
+	}
+	
+	/**
+	 * 
+	 */
 	private void saveInvoiceWithException(Invoice invoice) {
 		try {
 			serviceUnderTest.saveInvoice(invoice);
@@ -625,14 +660,18 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	}
 	
 	/**
+	 * Sets up mock calls to {@link ObjectContainer#store(Object)} twice, once throwing {@link DatabaseClosedException} 
+	 * and once {@link DatabaseReadOnlyException}. Both of these exceptions should not cause a rollback, as nothing was
+	 * written to the DB anyway.
 	 * 
-	 * @param entity
+	 * @param entity the entity that {@link ObjectContainer#store(Object)} is expected to be called with
 	 */
 	private void setupMockForEntitySaveWithExceptions(Object entity) {
 		// throw DB closed exception
 		ocMock.store(entity);
 		expectLastCall().andThrow(new DatabaseClosedException());
 		
+		// throw DB read-only exception
 		ocMock.store(entity);
 		expectLastCall().andThrow(new DatabaseReadOnlyException());
 	}

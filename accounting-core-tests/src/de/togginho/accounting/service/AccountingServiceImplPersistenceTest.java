@@ -229,6 +229,10 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		try {
 			serviceUnderTest.saveClient(another);
 			fail("Should have caught exception because of unique key violation");
+			
+			// make sure the client wasn't saved
+			clients = serviceUnderTest.getClients();
+			assertEquals(2, clients.size());
 		} catch (AccountingException e) {
 			// this is what we want
 		}

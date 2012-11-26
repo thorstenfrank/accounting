@@ -286,7 +286,6 @@ public class AccountingServiceImpl implements AccountingService {
 			BUSINESS_LOG.info("Saved client: " + client.getName()); //$NON-NLS-1$
 		} catch (UniqueFieldValueConstraintViolationException e) {
 			LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
-			objectContainer.rollback();
 			throw new AccountingException(Messages.AccountingService_errorClientExists);
 		}
 		
@@ -993,34 +992,9 @@ public class AccountingServiceImpl implements AccountingService {
 			return;
 		}
 		
-		doStoreEntityWithoutCommit(entity);
-		objectContainer.commit();
-	}
-
-	/**
-	 * 
-	 * @param entities
-	 */
-	private void doStoreEntities(Collection<? extends Object> entities) {
-		for (Object entity : entities) {
-			doStoreEntityWithoutCommit(entity);
-		}
-		
-		objectContainer.commit();
-	}
-	
-	/**
-	 * 
-	 * @param entity
-	 */
-	private void doStoreEntityWithoutCommit(Object entity) {
-		if (entity == null) {
-			LOG.warn("Call to doStoreEntityWithoutCommit with param [null]!"); //$NON-NLS-1$
-			return;
-		}
-		
 		try {
 			objectContainer.store(entity);
+			objectContainer.commit();
 		} catch (DatabaseClosedException e) {
 			throwDbClosedException(e);
 		} catch (DatabaseReadOnlyException e) {
@@ -1028,10 +1002,44 @@ public class AccountingServiceImpl implements AccountingService {
 		} catch(Db4oIOException e) {
 			throwDb4oIoException(e);
 		} catch (Db4oException e) {
-			LOG.error("Error while trying so store entity: " + entity, e); //$NON-NLS-1$
+			LOG.error("Error while trying to store entity: " + entity, e); //$NON-NLS-1$
 			objectContainer.rollback();
-			throw e;
-		}		
+			if (e instanceof UniqueFieldValueConstraintViolationException) {
+				throw e;
+			}
+			throw new AccountingException("Unknown exception: " + e.toString(), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param entities
+	 */
+	private void doStoreEntities(Collection<? extends Object> entities) {
+		try {
+			for (Object entity : entities) {
+				if (entity != null) {
+					objectContainer.store(entity);
+				}
+			}
+			objectContainer.commit();
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		} catch (DatabaseReadOnlyException e) {
+			throwDbReadOnlyException(e);
+		} catch(Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (Db4oException e) {
+			LOG.error("Error while trying to store multiple entities", e); //$NON-NLS-1$
+			objectContainer.rollback();
+			if (e instanceof UniqueFieldValueConstraintViolationException) {
+				throw e;
+			}
+			throw new AccountingException("Unknown exception: " + e.toString(), e);
+		}
+		
+
+		
 	}
 	
 	/**
@@ -1057,7 +1065,7 @@ public class AccountingServiceImpl implements AccountingService {
 			throwDbReadOnlyException(e);
 		} catch (Db4oException e) {
 			LOG.error("Error while deleting entity: " + entity, e); //$NON-NLS-1$
-			objectContainer.rollback();
+			objectContainer.rollback();			
 			throw e;
 		}
 	}
