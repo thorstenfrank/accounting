@@ -988,6 +988,11 @@ public class AccountingServiceImpl implements AccountingService {
 	 * @throws Db4oException
 	 */
 	private void doStoreEntity(Object entity) {
+		if (entity == null) {
+			LOG.warn("Call to doStoreEntity with param [null]!"); //$NON-NLS-1$
+			return;
+		}
+		
 		doStoreEntityWithoutCommit(entity);
 		objectContainer.commit();
 	}
@@ -1010,7 +1015,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	private void doStoreEntityWithoutCommit(Object entity) {
 		if (entity == null) {
-			LOG.warn("Call to doStoreEntity with param [null]!"); //$NON-NLS-1$
+			LOG.warn("Call to doStoreEntityWithoutCommit with param [null]!"); //$NON-NLS-1$
 			return;
 		}
 		
