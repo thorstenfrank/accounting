@@ -544,6 +544,10 @@
                icon="icons/money_delete.png"
                style="pulldown">
          </command>
+         <command
+               commandId="de.togginho.accounting.ExportIncomeStatementCommand"
+               style="pulldown">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -740,6 +744,11 @@
             defaultHandler="de.togginho.accounting.ui.reports.OpenCashFlowDialogCommand"
             id="de.togginho.accounting.reports.OpenProfitDialogCommand"
             name="%command.cashFlow.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.reports.ExportIncomeStatementHandler"
+            id="de.togginho.accounting.ExportIncomeStatementCommand"
+            name="Income Statement">
       </command>
    </extension>
    <extension

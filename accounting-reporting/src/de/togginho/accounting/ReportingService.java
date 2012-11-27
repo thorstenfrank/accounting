@@ -57,4 +57,6 @@ public interface ReportingService {
 	 * @param monitor
 	 */
 	void generateCashFlowToPdf(CashFlowStatement cashFlow, String fileLocation, ReportGenerationMonitor monitor);
+	
+	void generateIncomeStatementToPdf(String fileLocation, ReportGenerationMonitor monitor);
 }
