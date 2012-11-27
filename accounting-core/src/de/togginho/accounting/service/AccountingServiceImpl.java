@@ -285,7 +285,16 @@ public class AccountingServiceImpl implements AccountingService {
 			doStoreEntity(client);
 			BUSINESS_LOG.info("Saved client: " + client.getName()); //$NON-NLS-1$
 		} catch (UniqueFieldValueConstraintViolationException e) {
-			LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
+			if (e.getMessage().endsWith(Client.FIELD_NAME)) {
+				LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
+				throw new AccountingException(
+						Messages.bind(Messages.AccountingService_errorClientNameExists, client.getName()));
+			} else if (e.getMessage().endsWith(Client.FIELD_CLIENT_NUMBER)) {
+				LOG.error("A client with this number already exists: " + client.getClientNumber()); //$NON-NLS-1$
+				throw new AccountingException(
+						Messages.bind(Messages.AccountingService_errorClientNumberExists, client.getClientNumber()));
+			}
+			LOG.error(String.format("Client [%s], number: [%s] already exists!", client.getName(), client.getClientNumber()), e); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorClientExists);
 		}
 		

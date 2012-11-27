@@ -54,6 +54,8 @@ public class Messages extends NLS {
 	public static String AccountingService_errorMissingClient;
 	public static String AccountingService_errorInvoiceNumberExists;
 	public static String AccountingService_errorClientExists;
+	public static String AccountingService_errorClientNameExists;
+	public static String AccountingService_errorClientNumberExists;
 	
 	public static String ModelMapper_errorDuringExport;
 	public static String ModelMapper_errorDuringImport;
