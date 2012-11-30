@@ -40,6 +40,8 @@ public class IncomeStatementDataSource extends AbstractReportDataSource {
 		fieldMap.put("opex.title", "Betriebsausgaben");
 		fieldMap.put("otherExpenses.title", "Sonstige Ausgaben");
 		fieldMap.put("ebitda.title", "EBITDA");
+		fieldMap.put("ebit.title", "EBIT");
+		fieldMap.put("depreciation.title", "Abschreibungen");
 	}
 
 }

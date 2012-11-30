@@ -83,4 +83,20 @@ public class IncomeStatementWrapper implements Serializable {
 	public String getEBITDAgross() {
 		return "€ 95.200";
 	}
+	
+	public String getDepreciationTotal() {
+		return "€ 1.937,48";
+	}
+	
+	public String getEBITnet() {
+		return "€ 78.062,52";
+	}
+	
+	public String getEBITtax() {
+		return getEBITDAtax();
+	}
+	
+	public String getEBITgross() {
+		return "€ 93.262,52";
+	}
 }
