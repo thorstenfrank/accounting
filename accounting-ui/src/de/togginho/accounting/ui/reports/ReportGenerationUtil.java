@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.ui.reports;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
@@ -90,7 +91,7 @@ public class ReportGenerationUtil {
 		
 		targetFileName = fd.open();
 		
-		if (targetFileName != null) {
+		if (targetFileName != null && confirmOverwrite(shell, targetFileName)) {
 			try {
 				LOG.info("Starting PDF generation to file " + targetFileName); //$NON-NLS-1$
 				ProgressMonitor generation = new ProgressMonitor();
@@ -108,6 +109,23 @@ public class ReportGenerationUtil {
 		} else {
 			LOG.debug("PDF export was cancelled"); //$NON-NLS-1$
 		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean confirmOverwrite(Shell shell, String fileName) {
+		File file = new File(fileName);
+		
+		if (file.exists()) {
+			LOG.warn(String.format("File [%s] exists. Getting confirmation to overwrite", fileName)); //$NON-NLS-1$
+			MessageBox msgBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+			msgBox.setMessage(Messages.bind(Messages.ReportGenerationUtil_confirmOverwriteMsg, targetFileName));
+			return msgBox.open() == SWT.OK;
+		}
+		
+		return true;
 	}
 	
 	/**

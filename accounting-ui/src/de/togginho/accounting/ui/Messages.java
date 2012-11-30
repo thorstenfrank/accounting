@@ -165,6 +165,7 @@ public class Messages extends NLS {
 	public static String ReportGenerationUtil_labelPdfFiles;
 	public static String ReportGenerationUtil_successMsg;
 	public static String ReportGenerationUtil_successText;
+	public static String ReportGenerationUtil_confirmOverwriteMsg;
 	
 	public static String RevenueByYearDialog_title;
 	public static String RevenueByYearDialog_details;
