@@ -22,27 +22,27 @@
 	<pageHeader>
 		<band height="58" splitType="Stretch">
 			<textField>
-				<reportElement uuid="07aff601-c50a-4a95-ab60-cd31f46d9921" style="INVOICE_TX_18B" x="0" y="0" width="183" height="32"/>
+				<reportElement uuid="07aff601-c50a-4a95-ab60-cd31f46d9921" style="INVOICE_TX_18B" x="0" y="0" width="300" height="32"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{expenses.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="ce08c997-aa43-4995-8847-78f429e76a79" style="INVOICE_TX_12" x="0" y="37" width="40" height="20"/>
+				<reportElement uuid="ce08c997-aa43-4995-8847-78f429e76a79" style="INVOICE_TX_10" x="0" y="37" width="40" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{from.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b8e15327-83c6-4b14-801d-fc1fb8eb31fd" style="INVOICE_TX_12" x="45" y="37" width="70" height="20"/>
+				<reportElement uuid="b8e15327-83c6-4b14-801d-fc1fb8eb31fd" style="INVOICE_TX_10" x="45" y="37" width="70" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{expenses}.getFromDate()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e854a7b6-5a25-4d1c-ac70-99643d7f646c" style="INVOICE_TX_12" x="120" y="37" width="40" height="20"/>
+				<reportElement uuid="e854a7b6-5a25-4d1c-ac70-99643d7f646c" style="INVOICE_TX_10" x="120" y="37" width="40" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{until.title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b1472643-16d1-4b70-a618-d02a76b17d95" style="INVOICE_TX_12" x="165" y="37" width="70" height="20"/>
+				<reportElement uuid="b1472643-16d1-4b70-a618-d02a76b17d95" style="INVOICE_TX_10" x="165" y="37" width="70" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{expenses}.getUntilDate()]]></textFieldExpression>
 			</textField>
