@@ -191,6 +191,37 @@ public class Price implements Serializable {
     
     /**
      * 
+     * @param price
+     */
+    public void subtract(Price price) {
+    	if (price == null) {
+    		return;
+    	}
+    	
+    	if (net == null) {
+    		setNet(BigDecimal.ZERO);
+    	}
+    	if (price.getNet() != null) {
+    		setNet(net.subtract(price.getNet()));
+    	}
+    	
+    	if (gross == null) {
+    		setGross(BigDecimal.ZERO);
+    	}
+    	if (price.getGross() != null) {
+    		setGross(gross.subtract(price.getGross()));
+    	}
+    	
+    	if (price.getTax() != null) {
+    		if (tax == null) {
+    			setTax(BigDecimal.ZERO);
+    		}
+    		setTax(tax.subtract(price.getTax()));
+    	}
+    }
+    
+    /**
+     * 
      * @param taxRate may be <code>null</code>
      */
     public void calculateGrossFromNet(TaxRate taxRate) {

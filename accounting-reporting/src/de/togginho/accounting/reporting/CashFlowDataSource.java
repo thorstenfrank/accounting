@@ -18,6 +18,7 @@ package de.togginho.accounting.reporting;
 import java.util.Map;
 
 import de.togginho.accounting.model.CashFlowStatement;
+import de.togginho.accounting.model.ExpenseType;
 
 /**
  * @author thorsten
@@ -48,16 +49,16 @@ public class CashFlowDataSource extends AbstractReportDataSource {
 		fieldMap.put("cashflow.title", Messages.CashFlowDataSource_cashFlow); //$NON-NLS-1$
 		fieldMap.put("from.title", Messages.fromTitle); //$NON-NLS-1$
 		fieldMap.put("until.title", Messages.untilTitle); //$NON-NLS-1$
-		fieldMap.put("revenue.title", Messages.CashFlowDataSource_revenue); //$NON-NLS-1$
+		fieldMap.put("revenue.title", Messages.revenueTitle); //$NON-NLS-1$
 		fieldMap.put("expenses.title", Messages.CashFlowDataSource_expenses); //$NON-NLS-1$
-		fieldMap.put("operating.expenses.title", Messages.CashFlowDataSource_operatingExpenses); //$NON-NLS-1$
+		fieldMap.put("operating.expenses.title", ExpenseType.OPEX.getTranslatedString()); //$NON-NLS-1$
 		fieldMap.put("total.expenses.title", Messages.CashFlowDataSource_totalExpenses); //$NON-NLS-1$
 		fieldMap.put("vat.title", Messages.CashFlowDataSource_vat); //$NON-NLS-1$
 		fieldMap.put("input.tax.title", Messages.CashFlowDataSource_inputTax); //$NON-NLS-1$
 		fieldMap.put("output.tax.title", Messages.CashFlowDataSource_outputTax); //$NON-NLS-1$
 		fieldMap.put("tax.sum.title", Messages.CashFlowDataSource_taxSum); //$NON-NLS-1$
 		fieldMap.put("result.title", Messages.CashFlowDataSource_vatSum); //$NON-NLS-1$
-		fieldMap.put("gross.profit.title", Messages.CashFlowDataSource_grossProfit); //$NON-NLS-1$
+		fieldMap.put("gross.profit.title", Messages.grossProfitTitle); //$NON-NLS-1$
 		fieldMap.put("net.title", Messages.CashFlowDataSource_net); //$NON-NLS-1$
 		fieldMap.put("gross.title", Messages.CashFlowDataSource_gross); //$NON-NLS-1$
 		fieldMap.put("tax.title", Messages.CashFlowDataSource_tax); //$NON-NLS-1$

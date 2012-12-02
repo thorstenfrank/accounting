@@ -17,6 +17,10 @@ package de.togginho.accounting.reporting;
 
 import java.io.Serializable;
 
+import de.togginho.accounting.Constants;
+import de.togginho.accounting.model.IncomeStatement;
+import de.togginho.accounting.util.FormatUtil;
+
 /**
  * @author thorsten
  *
@@ -28,75 +32,193 @@ public class IncomeStatementWrapper implements Serializable {
      */
     private static final long serialVersionUID = -7527256735651022230L;
 
+    private IncomeStatement incomeStatement;
+        
+	/**
+     * @param incomeStatement
+     */
+    IncomeStatementWrapper(IncomeStatement incomeStatement) {
+	    this.incomeStatement = incomeStatement;
+    }
+    
+	/**
+     * @return the incomeStatement
+     */
+    public IncomeStatement getIncomeStatement() {
+    	return incomeStatement;
+    }
+    
+    /**
+     * 
+     * @return
+     */
 	public String getFrom() {
-		return "01.01.2012";
+		StringBuilder sb = new StringBuilder(Messages.fromTitle);
+		sb.append(Constants.BLANK_STRING);
+		sb.append(FormatUtil.formatDate(incomeStatement.getTimeFrame().getFrom()));
+		return sb.toString();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getUntil() {
-		return "31.12.2012";
+		StringBuilder sb = new StringBuilder(Messages.untilTitle);
+		sb.append(Constants.BLANK_STRING);
+		sb.append(FormatUtil.formatDate(incomeStatement.getTimeFrame().getUntil()));
+		return sb.toString();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getRevenueNet() {
-		return "€ 100.000";
+		return FormatUtil.formatCurrency(incomeStatement.getRevenue().getRevenueNet());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getRevenueTax() {
-		return "€ 19.000";
+		return FormatUtil.formatCurrency(incomeStatement.getRevenue().getRevenueTax());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getRevenueGross() {
-		return "€ 119.000";
+		return FormatUtil.formatCurrency(incomeStatement.getRevenue().getRevenueGross());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOpexNet() {
-		return "€ 10.000";
+		return FormatUtil.formatCurrency(incomeStatement.getOperatingExpenses().getTotalCost().getNet());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOpexTax() {
-		return "€ 1.900";
+		return FormatUtil.formatCurrency(incomeStatement.getOperatingExpenses().getTotalCost().getTax());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOpexGross() {
-		return "€ 11.900";
+		return FormatUtil.formatCurrency(incomeStatement.getOperatingExpenses().getTotalCost().getGross());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOtherExpensesNet() {
-		return "€ 10.000";
+		return FormatUtil.formatCurrency(incomeStatement.getOtherExpenses().getTotalCost().getNet());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOtherExpensesTax() {
-		return "€ 1.900";
+		return FormatUtil.formatCurrency(incomeStatement.getOtherExpenses().getTotalCost().getTax());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOtherExpensesGross() {
-		return "€ 11.900";
+		return FormatUtil.formatCurrency(incomeStatement.getOtherExpenses().getTotalCost().getGross());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getCapexNet() {
+		return FormatUtil.formatCurrency(incomeStatement.getCapitalExpenses().getTotalCost().getNet());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getCapexTax() {
+		return FormatUtil.formatCurrency(incomeStatement.getCapitalExpenses().getTotalCost().getTax());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getCapexGross() {
+		return FormatUtil.formatCurrency(incomeStatement.getCapitalExpenses().getTotalCost().getGross());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEBITDAnet() {
-		return "€ 80.000";
+		return FormatUtil.formatCurrency(incomeStatement.getGrossProfit().getNet());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEBITDAtax() {
-		return "€ 15.200";
+		return FormatUtil.formatCurrency(incomeStatement.getGrossProfit().getTax());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEBITDAgross() {
-		return "€ 95.200";
+		return FormatUtil.formatCurrency(incomeStatement.getGrossProfit().getGross());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getDepreciationTotal() {
-		return "€ 1.937,48";
+		return null;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEBITnet() {
-		return "€ 78.062,52";
+		return null;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEBITtax() {
-		return getEBITDAtax();
+		return null;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEBITgross() {
-		return "€ 93.262,52";
+		return null;
 	}
 }

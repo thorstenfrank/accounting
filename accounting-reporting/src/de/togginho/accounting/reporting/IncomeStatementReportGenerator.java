@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.togginho.accounting.model.IncomeStatement;
+import de.togginho.accounting.model.Price;
+import de.togginho.accounting.util.FormatUtil;
+
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
@@ -27,63 +31,78 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
  */
 public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 
+	private IncomeStatementWrapper wrapper;
+	
+	/**
+	 * 
+	 * @param incomeStatement
+	 */
+	public IncomeStatementReportGenerator(IncomeStatement incomeStatement) {
+		this.wrapper = new IncomeStatementWrapper(incomeStatement);
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#addReportParameters(java.util.Map)
 	 */
 	@Override
 	protected void addReportParameters(Map<String, Object> params) {
-		IncomeStatementDetailsWrapper w1 = new IncomeStatementDetailsWrapper();
-		w1.setCategory("KFZ");
-		w1.setNet("€ 5.000");
-		w1.setTax("€ 950");
-		w1.setGross("€ 5.950");
+		IncomeStatement statement = wrapper.getIncomeStatement();
 		
-		IncomeStatementDetailsWrapper w2 = new IncomeStatementDetailsWrapper();
-		w2.setCategory("Telco");
-		w2.setNet("€ 5.000");
-		w2.setTax("€ 950");
-		w2.setGross("€ 5.950");
+		if (statement.getOperatingExpenseCategories() != null) {
+			params.put("OPEX_DETAILS", 
+					new JRBeanCollectionDataSource(buildWrapperList(statement.getOperatingExpenseCategories())));
+		}
 		
-		List<IncomeStatementDetailsWrapper> opex = new ArrayList<IncomeStatementDetailsWrapper>();
-		opex.add(w1);
-		opex.add(w2);
+		if (statement.getCapitalExpenseCategories() != null) {
+			params.put("CAPEX_DETAILS", 
+					new JRBeanCollectionDataSource(buildWrapperList(statement.getCapitalExpenseCategories())));
+		}
 		
-		params.put("OPEX_DETAILS", new JRBeanCollectionDataSource(opex));
+		if (statement.getOtherExpenseCategories() != null) {
+			params.put("OTHER_EXPENSES_DETAILS", 
+					new JRBeanCollectionDataSource(buildWrapperList(statement.getOtherExpenseCategories())));
+		}		
 		
-		IncomeStatementDetailsWrapper w3 = new IncomeStatementDetailsWrapper();
-		w3.setCategory("Krankenversicherung");
-		w3.setNet("€ 5.000");
-		w3.setTax("€ 950");
-		w3.setGross("€ 5.950");
-		
-		IncomeStatementDetailsWrapper w4 = new IncomeStatementDetailsWrapper();
-		w4.setCategory("Lebensversicherung");
-		w4.setNet("€ 5.000");
-		w4.setTax("€ 950");
-		w4.setGross("€ 5.950");
-		
-		List<IncomeStatementDetailsWrapper> other = new ArrayList<IncomeStatementDetailsWrapper>();
-		other.add(w3);
-		other.add(w4);
-		params.put("OTHER_EXPENSES_DETAILS", new JRBeanCollectionDataSource(other));
-		
-		IncomeStatementDetailsWrapper w5 = new IncomeStatementDetailsWrapper();
-		w5.setCategory("Alter Rechner");
-		w5.setNet("€ 1.000");
-		w5.setGross("€ 1.000");
-		
-		IncomeStatementDetailsWrapper w6 = new IncomeStatementDetailsWrapper();
-		w6.setCategory("Älterer Rechner");
-		w6.setNet("€ 937,48");
-		w6.setGross("€ 937,48");
-		
-		List<IncomeStatementDetailsWrapper> depreciation = new ArrayList<IncomeStatementDetailsWrapper>();
-		depreciation.add(w5);
-		depreciation.add(w6);
-		params.put("DEPRECIATION_DETAILS", new JRBeanCollectionDataSource(depreciation));
+//		IncomeStatementDetailsWrapper w5 = new IncomeStatementDetailsWrapper();
+//		w5.setCategory("Alter Rechner");
+//		w5.setNet("€ 1.000");
+//		w5.setGross("€ 1.000");
+//		
+//		IncomeStatementDetailsWrapper w6 = new IncomeStatementDetailsWrapper();
+//		w6.setCategory("Älterer Rechner");
+//		w6.setNet("€ 937,48");
+//		w6.setGross("€ 937,48");
+//		
+//		List<IncomeStatementDetailsWrapper> depreciation = new ArrayList<IncomeStatementDetailsWrapper>();
+//		depreciation.add(w5);
+//		depreciation.add(w6);
+//		params.put("DEPRECIATION_DETAILS", new JRBeanCollectionDataSource(depreciation));
 	}
 
+	/**
+	 * 
+	 * @param expensesCategory
+	 * @return
+	 */
+	private List<IncomeStatementDetailsWrapper> buildWrapperList(Map<String, Price> expensesCategory) {
+		if (expensesCategory == null) {
+			return null;
+		}
+		
+		List<IncomeStatementDetailsWrapper> wrapperList = new ArrayList<IncomeStatementDetailsWrapper>();
+		for (String category : expensesCategory.keySet()) {
+			IncomeStatementDetailsWrapper wrapper = new IncomeStatementDetailsWrapper();
+			wrapper.setCategory(category);
+			Price price = expensesCategory.get(category);
+			wrapper.setNet(FormatUtil.formatCurrency(price.getNet()));
+			wrapper.setTax(FormatUtil.formatCurrency(price.getTax()));
+			wrapper.setGross(FormatUtil.formatCurrency(price.getGross()));
+			wrapperList.add(wrapper);
+		}
+		return wrapperList;
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#getReportTemplatePath()
@@ -99,7 +118,7 @@ public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 	 */
 	@Override
 	protected AbstractReportDataSource getReportDataSource() {
-		return new IncomeStatementDataSource();
+		return new IncomeStatementDataSource(wrapper);
 	}
 
 }

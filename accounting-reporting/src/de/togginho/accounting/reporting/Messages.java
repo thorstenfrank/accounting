@@ -32,12 +32,9 @@ public class Messages extends NLS {
 	public static String CashFlowDataSource_cashFlow;
 	public static String CashFlowDataSource_expenses;
 	public static String CashFlowDataSource_gross;
-	public static String CashFlowDataSource_grossProfit;
 	public static String CashFlowDataSource_inputTax;
 	public static String CashFlowDataSource_net;
-	public static String CashFlowDataSource_operatingExpenses;
 	public static String CashFlowDataSource_outputTax;
-	public static String CashFlowDataSource_revenue;
 	public static String CashFlowDataSource_tax;
 	public static String CashFlowDataSource_taxSum;
 	public static String CashFlowDataSource_totalExpenses;
@@ -46,6 +43,8 @@ public class Messages extends NLS {
 	
 	public static String ExpensesDataSource_expensesTitle;
 	public static String ExpensesDataSource_expenseCategory;
+	
+	public static String IncomeStatement_title;
 	
 	public static String InvoiceDataSource_invoiceDateTitle;
 	public static String InvoiceDataSource_invoiceNumberTitle;
@@ -78,10 +77,15 @@ public class Messages extends NLS {
 	public static String descriptionTitle;
 	public static String fromTitle;
 	public static String grossPriceTitle;
+	public static String grossProfitTitle;
+	public static String grossTitle;
 	public static String netPriceTitle;
+	public static String netTitle;
+	public static String revenueTitle;
 	public static String sumTitle;
 	public static String taxAmountTitle;
 	public static String taxRateTitle;
+	public static String taxTitle;
 	public static String untilTitle;
 
 	public static String TaxId;

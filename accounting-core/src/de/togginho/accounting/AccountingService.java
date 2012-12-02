@@ -25,6 +25,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.ExpenseType;
+import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -361,6 +362,13 @@ public interface AccountingService {
 	 * @return the {@link CashFlowStatement} for the supplied time frame
 	 */
 	CashFlowStatement getCashFlowStatement(TimeFrame timeFrame);
+	
+	/**
+	 * 
+	 * @param timeFrame
+	 * @return
+	 */
+	IncomeStatement getIncomeStatement(TimeFrame timeFrame);
 	
 	/**
 	 * Exports the entire database to the specified XML file. This file can later be used to re-create the DB.

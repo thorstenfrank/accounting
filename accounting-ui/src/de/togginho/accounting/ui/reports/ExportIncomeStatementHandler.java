@@ -22,6 +22,8 @@ import org.eclipse.core.commands.ExecutionException;
 import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * @author thorsten
@@ -42,7 +44,10 @@ public class ExportIncomeStatementHandler extends AbstractAccountingHandler {
 			@Override
 			public void handleReportGeneration(ReportingService reportingService, String targetFileName,
 			        ReportGenerationMonitor monitor) {
-				reportingService.generateIncomeStatementToPdf(targetFileName, monitor);
+				reportingService.generateIncomeStatementToPdf(
+						AccountingUI.getAccountingService().getIncomeStatement(TimeFrame.currentYear()), 
+						targetFileName, 
+						monitor);
 				
 			}
 			

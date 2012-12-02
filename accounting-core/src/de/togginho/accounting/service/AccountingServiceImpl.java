@@ -57,6 +57,7 @@ import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.ExpenseType;
+import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
@@ -910,6 +911,21 @@ public class AccountingServiceImpl implements AccountingService {
 		statement.setExpenses(findExpenses(timeFrame));
 		return statement;
 	}
+	
+	/**
+     * {@inheritDoc}.
+     * @see AccountingService#getIncomeStatement(TimeFrame)
+     */
+    @Override
+    public IncomeStatement getIncomeStatement(TimeFrame timeFrame) {
+    	IncomeStatement incomeStatement = new IncomeStatement();
+    	incomeStatement.setTimeFrame(timeFrame);
+    	incomeStatement.setRevenue(getRevenue(timeFrame));
+    	incomeStatement.setOperatingExpenses(findExpenses(timeFrame, ExpenseType.OPEX));
+    	incomeStatement.setCapitalExpenses(findExpenses(timeFrame, ExpenseType.CAPEX));
+    	incomeStatement.setOtherExpenses(findExpenses(timeFrame, ExpenseType.OTHER));
+	    return incomeStatement;
+    }
 
 	/**
      * 

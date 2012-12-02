@@ -17,6 +17,7 @@ package de.togginho.accounting;
 
 import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.reporting.CashFlowReportGenerator;
@@ -74,8 +75,8 @@ class ReportingServiceImpl implements ReportingService {
     }
     
     @Override
-    public void generateIncomeStatementToPdf(String fileLocation, ReportGenerationMonitor monitor) {
-    	IncomeStatementReportGenerator generator = new IncomeStatementReportGenerator();
+    public void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
+    	IncomeStatementReportGenerator generator = new IncomeStatementReportGenerator(incomeStatement);
     	generator.generateReportToFile(fileLocation, monitor);
     }
 }

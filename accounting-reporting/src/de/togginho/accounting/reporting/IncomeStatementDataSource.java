@@ -17,11 +17,26 @@ package de.togginho.accounting.reporting;
 
 import java.util.Map;
 
+import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseType;
+import de.togginho.accounting.model.IncomeStatement;
+
 /**
  * @author thorsten
  *
  */
 public class IncomeStatementDataSource extends AbstractReportDataSource {
+
+	private IncomeStatementWrapper wrapper;
+		
+	/**
+     * @param wrapper
+     */
+    IncomeStatementDataSource(IncomeStatementWrapper wrapper) {
+	    this.wrapper = wrapper;
+    }
+
+
 
 	/**
 	 * {@inheritDoc}.
@@ -29,19 +44,34 @@ public class IncomeStatementDataSource extends AbstractReportDataSource {
 	 */
 	@Override
 	protected void addFieldsToMap(Map<String, Object> fieldMap) {
-		fieldMap.put("incomeStatement", new IncomeStatementWrapper());
-		fieldMap.put("incomeStatement.title", "Abschlussbericht");
-		fieldMap.put("from.title", "Von:");
-		fieldMap.put("until.title", "Bis:");
-		fieldMap.put("net.title", "Netto");
-		fieldMap.put("tax.title", "USt.");
-		fieldMap.put("gross.title", "Brutto");
-		fieldMap.put("revenue.title", "Umsatzerlöse");
-		fieldMap.put("opex.title", "Betriebsausgaben");
-		fieldMap.put("otherExpenses.title", "Sonstige Ausgaben");
-		fieldMap.put("ebitda.title", "EBITDA");
-		fieldMap.put("ebit.title", "EBIT");
-		fieldMap.put("depreciation.title", "Abschreibungen");
+		fieldMap.put("incomeStatement", wrapper);
+		fieldMap.put("incomeStatement.title", Messages.IncomeStatement_title);
+		fieldMap.put("net.title", Messages.netTitle);
+		fieldMap.put("tax.title", Messages.taxTitle);
+		fieldMap.put("gross.title", Messages.grossTitle);
+		
+		IncomeStatement statement = wrapper.getIncomeStatement();
+		
+		if (statement.getRevenue() != null) {
+			fieldMap.put("revenue.title", Messages.revenueTitle);
+		}
+		if (notEmpty(statement.getOperatingExpenses())) {
+			fieldMap.put("opex.title", ExpenseType.OPEX.getTranslatedString());
+		}
+		if (notEmpty(statement.getCapitalExpenses())) {
+			fieldMap.put("capex.title", ExpenseType.CAPEX.getTranslatedString());
+		}
+		if (notEmpty(statement.getOtherExpenses())) {
+			fieldMap.put("otherExpenses.title", ExpenseType.OTHER.getTranslatedString());
+		}
+		
+		fieldMap.put("ebitda.title", Messages.grossProfitTitle);
+		
+//		fieldMap.put("ebit.title", "EBIT");
+//		fieldMap.put("depreciation.title", "Abschreibungen");
 	}
 
+	private boolean notEmpty(ExpenseCollection ec) {
+		return ec != null && ec.getExpenses() != null && ec.getExpenses().isEmpty() == false;
+	}
 }
