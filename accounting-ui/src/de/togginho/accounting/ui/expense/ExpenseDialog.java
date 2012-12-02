@@ -217,7 +217,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 
 		sorter.addSortingSupport(
 				tableViewer, 
-				createColumn(ExpenseTableSorter.COL_INDEX_DESC, Messages.labelDescription, SWT.CENTER, tcl).getColumn(), 
+				createColumn(ExpenseTableSorter.COL_INDEX_DESC, Messages.labelDescription, SWT.LEFT, tcl).getColumn(), 
 				ExpenseTableSorter.COL_INDEX_DESC);
 		
 		sorter.addSortingSupport(
@@ -270,7 +270,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(800, 500);
+		return new Point(800, 600);
 	}
 
 	/**
