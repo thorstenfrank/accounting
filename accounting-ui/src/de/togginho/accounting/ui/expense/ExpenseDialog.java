@@ -288,7 +288,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected TimeFrameType getDefaultTimeFrameType() {
-		return TimeFrameType.CURRENT_MONTH;
+		return TimeFrameType.CURRENT_YEAR;
 	}
 
 	/**
