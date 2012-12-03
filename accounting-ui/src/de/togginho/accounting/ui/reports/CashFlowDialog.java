@@ -15,7 +15,6 @@
  */
 package de.togginho.accounting.ui.reports;
 
-import java.math.BigDecimal;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -37,7 +36,6 @@ import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
@@ -347,18 +345,6 @@ public class CashFlowDialog extends AbstractReportDialog {
 //		}
 	}
 
-	/**
-	 * 
-	 * @param text
-	 * @param value
-	 */
-	private void setCurrencyValue(Text text, BigDecimal value) {
-		if (value == null) {
-			value = BigDecimal.ZERO;
-		}
-		text.setText(FormatUtil.formatCurrency(value));
-	}
-	
 	/**
 	 * {@inheritDoc}.
 	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#handleExport()

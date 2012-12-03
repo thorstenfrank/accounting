@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.ui.reports;
 
+import java.math.BigDecimal;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -28,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -35,6 +38,7 @@ import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
+import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
@@ -266,4 +270,16 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	 * 
 	 */
 	protected abstract void handleExport();
+
+	/**
+     * 
+     * @param text
+     * @param value
+     */
+    protected void setCurrencyValue(Text text, BigDecimal value) {
+    	if (value == null) {
+    		value = BigDecimal.ZERO;
+    	}
+    	text.setText(FormatUtil.formatCurrency(value));
+    }
 }

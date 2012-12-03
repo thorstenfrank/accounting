@@ -51,24 +51,19 @@ public class IncomeStatementDataSource extends AbstractReportDataSource {
 		fieldMap.put("gross.title", Messages.grossTitle);
 		
 		IncomeStatement statement = wrapper.getIncomeStatement();
+		fieldMap.put("revenue.title", Messages.revenueTitle);
+		fieldMap.put("opex.title", ExpenseType.OPEX.getTranslatedString());
+		fieldMap.put("ebitda.title", Messages.grossProfitTitle);
+
+//		fieldMap.put("depreciation.title", "Abschreibungen");		
+//		fieldMap.put("ebit.title", "EBIT");
 		
-		if (statement.getRevenue() != null) {
-			fieldMap.put("revenue.title", Messages.revenueTitle);
-		}
-		if (notEmpty(statement.getOperatingExpenses())) {
-			fieldMap.put("opex.title", ExpenseType.OPEX.getTranslatedString());
-		}
 		if (notEmpty(statement.getCapitalExpenses())) {
 			fieldMap.put("capex.title", ExpenseType.CAPEX.getTranslatedString());
 		}
 		if (notEmpty(statement.getOtherExpenses())) {
 			fieldMap.put("otherExpenses.title", ExpenseType.OTHER.getTranslatedString());
 		}
-		
-		fieldMap.put("ebitda.title", Messages.grossProfitTitle);
-		
-//		fieldMap.put("ebit.title", "EBIT");
-//		fieldMap.put("depreciation.title", "Abschreibungen");
 	}
 
 	private boolean notEmpty(ExpenseCollection ec) {

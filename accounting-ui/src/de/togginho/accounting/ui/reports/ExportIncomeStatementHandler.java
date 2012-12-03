@@ -35,27 +35,13 @@ public class ExportIncomeStatementHandler extends AbstractAccountingHandler {
 	
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		ReportGenerationUtil.executeReportGeneration(new ReportGenerationHandler() {
-			
-			@Override
-			public void handleReportGeneration(ReportingService reportingService, String targetFileName,
-			        ReportGenerationMonitor monitor) {
-				reportingService.generateIncomeStatementToPdf(
-						AccountingUI.getAccountingService().getIncomeStatement(TimeFrame.currentYear()), 
-						targetFileName, 
-						monitor);
-				
-			}
-			
-			@Override
-			public String getTargetFileNameSuggestion() {
-				return "IncomeStatement.pdf";
-			}
-		}, getShell(event));
+		IncomeStatementDialog dlg = new IncomeStatementDialog(getShell(event));
+		dlg.open();
+//		ReportGenerationUtil.executeReportGeneration(new IncomeStatementGenerationHandler(), getShell(event));
 	}
 
 	/**
