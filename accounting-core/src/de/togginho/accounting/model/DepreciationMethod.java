@@ -24,11 +24,6 @@ import de.togginho.accounting.Messages;
  *
  */
 public enum DepreciationMethod implements Serializable {
-
-	/**
-	 * No depreciation.
-	 */
-	NONE(Messages.DepreciationMethod_NONE),
 	
 	/**
 	 * Straightline depreciation/amortisation.
