@@ -43,7 +43,10 @@ public class Price implements Serializable {
      * 
      */
     private static final long serialVersionUID = -58766435614756711L;
-    
+
+    /**
+     * FIELDS
+     */
     public static final String FIELD_NET = "net";
     public static final String FIELD_TAX = "tax";
     public static final String FIELD_GROSS = "gross";
@@ -53,11 +56,8 @@ public class Price implements Serializable {
     private static final int SCALE = 2;
            
 	private BigDecimal net;
-	
 	private BigDecimal tax;
-	
 	private BigDecimal gross;
-
 	private PropertyChangeSupport propertyChangeSupport;
 	
 	/**
@@ -94,7 +94,7 @@ public class Price implements Serializable {
     public void setNet(BigDecimal net) {
     	final BigDecimal oldValue = this.net;
     	this.net = net;
-    	propertyChangeSupport.firePropertyChange("net", oldValue, net);
+    	propertyChangeSupport.firePropertyChange(FIELD_NET, oldValue, net);
     }
 
 	/**
@@ -110,7 +110,7 @@ public class Price implements Serializable {
     public void setTax(BigDecimal tax) {
     	final BigDecimal oldValue = this.tax;
     	this.tax = tax;
-    	propertyChangeSupport.firePropertyChange("tax", oldValue, this.tax);
+    	propertyChangeSupport.firePropertyChange(FIELD_TAX, oldValue, this.tax);
     }
 
 	/**
@@ -126,7 +126,7 @@ public class Price implements Serializable {
     public void setGross(BigDecimal gross) {
     	final BigDecimal oldValue = this.gross;
     	this.gross = gross;
-    	propertyChangeSupport.firePropertyChange("gross", oldValue, this.gross);
+    	propertyChangeSupport.firePropertyChange(FIELD_GROSS, oldValue, this.gross);
     }
     
     /**
@@ -276,8 +276,7 @@ public class Price implements Serializable {
 	 * @param listener
 	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
 	 */
-	public void addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
@@ -286,9 +285,23 @@ public class Price implements Serializable {
 	 * @param listener
 	 * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
 	 */
-	public void removePropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		propertyChangeSupport.removePropertyChangeListener(propertyName,
-				listener);
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(getClass().getName());
+		sb.append(FIELD_NET).append(" [").append(net.toString()).append("] ");
+		if (tax != null) {
+			sb.append(FIELD_TAX).append(" [").append(tax.toString()).append("] ");
+		}
+		sb.append(FIELD_GROSS).append(" [").append(gross.toString()).append("]");
+		return sb.toString();
 	}
 }

@@ -27,17 +27,18 @@ import org.eclipse.jface.databinding.swt.ISWTObservable;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
@@ -87,6 +88,11 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	private EditedPriceType editedPriceType = EditedPriceType.NET; // net is the default
 	private boolean changeByUserInProgress = false;
 	private Price price;
+
+	// Depreciation
+	private ComboViewer depreciationMethod;
+	private Spinner depreciationPeriod;
+	private Text salvageValue;
 	
 	/**
 	 * 
@@ -125,17 +131,8 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				return Constants.HYPHEN;
 			}
 		});
-		
-		UpdateValueStrategy from = new UpdateValueStrategy();
-		from.setConverter(new FromStructuredSelectionConverter(ExpenseType.class));
-		UpdateValueStrategy to = new UpdateValueStrategy();
-		to.setConverter(new ToStructuredSelectionConverter(ExpenseType.class));
-		
-		bindingContext.bindValue(
-				ViewersObservables.observeSinglePostSelection(expenseTypeCombo), 
-				PojoObservables.observeValue(expense, Expense.FIELD_TYPE), from, to);
-		expenseTypeCombo.addSelectionChangedListener(this);
-		
+		bind(ExpenseType.class, expenseTypeCombo, expense, Expense.FIELD_TYPE);
+				
 		// DATE
 		callback.createLabel(parent, Messages.labelDate);
 		final DateTime paymentDate = new DateTime(parent, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
@@ -154,23 +151,16 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		final Text description = callback.createText(parent,  SWT.MULTI | SWT.BORDER);
 		description.setData(KEY_WIDGET_DATA, Expense.FIELD_DESCRIPTION);
 		WidgetHelper.grabBoth(description);
-		IObservableValue descObservable = PojoObservables.observeValue(expense, Expense.FIELD_DESCRIPTION);
-		bindingContext.bindValue(
-				SWTObservables.observeText(description, SWT.Modify), 
-				descObservable);
-		descObservable.addValueChangeListener(this);
+		bind(description, expense, Expense.FIELD_DESCRIPTION, false);
 		
 		// CATEGORY
 		callback.createLabel(parent, Messages.labelCategory);
 		final Text category = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
 		category.setData(KEY_WIDGET_DATA, Expense.FIELD_CATEGORY);
 		WidgetHelper.grabHorizontal(category);
-		IObservableValue categoryObservable = PojoObservables.observeValue(expense, Expense.FIELD_CATEGORY);
-		bindingContext.bindValue(
-				SWTObservables.observeText(category, SWT.Modify), categoryObservable);
-		categoryObservable.addValueChangeListener(this);
+		bind(category, expense, Expense.FIELD_CATEGORY, false);
 	}
-
+	
 	/**
 	 * 
 	 * @param parent
@@ -183,12 +173,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		Text netAmount = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
 		netAmount.setData(KEY_WIDGET_DATA, EditedPriceType.NET);
 		WidgetHelper.grabHorizontal(netAmount);
-		IObservableValue netObservable = SWTObservables.observeText(netAmount, SWT.Modify);
-		bindingContext.bindValue(
-				netObservable, 
-				BeansObservables.observeValue(price, "net"), 
-				toPrice, fromPrice);
-		netObservable.addValueChangeListener(this);
+		bind(netAmount, price, Price.FIELD_NET, toPrice, fromPrice, true);
 		
 		// TAX RATE
 		callback.createLabel(parent, Messages.labelTaxRate);
@@ -203,19 +188,14 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		taxAmount.setEditable(false);
 		taxAmount.setEnabled(false);
 		WidgetHelper.grabHorizontal(taxAmount);
-		IObservableValue taxObservable = SWTObservables.observeText(taxAmount, SWT.None);
-		bindingContext.bindValue(
-				taxObservable, 
-				BeansObservables.observeValue(price, Price.FIELD_TAX), toPrice, fromPrice);
+		bind(taxAmount, price, Price.FIELD_TAX, toPrice, fromPrice, true);
 		
 		// GROSS PRICE
 		callback.createLabel(parent, Messages.labelGross);
 		Text grossAmount = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
 		grossAmount.setData(KEY_WIDGET_DATA, EditedPriceType.GROSS);
 		WidgetHelper.grabHorizontal(grossAmount);
-		IObservableValue grossObservable = SWTObservables.observeText(grossAmount, SWT.Modify);
-		bindingContext.bindValue(grossObservable, BeansObservables.observeValue(price, Price.FIELD_GROSS), toPrice, fromPrice);
-		grossObservable.addValueChangeListener(this);
+		bind(grossAmount, price, Price.FIELD_GROSS, toPrice, fromPrice, true);
 	}
 	
 	/**
@@ -224,76 +204,140 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 */
 	protected void createDepreciationSection(Composite parent) {
 		// DEPRECIATION METHOD
-		
 		callback.createLabel(parent, Messages.labelDepreciationMethod);
-		
-		final ComboViewer depreciationMethod = new ComboViewer(parent, SWT.READ_ONLY);
+		depreciationMethod = new ComboViewer(parent, SWT.READ_ONLY);
 		WidgetHelper.grabHorizontal(depreciationMethod.getCombo());
-		depreciationMethod.setContentProvider(new ArrayContentProvider());
+		depreciationMethod.setData(KEY_WIDGET_DATA, Expense.FIELD_DEPRECIATION_METHOD);
+		depreciationMethod.setContentProvider(new CollectionContentProvider(true));
 		depreciationMethod.setInput(DepreciationMethod.values());
 		depreciationMethod.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return ((DepreciationMethod) element).getTranslatedString();
+				if (element instanceof DepreciationMethod) {
+					return ((DepreciationMethod) element).getTranslatedString();
+				}
+				return Constants.HYPHEN;
 			}
 		});
 		
+		bind(DepreciationMethod.class, depreciationMethod, expense, Expense.FIELD_DEPRECIATION_METHOD);
+		
 		// DEPRECIATION PERIOD
 		callback.createLabel(parent, Messages.labelDepreciationPeriodInYears);
-		final Text depreciationPeriod = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
+		depreciationPeriod = new Spinner(parent, SWT.BORDER);
+		depreciationPeriod.setMinimum(0);
+		depreciationPeriod.setMaximum(100);
+		depreciationPeriod.setIncrement(1);
 		WidgetHelper.grabHorizontal(depreciationPeriod);
+		IObservableValue periodObservable = SWTObservables.observeSelection(depreciationPeriod);
+		bindingContext.bindValue(
+				periodObservable, 
+				PojoObservables.observeValue(expense, Expense.FIELD_DEPRECIATION_PERIOD));
+		periodObservable.addValueChangeListener(this);
 		
 		// SALVAGE VALUE
 		callback.createLabel(parent, Messages.labelScrapValue);
-		final Text salvageValue = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
+		salvageValue = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
 		WidgetHelper.grabHorizontal(salvageValue);
-//		
-//		if (expense.getExpenseType() != null) {
-//			enableOrDisableDepreciation(expense.getExpenseType().isDepreciationPossible());
-//		} else {
-//			enableOrDisableDepreciation(false);
-//		}
+		bind(salvageValue, expense, Expense.FIELD_SALVAGE_VALUE, toPrice, fromPrice, false);
+
+		enableOrDisableDepreciation(expense.getExpenseType());
 	}
 	
-//	/**
-//	 * 
-//	 * @param enable
-//	 */
-//	private void enableOrDisableDepreciation(boolean enable) {
-//		depreciationMethod.setEnabled(enable);
-//		depreciationPeriod.setEnabled(enable);
-//		salvageValue.setEnabled(enable);
-//		
-//		if (false == enable) {
-//			depreciationMethod.select(0);
-//			depreciationPeriod.setText("");
-//			salvageValue.setText("");
-//		} else {
-//			depreciationMethod.select(1);
-//			depreciationPeriod.setText("3");
-//			salvageValue.setText("1");			
-//		}
-//	}
+	/**
+	 * 
+	 */
+	private void enableOrDisableDepreciation(ExpenseType expenseType) {
+		if (depreciationMethod == null) {
+			return;
+		}
+		
+		boolean enable = expenseType != null && expenseType.isDepreciationPossible();
+
+		if (!enable) {
+			depreciationMethod.setSelection(StructuredSelection.EMPTY);
+			depreciationPeriod.setSelection(0);
+			salvageValue.setText(Constants.EMPTY_STRING);
+		}
+		
+		depreciationMethod.getCombo().setEnabled(enable);
+		depreciationPeriod.setEnabled(enable);
+		salvageValue.setEnabled(enable);
+	}
 
 	/**
 	 * 
 	 */
 	private void recalculatePrice() {
+		StringBuilder debugMsg = new StringBuilder();
+		
 		if (!changeByUserInProgress) {
+			debugMsg.append("Recalculating price ");
 			changeByUserInProgress = true;
 			switch (editedPriceType) {
 			case NET:
 				price.calculateGrossFromNet(expense.getTaxRate());
+				debugMsg.append("from net");
 				break;
 			case GROSS:
 				price.calculateNetFromGross(expense.getTaxRate());
+				debugMsg.append("from gross");
 				break;
 			}
-			
+						
 			expense.setNetAmount(price.getNet());
-			changeByUserInProgress = false;
-			callback.modelHasChanged();			
+			changeByUserInProgress = false;			
 		}
+		
+		LOG.debug(debugMsg.toString());
+		LOG.debug(price.toString());
+	}
+	
+	/**
+	 * 
+	 * @param contentTypeClass
+	 * @param viewer
+	 * @param entity
+	 * @param field
+	 */
+	private void bind(Class<?> contentTypeClass, StructuredViewer viewer, Object entity, String field) {
+		UpdateValueStrategy from = new UpdateValueStrategy();
+		from.setConverter(new FromStructuredSelectionConverter(contentTypeClass));
+		UpdateValueStrategy to = new UpdateValueStrategy();
+		to.setConverter(new ToStructuredSelectionConverter(contentTypeClass));
+		
+		bindingContext.bindValue(
+				ViewersObservables.observeSinglePostSelection(viewer), 
+				PojoObservables.observeValue(entity, field), from, to);
+		viewer.addSelectionChangedListener(this);
+		//viewer.addPostSelectionChangedListener(this);
+	}
+	
+	/**
+	 * 
+	 * @param text
+	 * @param pojo
+	 * @param field
+	 * @param isBean
+	 */
+	private void bind(Text text, Object pojo, String field, boolean isBean) {
+		bind(text, pojo, field, new UpdateValueStrategy(), new UpdateValueStrategy(), isBean);
+	}
+	
+	/**
+	 * 
+	 * @param text
+	 * @param pojo
+	 * @param field
+	 * @param toModel
+	 * @param fromModel
+	 * @param isBean
+	 */
+	private void bind(Text text, Object pojo, String field, UpdateValueStrategy toModel, UpdateValueStrategy fromModel, boolean isBean) {
+		IObservableValue swtObservable = SWTObservables.observeText(text, SWT.Modify);
+		IObservableValue beanObservable = isBean ? BeansObservables.observeValue(pojo, field) : PojoObservables.observeValue(pojo, field);
+		bindingContext.bindValue(swtObservable, beanObservable, toModel, fromModel);
+		swtObservable.addValueChangeListener(this);
 	}
 	
 	/**
@@ -315,6 +359,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				recalculatePrice();
 			} else {
 				LOG.debug(event.getSource());
+				callback.modelHasChanged();
 			}
 		} else if (event.getSource() instanceof IObservableValue) {
 			callback.modelHasChanged();
@@ -331,9 +376,14 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 			Object data = ((ComboViewer) event.getSource()).getData(KEY_WIDGET_DATA);
 			if (data == null) {
 				LOG.warn("No source specified"); //$NON-NLS-1$
-			} else if (data.equals(Expense.FIELD_TYPE)) {
+				return;
+			} 
+			
+			Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
+			
+			if (data.equals(Expense.FIELD_TYPE)) {
 				LOG.debug("Expense type changed"); //$NON-NLS-1$
-				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
+				
 				ExpenseType newType = selection instanceof ExpenseType ? newType = (ExpenseType) selection : null;
 				if (newType == null) {
 					if (expense.getExpenseType() != null) {
@@ -345,9 +395,24 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 							"Type changed from [%s] to [%s]", expense.getExpenseType(), newType)); //$NON-NLS-1$
 					callback.modelHasChanged();					
 				}
+				enableOrDisableDepreciation(newType);
 			} else if (data.equals(Expense.FIELD_TAX_RATE)) {
 				LOG.debug("Tax Rate changed"); //$NON-NLS-1$
 				recalculatePrice();
+			} else if (data.equals(Expense.FIELD_DEPRECIATION_METHOD)) {
+				LOG.debug("Depreciation Method changed"); //$NON-NLS-1$
+				DepreciationMethod method = selection instanceof DepreciationMethod ? method = (DepreciationMethod) selection : null;
+				if (method == null) {
+					if (expense.getDepreciationMethod() != null) {
+						LOG.debug("Depreciation method was set to <null>"); //$NON-NLS-1$
+						callback.modelHasChanged();						
+					}
+				} else if (method.equals(expense.getDepreciationMethod()) == false) {
+					LOG.debug(String.format(
+							"Depreciation method changed from [%s] to [%s]", 
+							expense.getDepreciationMethod(), method)); //$NON-NLS-1$
+					callback.modelHasChanged();
+				}
 			}
 		}
 	}

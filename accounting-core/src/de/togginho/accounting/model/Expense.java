@@ -30,12 +30,18 @@ public class Expense implements Serializable {
      */
     private static final long serialVersionUID = -5195455587226426017L;
 
+    public static final String FIELD_ID = "id";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_PAYMENT_DATE = "paymentDate";
     public static final String FIELD_NET_AMOUNT = "netAmount";
     public static final String FIELD_TAX_RATE = "taxRate";
     public static final String FIELD_TYPE = "expenseType";
     public static final String FIELD_CATEGORY = "category";
+    public static final String FIELD_DEPRECIATION_METHOD = "depreciationMethod";
+    public static final String FIELD_DEPRECIATION_PERIOD = "depreciationPeriodInYears";
+    public static final String FIELD_SALVAGE_VALUE = "salvageValue";
+    
+    private String id;
     
     private String description;
     
@@ -49,6 +55,26 @@ public class Expense implements Serializable {
     
     private String category;
     
+    private DepreciationMethod depreciationMethod;
+    
+    private int depreciationPeriodInYears;
+    
+    private BigDecimal salvageValue;
+    
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	/**
      * @return the description
      */
@@ -131,5 +157,47 @@ public class Expense implements Serializable {
 	 */
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	/**
+	 * @return the depreciationMethod
+	 */
+	public DepreciationMethod getDepreciationMethod() {
+		return depreciationMethod;
+	}
+
+	/**
+	 * @param depreciationMethod the depreciationMethod to set
+	 */
+	public void setDepreciationMethod(DepreciationMethod depreciationMethod) {
+		this.depreciationMethod = depreciationMethod;
+	}
+
+	/**
+	 * @return the depreciationPeriodInYears
+	 */
+	public int getDepreciationPeriodInYears() {
+		return depreciationPeriodInYears;
+	}
+
+	/**
+	 * @param depreciationPeriodInYears the depreciationPeriodInYears to set
+	 */
+	public void setDepreciationPeriodInYears(int depreciationPeriodInYears) {
+		this.depreciationPeriodInYears = depreciationPeriodInYears;
+	}
+
+	/**
+	 * @return the salvageValue
+	 */
+	public BigDecimal getSalvageValue() {
+		return salvageValue;
+	}
+
+	/**
+	 * @param salvageValue the salvageValue to set
+	 */
+	public void setSalvageValue(BigDecimal salvageValue) {
+		this.salvageValue = salvageValue;
 	}
 }
