@@ -134,7 +134,11 @@ public class ExpenseImporter {
 			} else {
 				index++;
 			}
-			
+		}
+		
+		// make sure the final expense of the file gets added as well
+		if (index <= 5) {
+			imported.add(current);
 		}
 		
 		return imported;
