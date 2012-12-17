@@ -52,6 +52,7 @@ import de.togginho.accounting.AccountingContextFactory;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
+import de.togginho.accounting.io.ExpenseImporter;
 import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
@@ -1005,6 +1006,15 @@ public class AccountingServiceImpl implements AccountingService {
     	return context;
     }
     
+	/**
+     * {@inheritDoc}.
+     * @see AccountingService#importExpenses(String)
+     */
+    @Override
+    public Collection<Expense> importExpenses(String sourceFile) {
+	    return ExpenseImporter.importExpenses(sourceFile, getCurrentUser().getTaxRates());
+    }
+
 	/**
 	 * 
 	 * @param entity

@@ -107,6 +107,11 @@
                   commandId="de.togginho.accounting.ui.ExportModelToXml"
                   style="push">
             </command>
+            <command
+                  commandId="org.eclipse.ui.file.import"
+                  label="Import..."
+                  style="push">
+            </command>
             <separator
                   name="fileMenuSep3"
                   visible="true">
@@ -1074,5 +1079,14 @@
             </reference>
          </enabledWhen>
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            class="de.togginho.accounting.ui.expense.ImportExpensesFromCsvWizard"
+            icon="icons/tag_blue_add.png"
+            id="de.togginho.accounting.expense.ImportExpensesFromCsvWizard"
+            name="Import Expenses">
+      </wizard>
    </extension>
 </plugin>

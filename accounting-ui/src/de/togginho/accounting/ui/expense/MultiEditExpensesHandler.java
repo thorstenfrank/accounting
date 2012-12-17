@@ -24,19 +24,16 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -52,7 +49,6 @@ import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
-import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -313,41 +309,5 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 		}
 		
 		return expensesToBeEdited;
-	}
-	
-	/**
-	 * 
-	 * @author thorsten
-	 *
-	 */
-	private class ExpensesLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
-
-		/**
-         * {@inheritDoc}.
-         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-         */
-        @Override
-        public Image getColumnImage(Object element, int columnIndex) {
-	        return null;
-        }
-
-		/**
-         * {@inheritDoc}.
-         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-         */
-        @Override
-        public String getColumnText(Object element, int columnIndex) {
-        	Expense expense = (Expense) element;
-        	
-        	switch (columnIndex) {
-			case 1:
-				return FormatUtil.formatDate(expense.getPaymentDate());
-			case 2:
-				return expense.getDescription();
-			default:
-				return null;
-			}
-        }
-		
 	}
 }
