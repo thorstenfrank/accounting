@@ -209,6 +209,7 @@ public final class FormatUtil {
      * @param locale
      * @param value
      * @return
+     * @throws AccountingException if the value cannot be parsed into a decimal value
      */
     public static BigDecimal parseDecimalValue(Locale locale, String value) {
     	LOG.debug("Parsing into decimal value: " + value); //$NON-NLS-1$
@@ -224,6 +225,7 @@ public final class FormatUtil {
      * 
      * @param value
      * @return
+     * @throws AccountingException if the value cannot be parsed into a decimal value
      */
     public static BigDecimal parseDecimalValue(String value) {
     	return parseDecimalValue(Locale.getDefault(), value);
@@ -300,6 +302,7 @@ public final class FormatUtil {
      * @param locale
      * @param dateString
      * @return
+     * @throws AccountingException if the date could not be parsed
      */
     public static Date parseDate(Locale locale, String dateString) {
     	LOG.debug(String.format("Parsing into date: [%s]", dateString)); //$NON-NLS-1$
@@ -316,6 +319,7 @@ public final class FormatUtil {
      * 
      * @param dateString
      * @return
+     * @throws AccountingException if the date could not be parsed
      */
     public static Date parseDate(String dateString) {
     	return parseDate(Locale.getDefault(), dateString);

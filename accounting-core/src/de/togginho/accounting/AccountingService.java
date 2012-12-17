@@ -394,4 +394,11 @@ public interface AccountingService {
 	 */
 	@ModelChanging
 	AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation);
+	
+	/**
+	 * 
+	 * @param sourceFile
+	 * @return
+	 */
+	Collection<Expense> importExpenses(String sourceFile);
 }

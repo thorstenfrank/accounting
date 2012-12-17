@@ -252,6 +252,8 @@ public class Messages extends NLS {
 	public static String labelRevenueRelevant;
 	public static String labelScrapValue;
 	public static String labelSearch;
+	public static String labelSelectAll;
+	public static String labelSelectNone;
 	public static String labelStreet;
 	public static String labelSubtotal;
 	public static String labelTaxes;
