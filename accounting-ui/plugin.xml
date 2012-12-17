@@ -104,12 +104,13 @@
                   visible="true">
             </separator>
             <command
-                  commandId="de.togginho.accounting.ui.ExportModelToXml"
+                  commandId="org.eclipse.ui.file.import"
+                  label="%command.import.label"
                   style="push">
             </command>
             <command
-                  commandId="org.eclipse.ui.file.import"
-                  label="Import..."
+                  commandId="org.eclipse.ui.file.export"
+                  label="%command.export.label"
                   style="push">
             </command>
             <separator
@@ -1088,5 +1089,8 @@
             id="de.togginho.accounting.expense.ImportExpensesFromCsvWizard"
             name="Import Expenses">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
    </extension>
 </plugin>

@@ -112,6 +112,13 @@ public class Messages extends NLS {
 	public static String FindInvoiceCommand_noresultMessage;
 	public static String FindInvoiceCommand_noresultTitle;
 	
+	public static String ImportExpensesWizard_errorFileNotValid;
+	public static String ImportExpensesWizard_fileDialogTitle;
+	public static String ImportExpensesWizard_message;
+	public static String ImportExpensesWizard_sourceFile;
+	public static String ImportExpensesWizard_summary;
+	public static String ImportExpensesWizard_title;
+	
 	public static String ImportFromXmlWizard_dataFileLabel;
 	public static String ImportFromXmlWizard_errorDataFileExists;
 	public static String ImportFromXmlWizard_title;
@@ -217,6 +224,7 @@ public class Messages extends NLS {
 	public static String labelBankName;
 	public static String labelBasicInformation;
 	public static String labelBIC;
+	public static String labelBrowse;
 	public static String labelCategory;
 	public static String labelCity;
 	public static String labelClient;
@@ -295,6 +303,7 @@ public class Messages extends NLS {
 	public static String iconsInvoiceSend;
 	public static String iconsRevenue;
 	public static String iconsExpenses;
+	public static String iconsExpenseAdd;
 	public static String iconsExpenseEdit;
 	public static String iconsReports;
 	public static String iconsCashFlowStatement;
