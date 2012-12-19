@@ -15,24 +15,36 @@
  */
 package de.togginho.accounting.ui.reports;
 
+import java.util.Map;
+
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
+import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.IncomeStatement;
+import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Price;
+import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
+import de.togginho.accounting.util.CalculationUtil;
+import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
@@ -46,25 +58,14 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 	
 	private FormToolkit toolkit;
 	
-	private Text revenueNet;
-	private Text revenueTax;
-	private Text revenueGross;
-	
-	private Text opexNet;
-	private Text opexTax;
-	private Text opexGross;
+	private Tree revenueTree;
+	private Tree opexTree;
+	private Tree capexTree;
+	private Tree otherExpensesTree;
 	
 	private Text grossProfitNet;
 	private Text grossProfitTax;
 	private Text grossProfitGross;
-	
-	private Text capexNet;
-	private Text capexTax;
-	private Text capexGross;
-
-	private Text otherExpensesNet;
-	private Text otherExpensesTax;
-	private Text otherExpensesGross;
 	
 	/**
      * @param shell
@@ -80,7 +81,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-    	getShell().setText("Shell Text");
+    	getShell().setText("Income Statement");
     	
     	toolkit = new FormToolkit(parent.getDisplay());
     	Composite container = new Composite(parent, SWT.NONE);
@@ -107,7 +108,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * 
      */
     private void createRevenueSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.CLIENT_INDENT);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText(Messages.labelRevenue);
@@ -116,66 +117,38 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 		toolkit.adapt(sectionClient);
 		toolkit.paintBordersFor(sectionClient);
 		section.setClient(sectionClient);
-		sectionClient.setLayout(new GridLayout(6, false));
+		sectionClient.setLayout(new GridLayout(1, false));
 		
-		toolkit.createLabel(sectionClient, Messages.labelNet);
-		revenueNet = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		revenueNet.setOrientation(SWT.RIGHT_TO_LEFT);
-		revenueNet.setEnabled(false);
-		revenueNet.setEditable(false);
-		WidgetHelper.grabHorizontal(revenueNet);
+		revenueTree = toolkit.createTree(sectionClient, SWT.BORDER | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+		GridDataFactory.fillDefaults().grab(true, true).hint(600, 100).applyTo(revenueTree);
+		revenueTree.setHeaderVisible(true);
+		revenueTree.setLinesVisible(true);
 		
-		toolkit.createLabel(sectionClient, Messages.labelTaxes);
-		revenueTax = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		revenueTax.setOrientation(SWT.RIGHT_TO_LEFT);
-		revenueTax.setEnabled(false);
-		revenueTax.setEditable(false);
-		WidgetHelper.grabHorizontal(revenueTax);
-		
-		toolkit.createLabel(sectionClient, Messages.labelGross);
-		revenueGross = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		revenueGross.setOrientation(SWT.RIGHT_TO_LEFT);
-		revenueGross.setEnabled(false);
-		revenueGross.setEditable(false);
-		WidgetHelper.grabHorizontal(revenueGross);
+		createTreeColumn(revenueTree, SWT.LEFT, Messages.InvoiceView_number, 100);
+		createTreeColumn(revenueTree, SWT.LEFT, Messages.labelInvoiceDate, 150);
+		createTreeColumn(revenueTree, SWT.RIGHT, Messages.labelNet, 100);
+		createTreeColumn(revenueTree, SWT.RIGHT, Messages.labelTaxes, 100);
+		createTreeColumn(revenueTree, SWT.RIGHT, Messages.labelGross, 100);
     }
+    
+
     
     /**
      * 
      * @param parent
      */
     private void createOpexSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText(ExpenseType.OPEX.getTranslatedString());
 		
-		Composite sectionClient = new Composite(section, SWT.NONE);
-		toolkit.adapt(sectionClient);
-		toolkit.paintBordersFor(sectionClient);
+		Composite sectionClient = toolkit.createComposite(section);
 		section.setClient(sectionClient);
-		sectionClient.setLayout(new GridLayout(6, false));
-				
-		toolkit.createLabel(sectionClient, Messages.labelNet);
-		opexNet = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		opexNet.setOrientation(SWT.RIGHT_TO_LEFT);
-		opexNet.setEnabled(false);
-		opexNet.setEditable(false);
-		WidgetHelper.grabHorizontal(opexNet);
+		sectionClient.setLayout(new GridLayout(1, false));
 		
-		toolkit.createLabel(sectionClient, Messages.labelTaxes);
-		opexTax = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		opexTax.setOrientation(SWT.RIGHT_TO_LEFT);
-		opexTax.setEnabled(false);
-		opexTax.setEditable(false);
-		WidgetHelper.grabHorizontal(opexTax);
-		
-		toolkit.createLabel(sectionClient, Messages.labelGross);
-		opexGross = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		opexGross.setOrientation(SWT.RIGHT_TO_LEFT);
-		opexGross.setEnabled(false);
-		opexGross.setEditable(false);
-		WidgetHelper.grabHorizontal(opexGross);
+		opexTree = toolkit.createTree(sectionClient, SWT.BORDER | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+		initExpensesTree(opexTree, sectionClient);
     }
 
     /**
@@ -183,7 +156,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param parent
      */
     private void createGrossProfitSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText("Gross Profit");
@@ -221,75 +194,57 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param parent
      */
     private void createCapexSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText(ExpenseType.CAPEX.getTranslatedString());
 		
-		Composite sectionClient = new Composite(section, SWT.NONE);
-		toolkit.adapt(sectionClient);
+		Composite sectionClient = toolkit.createComposite(section);
 		toolkit.paintBordersFor(sectionClient);
+		
 		section.setClient(sectionClient);
-		sectionClient.setLayout(new GridLayout(6, false));
-				
-		toolkit.createLabel(sectionClient, Messages.labelNet);
-		capexNet = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		capexNet.setOrientation(SWT.RIGHT_TO_LEFT);
-		capexNet.setEnabled(false);
-		capexNet.setEditable(false);
-		WidgetHelper.grabHorizontal(capexNet);
+		sectionClient.setLayout(new GridLayout(1, false));
 		
-		toolkit.createLabel(sectionClient, Messages.labelTaxes);
-		capexTax = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		capexTax.setOrientation(SWT.RIGHT_TO_LEFT);
-		capexTax.setEnabled(false);
-		capexTax.setEditable(false);
-		WidgetHelper.grabHorizontal(capexTax);
-		
-		toolkit.createLabel(sectionClient, Messages.labelGross);
-		capexGross = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		capexGross.setOrientation(SWT.RIGHT_TO_LEFT);
-		capexGross.setEnabled(false);
-		capexGross.setEditable(false);
-		WidgetHelper.grabHorizontal(capexGross);
+		capexTree = toolkit.createTree(sectionClient, SWT.BORDER | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+		initExpensesTree(capexTree, sectionClient);
     }
-
+    
     /**
      * 
      * @param parent
      */
     private void createOtherExpensesSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText(ExpenseType.OTHER.getTranslatedString());
 		
-		Composite sectionClient = new Composite(section, SWT.NONE);
+		Composite sectionClient = toolkit.createComposite(section);
 		toolkit.adapt(sectionClient);
 		toolkit.paintBordersFor(sectionClient);
+		
 		section.setClient(sectionClient);
 		sectionClient.setLayout(new GridLayout(6, false));
-				
-		toolkit.createLabel(sectionClient, Messages.labelNet);
-		otherExpensesNet = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		otherExpensesNet.setOrientation(SWT.RIGHT_TO_LEFT);
-		otherExpensesNet.setEnabled(false);
-		otherExpensesNet.setEditable(false);
-		WidgetHelper.grabHorizontal(otherExpensesNet);
 		
-		toolkit.createLabel(sectionClient, Messages.labelTaxes);
-		otherExpensesTax = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		otherExpensesTax.setOrientation(SWT.RIGHT_TO_LEFT);
-		otherExpensesTax.setEnabled(false);
-		otherExpensesTax.setEditable(false);
-		WidgetHelper.grabHorizontal(otherExpensesTax);
+		otherExpensesTree = toolkit.createTree(sectionClient, SWT.BORDER | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+		initExpensesTree(otherExpensesTree, sectionClient);
+    }
+    
+    /**
+     * 
+     * @param tree
+     * @param parent
+     */
+    private void initExpensesTree(Tree tree, Composite parent) {
+		GridDataFactory.fillDefaults().grab(true, true).hint(600, 100).applyTo(tree);
+		tree.setHeaderVisible(true);
+		tree.setLinesVisible(true);
 		
-		toolkit.createLabel(sectionClient, Messages.labelGross);
-		otherExpensesGross = toolkit.createText(sectionClient, Constants.EMPTY_STRING);
-		otherExpensesGross.setOrientation(SWT.RIGHT_TO_LEFT);
-		otherExpensesGross.setEnabled(false);
-		otherExpensesGross.setEditable(false);
-		WidgetHelper.grabHorizontal(otherExpensesGross);
+		createTreeColumn(tree, SWT.LEFT, Messages.labelCategory, 150);
+		createTreeColumn(tree, SWT.LEFT, Messages.labelDescription, 150);
+		createTreeColumn(tree, SWT.RIGHT, Messages.labelNet, 100);
+		createTreeColumn(tree, SWT.RIGHT, Messages.labelTaxes, 100);
+		createTreeColumn(tree, SWT.RIGHT, Messages.labelGross, 100);    	
     }
     
 	/**
@@ -310,6 +265,94 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 		return TimeFrameType.LAST_YEAR;
 	}
 
+	private void updateRevenueTree(Revenue revenue) {
+		revenueTree.removeAll();
+		TreeItem headerItem = new TreeItem(revenueTree, SWT.NONE);
+		headerItem.setText(
+				new String[]{
+						Messages.labelTotals, 
+						Constants.EMPTY_STRING, 
+						FormatUtil.formatCurrency(revenue.getRevenueNet()),
+						FormatUtil.formatCurrency(revenue.getRevenueTax()),
+						FormatUtil.formatCurrency(revenue.getRevenueGross())
+						}
+		);
+		
+		for (Invoice invoice : revenue.getInvoices()) {
+			TreeItem invoiceItem = new TreeItem(headerItem, SWT.NONE);
+			Price invoiceRevenue = revenue.getInvoiceRevenues().get(invoice);
+			invoiceItem.setText(
+					new String[]{
+							invoice.getNumber(), 
+							FormatUtil.formatDate(invoice.getInvoiceDate()), 
+							FormatUtil.formatCurrency(invoiceRevenue.getNet()),
+							FormatUtil.formatCurrency(invoiceRevenue.getTax()),
+							FormatUtil.formatCurrency(invoiceRevenue.getGross())
+							}
+			);
+		}
+		
+		headerItem.setExpanded(true);
+	}
+	
+	/**
+	 * 
+	 * @param tree
+	 * @param expenses
+	 * @param expenseCategoryTotals
+	 */
+	private void updateExpenseTree(Tree tree, ExpenseCollection expenses, Map<String, Price> expenseCategoryTotals) {
+		tree.removeAll();
+		
+		if (expenses == null) {
+			return;
+		}
+		
+		TreeItem headerItem = new TreeItem(tree, SWT.NONE);
+		headerItem.setText(
+				new String[]{
+						Messages.labelTotals, 
+						Constants.EMPTY_STRING, 
+						FormatUtil.formatCurrency(expenses.getTotalCost().getNet()),
+						FormatUtil.formatCurrency(expenses.getTotalCost().getNet()),
+						FormatUtil.formatCurrency(expenses.getTotalCost().getNet())
+						}
+		);
+		
+		for (String category : expenseCategoryTotals.keySet()) {
+			Price total = expenseCategoryTotals.get(category);
+			TreeItem catHeader = new TreeItem(headerItem, SWT.NONE);
+			catHeader.setText(new String[]{
+					category != null ? category : Constants.HYPHEN, 
+					Constants.EMPTY_STRING, 
+					FormatUtil.formatCurrency(total.getNet()),
+					FormatUtil.formatCurrency(total.getTax()),
+					FormatUtil.formatCurrency(total.getGross())}
+			);
+			catHeader.setExpanded(true);
+			
+			for (Expense expense : expenses.getExpenses()) {
+				if (isSameCategory(category, expense)) {
+					Price price = CalculationUtil.calculatePrice(expense);
+					TreeItem expenseItem = new TreeItem(catHeader, SWT.NONE);
+					expenseItem.setText(new String[]{
+							Constants.EMPTY_STRING, 
+							expense.getDescription(), 
+							FormatUtil.formatCurrency(expense.getNetAmount()),
+							FormatUtil.formatCurrency(price.getTax()),
+							FormatUtil.formatCurrency(price.getGross())}
+					);
+				}
+			}
+		}
+		
+		headerItem.setExpanded(true);
+	}
+	
+	private boolean isSameCategory(String category, Expense expense) {
+		return ((category == null && expense.getCategory() == null) || category != null && category.equals(expense.getCategory()));
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
@@ -317,44 +360,34 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 	@Override
 	protected void updateModel(TimeFrame timeFrame) {
 		incomeStatement = AccountingUI.getAccountingService().getIncomeStatement(timeFrame);
+		updateRevenueTree(incomeStatement.getRevenue());
 		
-		setCurrencyValue(revenueNet, incomeStatement.getRevenue().getRevenueNet());
-		setCurrencyValue(revenueTax, incomeStatement.getRevenue().getRevenueTax());
-		setCurrencyValue(revenueGross, incomeStatement.getRevenue().getRevenueGross());
-		
-		final Price opex = incomeStatement.getOperatingExpenses().getTotalCost();
-		setCurrencyValue(opexNet, opex.getNet());
-		setCurrencyValue(opexTax, opex.getTax());
-		setCurrencyValue(opexGross, opex.getGross());
+		updateExpenseTree(opexTree, incomeStatement.getOperatingExpenses(), incomeStatement.getOperatingExpenseCategories());
 		
 		final Price ebitda = incomeStatement.getGrossProfit();
 		setCurrencyValue(grossProfitNet, ebitda.getNet());
 		setCurrencyValue(grossProfitTax, ebitda.getTax());
 		setCurrencyValue(grossProfitGross, ebitda.getGross());
 		
-		if (incomeStatement.getCapitalExpenses() != null) {
-			final Price capex = incomeStatement.getCapitalExpenses().getTotalCost();
-			setCurrencyValue(capexNet, capex.getNet());
-			setCurrencyValue(capexTax, capex.getTax());
-			setCurrencyValue(capexGross, capex.getGross());
-		} else {
-			capexNet.setText(Constants.EMPTY_STRING);
-			capexTax.setText(Constants.EMPTY_STRING);
-			capexGross.setText(Constants.EMPTY_STRING);
-		}
-		
-		if (incomeStatement.getOtherExpenses() != null) {
-			final Price other = incomeStatement.getOtherExpenses().getTotalCost();
-			setCurrencyValue(otherExpensesNet, other.getNet());
-			setCurrencyValue(otherExpensesTax, other.getTax());
-			setCurrencyValue(otherExpensesGross, other.getGross());
-		} else {
-			otherExpensesNet.setText(Constants.EMPTY_STRING);
-			otherExpensesTax.setText(Constants.EMPTY_STRING);
-			otherExpensesGross.setText(Constants.EMPTY_STRING);
-		}
+		updateExpenseTree(capexTree, incomeStatement.getCapitalExpenses(), incomeStatement.getCapitalExpenseCategories());
+		updateExpenseTree(otherExpensesTree, incomeStatement.getOtherExpenses(), incomeStatement.getOtherExpenseCategories());
 	}
 
+    /**
+     * 
+     * @param parent
+     * @param style
+     * @param label
+     * @param width
+     * @return
+     */
+    private TreeColumn createTreeColumn(Tree parent, int style, String label, int width) {
+    	TreeColumn col = new TreeColumn(parent, style);
+    	col.setText(label);
+    	col.setWidth(width);
+    	return col;
+    }
+	
 	/**
 	 * {@inheritDoc}.
 	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#handleExport()

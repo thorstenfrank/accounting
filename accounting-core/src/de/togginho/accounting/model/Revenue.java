@@ -17,7 +17,9 @@ package de.togginho.accounting.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.TimeFrame;
@@ -39,6 +41,8 @@ public class Revenue implements Serializable {
 	private TimeFrame timeFrame;
 
 	private List<Invoice> invoices;
+	
+	private Map<Invoice, Price> invoiceRevenues;
 	
 	private Price totalRevenue;
 	
@@ -68,6 +72,7 @@ public class Revenue implements Serializable {
 	 */
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
+		this.invoiceRevenues = new HashMap<Invoice, Price>();
 		
 		BigDecimal revenueGross = BigDecimal.ZERO;
 		BigDecimal revenueNet = BigDecimal.ZERO;
@@ -75,6 +80,7 @@ public class Revenue implements Serializable {
 		
 		for (Invoice invoice : invoices) {
 			final Price price = CalculationUtil.calculateRevenue(invoice);
+			invoiceRevenues.put(invoice, price);
 			revenueNet = revenueNet.add(price.getNet());
 			revenueGross = revenueGross.add(price.getGross());
 			if (price.getTax() != null) {
@@ -112,4 +118,11 @@ public class Revenue implements Serializable {
     public BigDecimal getRevenueGross() {
     	return totalRevenue.getGross();
     }
+
+	/**
+	 * @return the invoiceRevenues
+	 */
+	public Map<Invoice, Price> getInvoiceRevenues() {
+		return invoiceRevenues;
+	}
 }
