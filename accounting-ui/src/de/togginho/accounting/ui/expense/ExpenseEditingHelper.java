@@ -357,13 +357,17 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 			if (sourceWidget.getData(KEY_WIDGET_DATA) instanceof EditedPriceType) {
 				editedPriceType = (EditedPriceType) sourceWidget.getData(KEY_WIDGET_DATA);
 				recalculatePrice();
-			} else {
-				LOG.debug(event.getSource());
-				callback.modelHasChanged();
 			}
-		} else if (event.getSource() instanceof IObservableValue) {
-			callback.modelHasChanged();
 		}
+//			} else {
+//				LOG.debug(event.getSource());
+//				callback.modelHasChanged();
+//			}
+//		} else if (event.getSource() instanceof IObservableValue) {
+//			callback.modelHasChanged();
+//		}
+		
+		callback.modelHasChanged();
 	}
 	
 	/**
