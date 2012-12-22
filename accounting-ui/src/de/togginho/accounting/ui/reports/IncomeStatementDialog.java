@@ -15,11 +15,15 @@
  */
 package de.togginho.accounting.ui.reports;
 
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -84,10 +88,16 @@ public class IncomeStatementDialog extends AbstractReportDialog {
     	getShell().setText("Income Statement");
     	
     	toolkit = new FormToolkit(parent.getDisplay());
-    	Composite container = new Composite(parent, SWT.NONE);
+    	
+    	ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL);
+    	
+    	Composite container = new Composite(scrolledComposite, SWT.NONE);
     	container.setLayout(new GridLayout(1, true));
+    	WidgetHelper.grabBoth(container);
     	
     	createQuerySection(container);
+    	
+    	createUniqueQuerySection(container);
     	
     	createRevenueSection(container);
     	
@@ -104,18 +114,37 @@ public class IncomeStatementDialog extends AbstractReportDialog {
     	return container;
     }
     
+    private void createUniqueQuerySection(Composite parent) {
+    	Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+    	section.setText("Query");
+
+		Composite sectionClient = toolkit.createComposite(section);
+		section.setClient(sectionClient);
+		sectionClient.setLayout(new GridLayout(2, false));
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		
+    	toolkit.createLabel(sectionClient, "Month");
+    	Combo combo = new Combo(sectionClient, SWT.DROP_DOWN | SWT.READ_ONLY);
+    	toolkit.adapt(combo);
+    	    	
+    	for (int month = 0; month < 12; month++) {
+    		combo.add(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+    		cal.add(Calendar.MONTH, 1);
+    	}    	
+    }
+    
     /**
      * 
+     * @param parent
      */
     private void createRevenueSection(Composite parent) {
 		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.CLIENT_INDENT);
 		WidgetHelper.grabBoth(section);
-		toolkit.paintBordersFor(section);
 		section.setText(Messages.labelRevenue);
 		
-		Composite sectionClient = new Composite(section, SWT.NONE);
-		toolkit.adapt(sectionClient);
-		toolkit.paintBordersFor(sectionClient);
+		Composite sectionClient = toolkit.createComposite(section);
 		section.setClient(sectionClient);
 		sectionClient.setLayout(new GridLayout(1, false));
 		
@@ -124,7 +153,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 		revenueTree.setHeaderVisible(true);
 		revenueTree.setLinesVisible(true);
 		
-		createTreeColumn(revenueTree, SWT.LEFT, Messages.InvoiceView_number, 100);
+		createTreeColumn(revenueTree, SWT.LEFT, Messages.InvoiceView_number, 150);
 		createTreeColumn(revenueTree, SWT.LEFT, Messages.labelInvoiceDate, 150);
 		createTreeColumn(revenueTree, SWT.RIGHT, Messages.labelNet, 100);
 		createTreeColumn(revenueTree, SWT.RIGHT, Messages.labelTaxes, 100);
@@ -138,7 +167,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param parent
      */
     private void createOpexSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText(ExpenseType.OPEX.getTranslatedString());
@@ -156,14 +185,12 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param parent
      */
     private void createGrossProfitSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
 		WidgetHelper.grabBoth(section);
 		toolkit.paintBordersFor(section);
 		section.setText("Gross Profit");
 		
-		Composite sectionClient = new Composite(section, SWT.NONE);
-		toolkit.adapt(sectionClient);
-		toolkit.paintBordersFor(sectionClient);
+		Composite sectionClient = toolkit.createComposite(section);
 		section.setClient(sectionClient);
 		sectionClient.setLayout(new GridLayout(6, false));
 				
@@ -194,9 +221,8 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param parent
      */
     private void createCapexSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
 		WidgetHelper.grabBoth(section);
-		toolkit.paintBordersFor(section);
 		section.setText(ExpenseType.CAPEX.getTranslatedString());
 		
 		Composite sectionClient = toolkit.createComposite(section);
@@ -214,17 +240,13 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param parent
      */
     private void createOtherExpensesSection(Composite parent) {
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.TWISTIE);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
 		WidgetHelper.grabBoth(section);
-		toolkit.paintBordersFor(section);
 		section.setText(ExpenseType.OTHER.getTranslatedString());
 		
 		Composite sectionClient = toolkit.createComposite(section);
-		toolkit.adapt(sectionClient);
-		toolkit.paintBordersFor(sectionClient);
-		
 		section.setClient(sectionClient);
-		sectionClient.setLayout(new GridLayout(6, false));
+		sectionClient.setLayout(new GridLayout(1, false));
 		
 		otherExpensesTree = toolkit.createTree(sectionClient, SWT.BORDER | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
 		initExpensesTree(otherExpensesTree, sectionClient);
