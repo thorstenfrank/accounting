@@ -212,11 +212,10 @@ public final class FormatUtil {
      * @throws AccountingException if the value cannot be parsed into a decimal value
      */
     public static BigDecimal parseDecimalValue(Locale locale, String value) {
-    	LOG.debug("Parsing into decimal value: " + value); //$NON-NLS-1$
     	try {
 			return (BigDecimal)getNumberFormatter(locale).parse(value);
 		} catch (ParseException e) {
-			LOG.error("Unparseable decimal value: " + value, e); //$NON-NLS-1$
+			LOG.error(String.format("Unparseable decimal value [%s] using locale [%s]", value, locale.toString()), e); //$NON-NLS-1$
 			throw new AccountingException(Messages.bind(Messages.FormatUtil_errorParsingDecimal, value), e);
 		}
     }
@@ -259,7 +258,6 @@ public final class FormatUtil {
      * @throws FormattingException if the supplied value cannot be parsed
      */
     public static BigDecimal parsePercentValue(Locale locale, String value) {
-    	LOG.debug(String.format("Parsing percentage value: [%s]", value)); //$NON-NLS-1$
         try {
         	Number numberValue = getPercentFormatter(locale).parse(value);
             return new BigDecimal(numberValue.toString());
@@ -305,7 +303,6 @@ public final class FormatUtil {
      * @throws AccountingException if the date could not be parsed
      */
     public static Date parseDate(Locale locale, String dateString) {
-    	LOG.debug(String.format("Parsing into date: [%s]", dateString)); //$NON-NLS-1$
     	try {
 			return getDateFormatter(locale).parse(dateString);
 		} catch (ParseException e) {
