@@ -18,6 +18,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.ui;bundle-version="3.5.100",
  org.eclipse.help.webapp;bundle-version="3.6.0",
  org.eclipse.equinox.http.jetty;bundle-version="2.0.100"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: OSGI-INF/l10n/bundle

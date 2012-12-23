@@ -7,7 +7,7 @@ Bundle-Activator: de.togginho.accounting.ReportingPlugin
 Bundle-Vendor: Thorsten Frank
 Require-Bundle: org.eclipse.core.runtime,
  de.togginho.accounting.core;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
  lib/commons-digester-2.1.jar,
