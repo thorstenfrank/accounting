@@ -679,11 +679,6 @@
             name="%command.revenueByYear.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.ExportModelToXmlHandler"
-            id="de.togginho.accounting.ui.ExportModelToXml"
-            name="%command.export.data.label">
-      </command>
-      <command
             categoryId="de.togginho.accounting.ui.invoice"
             defaultHandler="de.togginho.accounting.ui.invoice.FindInvoiceHandler"
             id="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
@@ -1087,10 +1082,16 @@
             class="de.togginho.accounting.ui.expense.ImportExpensesFromCsvWizard"
             icon="icons/tag_blue_add.png"
             id="de.togginho.accounting.expense.ImportExpensesFromCsvWizard"
-            name="Import Expenses">
+            name="%import.expenses.wizard">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.exportWizards">
+      <wizard
+            class="de.togginho.accounting.ui.util.ExportModelToXmlWizard"
+            icon="icons/database_go.png"
+            id="de.togginho.accounting.ui.util.ExportModelToXmlWizard"
+            name="%export.model.wizard">
+      </wizard>
    </extension>
 </plugin>

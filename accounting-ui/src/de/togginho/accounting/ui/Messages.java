@@ -103,9 +103,13 @@ public class Messages extends NLS {
 	public static String ExportInvoiceCommand_fillingReport;
 	public static String ExportInvoiceCommand_loadingTemplate;
 	public static String ExportInvoiceCommand_startingReportGeneration;
-	
-	public static String ExportModelToXmlHandler_exportSuccessfull_title;
-	public static String ExportModelToXmlHandler_exportSuccessfull_text;
+
+	public static String ExportModelToXmlWizard_fileDialogTitle;
+	public static String ExportModelToXmlWizard_title;
+	public static String ExportModelToXmlWizard_message;
+	public static String ExportModelToXmlWizard_progressMessage;
+	public static String ExportModelToXmlWizard_targetFile;
+	public static String ExportModelToXmlWizard_warningTargetFileExists;
 	
 	public static String FindInvoiceCommand_inputMessage;
 	public static String FindInvoiceCommand_inputTitle;
