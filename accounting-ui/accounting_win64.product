@@ -20,7 +20,10 @@
    <windowImages i16="icons/Ledger_16x16.png" i32="icons/Ledger_32x32.png"/>
 
    <splash
-      location="de.togginho.accounting.ui" />
+      location="de.togginho.accounting.ui"
+      startupProgressRect="0,280,465,15"
+      startupMessageRect="7,10,440,20"
+      startupForegroundColor="000000" />
    <launcher name="accounting">
       <solaris/>
       <win useIco="false">
@@ -28,8 +31,9 @@
       </win>
    </launcher>
 
+
    <vm>
-      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
    </vm>
 
    <license>
