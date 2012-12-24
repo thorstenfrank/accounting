@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 import org.eclipse.core.databinding.conversion.IConverter;
 
+import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.util.FormatUtil;
 
 
@@ -67,9 +68,8 @@ public class StringToBigDecimalConverter implements IConverter {
 				BigDecimal result = null;
 				try {
 					result = FormatUtil.parseDecimalValue(theString);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (AccountingException e) {
+					result = BigDecimal.ZERO;
 				}
 				return result;
 			}
