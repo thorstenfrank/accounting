@@ -205,15 +205,17 @@ class XmlToModel {
 				LOG.debug("Converting expense " + xmlExpense.getDescription());
 				Expense expense = new Expense();
 				expense.setDescription(xmlExpense.getDescription());
-				switch (xmlExpense.getExpenseType()) {
-				case OPEX:
-					expense.setExpenseType(ExpenseType.OPEX);
-					break;
-				case CAPEX:
-					expense.setExpenseType(ExpenseType.CAPEX);
-					break;
-				default:
-					break;
+				if (xmlExpense.getExpenseType() != null) {
+					switch (xmlExpense.getExpenseType()) {
+					case OPEX:
+						expense.setExpenseType(ExpenseType.OPEX);
+						break;
+					case CAPEX:
+						expense.setExpenseType(ExpenseType.CAPEX);
+						break;
+					default:
+						break;
+					}					
 				}
 				expense.setNetAmount(xmlExpense.getNetAmount());
 				expense.setPaymentDate(convertDate(xmlExpense.getPaymentDate()));
