@@ -16,7 +16,6 @@
 package de.togginho.accounting.model;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +35,22 @@ public class ExpenseCollection {
 	private Map<ExpenseType, Price> expensesByType;
 	
 	private Set<Expense> expenses;
+	
+	/**
+	 * 
+	 */
+	public ExpenseCollection() {
 		
+	}
+	
+	/**
+	 * 
+	 * @param expenses
+	 */
+	public ExpenseCollection(Set<Expense> expenses) {
+		setExpenses(expenses);
+	}
+	
 	/**
      * @return the timeFrame
      */
@@ -101,10 +115,6 @@ public class ExpenseCollection {
 	 * @return
 	 */
 	public Set<ExpenseType> getIncludedTypes() {
-		Set<ExpenseType> included = new HashSet<ExpenseType>();
-		for (Expense expense : expenses) {
-			included.add(expense.getExpenseType());
-		}
-		return included;
+		return expensesByType.keySet();
 	}
 }
