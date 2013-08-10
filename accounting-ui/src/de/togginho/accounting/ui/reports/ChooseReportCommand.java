@@ -48,10 +48,11 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 	private static final Logger LOG = Logger.getLogger(ChooseReportCommand.class);
 	
 	private static final String[][] REPORT_CONFIG = {
-		{Messages.CashFlowDialog_title, Messages.iconsCashFlowStatement, IDs.CMD_OPEN_CASH_FLOW_DIALOG},
+		{Messages.IncomeStatementDialog_title, Messages.iconsIncomeStatement, IDs.CMD_OPEN_INCOME_STATEMENT},
 		{Messages.RevenueDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_DIALOG},
 		{Messages.RevenueByYearDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_BY_YEAR_DIALOG},
-		{Messages.labelExpenses, Messages.iconsExpenses, IDs.CMD_OPEN_EXPENSES_DIALOG}
+		{Messages.labelExpenses, Messages.iconsExpenses, IDs.CMD_OPEN_EXPENSES_DIALOG},
+		{Messages.IncomeStatementDetailsDialog_title, Messages.iconsIncomeStatementDetails, IDs.CMD_OPEN_INCOME_STATEMENT_DETAILS}
 	};
 	
 	/**

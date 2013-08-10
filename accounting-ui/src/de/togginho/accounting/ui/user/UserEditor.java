@@ -15,7 +15,14 @@
  */
 package de.togginho.accounting.ui.user;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Currency;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -36,6 +43,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -168,6 +176,37 @@ public class UserEditor extends AbstractAccountingEditor {
 		
 		toolkit.createLabel(basicSectionClient, Messages.labelTaxId);
 		createText(basicSectionClient, user.getTaxNumber(), user, User.FIELD_TAX_NUMBER);
+		
+		toolkit.createLabel(basicSectionClient, "Default Currency:");
+		Combo combo = new Combo(basicSectionClient, SWT.DROP_DOWN | SWT.READ_ONLY);
+		WidgetHelper.grabHorizontal(combo);
+		
+		List<String> currencies = new ArrayList<String>();
+		Map<String, String> daMap = new HashMap<String, String>();
+		for (Locale locale : Locale.getAvailableLocales()) {
+			if (locale.getCountry() != null && locale.getLanguage() != null) {
+				LOG.debug("LOCALE: " + locale.getCountry() + " / " + locale.getLanguage());
+				
+				try {
+					Currency currency = Currency.getInstance(locale);
+					LOG.debug("analyzing currency: " + currency.toString());
+					if (currencies.contains(currency)) {
+						LOG.debug("Already there, skipping...");
+					} else {
+						currencies.add(currency.getCurrencyCode());
+						daMap.put(currency.getCurrencyCode(), currency.getCurrencyCode() + " - " + currency.getNumericCode() + " - " + currency.getSymbol(locale) + " - " + currency.getDisplayName());
+					}					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+		
+		Collections.sort(currencies);
+		for (String code : currencies) {
+			combo.add(daMap.get(code));
+		}
 		
 		toolkit.createLabel(basicSectionClient, Messages.labelDescription);
 		Text description = toolkit.createText(basicSectionClient, user.getDescription(), SWT.MULTI | SWT.BORDER);

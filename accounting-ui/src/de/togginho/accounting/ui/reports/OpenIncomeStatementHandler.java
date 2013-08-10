@@ -25,12 +25,12 @@ import de.togginho.accounting.ui.AbstractAccountingHandler;
  * @author thorsten
  *
  */
-public class OpenCashFlowDialogCommand extends AbstractAccountingHandler {
+public class OpenIncomeStatementHandler extends AbstractAccountingHandler {
 
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(OpenCashFlowDialogCommand.class);
+	private static final Logger LOG = Logger.getLogger(OpenIncomeStatementHandler.class);
 	
 	/**
 	 * {@inheritDoc}.
@@ -38,7 +38,7 @@ public class OpenCashFlowDialogCommand extends AbstractAccountingHandler {
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		CashFlowDialog dlg = new CashFlowDialog(getShell(event));
+		IncomeStatementDialog dlg = new IncomeStatementDialog(getShell(event));
 		dlg.open();
 	}
 

@@ -44,15 +44,6 @@ public class Messages extends NLS {
 
 	public static String CancelInvoiceCommand_confirmMessage;
 	public static String CancelInvoiceCommand_confirmText;
-	
-	public static String CashFlowDialog_grossProfit;
-	public static String CashFlowDialog_inputTax;
-	public static String CashFlowDialog_operatingExpenses;
-	public static String CashFlowDialog_outputTax;
-	public static String CashFlowDialog_Result;
-	public static String CashFlowDialog_sum;
-	public static String CashFlowDialog_title;
-	public static String CashFlowDialog_totalExpenses;
 
 	public static String ChangeExpensesViewTimeFrameCommand_message;
 	public static String ChangeExpensesViewTimeFrameCommand_title;
@@ -129,6 +120,17 @@ public class Messages extends NLS {
 	public static String ImportFromXmlWizard_message;
 	public static String ImportFromXmlWizard_xmlFileLabel;
 	public static String ImportFromXmlWizard_xmlFileSelectText;
+	
+	public static String IncomeStatementDialog_grossProfit;
+	public static String IncomeStatementDialog_inputTax;
+	public static String IncomeStatementDialog_operatingExpenses;
+	public static String IncomeStatementDialog_outputTax;
+	public static String IncomeStatementDialog_Result;
+	public static String IncomeStatementDialog_sum;
+	public static String IncomeStatementDialog_title;
+	public static String IncomeStatementDialog_totalExpenses;
+	
+	public static String IncomeStatementDetailsDialog_title;
 	
 	public static String InvoiceEditor_details;
 	public static String InvoiceEditor_header;
@@ -310,7 +312,8 @@ public class Messages extends NLS {
 	public static String iconsExpenseAdd;
 	public static String iconsExpenseEdit;
 	public static String iconsReports;
-	public static String iconsCashFlowStatement;
+	public static String iconsIncomeStatement;
+	public static String iconsIncomeStatementDetails;
 
 	static {
 		// initialize resource bundle

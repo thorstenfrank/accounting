@@ -42,6 +42,16 @@
                name="aboutText"
                value="Togginho Accounting About Text">
          </property>
+          <property name="preferenceCustomization" value="plugin_customization.ini"/> 
+          <property
+                name="startupForegroundColor"
+                value="000000"/>
+          <property
+                name="startupMessageRect"
+                value="7,10,440,20"/>
+          <property
+                name="startupProgressRect"
+                value="0,280,465,15"/>
       </product>
    </extension>
    <extension
@@ -173,8 +183,8 @@
                   icon="icons/report.png"
                   label="%command.reports.name">
                <command
-                     commandId="de.togginho.accounting.reports.OpenProfitDialogCommand"
-                     icon="icons/report_user.png"
+                     commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+                     icon="icons/layout_content.png"
                      style="push">
                </command>
                <command
@@ -185,6 +195,11 @@
                <command
                      commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
                      icon="icons/money_delete.png"
+                     style="pulldown">
+               </command>
+               <command
+                     commandId="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
+                     icon="icons/report_user.png"
                      style="pulldown">
                </command>
             </menu>
@@ -531,8 +546,8 @@
             allPopups="false"
             locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
          <command
-               commandId="de.togginho.accounting.reports.OpenProfitDialogCommand"
-               icon="icons/report_user.png"
+               commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+               icon="icons/layout_content.png"
                style="push">
          </command>
          <command
@@ -551,7 +566,8 @@
                style="pulldown">
          </command>
          <command
-               commandId="de.togginho.accounting.ExportIncomeStatementCommand"
+               commandId="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
+               icon="icons/report_user.png"
                style="pulldown">
          </command>
       </menuContribution>
@@ -742,14 +758,14 @@
             name="%command.reports.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.OpenCashFlowDialogCommand"
-            id="de.togginho.accounting.reports.OpenProfitDialogCommand"
-            name="%command.cashFlow.name">
+            defaultHandler="de.togginho.accounting.ui.reports.OpenIncomeStatementHandler"
+            id="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+            name="%command.reports.incomeStatement.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.ExportIncomeStatementHandler"
-            id="de.togginho.accounting.ExportIncomeStatementCommand"
-            name="Income Statement">
+            defaultHandler="de.togginho.accounting.ui.reports.OpenIncomeStatementDetailsHandler"
+            id="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
+            name="%command.reports.incomeStatementDetails.name">
       </command>
    </extension>
    <extension

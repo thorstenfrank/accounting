@@ -19,19 +19,15 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.togginho.accounting.ReportGenerationMonitor;
-import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
-import de.togginho.accounting.ui.AccountingUI;
-import de.togginho.accounting.util.TimeFrame;
 
 /**
  * @author thorsten
  *
  */
-public class ExportIncomeStatementHandler extends AbstractAccountingHandler {
+public class OpenIncomeStatementDetailsHandler extends AbstractAccountingHandler {
 
-	private static final Logger LOG = Logger.getLogger(ExportIncomeStatementHandler.class);
+	private static final Logger LOG = Logger.getLogger(OpenIncomeStatementDetailsHandler.class);
 	
 	/**
 	 * {@inheritDoc}.
@@ -39,7 +35,7 @@ public class ExportIncomeStatementHandler extends AbstractAccountingHandler {
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		IncomeStatementDialog dlg = new IncomeStatementDialog(getShell(event));
+		IncomeStatementDetailsDialog dlg = new IncomeStatementDetailsDialog(getShell(event));
 		dlg.open();
 //		ReportGenerationUtil.executeReportGeneration(new IncomeStatementGenerationHandler(), getShell(event));
 	}
