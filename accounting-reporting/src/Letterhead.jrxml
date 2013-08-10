@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Letterhead" pageWidth="595" pageHeight="841" columnWidth="459" leftMargin="68" rightMargin="68" topMargin="22" bottomMargin="22" uuid="796f7472-1dcf-4486-9df1-f169608d3012">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="226"/>
+	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="246" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3884c932-51f7-4d59-a9af-2d738c547785" style="INVOICE_TX_12" isPrintRepeatedValues="false" x="281" y="0" width="178" height="16"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Thorsten Frank"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3884c932-51f7-4d59-a9af-2d738c547785" style="INVOICE_TX_12" isPrintRepeatedValues="false" x="281" y="16" width="178" height="16"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Freiberuflicher Dipl.-Inf. (FH)"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="88" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="38" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch"/>
+		<band height="111"/>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="104" splitType="Stretch">
+			<line>
+				<reportElement uuid="ad975b74-d75f-44c6-8d95-8ec4bf44493d" x="0" y="0" width="459" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="97d01cb2-ea6e-46b0-a32a-affd68644385" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="2" width="70" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["Bankverbindung:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a5d42a19-60e1-447d-bca0-8be053d3b654" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="15" width="70" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["Konto:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ba75dbe1-4c5a-43b2-963f-630e04c11063" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="28" width="70" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["BLZ:"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3cccbfe4-a847-4966-9413-0d0129d1bede" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="41" width="70" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["BIC:"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e0d3254d-8ea8-4d21-be14-79b6fda52643" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="54" width="70" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["IBAN:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5a25190d-9b6f-4184-914c-666eea865f89" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="2" width="175" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["Vereinigte Volksbank AG Böblingen"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5cf8ec58-aa1a-4f0e-aec8-9348f0b68044" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="15" width="175" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["10 47 97 029"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d12c3aa2-7063-48ad-ba50-44124699a01e" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="28" width="175" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["603 900 00"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c27ee7bf-cc73-42b5-940a-40f6e765ed6a" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="41" width="175" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["GENODES 1BBV"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="50cc3096-eca5-48be-a044-11b5fb010c07" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="54" width="175" height="13"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA["DE50 6039 0000 0104 7970 29"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="68e6118e-bc5e-4896-8c64-5a4dd4723056" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="2" width="178" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Thorsten Frank"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3789b17e-ddd1-474d-8fd2-cc8b1b270c50" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="15" width="178" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Berliner Str. 8"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c02ea0a6-dc9e-4b1e-8283-60810eb6ec2c" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="28" width="178" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["71093 Weil im Schönbuch"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="41180132-ce3d-47e3-8aa1-1b14fe2edc5b" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="41" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Fon: +49 (0) 7157 70 50 68"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f1a0302a-17cc-4e04-a23f-a42bc7bfd80c" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="54" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Mobil: +49 (0) 163 219 4208"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2d70d21c-9f62-47f7-b2db-df6e80da0803" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="67" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Email: thorsten.frank@gmx.de"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="08aebd3a-395f-49dc-8999-ff2429873210" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="89" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Steuernr. 56211/76421"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>
