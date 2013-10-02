@@ -15,7 +15,10 @@
  */
 package de.togginho.accounting.ui.expense;
 
+import java.util.Collection;
+
 import org.apache.log4j.Logger;
+import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -36,6 +39,8 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
@@ -47,6 +52,7 @@ import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.conversion.CurrencyToStringConverter;
 import de.togginho.accounting.ui.conversion.FromStructuredSelectionConverter;
@@ -94,6 +100,8 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	private Spinner depreciationPeriod;
 	private Text salvageValue;
 	
+	private Collection<String> expenseCategories;
+	
 	/**
 	 * 
 	 * @param expense
@@ -107,9 +115,9 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		toPrice = new UpdateValueStrategy();
 		toPrice.setConverter(StringToBigDecimalConverter.getInstance());
 		fromPrice = new UpdateValueStrategy();
-		fromPrice.setConverter(CurrencyToStringConverter.getInstance());		
+		fromPrice.setConverter(CurrencyToStringConverter.getInstance());
 	}
-	
+		
 	/**
 	 * 
 	 * @param parent
@@ -154,11 +162,39 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		bind(description, expense, Expense.FIELD_DESCRIPTION, false);
 		
 		// CATEGORY
+		expenseCategories = AccountingUI.getAccountingService().findExpenseCategories();
+		
 		callback.createLabel(parent, Messages.labelCategory);
-		final Text category = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
-		category.setData(KEY_WIDGET_DATA, Expense.FIELD_CATEGORY);
-		WidgetHelper.grabHorizontal(category);
-		bind(category, expense, Expense.FIELD_CATEGORY, false);
+		final ComboViewer categoryCombo = new ComboViewer(parent, SWT.DROP_DOWN);
+		categoryCombo.setData(KEY_WIDGET_DATA, Expense.FIELD_CATEGORY);
+		WidgetHelper.grabHorizontal(categoryCombo.getCombo());
+		categoryCombo.setContentProvider(new CollectionContentProvider(true));
+		categoryCombo.setInput(expenseCategories);
+		categoryCombo.setLabelProvider(new LabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof String) {
+					return (String) element;
+				}
+				return Constants.HYPHEN;
+			}
+		});
+		
+		categoryCombo.getCombo().addTraverseListener(new TraverseListener() {
+			
+			@Override
+			public void keyTraversed(TraverseEvent e) {
+				String text = categoryCombo.getCombo().getText();
+				
+				if (!expenseCategories.contains(text)) {
+					LOG.debug("Adding new value to dropdown: " + text); //$NON-NLS-1$
+					categoryCombo.add(text);
+					categoryCombo.setSelection(new StructuredSelection(text));
+				}
+			}
+		});
+		
+		bind(String.class, categoryCombo, expense, Expense.FIELD_CATEGORY);
 	}
 	
 	/**
@@ -272,16 +308,16 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		StringBuilder debugMsg = new StringBuilder();
 		
 		if (!changeByUserInProgress) {
-			debugMsg.append("Recalculating price ");
+			debugMsg.append("Recalculating price "); //$NON-NLS-1$
 			changeByUserInProgress = true;
 			switch (editedPriceType) {
 			case NET:
 				price.calculateGrossFromNet(expense.getTaxRate());
-				debugMsg.append("from net");
+				debugMsg.append("from net"); //$NON-NLS-1$
 				break;
 			case GROSS:
 				price.calculateNetFromGross(expense.getTaxRate());
-				debugMsg.append("from gross");
+				debugMsg.append("from gross"); //$NON-NLS-1$
 				break;
 			}
 						
@@ -299,18 +335,21 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 * @param viewer
 	 * @param entity
 	 * @param field
+	 * @return
 	 */
-	private void bind(Class<?> contentTypeClass, StructuredViewer viewer, Object entity, String field) {
+	private Binding bind(Class<?> contentTypeClass, StructuredViewer viewer, Object entity, String field) {
 		UpdateValueStrategy from = new UpdateValueStrategy();
 		from.setConverter(new FromStructuredSelectionConverter(contentTypeClass));
 		UpdateValueStrategy to = new UpdateValueStrategy();
 		to.setConverter(new ToStructuredSelectionConverter(contentTypeClass));
 		
-		bindingContext.bindValue(
+		Binding binding = bindingContext.bindValue(
 				ViewersObservables.observeSinglePostSelection(viewer), 
 				PojoObservables.observeValue(entity, field), from, to);
 		viewer.addSelectionChangedListener(this);
 		//viewer.addPostSelectionChangedListener(this);
+		
+		return binding;
 	}
 	
 	/**
@@ -319,9 +358,10 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 * @param pojo
 	 * @param field
 	 * @param isBean
+	 * @return
 	 */
-	private void bind(Text text, Object pojo, String field, boolean isBean) {
-		bind(text, pojo, field, new UpdateValueStrategy(), new UpdateValueStrategy(), isBean);
+	private Binding bind(Text text, Object pojo, String field, boolean isBean) {
+		return bind(text, pojo, field, new UpdateValueStrategy(), new UpdateValueStrategy(), isBean);
 	}
 	
 	/**
@@ -332,12 +372,14 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 * @param toModel
 	 * @param fromModel
 	 * @param isBean
+	 * @return
 	 */
-	private void bind(Text text, Object pojo, String field, UpdateValueStrategy toModel, UpdateValueStrategy fromModel, boolean isBean) {
+	private Binding bind(Text text, Object pojo, String field, UpdateValueStrategy toModel, UpdateValueStrategy fromModel, boolean isBean) {
 		IObservableValue swtObservable = SWTObservables.observeText(text, SWT.Modify);
 		IObservableValue beanObservable = isBean ? BeansObservables.observeValue(pojo, field) : PojoObservables.observeValue(pojo, field);
-		bindingContext.bindValue(swtObservable, beanObservable, toModel, fromModel);
+		Binding binding = bindingContext.bindValue(swtObservable, beanObservable, toModel, fromModel);
 		swtObservable.addValueChangeListener(this);
+		return binding;
 	}
 	
 	/**
@@ -396,13 +438,27 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 					}
 				} else if (newType.equals(expense.getExpenseType()) == false) {
 					LOG.debug(String.format(
-							"Type changed from [%s] to [%s]", expense.getExpenseType(), newType)); //$NON-NLS-1$
+							"Expense type changed from [%s] to [%s]", expense.getExpenseType(), newType)); //$NON-NLS-1$
 					callback.modelHasChanged();					
 				}
 				enableOrDisableDepreciation(newType);
 			} else if (data.equals(Expense.FIELD_TAX_RATE)) {
 				LOG.debug("Tax Rate changed"); //$NON-NLS-1$
 				recalculatePrice();
+			} else if (data.equals(Expense.FIELD_CATEGORY)) {
+				LOG.debug("Expense category changed"); //$NON-NLS-1$	
+				
+				String newCat = selection instanceof String ? newCat = (String) selection : null;
+				if (newCat == null) {
+					if (expense.getCategory() != null) {
+						LOG.debug("Expense category was set to <null>"); //$NON-NLS-1$
+						callback.modelHasChanged();
+					}
+				} else if (newCat.equals(expense.getCategory()) == false) {
+						LOG.debug(String.format(
+								"Expense category changed from [%s] to [%s]", expense.getCategory(), newCat)); //$NON-NLS-1$
+						callback.modelHasChanged();
+				}
 			} else if (data.equals(Expense.FIELD_DEPRECIATION_METHOD)) {
 				LOG.debug("Depreciation Method changed"); //$NON-NLS-1$
 				DepreciationMethod method = selection instanceof DepreciationMethod ? method = (DepreciationMethod) selection : null;
