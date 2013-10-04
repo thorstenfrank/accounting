@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -51,6 +52,8 @@ import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
+ * Allows for select attributes of multiple {@link Expense} objects to be edited at the same time.
+ * 
  * @author thorsten
  *
  */
@@ -82,167 +85,9 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 		// The list of expenses actually selected - initially all of them
 		expensesIncludedInSave = new ArrayList<Expense>(expensesToBeEdited);
 		
-		AbstractModalDialog dialog = new AbstractModalDialog(
-				getShell(event), 
-				Messages.MultiEditExpensesHandler_title, 
-				Messages.MultiEditExpensesHandler_message, 
-				Messages.iconsExpenseEdit) {
-			
-			@Override
-			protected void createMainContents(Composite parent) {
-				Composite composite = new Composite(parent, SWT.NONE);
-				composite.setLayout(new GridLayout(1, true));
-				WidgetHelper.grabBoth(composite);
-				
-				Composite editingFields = new Composite(composite, SWT.NONE);
-				editingFields.setLayout(new GridLayout(3, false));
-				WidgetHelper.grabHorizontal(editingFields);
-				
-				// TYPE
-				WidgetHelper.createLabel(editingFields, Messages.labelExpenseType);
-				final Combo typeCombo = new Combo(editingFields, SWT.READ_ONLY | SWT.DROP_DOWN);
-				WidgetHelper.grabHorizontal(typeCombo);
-				final ExpenseType[] allTypes = new ExpenseType[ExpenseType.values().length + 1];
-				allTypes[0] = null;
-				int selected = 0;
-				int index = 1;
-				typeCombo.add(Constants.HYPHEN);
-				for (ExpenseType type : ExpenseType.values()) {
-					typeCombo.add(type.getTranslatedString());
-					allTypes[index] = type;
-					if (defaultType == type) {
-						selected = index;
-					}
-					index++;
-				}
-				typeCombo.select(selected);
-				
-				final Button changeType = new Button(editingFields, SWT.CHECK);
-				changeType.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						if (changeType.getSelection()) {
-							setErrorMessage(null);
-						}
-					}
-				});
-				
-				typeCombo.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						applyNewType = true;
-						defaultType = allTypes[typeCombo.getSelectionIndex()];
-						changeType.setSelection(true);
-					}
-				});
-				
-				// DESCRIPTION
-				WidgetHelper.createLabel(editingFields, Messages.labelDescription);
-				final Text description = WidgetHelper.createSingleBorderText(editingFields, defaultDesc);
-				final Button changeDescription = new Button(editingFields, SWT.CHECK);
-				changeDescription.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						if (changeDescription.getSelection()) {
-							setErrorMessage(null);
-						}
-					}
-				});
-				description.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyReleased(KeyEvent e) {
-						applyNewDesc = true;
-						defaultDesc = description.getText();
-						changeDescription.setSelection(true);
-					}
-				});
-						
-				// CATEGORY
-				WidgetHelper.createLabel(editingFields, Messages.labelCategory);
-				final Text category = WidgetHelper.createSingleBorderText(editingFields, defaultCategory);
-				final Button changeCategory = new Button(editingFields, SWT.CHECK);
-				changeCategory.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						if (changeType.getSelection()) {
-							setErrorMessage(null);
-						}
-					}
-				});
-				category.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyReleased(KeyEvent e) {
-						applyNewCategory = true;
-						defaultCategory = category.getText();
-						changeCategory.setSelection(true);
-					}
-				});
-				
-				Composite expensesComposite = new Composite(composite, SWT.NONE);
-				expensesComposite.setLayout(new GridLayout(1, false));
-				expensesComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).span(3, 1).create());
-				
-				Table expensesTable = new Table(expensesComposite, SWT.H_SCROLL | SWT.V_SCROLL
-						| SWT.FULL_SELECTION | SWT.MULTI | SWT.CHECK | SWT.BORDER);
-				expensesTable.setHeaderVisible(true);
-				WidgetHelper.grabHorizontal(expensesTable);
-				
-				TableColumn selectCol = new TableColumn(expensesTable, SWT.LEFT);
-				selectCol.setText(Messages.MultiEditExpensesHandler_apply);
-				selectCol.setWidth(50);
-				
-				TableColumn dateCol = new TableColumn(expensesTable, SWT.LEFT);
-				dateCol.setText(Messages.labelDate);
-				dateCol.setWidth(100);
-				
-				TableColumn descCol = new TableColumn(expensesTable, SWT.LEFT);
-				descCol.setText(Messages.labelDescription);
-				descCol.setWidth(300);
-				
-				CheckboxTableViewer expensesViewer = new CheckboxTableViewer(expensesTable);
-				expensesViewer.setContentProvider(ArrayContentProvider.getInstance());
-				expensesViewer.setLabelProvider(new ExpensesLabelProvider());
-				expensesViewer.setInput(expensesToBeEdited);
-				expensesViewer.setAllChecked(true);
-				expensesViewer.addCheckStateListener(new ICheckStateListener() {
-					
-					@Override
-					public void checkStateChanged(CheckStateChangedEvent event) {
-						Expense expense = (Expense) event.getElement();
-						if (event.getChecked()) {
-							expensesIncludedInSave.add(expense);
-						} else {
-							expensesIncludedInSave.remove(expense);
-						}
-						if (expensesIncludedInSave.isEmpty()) {
-							setErrorMessage(Messages.MultiEditExpensesHandler_errorNoExpensesSelected);
-						} else {
-							setErrorMessage(null);
-						}
-					}
-				});
-			}
-			
-			@Override
-			protected void buttonPressed(int buttonId) {
-				if (buttonId == IDialogConstants.OK_ID) {
-					if (expensesIncludedInSave.isEmpty()) {
-						setErrorMessage(Messages.MultiEditExpensesHandler_errorNoExpensesSelected);
-						return;
-					}
-					
-					if (!applyNewCategory && !applyNewDesc && !applyNewType) {
-						setErrorMessage(Messages.MultiEditExpensesHandler_errorNoChanges);
-						return;
-					}
-				}
-			    super.buttonPressed(buttonId);
-			}
-		};
-				
-		if (dialog.show()) {			
+		if (new MultiEditExpenseDialog(getShell(event), expensesToBeEdited).show()) {			
 			for (Expense expense : expensesIncludedInSave) {
-				LOG.debug("About to save: " + expense.getDescription());
+				LOG.debug("About to save: " + expense.getDescription()); //$NON-NLS-1$
 				if (applyNewCategory) {
 					LOG.debug(String.format("Setting new category [%s] in expense [%s]", defaultCategory, expense.getDescription())); //$NON-NLS-1$
 					expense.setCategory(defaultCategory);
@@ -292,7 +137,7 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 					if (i == 0) {
 						defaultType = expense.getExpenseType();
 						defaultDesc = expense.getDescription() != null ? expense.getDescription() : Constants.EMPTY_STRING;
-						defaultCategory = expense.getCategory() != null ? expense.getCategory() : Constants.EMPTY_STRING;
+						defaultCategory = expense.getCategory();
 					} else {
 						if (defaultType != expense.getExpenseType()) {
 							defaultType = null;
@@ -300,8 +145,8 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 						if (!defaultDesc.equals(expense.getDescription())) {
 							defaultDesc = Constants.EMPTY_STRING;
 						}
-						if (!defaultCategory.equals(expense.getCategory())) {
-							defaultCategory = Constants.EMPTY_STRING;
+						if (false == (defaultCategory != null && defaultCategory.equals(expense.getCategory()))) {
+							defaultCategory = null;
 						}
 					}
 				}
@@ -309,5 +154,250 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 		}
 		
 		return expensesToBeEdited;
+	}
+	
+	/**
+	 * Anonymous inner class... outsourced for readability resons.
+	 * 
+	 * @author thorsten
+	 *
+	 */
+	private class MultiEditExpenseDialog extends AbstractModalDialog {
+		/** */
+		private List<Expense> expensesToBeEdited;
+		
+		/**
+		 * 
+		 * @param parentShell
+		 * @param expensesToBeEdited
+		 */
+		public MultiEditExpenseDialog(Shell parentShell, List<Expense> expensesToBeEdited) {
+			super(parentShell,
+				  Messages.MultiEditExpensesHandler_title, 
+				  Messages.MultiEditExpensesHandler_message, 
+				  Messages.iconsExpenseEdit);
+			
+			this.expensesToBeEdited = expensesToBeEdited;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see de.togginho.accounting.ui.AbstractModalDialog#createMainContents(org.eclipse.swt.widgets.Composite)
+		 */
+		@Override
+		protected void createMainContents(Composite parent) {
+			Composite composite = new Composite(parent, SWT.NONE);
+			composite.setLayout(new GridLayout(1, true));
+			WidgetHelper.grabBoth(composite);
+			
+			Composite editingFields = new Composite(composite, SWT.NONE);
+			editingFields.setLayout(new GridLayout(3, false));
+			WidgetHelper.grabHorizontal(editingFields);
+			
+			// TYPE
+			buildTypeCombo(editingFields);
+			
+			// DESCRIPTION
+			buildDescription(editingFields);
+					
+			// CATEGORY
+			buildCategories(editingFields);
+			
+			buildExpensesTable(expensesToBeEdited, composite);
+		}
+
+		/**
+		 * 
+		 * {@inheritDoc}
+		 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
+		 */
+		@Override
+		protected void buttonPressed(int buttonId) {
+			if (buttonId == IDialogConstants.OK_ID) {
+				if (expensesIncludedInSave.isEmpty()) {
+					setErrorMessage(Messages.MultiEditExpensesHandler_errorNoExpensesSelected);
+					return;
+				}
+				
+				if (!applyNewCategory && !applyNewDesc && !applyNewType) {
+					setErrorMessage(Messages.MultiEditExpensesHandler_errorNoChanges);
+					return;
+				}
+			}
+		    super.buttonPressed(buttonId);
+		}
+
+		/**
+		 * @param parent
+		 * @return
+		 */
+		private void buildTypeCombo(Composite parent) {
+			WidgetHelper.createLabel(parent, Messages.labelExpenseType);
+			final Combo typeCombo = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
+			WidgetHelper.grabHorizontal(typeCombo);
+			final ExpenseType[] allTypes = new ExpenseType[ExpenseType.values().length + 1];
+			allTypes[0] = null;
+			int selected = 0;
+			int index = 1;
+			typeCombo.add(Constants.HYPHEN);
+			for (ExpenseType type : ExpenseType.values()) {
+				typeCombo.add(type.getTranslatedString());
+				allTypes[index] = type;
+				if (defaultType == type) {
+					selected = index;
+				}
+				index++;
+			}
+			typeCombo.select(selected);
+			
+			final Button changeType = new Button(parent, SWT.CHECK);
+			changeType.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (changeType.getSelection()) {
+						setErrorMessage(null);
+					}
+				}
+			});
+			
+			typeCombo.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					applyNewType = true;
+					defaultType = allTypes[typeCombo.getSelectionIndex()];
+					LOG.debug("New type is now " + defaultType);
+					changeType.setSelection(true);
+				}
+			});
+		}
+		
+		/**
+		 * @param parent
+		 */
+		private void buildDescription(Composite parent) {
+			WidgetHelper.createLabel(parent, Messages.labelDescription);
+			final Text description = WidgetHelper.createSingleBorderText(parent, defaultDesc);
+			final Button changeDescription = new Button(parent, SWT.CHECK);
+			changeDescription.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (changeDescription.getSelection()) {
+						setErrorMessage(null);
+					}
+				}
+			});
+			description.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					applyNewDesc = true;
+					defaultDesc = description.getText();
+					changeDescription.setSelection(true);
+				}
+			});
+		}
+
+		/**
+		 * @param parent
+		 */
+		private void buildCategories(Composite parent) {
+			WidgetHelper.createLabel(parent, Messages.labelCategory);
+			final Combo categoryCombo = new Combo(parent, SWT.DROP_DOWN);
+			WidgetHelper.grabHorizontal(categoryCombo);
+			final List<String> allCategories = AccountingUI.getAccountingService().findExpenseCategories();
+			
+			allCategories.add(0, null);
+			
+			categoryCombo.add(Constants.HYPHEN);
+			int selected = 0;
+			for (int i = 1; i < allCategories.size(); i++) {
+				String currentCat = allCategories.get(i);
+				categoryCombo.add(currentCat);
+				if (defaultCategory != null && defaultCategory.equals(currentCat)) {
+					selected = i;
+				}
+			}
+			categoryCombo.select(selected);
+			
+			final Button changeCategory = new Button(parent, SWT.CHECK);
+			changeCategory.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (changeCategory.getSelection()) {
+						setErrorMessage(null);
+					}
+				}
+			});
+			
+			categoryCombo.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					applyNewCategory = true;
+					defaultCategory = allCategories.get(categoryCombo.getSelectionIndex());
+					LOG.debug("New category is now " + defaultCategory); //$NON-NLS-1$
+					changeCategory.setSelection(true);
+				}
+			});
+			
+			categoryCombo.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					applyNewCategory = true;
+					defaultCategory = categoryCombo.getText();
+					LOG.debug("New category is now " + defaultCategory); //$NON-NLS-1$
+					changeCategory.setSelection(true);
+				}
+			});
+		}
+		
+		/**
+		 * @param parent
+		 * @param composite
+		 */
+		private void buildExpensesTable(final List<Expense> parent,
+				Composite composite) {
+			Composite expensesComposite = new Composite(composite, SWT.NONE);
+			expensesComposite.setLayout(new GridLayout(1, false));
+			expensesComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).span(3, 1).create());
+			
+			Table expensesTable = new Table(expensesComposite, SWT.H_SCROLL | SWT.V_SCROLL
+					| SWT.FULL_SELECTION | SWT.MULTI | SWT.CHECK | SWT.BORDER);
+			expensesTable.setHeaderVisible(true);
+			WidgetHelper.grabHorizontal(expensesTable);
+			
+			TableColumn selectCol = new TableColumn(expensesTable, SWT.LEFT);
+			selectCol.setText(Messages.MultiEditExpensesHandler_apply);
+			selectCol.setWidth(50);
+			
+			TableColumn dateCol = new TableColumn(expensesTable, SWT.LEFT);
+			dateCol.setText(Messages.labelDate);
+			dateCol.setWidth(100);
+			
+			TableColumn descCol = new TableColumn(expensesTable, SWT.LEFT);
+			descCol.setText(Messages.labelDescription);
+			descCol.setWidth(300);
+			
+			CheckboxTableViewer expensesViewer = new CheckboxTableViewer(expensesTable);
+			expensesViewer.setContentProvider(ArrayContentProvider.getInstance());
+			expensesViewer.setLabelProvider(new ExpensesLabelProvider());
+			expensesViewer.setInput(parent);
+			expensesViewer.setAllChecked(true);
+			expensesViewer.addCheckStateListener(new ICheckStateListener() {
+				
+				@Override
+				public void checkStateChanged(CheckStateChangedEvent event) {
+					Expense expense = (Expense) event.getElement();
+					if (event.getChecked()) {
+						expensesIncludedInSave.add(expense);
+					} else {
+						expensesIncludedInSave.remove(expense);
+					}
+					if (expensesIncludedInSave.isEmpty()) {
+						setErrorMessage(Messages.MultiEditExpensesHandler_errorNoExpensesSelected);
+					} else {
+						setErrorMessage(null);
+					}
+				}
+			});
+		}
 	}
 }
