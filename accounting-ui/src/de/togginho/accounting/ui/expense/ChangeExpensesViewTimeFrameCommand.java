@@ -165,7 +165,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         		to.addSelectionListener(new SelectionAdapter() {
         			@Override
         			public void widgetSelected(SelectionEvent e) {
-        				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(to));
+        				currentTimeFrame.setUntil(WidgetHelper.widgetToDate(to));
         				custom.setSelection(true);
         			}
 				});
