@@ -38,6 +38,9 @@ import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
 /**
+ * A popup dialog to let users choose the timeframe of expenses in detail.
+ * Provides for shortcuts (last month, current month, etc.) as well as detailed from-until date choosers.
+ * 
  * @author thorsten
  *
  */
@@ -45,7 +48,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 
 	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewTimeFrameCommand.class);
 	
-	private static final String PARAMETER_NAME = "timeFrame";
+	private static final String PARAMETER_NAME = "timeFrame"; //$NON-NLS-1$
 	
 	private TimeFrame currentTimeFrame;
 	private DateTime from;
@@ -93,7 +96,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
     private boolean extractTimeFrameFromParameter(ExecutionEvent event) {
 	    final String param = event.getParameter(PARAMETER_NAME);
 		if (param != null) {
-			LOG.debug(String.format("Found command param [%s]: %s", PARAMETER_NAME, param));
+			LOG.debug(String.format("Found command param [%s]: %s", PARAMETER_NAME, param)); //$NON-NLS-1$
             try {
             	TimeFrameType type = TimeFrameType.valueOf(param);
             	switch (type) {
@@ -156,6 +159,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         			@Override
         			public void widgetSelected(SelectionEvent e) {
         				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(from));
+        				LOG.debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
         				custom.setSelection(true);
         			}
 				});
@@ -166,6 +170,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
         			@Override
         			public void widgetSelected(SelectionEvent e) {
         				currentTimeFrame.setUntil(WidgetHelper.widgetToDate(to));
+        				LOG.debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
         				custom.setSelection(true);
         			}
 				});
@@ -183,7 +188,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 	 * @param type
 	 */
 	private void buildButtonForTimeFrame(Composite parent, TimeFrameType type) {
-		Button button = new Button(parent, SWT.RADIO);
+		final Button button = new Button(parent, SWT.RADIO);
 		button.setText(type.getTranslatedName());
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(button);
 		final TimeFrame timeFrame;
@@ -205,8 +210,10 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				currentTimeFrame = timeFrame;
-				currentTimeFrameChanged();
+				if (button.getSelection()) { // only need to react if the button was actually selected (ignore deselect)
+					currentTimeFrame = timeFrame;
+					currentTimeFrameChanged();					
+				}
 			}
 		});
 		
@@ -219,6 +226,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 	private void currentTimeFrameChanged() {
 		WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
 		WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), to);
+		LOG.debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
 	}
 	
 	/**
