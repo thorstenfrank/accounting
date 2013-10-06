@@ -16,6 +16,7 @@
 package de.togginho.accounting.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +46,12 @@ public class IncomeStatement implements Serializable {
     
     private ExpenseCollection capitalExpenses;
     private Map<String, Price> capitalExpenseCategories;
-        
+    
+    private boolean totalsUpToDate = false;
+    private Price totalExpenses;
+    private BigDecimal taxSum;
+    private Price grossProfit;
+    
 	/**
      * @return the timeFrame
      */
@@ -72,7 +78,19 @@ public class IncomeStatement implements Serializable {
      */
     public void setRevenue(Revenue revenue) {
     	this.revenue = revenue;
+    	totalsUpToDate = false;
     }
+    
+	/**
+	 * 
+	 * @return
+	 */
+	public Price getTotalRevenue() {
+		if (revenue != null) {
+			return revenue.getTotalRevenue();
+		}
+		return new Price();
+	}
     
     /**
      * @return the operatingExpenses
@@ -86,8 +104,23 @@ public class IncomeStatement implements Serializable {
      */
     public void setOperatingExpenses(ExpenseCollection operatingExpenses) {
     	this.operatingExpenses = operatingExpenses;
-    	this.operatingExpenseCategories = buildCategoryMap(operatingExpenses);
+    	if (operatingExpenses.getExpenses() != null) {
+    		this.operatingExpenseCategories = buildCategoryMap(operatingExpenses);
+    	}
+    	
+    	totalsUpToDate = false;
     }
+    
+    /**
+     * 
+     * @return
+     */
+	public Price getTotalOperatingCosts() {
+		if (operatingExpenses != null) {
+			return operatingExpenses.getTotalCost();
+		}
+		return new Price();
+	}
     
 	/**
      * @return the operatingExpenseCategories
@@ -108,7 +141,10 @@ public class IncomeStatement implements Serializable {
      */
     public void setOtherExpenses(ExpenseCollection otherExpenses) {
     	this.otherExpenses = otherExpenses;
-    	this.otherExpenseCategories = buildCategoryMap(otherExpenses);
+    	if (otherExpenses.getExpenses() != null) {
+    		this.otherExpenseCategories = buildCategoryMap(otherExpenses);
+    	}
+    	totalsUpToDate = false;
     }
 
 	/**
@@ -130,7 +166,10 @@ public class IncomeStatement implements Serializable {
      */
     public void setCapitalExpenses(ExpenseCollection capitalExpenses) {
     	this.capitalExpenses = capitalExpenses;
-    	this.capitalExpenseCategories = buildCategoryMap(capitalExpenses);
+    	if (capitalExpenses.getExpenses() != null) {
+    		this.capitalExpenseCategories = buildCategoryMap(capitalExpenses);
+    	}
+    	totalsUpToDate = false;
     }
 
 	/**
@@ -140,21 +179,42 @@ public class IncomeStatement implements Serializable {
     	return capitalExpenseCategories;
     }
 
+    /**
+     * 
+     * @return
+     */
+    public Price getTotalExpenses() {
+    	if (!totalsUpToDate) {
+    		calculateTotals();
+    	}
+    	
+    	return totalExpenses;
+    }
+    
 	/**
      * 
      * @return
      */
     public Price getGrossProfit() {
-    	Price grossProfit = revenue != null ? revenue.getTotalRevenue() : new Price();
-    	
-    	if (operatingExpenses != null) {
-    		grossProfit.subtract(operatingExpenses.getTotalCost());
+    	if (!totalsUpToDate) {
+    		calculateTotals();
     	}
     	
     	return grossProfit;
     }
     
     /**
+     * @return the taxSum
+     */
+    public BigDecimal getTaxSum() {
+    	if (!totalsUpToDate) {
+    		calculateTotals();
+    	}
+    	
+    	return taxSum;
+    }
+
+	/**
      * 
      * @param expenses
      * @return
@@ -171,5 +231,38 @@ public class IncomeStatement implements Serializable {
     	}
     	
     	return map;    	
+    }
+    
+    /**
+     * 
+     */
+    private void calculateTotals() {
+    	totalExpenses = new Price();
+    	taxSum = BigDecimal.ZERO;
+    	grossProfit = new Price();
+    	
+		if (revenue != null && revenue.getRevenueNet() != null) {
+			grossProfit.add(revenue.getTotalRevenue());
+			taxSum = revenue.getRevenueTax() != null ? revenue.getRevenueTax() : BigDecimal.ZERO;
+		}
+		
+    	if (operatingExpenses != null) {
+    		totalExpenses.add(operatingExpenses.getTotalCost());
+    		grossProfit.subtract(operatingExpenses.getTotalCost());
+    	}
+    	
+    	if (capitalExpenses != null) {
+    		totalExpenses.add(capitalExpenses.getTotalCost());
+    	}
+    	
+    	if (otherExpenses != null) {
+    		totalExpenses.add(otherExpenses.getTotalCost());
+    	}
+    	
+    	if (totalExpenses.getTax() != null) {
+    		taxSum = taxSum.subtract(totalExpenses.getTax());
+    	}
+    	
+    	totalsUpToDate = true;
     }
 }

@@ -33,6 +33,7 @@ import de.togginho.accounting.Constants;
 import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.CashFlowStatement;
+import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
@@ -49,7 +50,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 	
 	private FormToolkit formToolkit;
 	
-	private CashFlowStatement cashFlow;
+	private IncomeStatement incomeStatement;
 	
 	private Text revenueNet;
 	private Text revenueTax;
@@ -311,14 +312,12 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
 	 */
 	@Override
-	protected void updateModel(TimeFrame timeFrame) {
-		AccountingService service = AccountingUI.getAccountingService();
+	protected void updateModel(TimeFrame timeFrame) {		
+		incomeStatement = AccountingUI.getAccountingService().getIncomeStatement(timeFrame);
 		
-		cashFlow = service.getCashFlowStatement(timeFrame);
-		
-		Price revenue = cashFlow.getTotalRevenue();
-		Price totalExpenses = cashFlow.getTotalCosts();
-		Price opex = cashFlow.getOperatingCosts();
+		Price revenue = incomeStatement.getTotalRevenue();
+		Price totalExpenses = incomeStatement.getTotalExpenses();
+		Price opex = incomeStatement.getTotalOperatingCosts();
 		
 		setCurrencyValue(revenueNet, revenue.getNet());
 		setCurrencyValue(revenueGross, revenue.getGross());
@@ -332,11 +331,11 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 		setCurrencyValue(opexGross, opex.getGross());
 		setCurrencyValue(opexTax, opex.getTax());
 		
-		setCurrencyValue(grossProfit, cashFlow.getGrossProfit());
+		setCurrencyValue(grossProfit, incomeStatement.getGrossProfit().getNet());
 		
 		setCurrencyValue(outputTax, revenue.getTax());
 		setCurrencyValue(inputTax, totalExpenses.getTax());
-		setCurrencyValue(taxPayable, cashFlow.getTaxSum());
+		setCurrencyValue(taxPayable, incomeStatement.getTaxSum());
 //		
 //		if (BigDecimal.ZERO.compareTo(cashFlow.getGrossProfit()) > 0) {
 //			grossProfit.setEnabled(true);
@@ -350,13 +349,13 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected void handleExport() {
-		ReportGenerationUtil.executeReportGeneration(new CashFlowExportHandler(), getShell());
+		ReportGenerationUtil.executeReportGeneration(new IncomeStatementHandler(), getShell());
 	}
 	
 	/**
 	 *
 	 */
-	private class CashFlowExportHandler implements ReportGenerationHandler {
+	private class IncomeStatementHandler implements ReportGenerationHandler {
 
 		/**
          * {@inheritDoc}.
@@ -364,7 +363,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
          */
         @Override
         public String getTargetFileNameSuggestion() {
-	        return "CashFlow";
+	        return "IncomeStatement.pdf";
         }
 
 		/**
@@ -373,7 +372,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
          */
         @Override
         public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-        	reportingService.generateCashFlowToPdf(cashFlow, targetFileName, monitor);
+        	reportingService.generateCashFlowToPdf(null, targetFileName, monitor);
         }
 		
 	}

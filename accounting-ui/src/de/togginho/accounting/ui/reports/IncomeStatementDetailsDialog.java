@@ -339,8 +339,8 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 						Messages.labelTotals, 
 						Constants.EMPTY_STRING, 
 						FormatUtil.formatCurrency(expenses.getTotalCost().getNet()),
-						FormatUtil.formatCurrency(expenses.getTotalCost().getNet()),
-						FormatUtil.formatCurrency(expenses.getTotalCost().getNet())
+						FormatUtil.formatCurrency(expenses.getTotalCost().getTax()),
+						FormatUtil.formatCurrency(expenses.getTotalCost().getGross())
 						}
 		);
 		

@@ -18,7 +18,6 @@ package de.togginho.accounting.model;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.After;
@@ -64,6 +63,10 @@ public class ExpenseCollectionTest extends BaseTestFixture {
 	}
 
 	/**
+	 * OPEX: 300, 15, 315
+	 * CAPEX: 1000, 150, 1150
+	 * TOTAL: 1300, 165, 1465
+	 * 
 	 * Test method for {@link ExpenseCollection#setExpenses(java.util.Set)}.
 	 */
 	@Test
@@ -71,27 +74,9 @@ public class ExpenseCollectionTest extends BaseTestFixture {
 		ExpenseCollection ec = new ExpenseCollection();
 		ec.setExpenses(createTestExpenses());
 		
-		Price total = ec.getTotalCost();
+		assertIsTestExpenses(ec);
 		
-		assertAreEqual(new BigDecimal("1300"), total.getNet());
-		assertAreEqual(new BigDecimal("1465"), total.getGross());
-		assertAreEqual(new BigDecimal("165"), total.getTax());
-		
-		Price operating = ec.getCost(ExpenseType.OPEX);
-		assertAreEqual(new BigDecimal("300"), operating.getNet());
-		assertAreEqual(new BigDecimal("315"), operating.getGross());
-		assertAreEqual(new BigDecimal("15"), operating.getTax());
-		
-		Price capital = ec.getCost(ExpenseType.CAPEX);
-		assertAreEqual(new BigDecimal("1000"), capital.getNet());
-		assertAreEqual(new BigDecimal("150"), capital.getTax());
-		assertAreEqual(new BigDecimal("1150"), capital.getGross());
-		
-		Price nullExp = ec.getCost(null);
-		assertNotNull(nullExp);
-		assertAreEqual(BigDecimal.ZERO, nullExp.getNet());
-		assertNull(nullExp.getTax());
-		assertAreEqual(BigDecimal.ZERO, nullExp.getGross());
+		// this has all been outsourced so other tests can re-use the expense collection
 	}
 
 	/**
@@ -128,36 +113,6 @@ public class ExpenseCollectionTest extends BaseTestFixture {
 		assertTrue(types.contains(ExpenseType.CAPEX));
 		assertTrue(types.contains(ExpenseType.OTHER));
 		assertTrue(types.contains(null));
-	}
-	
-	/**
-	 * @return
-	 */
-	private Set<Expense> createTestExpenses() {
-		final TaxRate vat = getTestUser().getTaxRates().iterator().next();
-		Expense capex = new Expense();
-		capex.setExpenseType(ExpenseType.CAPEX);
-		capex.setNetAmount(new BigDecimal("1000"));
-		capex.setTaxRate(vat);
-		
-		Expense opex1 = new Expense();
-		opex1.setExpenseType(ExpenseType.OPEX);
-		opex1.setNetAmount(new BigDecimal("100"));
-		opex1.setTaxRate(vat);
-		
-		Expense opex2 = new Expense();
-		opex2.setExpenseType(ExpenseType.OPEX);
-		opex2.setNetAmount(new BigDecimal("200"));
-		
-		Expense nullEx = new Expense();
-		nullEx.setNetAmount(new BigDecimal("0"));
-		
-		Set<Expense> expenses = new HashSet<Expense>();
-		expenses.add(capex);
-		expenses.add(opex1);
-		expenses.add(opex2);
-		expenses.add(nullEx);
-		return expenses;
 	}
 
 }

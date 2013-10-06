@@ -15,12 +15,6 @@
  */
 package de.togginho.accounting.model;
 
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 import de.togginho.accounting.BaseTestFixture;
@@ -36,40 +30,6 @@ public class RevenueTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testRevenueCalculation() {
-		TaxRate taxRate = getTestUser().getTaxRates().iterator().next();
-		
-		// INVOICE 1
-		InvoicePosition ip1 = new InvoicePosition();
-		ip1.setPricePerUnit(new BigDecimal("50"));
-		ip1.setQuantity(new BigDecimal("160"));
-		ip1.setTaxRate(taxRate);
-		
-		List<InvoicePosition> ipList1 = new ArrayList<InvoicePosition>();
-		ipList1.add(ip1);
-		
-		Invoice invoice1 = new Invoice();
-		invoice1.setInvoicePositions(ipList1);
-		
-		// INVOICE 2
-		InvoicePosition ip2 = new InvoicePosition();
-		ip2.setPricePerUnit(new BigDecimal("598.78"));
-		ip2.setQuantity(BigDecimal.ONE);
-
-		List<InvoicePosition> ipList2 = new ArrayList<InvoicePosition>();
-		ipList2.add(ip2);
-		
-		Invoice invoice2 = new Invoice();
-		invoice2.setInvoicePositions(ipList2);		
-		
-		List<Invoice> invoices = new ArrayList<Invoice>();
-		invoices.add(invoice1);
-		invoices.add(invoice2);
-		
-		Revenue revenue = new Revenue();
-		revenue.setInvoices(invoices);
-		
-		assertEquals(0, new BigDecimal("8598.78").compareTo(revenue.getRevenueNet()));
-		assertEquals(0, new BigDecimal("9798.78").compareTo(revenue.getRevenueGross()));
-		assertEquals(0, new BigDecimal("1200").compareTo(revenue.getRevenueTax()));
+		assertIsTestRevenue(createTestRevenue());
 	}
 }
