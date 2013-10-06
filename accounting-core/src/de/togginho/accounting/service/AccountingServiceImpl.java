@@ -53,7 +53,6 @@ import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.io.ExpenseImporter;
-import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -899,18 +898,6 @@ public class AccountingServiceImpl implements AccountingService {
 	public void deleteExpense(Expense expense) {
 		doDeleteEntity(expense);
 		BUSINESS_LOG.info(String.format("Deleted expense [%s]", expense.getDescription())); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see AccountingService#getCashFlowStatement(TimeFrame)
-	 */
-	@Override
-	public CashFlowStatement getCashFlowStatement(TimeFrame timeFrame) {
-		final CashFlowStatement statement = new CashFlowStatement(timeFrame);
-		statement.setRevenue(getRevenue(timeFrame));
-		statement.setExpenses(findExpenses(timeFrame));
-		return statement;
 	}
 	
 	/**

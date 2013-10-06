@@ -17,22 +17,22 @@ package de.togginho.accounting.reporting;
 
 import java.util.Map;
 
-import de.togginho.accounting.model.CashFlowStatement;
+import de.togginho.accounting.model.IncomeStatement;
 
 /**
  * @author thorsten
  *
  */
-public class CashFlowReportGenerator extends AbstractReportGenerator {
-
-	private CashFlowStatement cashFlow;
+public class IncomeStatementSummaryReportGenerator extends AbstractReportGenerator {
 	
+	private IncomeStatement incomeStatement;
 	
 	/**
-     * 
-     */
-    public CashFlowReportGenerator(CashFlowStatement cashFlow) {
-    	this.cashFlow = cashFlow;
+	 * 
+	 * @param incomeStatement
+	 */
+    public IncomeStatementSummaryReportGenerator(IncomeStatement incomeStatement) {
+    	this.incomeStatement = incomeStatement;
     }
 
 	/**
@@ -50,7 +50,7 @@ public class CashFlowReportGenerator extends AbstractReportGenerator {
 	 */
 	@Override
 	protected String getReportTemplatePath() {
-		return "CashFlowTemplate.jasper";
+		return "IncomeStatementSummaryTemplate.jasper";
 	}
 
 	/**
@@ -59,7 +59,6 @@ public class CashFlowReportGenerator extends AbstractReportGenerator {
 	 */
 	@Override
 	protected AbstractReportDataSource getReportDataSource() {
-		return new CashFlowDataSource(cashFlow);
+		return new IncomeStatementSummaryDataSource(incomeStatement);
 	}
-
 }

@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -353,16 +352,7 @@ public interface AccountingService {
 	 */
 	@ModelChanging
 	void deleteExpense(Expense expense);
-	
-	/**
-	 * Returns the cash flow overview for the supplied time frame.
-	 * The cash flow statement will include both revenue and expense totals, along with figures like gross profit.
-	 *  
-	 * @param timeFrame the time frame for which to prepare a cash flow statement
-	 * @return the {@link CashFlowStatement} for the supplied time frame
-	 */
-	CashFlowStatement getCashFlowStatement(TimeFrame timeFrame);
-	
+		
 	/**
 	 * 
 	 * @param timeFrame

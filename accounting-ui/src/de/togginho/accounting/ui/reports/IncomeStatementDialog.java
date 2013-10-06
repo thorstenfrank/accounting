@@ -28,11 +28,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
-import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
@@ -363,7 +361,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
          */
         @Override
         public String getTargetFileNameSuggestion() {
-	        return "IncomeStatement.pdf";
+	        return "IncomeStatementSummary.pdf";
         }
 
 		/**
@@ -372,7 +370,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
          */
         @Override
         public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-        	reportingService.generateCashFlowToPdf(null, targetFileName, monitor);
+        	reportingService.generateIncomeStatementSummaryToPdf(incomeStatement, targetFileName, monitor);
         }
 		
 	}

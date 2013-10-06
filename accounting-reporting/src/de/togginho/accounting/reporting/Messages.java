@@ -28,23 +28,22 @@ public class Messages extends NLS {
 	public static String AbstractReportGenerator_errorTemplateNotFound;
 	public static String AbstractReportGenerator_errorFillingReport;
 	public static String AbstractReportGenerator_errorCreatingReport;
-
-	public static String CashFlowDataSource_cashFlow;
-	public static String CashFlowDataSource_expenses;
-	public static String CashFlowDataSource_gross;
-	public static String CashFlowDataSource_inputTax;
-	public static String CashFlowDataSource_net;
-	public static String CashFlowDataSource_outputTax;
-	public static String CashFlowDataSource_tax;
-	public static String CashFlowDataSource_taxSum;
-	public static String CashFlowDataSource_totalExpenses;
-	public static String CashFlowDataSource_vat;
-	public static String CashFlowDataSource_vatSum;
 	
 	public static String ExpensesDataSource_expensesTitle;
 	public static String ExpensesDataSource_expenseCategory;
 	
 	public static String IncomeStatement_title;
+	public static String IncomeStatementSummary_title;
+	public static String IncomeStatement_expenses;
+	public static String IncomeStatement_gross;
+	public static String IncomeStatement_inputTax;
+	public static String IncomeStatement_net;
+	public static String IncomeStatement_outputTax;
+	public static String IncomeStatement_tax;
+	public static String IncomeStatement_taxSum;
+	public static String IncomeStatement_totalExpenses;
+	public static String IncomeStatement_vat;
+	public static String IncomeStatement_vatSum;
 	
 	public static String InvoiceDataSource_invoiceDateTitle;
 	public static String InvoiceDataSource_invoiceNumberTitle;
@@ -77,7 +76,7 @@ public class Messages extends NLS {
 	public static String descriptionTitle;
 	public static String fromTitle;
 	public static String grossPriceTitle;
-	public static String grossProfitTitle;
+	public static String operatingProfitTitle;
 	public static String grossTitle;
 	public static String netPriceTitle;
 	public static String netTitle;

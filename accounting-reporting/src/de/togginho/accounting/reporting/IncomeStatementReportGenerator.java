@@ -63,21 +63,6 @@ public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 			params.put("OTHER_EXPENSES_DETAILS", 
 					new JRBeanCollectionDataSource(buildWrapperList(statement.getOtherExpenseCategories())));
 		}		
-		
-//		IncomeStatementDetailsWrapper w5 = new IncomeStatementDetailsWrapper();
-//		w5.setCategory("Alter Rechner");
-//		w5.setNet("€ 1.000");
-//		w5.setGross("€ 1.000");
-//		
-//		IncomeStatementDetailsWrapper w6 = new IncomeStatementDetailsWrapper();
-//		w6.setCategory("Älterer Rechner");
-//		w6.setNet("€ 937,48");
-//		w6.setGross("€ 937,48");
-//		
-//		List<IncomeStatementDetailsWrapper> depreciation = new ArrayList<IncomeStatementDetailsWrapper>();
-//		depreciation.add(w5);
-//		depreciation.add(w6);
-//		params.put("DEPRECIATION_DETAILS", new JRBeanCollectionDataSource(depreciation));
 	}
 
 	/**
@@ -109,7 +94,7 @@ public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 	 */
 	@Override
 	protected String getReportTemplatePath() {
-		return "IncomeStatementTemplate.jasper";
+		return "IncomeStatementDetailsTemplate.jasper";
 	}
 
 	/**

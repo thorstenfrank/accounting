@@ -15,12 +15,11 @@
  */
 package de.togginho.accounting;
 
-import de.togginho.accounting.model.CashFlowStatement;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.reporting.CashFlowReportGenerator;
+import de.togginho.accounting.reporting.IncomeStatementSummaryReportGenerator;
 import de.togginho.accounting.reporting.ExpensesReportGenerator;
 import de.togginho.accounting.reporting.IncomeStatementReportGenerator;
 import de.togginho.accounting.reporting.InvoiceGenerator;
@@ -64,16 +63,20 @@ class ReportingServiceImpl implements ReportingService {
     }
     
     /**
-     * 
      * {@inheritDoc}.
-     * @see ReportingService#generateCashFlowToPdf(CashFlowStatement, String, ReportGenerationMonitor)
+     * @see ReportingService#generateIncomeStatementSummaryToPdf(IncomeStatement, String, ReportGenerationMonitor)
      */
     @Override
-    public void generateCashFlowToPdf(CashFlowStatement cashFlow, String fileLocation, ReportGenerationMonitor monitor) {
-    	CashFlowReportGenerator generator = new CashFlowReportGenerator(cashFlow);
-    	generator.generateReportToFile(fileLocation, monitor);
+    public void generateIncomeStatementSummaryToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
+    	IncomeStatementSummaryReportGenerator generator = new IncomeStatementSummaryReportGenerator(incomeStatement);
+	    generator.generateReportToFile(fileLocation, monitor);
     }
-    
+
+	/**
+     * 
+     * {@inheritDoc}.
+     * @see ReportingService#generateIncomeStatementToPdf(IncomeStatement, String, ReportGenerationMonitor)
+     */
     @Override
     public void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
     	IncomeStatementReportGenerator generator = new IncomeStatementReportGenerator(incomeStatement);

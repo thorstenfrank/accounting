@@ -166,6 +166,33 @@ public class IncomeStatementWrapper implements Serializable {
 		return FormatUtil.formatCurrency(incomeStatement.getCapitalExpenses().getTotalCost().getGross());
 	}
 	
+    /**
+     * 
+     * @return
+     */
+    public String getTotalCostsNet() {
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalExpenses().getNet());
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getTotalCostsTax() {
+    	if (incomeStatement.getTotalExpenses().getTax() == null) {
+    		return Constants.HYPHEN;
+    	}
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalExpenses().getTax());
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getTotalCostsGross() {
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalExpenses().getGross());
+    }
+	
 	/**
 	 * 
 	 * @return
@@ -189,6 +216,30 @@ public class IncomeStatementWrapper implements Serializable {
 	public String getEBITDAgross() {
 		return FormatUtil.formatCurrency(incomeStatement.getGrossProfit().getGross());
 	}
+	
+    /**
+     * 
+     * @return
+     */
+    public String getInputTax() {
+    	return getTotalCostsTax();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getOutputTax() {
+    	return getRevenueTax();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getTaxSum() {
+    	return FormatUtil.formatCurrency(incomeStatement.getTaxSum());
+    }
 	
 	/**
 	 * 

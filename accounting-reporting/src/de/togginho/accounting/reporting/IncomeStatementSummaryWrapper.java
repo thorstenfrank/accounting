@@ -16,30 +16,23 @@
 package de.togginho.accounting.reporting;
 
 import de.togginho.accounting.Constants;
-import de.togginho.accounting.model.CashFlowStatement;
+import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
  *
  */
-public class CashFlowWrapper {
-
-	private CashFlowStatement cashFlow;
-
-	/**
-     * @param cashFlow
-     */
-    protected CashFlowWrapper(CashFlowStatement cashFlow) {
-	    this.cashFlow = cashFlow;
-    }
+public class IncomeStatementSummaryWrapper {
+	
+	private IncomeStatement incomeStatement;
     
     /**
      * 
      * @return
      */
     public String getFromDate() {
-    	return FormatUtil.formatDate(cashFlow.getTimeFrame().getFrom());
+    	return FormatUtil.formatDate(incomeStatement.getTimeFrame().getFrom());
     }
     
     /**
@@ -47,7 +40,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getUntilDate() {
-    	return FormatUtil.formatDate(cashFlow.getTimeFrame().getUntil());
+    	return FormatUtil.formatDate(incomeStatement.getTimeFrame().getUntil());
     }
     
     /**
@@ -55,7 +48,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTotalRevenueNet() {
-    	return FormatUtil.formatCurrency(cashFlow.getTotalRevenue().getNet());
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalRevenue().getNet());
     }
     
     /**
@@ -63,7 +56,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTotalRevenueGross() {
-    	return FormatUtil.formatCurrency(cashFlow.getTotalRevenue().getGross());
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalRevenue().getGross());
     }
     
     /**
@@ -71,10 +64,10 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTotalRevenueTaxes() {
-    	if (cashFlow.getTotalRevenue().getTax() == null) {
+    	if (incomeStatement.getTotalRevenue().getTax() == null) {
     		return Constants.HYPHEN;
     	}
-    	return FormatUtil.formatCurrency(cashFlow.getTotalRevenue().getTax());
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalRevenue().getTax());
     }
     
     /**
@@ -82,7 +75,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getOpexNet() {
-    	return FormatUtil.formatCurrency(cashFlow.getOperatingCosts().getNet());
+    	return FormatUtil.formatCurrency(incomeStatement.getOperatingExpenses().getTotalCost().getNet());
     }
 
     /**
@@ -90,7 +83,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getOpexTax() {
-    	return FormatUtil.formatCurrency(cashFlow.getOperatingCosts().getTax());
+    	return FormatUtil.formatCurrency(incomeStatement.getOperatingExpenses().getTotalCost().getTax());
     }
     
     /**
@@ -98,7 +91,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getOpexGross() {
-    	return FormatUtil.formatCurrency(cashFlow.getOperatingCosts().getGross());
+    	return FormatUtil.formatCurrency(incomeStatement.getOperatingExpenses().getTotalCost().getGross());
     }
     
     /**
@@ -106,7 +99,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTotalCostsNet() {
-    	return FormatUtil.formatCurrency(cashFlow.getTotalCosts().getNet());
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalExpenses().getNet());
     }
     
     /**
@@ -114,10 +107,10 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTotalCostsTax() {
-    	if (cashFlow.getTotalCosts().getTax() == null) {
+    	if (incomeStatement.getTotalExpenses().getTax() == null) {
     		return Constants.HYPHEN;
     	}
-    	return FormatUtil.formatCurrency(cashFlow.getTotalCosts().getTax());
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalExpenses().getTax());
     }
     
     /**
@@ -125,7 +118,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTotalCostsGross() {
-    	return FormatUtil.formatCurrency(cashFlow.getTotalCosts().getGross());
+    	return FormatUtil.formatCurrency(incomeStatement.getTotalExpenses().getGross());
     }
     
     /**
@@ -149,7 +142,7 @@ public class CashFlowWrapper {
      * @return
      */
     public String getTaxSum() {
-    	return FormatUtil.formatCurrency(cashFlow.getTaxSum());
+    	return FormatUtil.formatCurrency(incomeStatement.getTaxSum());
     }
     
     /**
@@ -157,6 +150,6 @@ public class CashFlowWrapper {
      * @return
      */
     public String getGrossProfit() {
-    	return FormatUtil.formatCurrency(cashFlow.getGrossProfit());
+    	return FormatUtil.formatCurrency(incomeStatement.getGrossProfit().getNet());
     }
 }

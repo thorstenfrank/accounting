@@ -53,7 +53,7 @@ public class IncomeStatementDataSource extends AbstractReportDataSource {
 		IncomeStatement statement = wrapper.getIncomeStatement();
 		fieldMap.put("revenue.title", Messages.revenueTitle);
 		fieldMap.put("opex.title", ExpenseType.OPEX.getTranslatedString());
-		fieldMap.put("ebitda.title", Messages.grossProfitTitle);
+		fieldMap.put("ebitda.title", Messages.operatingProfitTitle);
 
 //		fieldMap.put("depreciation.title", "Abschreibungen");		
 //		fieldMap.put("ebit.title", "EBIT");
