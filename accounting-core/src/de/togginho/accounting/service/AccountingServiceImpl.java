@@ -756,6 +756,10 @@ public class AccountingServiceImpl implements AccountingService {
     	// get all invoices
     	List<Invoice> allInvoices = new ArrayList<Invoice>(findInvoices(InvoiceState.PAID));
     	
+    	if (allInvoices.isEmpty()) {
+    		return totalRevenue;
+    	}
+    	
     	// sort ascending
     	sortInvoicesByPaymentDateAscending(allInvoices);
     	
