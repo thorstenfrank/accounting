@@ -16,6 +16,8 @@
 package de.togginho.accounting;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -275,6 +277,26 @@ public abstract class BaseTestFixture {
 		assertAreEqual(new BigDecimal("1000"), capital.getNet());
 		assertAreEqual(new BigDecimal("150"), capital.getTax());
 		assertAreEqual(new BigDecimal("1150"), capital.getGross());
+		
+		int found = 0;
+		
+		for (Expense expense : ec.getExpenses()) {
+			if ("Capex Description".equals(expense.getDescription())) {
+				assertEquals("Capex Category", expense.getCategory());
+				assertNotNull(expense.getTaxRate());
+				found++;
+			} else if ("Opex Desc One".equals(expense.getDescription())) {
+				assertEquals("Opex Cat One", expense.getCategory());
+				assertNotNull(expense.getTaxRate());
+				found++;
+			} else if ("Opex Desc Two".equals(expense.getDescription())) {
+				assertEquals("Opex Cat Two", expense.getCategory());
+				assertNull(expense.getTaxRate());
+				found++;
+			}
+		}
+		
+		assertEquals(3, found);
     }
     
     /**

@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -53,8 +54,18 @@ public class ExpenseImporter {
 	 * @return
 	 * @throws AccountingException
 	 */
-	public static Collection<Expense> importExpenses(String sourceFile, Set<TaxRate> knownTaxRates) {		
-        return new ExpenseImporter(new File(sourceFile), knownTaxRates).parse();
+	public static Collection<Expense> importExpenses(String sourceFile, Set<TaxRate> knownTaxRates) {
+		return importExpenses(new File(sourceFile), knownTaxRates);
+	}
+	
+	/**
+	 * 
+	 * @param sourceFile
+	 * @param knownTaxRates
+	 * @return
+	 */
+	public static Collection<Expense> importExpenses(File sourceFile, Set<TaxRate> knownTaxRates) {		
+        return new ExpenseImporter(sourceFile, knownTaxRates).parse();
 	}
 	
 	private File inputFile;
@@ -90,57 +101,53 @@ public class ExpenseImporter {
      */
     private Collection<Expense> parse() {
     	Collection<Expense> imported = new ArrayList<Expense>();
-    	
-    	String[] parts = readInputFileContents().split(separator);
-		if (parts.length < 1) {
-			throw new AccountingException("No expenses found in file " + inputFile.getName());
-		}
-		
-		Expense current = new Expense();
-		
-		int index = 0;
-		for (String part : parts) {
-			part = part.trim();
-			
-			if (part.length() > 0) {
-				switch (index) {
-				case 0:
-					parseDate(current, part);
-					break;
-				case 1:
-					current.setDescription(part);
-					break;
-				case 2:
-					parseExpenseType(current, part);
-					break;
-				case 3:
-					current.setCategory(part);
-					break;
-				case 4:
-					parseNetAmount(current, part);
-					break;
-				case 5:
-					parseTaxRate(current, part);
-					break;
-				default:
-					break;
-				}
+    	    	
+    	for (String line : readInputFileByLine()) {
+    		LOG.debug("Importing line: " + line); //$NON-NLS-1$
+    		
+	    	String[] parts = line.split(separator);
+			if (parts.length < 1) {
+				LOG.warn("Empty or illegal line in import file!"); //$NON-NLS-1$
+				continue;
 			}
 			
-			if (index == 5) {
-				imported.add(current);
-				current = new Expense();
-				index = 0;
-			} else {
+			Expense current = new Expense();
+			
+			int index = 0;
+			for (String part : parts) {
+				part = part.trim();
+				
+				if (part.length() > 0) {
+					switch (index) {
+					case 0:
+						parseDate(current, part);
+						break;
+					case 1:
+						current.setDescription(part);
+						break;
+					case 2:
+						parseExpenseType(current, part);
+						break;
+					case 3:
+						current.setCategory(part);
+						break;
+					case 4:
+						parseNetAmount(current, part);
+						break;
+					case 5:
+						parseTaxRate(current, part);
+						break;
+					default:
+						break;
+					}
+				}
+				
 				index++;
 			}
-		}
-		
-		// make sure the final expense of the file gets added as well
-		if (index <= 5) {
+			
 			imported.add(current);
-		}
-		
+    	}
+    	
 		return imported;
     }
     
@@ -148,18 +155,23 @@ public class ExpenseImporter {
      * 
      * @return
      */
-    private String readInputFileContents() {
+    private List<String> readInputFileByLine() {
+    	
 		try {
 	        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), encoding));
-	        StringBuilder sb = new StringBuilder();
-	        int read;
-	        while ((read = in.read()) != -1) {
-	        	sb.append((char) read);
+	        
+	        final List<String> lines = new ArrayList<>();
+	        
+	        String line = in.readLine();
+	        
+	        while (line != null) {
+	        	lines.add(line);
+	        	line = in.readLine();
 	        }
 	        
 	        in.close();
 	        
-	        return sb.toString();
+	        return lines;
         } catch (UnsupportedEncodingException e) {
         	LOG.error("Unknown encoding", e); //$NON-NLS-1$
         	throw new AccountingException("Unknown encoding", e);
@@ -217,7 +229,6 @@ public class ExpenseImporter {
     	}
     	
     	BigDecimal rate = FormatUtil.parseDecimalValue(source);
-    	LOG.debug(rate.toString());
     	for (TaxRate taxRate : knownTaxRates) {
     		if (rate.compareTo(taxRate.getRate()) == 0) {
     			target.setTaxRate(taxRate);
