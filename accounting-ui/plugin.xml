@@ -128,6 +128,14 @@
                   visible="true">
             </separator>
             <command
+                  commandId="de.togginho.accounting.ui.util.LanguageSelection"
+                  style="push">
+            </command>
+            <separator
+                  name="fileMenuSep4"
+                  visible="true">
+            </separator>
+            <command
                   commandId="org.eclipse.ui.file.exit"
                   label="%command.exit.label"
                   style="push">
@@ -766,6 +774,11 @@
             defaultHandler="de.togginho.accounting.ui.reports.OpenIncomeStatementDetailsHandler"
             id="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
             name="%command.reports.incomeStatementDetails.name">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.util.LanguageSelectionHandler"
+            id="de.togginho.accounting.ui.util.LanguageSelection"
+            name="%command.switch.language">
       </command>
    </extension>
    <extension

@@ -145,6 +145,17 @@ public class Messages extends NLS {
 	public static String InvoiceView_state;
 	public static String InvoiceView_dueDate;
 	
+	public static String LanguageSelectionHandler_Language;
+	public static String LanguageSelectionHandler_Title;
+	public static String LanguageSelectionHandler_Message;
+	public static String LanguageSelectionHandler_RestartTitle;
+	public static String LanguageSelectionHandler_RestartMessage;
+	public static String LanguageSelectionHandler_RestartNow;
+	public static String LanguageSelectionHandler_RestartLater;
+	public static String LanguageSelectionHandler_ErrorTitle;
+	public static String LanguageSelectionHandler_ErrorReading;
+	public static String LanguageSelectionHandler_ErrorWriting;
+	
 	public static String MarkInvoiceAsPaidCommand_errorPaymentDateBeforeSentDate;
 	public static String MarkInvoiceAsPaidCommand_errorPaymentDateInTheFuture;
 	public static String MarkInvoiceAsPaidCommand_message;

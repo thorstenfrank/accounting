@@ -18,11 +18,8 @@ package de.togginho.accounting.ui.user;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -113,12 +110,7 @@ public class UserEditor extends AbstractAccountingEditor {
 			user.setBankAccount(new BankAccount());
 		}
 		createBankAccountSection(user.getBankAccount());
-		
-//		if (user.getClients() == null) {
-//			user.setClients(new HashSet<Client>());
-//		}
-//		createClientList();
-		
+				
 		createTaxRateSection();
 		
 		form.getToolBarManager().add(ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
@@ -178,35 +170,36 @@ public class UserEditor extends AbstractAccountingEditor {
 		createText(basicSectionClient, user.getTaxNumber(), user, User.FIELD_TAX_NUMBER);
 		
 		toolkit.createLabel(basicSectionClient, "Default Currency:");
-		Combo combo = new Combo(basicSectionClient, SWT.DROP_DOWN | SWT.READ_ONLY);
-		WidgetHelper.grabHorizontal(combo);
+		final Combo currencyCombo = new Combo(basicSectionClient, SWT.DROP_DOWN | SWT.READ_ONLY);
+		WidgetHelper.grabHorizontal(currencyCombo);
 		
 		List<String> currencies = new ArrayList<String>();
-		Map<String, String> daMap = new HashMap<String, String>();
-		for (Locale locale : Locale.getAvailableLocales()) {
-			if (locale.getCountry() != null && locale.getLanguage() != null) {
-				LOG.debug("LOCALE: " + locale.getCountry() + " / " + locale.getLanguage());
-				
-				try {
-					Currency currency = Currency.getInstance(locale);
-					LOG.debug("analyzing currency: " + currency.toString());
-					if (currencies.contains(currency)) {
-						LOG.debug("Already there, skipping...");
-					} else {
-						currencies.add(currency.getCurrencyCode());
-						daMap.put(currency.getCurrencyCode(), currency.getCurrencyCode() + " - " + currency.getNumericCode() + " - " + currency.getSymbol(locale) + " - " + currency.getDisplayName());
-					}					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
+		for (Currency currency : Currency.getAvailableCurrencies()) {
+			currencies.add(String.format("%s - %s - %s", currency.getCurrencyCode(), currency.getDisplayName(), currency.getSymbol()));
 		}
 		
 		Collections.sort(currencies);
-		for (String code : currencies) {
-			combo.add(daMap.get(code));
+		
+		int index = 0;
+		for (String currency : currencies) {
+			currencyCombo.add(currency);
+			index++;
 		}
+
+		LOG.debug("Total number of available currencies: " + index); //$NON-NLS-1$
+		
+		currencyCombo.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * {@inheritDoc}
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				LOG.debug("Currency " + currencyCombo.getText());
+			}
+			
+		});
 		
 		toolkit.createLabel(basicSectionClient, Messages.labelDescription);
 		Text description = toolkit.createText(basicSectionClient, user.getDescription(), SWT.MULTI | SWT.BORDER);
