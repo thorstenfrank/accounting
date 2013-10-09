@@ -16,6 +16,8 @@
 package de.togginho.accounting.ui.reports;
 
 
+import java.util.Calendar;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -361,7 +363,27 @@ public class IncomeStatementDialog extends AbstractReportDialog {
          */
         @Override
         public String getTargetFileNameSuggestion() {
-	        return "IncomeStatementSummary.pdf";
+        	StringBuffer sb = new StringBuffer("IncomeStatementSummary");
+        	
+        	TimeFrame timeFrame = incomeStatement.getTimeFrame();
+        	
+        	Calendar from = Calendar.getInstance();
+        	from.setTime(timeFrame.getFrom());
+        	Calendar until = Calendar.getInstance();
+        	until.setTime(timeFrame.getUntil());
+        	
+        	if (from.get(Calendar.YEAR) == until.get(Calendar.YEAR)) {
+        		sb.append("_").append(from.get(Calendar.YEAR));
+            	if (from.get(Calendar.MONTH) == until.get(Calendar.MONTH)) {
+            		int month = from.get(Calendar.MONTH) + 1;
+            		if (month < 10) {
+            			sb.append("0");
+            		}
+            		sb.append(month);
+            	}
+        	}
+        	
+	        return sb.toString();
         }
 
 		/**
