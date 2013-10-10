@@ -18,22 +18,13 @@ package de.togginho.accounting.ui.expense;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.ui.IViewPart;
 
-import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.AbstractModalDialog;
+import de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
@@ -44,16 +35,18 @@ import de.togginho.accounting.util.TimeFrameType;
  * @author thorsten
  *
  */
-public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandler {
+public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelectionHandler {
 
+	/**
+	 * 
+	 */
 	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewTimeFrameCommand.class);
 	
+	/**
+	 * 
+	 */
 	private static final String PARAMETER_NAME = "timeFrame"; //$NON-NLS-1$
-	
-	private TimeFrame currentTimeFrame;
-	private DateTime from;
-	private DateTime to;
-	
+		
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
@@ -74,17 +67,17 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 		if (!extractTimeFrameFromParameter(event)) {
 			LOG.debug("No time frame supplied as parameter, now showing chooser dialog"); //$NON-NLS-1$
 			
-			currentTimeFrame = expensesView.getCurrentTimeFrame();
+			setCurrentTimeFrame(expensesView.getCurrentTimeFrame());
 			if (!extractTimeFrameFromPopup(event)) {
 				LOG.debug("Choosing time frame was cancelled by user"); //$NON-NLS-1$
 				return;
 			}
 		}
 		
-		if (currentTimeFrame != null) {
+		if (getCurrentTimeFrame() != null) {
 			LOG.info("Changing expenses view"); //$NON-NLS-1$
-			expensesView.setCurrentTimeFrame(currentTimeFrame);
-			expensesView.modelChanged();			
+			expensesView.setCurrentTimeFrame(getCurrentTimeFrame());
+			expensesView.modelChanged();
 		} else {
 			LOG.warn("No time frame provided, cancelling execution of this command!"); //$NON-NLS-1$
 		}
@@ -101,30 +94,30 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
             	TimeFrameType type = TimeFrameType.valueOf(param);
             	switch (type) {
 				case CURRENT_MONTH:
-					currentTimeFrame = TimeFrame.currentMonth();
+					setCurrentTimeFrame(TimeFrame.currentMonth());
 					break;
 				case CURRENT_YEAR:
-					currentTimeFrame = TimeFrame.currentYear();
+					setCurrentTimeFrame(TimeFrame.currentYear());
 					break;
 				case LAST_MONTH:
-					currentTimeFrame = TimeFrame.lastMonth();
+					setCurrentTimeFrame(TimeFrame.lastMonth());
 					break;
 				case LAST_YEAR:
-					currentTimeFrame = TimeFrame.lastYear();
+					setCurrentTimeFrame(TimeFrame.lastYear());
 					break;
 				default:
-					currentTimeFrame = null;
+					setCurrentTimeFrame(null);
 					break;
 				}
             } catch (Exception e) {
             	LOG.error("Error trying to retrieve TimeFrameType for parameter " + param, e); //$NON-NLS-1$
-            	currentTimeFrame = null;
+            	setCurrentTimeFrame(null);
             }
 		} else {
-			currentTimeFrame = null;
+			setCurrentTimeFrame(null);
 		}
 		
-		return currentTimeFrame != null;
+		return getCurrentTimeFrame() != null;
     }
 
 	/**
@@ -138,97 +131,13 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractAccountingHandle
 			
 			@Override
 			protected void createMainContents(Composite parent) {
-				Composite composite = new Composite(parent, SWT.NONE);
-				composite.setLayout(new GridLayout(2, false));
-				WidgetHelper.grabHorizontal(composite);
-				
-				buildButtonForTimeFrame(composite, TimeFrameType.CURRENT_MONTH);
-				buildButtonForTimeFrame(composite, TimeFrameType.LAST_MONTH);
-				buildButtonForTimeFrame(composite, TimeFrameType.CURRENT_YEAR);
-				buildButtonForTimeFrame(composite, TimeFrameType.LAST_YEAR);
-        		
-        		final Button custom = new Button(composite, SWT.RADIO);
-        		custom.setSelection(currentTimeFrame.getType() == TimeFrameType.CUSTOM);
-        		
-        		Composite dates = new Composite(composite, SWT.NONE);
-        		dates.setLayout(new RowLayout());
-        		
-        		WidgetHelper.createLabel(dates, Messages.labelFrom);
-        		from = new DateTime(dates, SWT.DROP_DOWN);
-        		from.addSelectionListener(new SelectionAdapter() {
-        			@Override
-        			public void widgetSelected(SelectionEvent e) {
-        				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(from));
-        				LOG.debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
-        				custom.setSelection(true);
-        			}
-				});
-        		
-        		WidgetHelper.createLabel(dates, Messages.labelUntil);
-        		to = new DateTime(dates, SWT.DROP_DOWN);
-        		to.addSelectionListener(new SelectionAdapter() {
-        			@Override
-        			public void widgetSelected(SelectionEvent e) {
-        				currentTimeFrame.setUntil(WidgetHelper.widgetToDate(to));
-        				LOG.debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
-        				custom.setSelection(true);
-        			}
-				});
-        		
-        		currentTimeFrameChanged();
+				buildTimeFrameSelectionComposite(parent);
 			}
 		};
 		
 		return dialog.show();
     }
-    
-	/**
-	 * 
-	 * @param parent
-	 * @param type
-	 */
-	private void buildButtonForTimeFrame(Composite parent, TimeFrameType type) {
-		final Button button = new Button(parent, SWT.RADIO);
-		button.setText(type.getTranslatedName());
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(button);
-		final TimeFrame timeFrame;
-		switch (type) {
-		case CURRENT_YEAR:
-			timeFrame = TimeFrame.currentYear();
-			break;
-		case LAST_MONTH:
-			timeFrame = TimeFrame.lastMonth();
-			break;
-		case LAST_YEAR:
-			timeFrame = TimeFrame.lastYear();
-			break;
-		default:
-			timeFrame = TimeFrame.currentMonth();
-			break;
-		}
-		
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (button.getSelection()) { // only need to react if the button was actually selected (ignore deselect)
-					currentTimeFrame = timeFrame;
-					currentTimeFrameChanged();					
-				}
-			}
-		});
-		
-		button.setSelection(currentTimeFrame.getType() == type);
-	}
-
-	/**
-	 * 
-	 */
-	private void currentTimeFrameChanged() {
-		WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
-		WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), to);
-		LOG.debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
-	}
-	
+    	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#getLogger()

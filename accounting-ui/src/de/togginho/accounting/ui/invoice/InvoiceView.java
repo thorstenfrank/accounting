@@ -52,6 +52,7 @@ import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
 import de.togginho.accounting.util.FormatUtil;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * @author thorsten
@@ -78,17 +79,18 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 	/** The viewer. */
 	private TableViewer tableViewer;
 	private InvoiceViewTableSorter sorter;
-	private Set<InvoiceState> invoiceFilter;
+	private Set<InvoiceState> invoiceStateFilter;
+	private TimeFrame timeFrameFilter;
 	
 	/**
 	 * 
 	 */
 	public InvoiceView() {
-		this.invoiceFilter = new HashSet<InvoiceState>();
+		this.invoiceStateFilter = new HashSet<InvoiceState>();
 		// fill invoice filter with default values
-		invoiceFilter.add(InvoiceState.CREATED);
-		invoiceFilter.add(InvoiceState.OVERDUE);
-		invoiceFilter.add(InvoiceState.SENT);
+		invoiceStateFilter.add(InvoiceState.CREATED);
+		invoiceStateFilter.add(InvoiceState.OVERDUE);
+		invoiceStateFilter.add(InvoiceState.SENT);
     }
 
 	/**
@@ -236,11 +238,32 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
     }
     
 	/**
-     * @return the invoiceFilter
+     * @return the invoiceStateFilter
      */
-    protected Set<InvoiceState> getInvoiceFilter() {
-    	return invoiceFilter;
+    protected Set<InvoiceState> getInvoiceStateFilter() {
+    	return invoiceStateFilter;
     }
+    
+	/**
+	 * @param invoiceStateFilter the invoiceStateFilter to set
+	 */
+	protected void setInvoiceStateFilter(Set<InvoiceState> invoiceStateFilter) {
+		this.invoiceStateFilter = invoiceStateFilter;
+	}
+
+	/**
+	 * @return the timeFrameFilter
+	 */
+	protected TimeFrame getTimeFrameFilter() {
+		return timeFrameFilter;
+	}
+
+	/**
+	 * @param timeFrameFilter the timeFrameFilter to set
+	 */
+	protected void setTimeFrameFilter(TimeFrame timeFrameFilter) {
+		this.timeFrameFilter = timeFrameFilter;
+	}
 
 	/**
 	 * 
@@ -249,12 +272,13 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 	private Set<Invoice> getInvoicesWithFilter() {
 		Set<Invoice> invoices = null;
 		
-		if (invoiceFilter == null || invoiceFilter.isEmpty()) {
+		InvoiceState[] states = null;
+		if (invoiceStateFilter != null && !invoiceStateFilter.isEmpty()) {
 			invoices = AccountingUI.getAccountingService().findInvoices();
-		} else {
-			invoices = AccountingUI.getAccountingService().findInvoices(
-					(InvoiceState[]) invoiceFilter.toArray(new InvoiceState[invoiceFilter.size()]));
-		}
+			states = (InvoiceState[]) invoiceStateFilter.toArray(new InvoiceState[invoiceStateFilter.size()]);
+		} 
+		
+		invoices = AccountingUI.getAccountingService().findInvoices(timeFrameFilter, states);
 		
 		LOG.debug("Number of invoices found: " + invoices.size()); //$NON-NLS-1$
 		return invoices;

@@ -698,20 +698,21 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<Invoice> findInvoices(InvoiceState... states) {
-		StringBuilder sb = new StringBuilder("findInvoices for user"); //$NON-NLS-1$
-		sb.append(" [").append(context.getUserName()).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (states != null) {
-			sb.append(" in state "); //$NON-NLS-1$
-			for (InvoiceState state : states) {
-				sb.append(" [").append(state).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-		LOG.debug(sb.toString()); 
-		
+		return findInvoices(null, states);
+	}
+
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.AccountingService#findInvoices(de.togginho.accounting.util.TimeFrame, de.togginho.accounting.model.InvoiceState[])
+	 */
+	@Override
+	public Set<Invoice> findInvoices(TimeFrame timeFrame, InvoiceState... states) {
 		Set<Invoice> invoices = new HashSet<Invoice>();
 
 		try {
-			invoices.addAll(objectContainer.query(new FindInvoicesPredicate(context, states)));
+			invoices.addAll(objectContainer.query(new FindInvoicesPredicate(context, timeFrame, states)));
 		} catch (Db4oIOException e) {
 			throwDb4oIoException(e);
 		} catch (DatabaseClosedException e) {

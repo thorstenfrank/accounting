@@ -270,6 +270,11 @@ public interface AccountingService {
 	Invoice copyInvoice(Invoice invoice, String invoiceNumber);
 	
 	/**
+	 * This is a shortcut to calling {@link #findInvoices(<code>null</code>, InvoiceState...)}
+	 */
+	Set<Invoice> findInvoices(InvoiceState... states);
+
+	/**
 	 * Finds all invoices for the current user that match the specified states.
 	 * 
 	 * <p>The current user is the user denoted by the user name in the {@link AccountingContext} that this service was
@@ -280,11 +285,16 @@ public interface AccountingService {
 	 * <p>This method will never return <code>null</code>, if there were no invoices found for the specified arguments,
 	 * an empty {@link Set} is returned.</p>
 	 * 
-	 * @param states an arbitrary number of {@link InvoiceState}s that the returned invoices must match
+	 * @param timeFrame an optional time frame in which an invoice's {@link Invoice#getInvoiceDate()} must be. 
+	 * 				    May be <code>null</code>
+	 * @param states an optional and arbitrary number of {@link InvoiceState}s that the returned invoices must match
+	 * 			     May be <code>null</code>, which is the same as supplying all available states
+	 * 
 	 * @return a {@link Set} of {@link Invoice} instances for the current user matching the supplied states
+	 * 
 	 * @throws AccountingException if a technical error occurred while accessing persistence
 	 */
-	Set<Invoice> findInvoices(InvoiceState... states);
+	Set<Invoice> findInvoices(TimeFrame timeFrame, InvoiceState... states);
 	
 	/**
 	 * Finds and returns revenue for the given timeframe.

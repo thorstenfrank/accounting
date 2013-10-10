@@ -24,6 +24,7 @@ import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * A predicate to search for invoices belonging to a user.
@@ -48,6 +49,8 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 	 */
 	private Set<InvoiceState> states;
 	
+	private TimeFrame timeFrame;
+	
 	/**
 	 * Creates a new predicate.
 	 * 
@@ -65,6 +68,24 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 	}
 	
 	/**
+	 * @param context
+	 * @param timeFrame
+	 * @param states
+	 */
+	FindInvoicesPredicate(AccountingContext context, TimeFrame timeFrame, InvoiceState... states) {
+		this.context = context;
+		this.timeFrame = timeFrame;
+		if (states != null) {
+			this.states = new HashSet<InvoiceState>();
+			for (InvoiceState state : states) {
+				this.states.add(state);
+			}
+		}
+	}
+
+
+
+	/**
 	 * {@inheritDoc}
 	 * @see com.db4o.query.Predicate#match(java.lang.Object)
 	 */
@@ -75,6 +96,9 @@ class FindInvoicesPredicate extends Predicate<Invoice> {
 		}
 		
 		if (context.getUserName().equals(invoice.getUser().getName())) {
+			if (timeFrame != null && invoice.getInvoiceDate() != null && !timeFrame.isInTimeFrame(invoice.getInvoiceDate())) {
+				return false;
+			}
 			if (states == null || states.isEmpty()) {
 				return true;
 			} else {
