@@ -40,16 +40,19 @@ class FindExpensesPredicate extends Predicate<Expense> {
     private Set<ExpenseType> expenseTypes = null;
     
     /**
+     * Creates a predicate with only the supplied types as parameters.
      * 
+     * @param types expense types to include in matching. May be <code>null</code>
      */
-    FindExpensesPredicate() {
-    	
+    FindExpensesPredicate(ExpenseType...types) {
+    	this(null, types);
     }
     
     /**
+     * Creates a predicate that matches only expenses within the suppplied timeframe and  of the supplied types.
      * 
-     * @param timeFrame
-     * @param types
+     * @param timeFrame {@link Expense#getPaymentDate()} must be within this timeframe
+     * @param types expense types to include in matching. May be <code>null</code>
      */
     FindExpensesPredicate(TimeFrame timeFrame, ExpenseType...types) {
     	this.timeFrame = timeFrame;
