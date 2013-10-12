@@ -437,7 +437,8 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 		
 		@Override
 		public String getTargetFileNameSuggestion() {
-			return "IncomeStatement.pdf";
+			return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
+					Messages.IncomeStatementDetailsDialog_fileNameSuggestion, incomeStatement.getTimeFrame());
 		}		
 	}
 }

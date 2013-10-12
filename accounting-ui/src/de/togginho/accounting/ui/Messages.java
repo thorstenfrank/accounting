@@ -129,8 +129,9 @@ public class Messages extends NLS {
 	public static String IncomeStatementDialog_sum;
 	public static String IncomeStatementDialog_title;
 	public static String IncomeStatementDialog_totalExpenses;
-	
+	public static String IncomeStatementDialog_fileNameSuggestion;
 	public static String IncomeStatementDetailsDialog_title;
+	public static String IncomeStatementDetailsDialog_fileNameSuggestion;
 	
 	public static String InvoiceEditor_details;
 	public static String InvoiceEditor_header;

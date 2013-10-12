@@ -325,7 +325,8 @@ public class RevenueDialog extends AbstractReportDialog {
          */
         @Override
         public String getTargetFileNameSuggestion() {
-	        return Messages.RevenueDialog_defaultFilename;
+	        return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
+	        		Messages.RevenueDialog_defaultFilename, revenue.getTimeFrame());
         }
 
 		/**

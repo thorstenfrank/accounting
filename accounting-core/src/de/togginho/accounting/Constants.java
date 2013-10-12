@@ -36,4 +36,7 @@ public interface Constants {
 	
 	/** The percentage sign (%). */
 	public static final String PERCENTAGE_SIGN = "%";
+	
+	/** And underscore (_). */
+	public static final String UNDERSCORE = "_";
 }

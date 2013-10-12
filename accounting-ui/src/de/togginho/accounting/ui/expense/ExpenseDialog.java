@@ -337,8 +337,13 @@ public class ExpenseDialog extends AbstractReportDialog {
 		 */
 		@Override
 		public String getTargetFileNameSuggestion() {
-			// TODO make this configurable and include the time frame
-			return "Expenses.pdf";
+			if (selectedType == null) {
+				return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
+						Messages.labelExpenses, expenseCollection.getTimeFrame());
+			} else {
+				return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
+						selectedType.getTranslatedString(), expenseCollection.getTimeFrame());
+			}
 		}
 
 		/**

@@ -17,6 +17,7 @@ package de.togginho.accounting.ui.reports;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,10 +29,12 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.util.TimeFrame;
 
 /**
  * @author thorsten
@@ -55,14 +58,6 @@ public class ReportGenerationUtil {
 		
 	}
 	
-//	/**
-//	 * 
-//	 * @param handler
-//	 */
-//	public static void executeReportGeneration(ReportGenerationHandler handler) {
-//		executeReportGeneration(handler, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-//	}
-	
 	/**
 	 * 
 	 * @param handler
@@ -70,6 +65,46 @@ public class ReportGenerationUtil {
 	 */
 	public static void executeReportGeneration(ReportGenerationHandler handler, Shell shell) {
 		new ReportGenerationUtil().doExecuteReportGeneration(handler, shell);
+	}
+	
+	/**
+	 * Builds a filename suggestion appended by optional timeframe data.
+	 * 
+	 * <ul>
+	 * <li><code>[fileNameBase]_[year][month]</code> if start and end dates are within the same month and year</li>
+	 * <li><code>[fileNameBase]_[year]</code> if start and end dates are within the same year but different months</li>
+	 * </ul>
+	 * 
+	 * @param fileNameBase the "naked" file name suggestion, i.e. without any extensions
+	 * 
+	 * @param timeFrame an optional timeframe used for building a file name
+	 * 
+	 * @return the complete filename suggestion
+	 */
+	public static String appendTimeFrameToFileNameSuggestion(String fileNameBase, TimeFrame timeFrame) {
+		if (timeFrame == null) {
+			return fileNameBase;
+		}
+		
+		StringBuffer sb = new StringBuffer(fileNameBase);
+		
+    	Calendar from = Calendar.getInstance();
+    	from.setTime(timeFrame.getFrom());
+    	Calendar until = Calendar.getInstance();
+    	until.setTime(timeFrame.getUntil());
+    	
+    	if (from.get(Calendar.YEAR) == until.get(Calendar.YEAR)) {
+    		sb.append(Constants.UNDERSCORE).append(from.get(Calendar.YEAR));
+        	if (from.get(Calendar.MONTH) == until.get(Calendar.MONTH)) {
+        		int month = from.get(Calendar.MONTH) + 1;
+        		if (month < 10) { // prepend a zero to single-digit months
+        			sb.append("0"); //$NON-NLS-1$
+        		}
+        		sb.append(month);
+        	}
+    	}
+		
+		return sb.toString();
 	}
 	
 	/**
