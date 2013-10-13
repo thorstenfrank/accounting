@@ -22,24 +22,18 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.ui.AbstractTableSorter;
+import de.togginho.accounting.ui.AbstractTableView;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
@@ -52,7 +46,7 @@ import de.togginho.accounting.util.TimeFrameType;
  * @author thorsten
  *
  */
-public class ExpensesView extends ViewPart implements IDoubleClickListener, ModelChangeListener {
+public class ExpensesView extends AbstractTableView implements ModelChangeListener {
 	
 	private static final Logger LOG = Logger.getLogger(ExpensesView.class);
 	
@@ -81,39 +75,13 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		final TableColumn colDate = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DATE).getColumn();
-		colDate.setText(Messages.labelDate);
-		tcl.setColumnData(colDate, new ColumnWeightData(1, true));
-		sorter.addSortingSupport(tableViewer, colDate, ExpenseTableSorter.COL_INDEX_DATE);
-		
-		final TableColumn colDesc = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_DESC).getColumn();
-		colDesc.setText(Messages.labelDescription);
-		tcl.setColumnData(colDesc, new ColumnWeightData(2, true));
-		sorter.addSortingSupport(tableViewer, colDesc, ExpenseTableSorter.COL_INDEX_DESC);
-		
-		final TableColumn colCategory = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_CATEGORY).getColumn();
-		colCategory.setText(Messages.labelCategory);
-		tcl.setColumnData(colCategory, new ColumnWeightData(1, true));
-		sorter.addSortingSupport(tableViewer, colCategory, ExpenseTableSorter.COL_INDEX_CATEGORY);
-		
-		final TableColumn colNet = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_NET).getColumn();
-		colNet.setText(Messages.labelNet);
-		colNet.setAlignment(SWT.RIGHT);
-		tcl.setColumnData(colNet, new ColumnWeightData(1, true));
-		sorter.addSortingSupport(tableViewer, colNet, ExpenseTableSorter.COL_INDEX_NET);
-		
-		final TableColumn colTax = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_TAX).getColumn();
-		colTax.setText(Messages.labelTaxes);
-		colTax.setAlignment(SWT.RIGHT);
-		tcl.setColumnData(colTax, new ColumnWeightData(1, true));
-		sorter.addSortingSupport(tableViewer, colTax, ExpenseTableSorter.COL_INDEX_TAX);
-
-		final TableColumn colGross = new TableViewerColumn(tableViewer, SWT.NONE, ExpenseTableSorter.COL_INDEX_GROSS).getColumn();
-		colGross.setText(Messages.labelGross);
-		colGross.setAlignment(SWT.RIGHT);
-		tcl.setColumnData(colGross, new ColumnWeightData(1, true));
-		sorter.addSortingSupport(tableViewer, colGross, ExpenseTableSorter.COL_INDEX_GROSS);
-		
+		TableColumn colDate = addColumn(ExpenseTableSorter.COL_INDEX_DATE, Messages.labelDate, tcl, 1);
+		addColumn(ExpenseTableSorter.COL_INDEX_DESC, Messages.labelDescription, tcl, 2);
+		addColumn(ExpenseTableSorter.COL_INDEX_CATEGORY, Messages.labelCategory, tcl, 1);
+		addColumn(ExpenseTableSorter.COL_INDEX_NET, Messages.labelNet, SWT.RIGHT, tcl, 1, true);
+		addColumn(ExpenseTableSorter.COL_INDEX_TAX, Messages.labelTaxes, SWT.RIGHT, tcl, 1, true);
+		addColumn(ExpenseTableSorter.COL_INDEX_GROSS, Messages.labelGross, SWT.RIGHT, tcl, 1, true);
+				
 		tableViewer.setLabelProvider(new ExpenseTableLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.currentTimeFrame = TimeFrame.currentMonth();
@@ -131,6 +99,42 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		modelChanged();
 	}
 	
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getLogger()
+     */
+    @Override
+    protected Logger getLogger() {
+    	return LOG;
+    }
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getDoubleClickCommand()
+     */
+    @Override
+    protected String getDoubleClickCommand() {
+	    return IDs.CMD_EDIT_EXPENSE;
+    }
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getTableViewer()
+     */
+    @Override
+    protected TableViewer getTableViewer() {
+	    return tableViewer;
+    }
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getTableSorter()
+     */
+    @Override
+    protected AbstractTableSorter<?> getTableSorter() {
+	    return sorter;
+    }
+    
 	/**
 	 * 
 	 * @return
@@ -154,32 +158,6 @@ public class ExpensesView extends ViewPart implements IDoubleClickListener, Mode
 		// unregister myself as a listener
 		AccountingUI.removeModelChangeListener(this);
 		super.dispose();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-	 */
-	@Override
-	public void doubleClick(DoubleClickEvent event) {		
-		IHandlerService handlerService = 
-			(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
-		
-		try {
-			handlerService.executeCommand(IDs.CMD_EDIT_EXPENSE, new Event());
-		} catch (Exception e) {
-			LOG.error("Error opening invoice editor", e); //$NON-NLS-1$
-		}
 	}
 
 	/**

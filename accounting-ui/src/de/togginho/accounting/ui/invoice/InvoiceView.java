@@ -25,32 +25,28 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.BaseLabelProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.part.ViewPart;
 
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.Price;
+import de.togginho.accounting.ui.AbstractTableSorter;
+import de.togginho.accounting.ui.AbstractTableView;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
+import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
 
@@ -58,12 +54,13 @@ import de.togginho.accounting.util.TimeFrame;
  * @author thorsten
  *
  */
-public class InvoiceView extends ViewPart implements IDoubleClickListener, ModelChangeListener {
+public class InvoiceView extends AbstractTableView implements ModelChangeListener {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceView"; //$NON-NLS-1$
 	
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(InvoiceView.class);
+	private static final Logger SORTER_LOG = Logger.getLogger(InvoiceViewTableSorter.class);
 	
 	/**
 	 * 
@@ -71,16 +68,19 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 	private static final Map<InvoiceState, Image> INVOICE_STATE_TO_IMAGE_MAP = new HashMap<InvoiceState, Image>();
 	
 	// column indices
-	protected static final int COL_INDEX_INVOICE_NUMBER = 0;
-	protected static final int COL_INDEX_INVOICE_STATE = 1;
-	protected static final int COL_INDEX_CLIENT = 2;
-	protected static final int COL_INDEX_DUE_DATE = 3;
+	private static final int COL_INDEX_INVOICE_NUMBER = 0;
+	private static final int COL_INDEX_INVOICE_STATE = 1;
+	private static final int COL_INDEX_CLIENT = 2;
+	private static final int COL_INDEX_DUE_DATE = 3;
+	private static final int COL_INDEX_AMOUNT_NET = 4;
+	private static final int COL_INDEX_AMOUNT_GROSS = 5;
 	
 	/** The viewer. */
 	private TableViewer tableViewer;
 	private InvoiceViewTableSorter sorter;
 	private Set<InvoiceState> invoiceStateFilter;
 	private TimeFrame timeFrameFilter;
+	private Map<Invoice, Price> invoicePrices;
 	
 	/**
 	 * 
@@ -119,38 +119,19 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		
 		sorter = new InvoiceViewTableSorter();
 		
-		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_NUMBER);
-		final TableColumn col1col = col1.getColumn();
-		col1col.setText(Messages.InvoiceView_number);
-		tcl.setColumnData(col1col, new ColumnWeightData(10, true));
-		addSortingSupport(col1col, COL_INDEX_INVOICE_NUMBER);
-		
-		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_INVOICE_STATE);
-		final TableColumn col2col = col2.getColumn();
-		col2col.setText(Messages.InvoiceView_state);
-		col2col.setAlignment(SWT.CENTER);
-		tcl.setColumnData(col2col, new ColumnWeightData(10, true));
-		addSortingSupport(col2col, COL_INDEX_INVOICE_STATE);
-		
-		TableViewerColumn col3 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_CLIENT);
-		final TableColumn col3col = col3.getColumn();
-		col3col.setText(Messages.labelClient);
-		tcl.setColumnData(col3col, new ColumnWeightData(15, true));
-		addSortingSupport(col3col, COL_INDEX_CLIENT);
-		
-		TableViewerColumn col4 = new TableViewerColumn(tableViewer, SWT.NONE, COL_INDEX_DUE_DATE);
-		final TableColumn col4col = col4.getColumn();
-		col4col.setText(Messages.InvoiceView_dueDate);
-		tcl.setColumnData(col4col, new ColumnWeightData(10, true));
-		addSortingSupport(col4col, COL_INDEX_DUE_DATE);
+		TableColumn firstColumn = addColumn(COL_INDEX_INVOICE_NUMBER, Messages.InvoiceView_number, tcl, 10);
+		addColumn(COL_INDEX_INVOICE_STATE, Messages.InvoiceView_state, tcl, 10);
+		addColumn(COL_INDEX_CLIENT, Messages.labelClient, tcl, 15);
+		addColumn(COL_INDEX_DUE_DATE, Messages.InvoiceView_dueDate, tcl, 10);
+		addColumn(COL_INDEX_AMOUNT_NET, Messages.labelNet, SWT.RIGHT, tcl, 10, true);
+		addColumn(COL_INDEX_AMOUNT_GROSS, Messages.labelGross, SWT.RIGHT, tcl, 10, true);
 		
 		tableViewer.setLabelProvider(new InvoiceLabelProvider());
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-		tableViewer.setInput(getInvoicesWithFilter());
 		
 		sorter.setSortColumnIndex(COL_INDEX_INVOICE_NUMBER);
 		tableViewer.setComparator(sorter);
-		table.setSortColumn(col1col);
+		table.setSortColumn(firstColumn);
 		
 		// make sure double-clicks are processed
 		tableViewer.addDoubleClickListener(this);
@@ -160,33 +141,46 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		Menu menu = menuManager.createContextMenu(tableViewer.getControl());
 		tableViewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, tableViewer);
+		
+		modelChanged();
 	}
+	
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getLogger()
+     */
+    @Override
+    protected Logger getLogger() {
+	    return LOG;
+    }
 
 	/**
-	 * 
-	 * @param col
-	 * @param columnIndex
-	 */
-	private void addSortingSupport(final TableColumn col, final int columnIndex) {
-		col.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.getTable().setSortColumn(col);
-				sorter.setSortColumnIndex(columnIndex);
-				tableViewer.refresh();
-			}
-		});
-	}
-	
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getDoubleClickCommand()
+     */
+    @Override
+    protected String getDoubleClickCommand() {
+	    return IDs.CMD_EDIT_INVOICE;
+    }
+
 	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-		tableViewer.getControl().setFocus();
-	}
-	
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getTableViewer()
+     */
+    @Override
+    protected TableViewer getTableViewer() {
+	    return tableViewer;
+    }
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.AbstractTableView#getTableSorter()
+     */
+    @Override
+    protected AbstractTableSorter<?> getTableSorter() {
+	    return sorter;
+    }
+
 	/**
 	 * 
 	 */
@@ -205,24 +199,6 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		super.dispose();
 	}
 	
-	/**
-	 * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-	 */
-	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		String invoiceNumber = event.getSelection().toString();
-		LOG.debug("DoubleClick: " + invoiceNumber); //$NON-NLS-1$
-		
-		IHandlerService handlerService = 
-			(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
-		
-		try {
-			handlerService.executeCommand(IDs.CMD_EDIT_INVOICE, new Event());
-		} catch (Exception e) {
-			LOG.error("Error opening invoice editor", e); //$NON-NLS-1$
-		}
-	}
-
 	/**
      * @see de.togginho.accounting.ui.ModelChangeListener#modelChanged()
      */
@@ -281,6 +257,14 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 		invoices = AccountingUI.getAccountingService().findInvoices(timeFrameFilter, states);
 		
 		LOG.debug("Number of invoices found: " + invoices.size()); //$NON-NLS-1$
+		
+		// re-create the price map for viewing and sorting so the prices don't have to be re-calculated constantly
+		invoicePrices = new HashMap<Invoice, Price>();
+		
+		for (Invoice invoice : invoices) {
+			invoicePrices.put(invoice, CalculationUtil.calculateTotalPrice(invoice));
+		}
+		
 		return invoices;
 	}
 	
@@ -338,10 +322,88 @@ public class InvoiceView extends ViewPart implements IDoubleClickListener, Model
 					return invoice.getClient() != null ? invoice.getClient().getName() : Constants.HYPHEN;
 				case COL_INDEX_DUE_DATE:
 					return invoice.getDueDate() != null ? FormatUtil.formatDate(invoice.getDueDate()) : Constants.HYPHEN;
+				case COL_INDEX_AMOUNT_NET:
+					return FormatUtil.formatCurrency(invoicePrices.get(invoice).getNet());
+				case COL_INDEX_AMOUNT_GROSS:
+					return FormatUtil.formatCurrency(invoicePrices.get(invoice).getGross());
 		    	}
         	}
         	
         	return Constants.HYPHEN;
         }
+	}
+	
+	/**
+	 * 
+	 * @author thorsten
+	 *
+	 */
+	private class InvoiceViewTableSorter extends AbstractTableSorter<Invoice> {
+		
+		
+		/**
+		 * 
+		 */
+		protected InvoiceViewTableSorter() {
+			super(Invoice.class);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @see de.togginho.accounting.ui.AbstractTableSorter#getLogger()
+		 */
+		@Override
+		protected Logger getLogger() {
+			return SORTER_LOG;
+		}
+
+		/**
+		 * {@inheritDoc}.
+		 * @see AbstractTableSorter#doCompare(Object, Object, int)
+		 */
+		@Override
+		protected int doCompare(Invoice i1, Invoice i2, int columnIndex) {
+			int result = 0;
+			switch (columnIndex) {
+			case InvoiceView.COL_INDEX_INVOICE_NUMBER:
+				result = i1.getNumber().compareTo(i2.getNumber());
+				break;
+			case InvoiceView.COL_INDEX_INVOICE_STATE:
+				result = i1.getState().compareTo(i2.getState());
+				break;
+			case InvoiceView.COL_INDEX_CLIENT:
+				result = compareClients(i1.getClient(), i2.getClient());
+				break;
+			case InvoiceView.COL_INDEX_DUE_DATE:
+				result = i1.getDueDate().compareTo(i2.getDueDate());
+				break;
+			case InvoiceView.COL_INDEX_AMOUNT_NET:
+				result = invoicePrices.get(i1).getNet().compareTo(invoicePrices.get(i2).getNet());
+				break;
+			case InvoiceView.COL_INDEX_AMOUNT_GROSS:
+				result = invoicePrices.get(i1).getGross().compareTo(invoicePrices.get(i2).getGross());
+				break;
+			default:
+				break;
+			}
+			
+			return result;
+		}
+
+		/**
+		 * 
+		 * @param c1
+		 * @param c2
+		 * @return
+		 */
+		private int compareClients(Client c1, Client c2) {
+			if (c1 == null && c2 != null) {
+				return 1;
+			} else if (c1 != null && c2 == null) {
+				return -1;
+			}
+			
+			return c1.getName().compareTo(c2.getName());
+		}
 	}
 }
