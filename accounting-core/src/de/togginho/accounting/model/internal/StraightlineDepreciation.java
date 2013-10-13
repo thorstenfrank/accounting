@@ -30,28 +30,36 @@ import de.togginho.accounting.model.Expense;
  * @author thorsten
  *
  */
-public class StraightlineDepreciation {
+public class StraightlineDepreciation implements Depreciation {
 	
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 2147139507234466389L;
 	private static final MathContext MATH_CONTEXT = new MathContext(34, RoundingMode.HALF_UP);
 	private static final int SCALE = 2;
 	private static final int MONTHS_IN_YEAR = 12;
 	
 	private Expense expense;
 	
-	private int depreciationPeriodInYears;
-	
-	private BigDecimal salvageValue;
-	
+	/**
+     * @param expense
+     */
+    public StraightlineDepreciation(Expense expense) {
+	    this.expense = expense;
+    }
+
 	/**
 	 * 
 	 * @return
 	 */
-	public BigDecimal getTotalDepreciationAmount() {
+	@Override
+    public BigDecimal getTotalDepreciationAmount() {
 		BigDecimal amount;
-		if (salvageValue == null) {
+		if (expense.getSalvageValue() == null) {
 			amount = expense.getNetAmount();
 		} else {
-			amount = expense.getNetAmount().subtract(salvageValue);
+			amount = expense.getNetAmount().subtract(expense.getSalvageValue());
 		}
 		return amount;
 	}
@@ -61,14 +69,15 @@ public class StraightlineDepreciation {
 	 * @return
 	 */
 	private BigDecimal getAnnualDepreciationAmountUnrounded() {
-		return expense.getNetAmount().divide(new BigDecimal(depreciationPeriodInYears), MATH_CONTEXT);
+		return expense.getNetAmount().divide(new BigDecimal(expense.getDepreciationPeriodInYears()), MATH_CONTEXT);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public BigDecimal getAnnualDepreciationAmount() {
+	@Override
+    public BigDecimal getAnnualDepreciationAmount() {
 		return getAnnualDepreciationAmountUnrounded().setScale(SCALE, MATH_CONTEXT.getRoundingMode());
 	}
 	
@@ -84,7 +93,8 @@ public class StraightlineDepreciation {
 	 * 
 	 * @return
 	 */
-	public BigDecimal getMonthlyDepreciationAmount() {
+	@Override
+    public BigDecimal getMonthlyDepreciationAmount() {
 		return getMonthlyDepreciationAmountUnrounded().setScale(SCALE, MATH_CONTEXT.getRoundingMode());
 	}
 
@@ -92,7 +102,8 @@ public class StraightlineDepreciation {
 	 * 
 	 * @return
 	 */
-	public List<AnnualDepreciation> getDepreciationSchedule() {
+	@Override
+    public List<AnnualDepreciation> getDepreciationSchedule() {
 		List<AnnualDepreciation> schedule = new ArrayList<AnnualDepreciation>();
 		
 		BigDecimal annualDepreciationAmount = getAnnualDepreciationAmount();
@@ -104,7 +115,7 @@ public class StraightlineDepreciation {
 		final int startingYear = cal.get(Calendar.YEAR);
 		final int monthsFirstYear = MONTHS_IN_YEAR - cal.get(Calendar.MONTH);
 		
-		int finalYear = startingYear + depreciationPeriodInYears;
+		int finalYear = startingYear + expense.getDepreciationPeriodInYears();
 		
 		// cut off the final (partial) year if the expense was made in january
 		if (monthsFirstYear == MONTHS_IN_YEAR) {
@@ -113,6 +124,7 @@ public class StraightlineDepreciation {
 		
 		// Calculate first year
 		AnnualDepreciation adFirst = new AnnualDepreciation();
+		adFirst.setBeginningOfYearBookValue(expense.getNetAmount());
 		adFirst.setYear(startingYear);
 		adFirst.setDepreciationAmount(
 				getMonthlyDepreciationAmountUnrounded().multiply(new BigDecimal(monthsFirstYear), MATH_CONTEXT)
@@ -126,14 +138,17 @@ public class StraightlineDepreciation {
 		
 		int currentYear = startingYear + 1;
 		while (currentYear < finalYear) {
+			AnnualDepreciation ad = new AnnualDepreciation();
+			ad.setYear(currentYear);
+			ad.setDepreciationAmount(annualDepreciationAmount);
+			ad.setBeginningOfYearBookValue(currentBookValue);
+			
 			accumulated = accumulated.add(annualDepreciationAmount);
 			currentBookValue = currentBookValue.subtract(annualDepreciationAmount);
 			
-			AnnualDepreciation ad = new AnnualDepreciation();
-			ad.setDepreciationAmount(annualDepreciationAmount);
 			ad.setAccumulatedDepreciation(accumulated);
 			ad.setEndOfYearBookValue(currentBookValue);
-			ad.setYear(currentYear);
+			
 			schedule.add(ad);
 			currentYear++;
 		}
@@ -141,10 +156,11 @@ public class StraightlineDepreciation {
 		// calculate final year
 		AnnualDepreciation adLast = new AnnualDepreciation();
 		adLast.setYear(finalYear);
+		adLast.setBeginningOfYearBookValue(currentBookValue);
 		
-		if (salvageValue != null) {
-			adLast.setDepreciationAmount(currentBookValue.subtract(salvageValue));
-			adLast.setEndOfYearBookValue(salvageValue);
+		if (expense.getSalvageValue() != null) {
+			adLast.setDepreciationAmount(currentBookValue.subtract(expense.getSalvageValue()));
+			adLast.setEndOfYearBookValue(expense.getSalvageValue());
 		} else {
 			adLast.setDepreciationAmount(currentBookValue);
 			adLast.setEndOfYearBookValue(BigDecimal.ZERO);
@@ -154,57 +170,16 @@ public class StraightlineDepreciation {
 		
 		return schedule;
 	}
-		
-	/**
-	 * @return the expense
-	 */
-	public Expense getExpense() {
-		return expense;
-	}
-
-	/**
-	 * @param expense the expense to set
-	 */
-	public void setExpense(Expense expense) {
-		this.expense = expense;
-	}
-
-	/**
-	 * @return the depreciationPeriodInYears
-	 */
-	public int getDepreciationPeriodInYears() {
-		return depreciationPeriodInYears;
-	}
-
-	/**
-	 * @param depreciationPeriodInYears the depreciationPeriodInYears to set
-	 */
-	public void setDepreciationPeriodInYears(int depreciationPeriodInYears) {
-		this.depreciationPeriodInYears = depreciationPeriodInYears;
-	}
-
-	/**
-	 * @return the salvageValue
-	 */
-	public BigDecimal getSalvageValue() {
-		return salvageValue;
-	}
-
-	/**
-	 * @param salvageValue the salvageValue to set
-	 */
-	public void setSalvageValue(BigDecimal salvageValue) {
-		this.salvageValue = salvageValue;
-	}
-
+	
 	/**
 	 * @return the depreciationEnd
 	 */
-	public Date getDepreciationEnd() {
+	@Override
+    public Date getDepreciationEnd() {
 		if (expense != null && expense.getPaymentDate() != null) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(expense.getPaymentDate());
-			cal.add(Calendar.YEAR, depreciationPeriodInYears);
+			cal.add(Calendar.YEAR, expense.getDepreciationPeriodInYears());
 			cal.add(Calendar.MONTH, -1);
 			return cal.getTime();
 		}

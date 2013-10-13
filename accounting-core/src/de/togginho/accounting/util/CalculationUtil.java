@@ -16,16 +16,20 @@
 package de.togginho.accounting.util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.TaxRate;
+import de.togginho.accounting.model.internal.StraightlineDepreciation;
 
 /**
  * Utility class for calculating prices of {@link InvoicePosition} and and entire {@link Invoice}.
@@ -183,5 +187,17 @@ public final class CalculationUtil {
     	}
     	
     	return new Price(net, tax, gross); 
+    }
+    
+    public static List<AnnualDepreciation> calculateDepreciationSchedule(Expense expense) {
+    	if (expense.getDepreciationMethod() == null) {
+    		return new ArrayList<AnnualDepreciation>();
+    	}
+    	switch (expense.getDepreciationMethod()) {
+		case STRAIGHTLINE:
+			return new StraightlineDepreciation(expense).getDepreciationSchedule();
+		default:
+			return new ArrayList<AnnualDepreciation>();
+		}
     }
 }

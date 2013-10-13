@@ -54,7 +54,7 @@ import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.conversion.CurrencyToStringConverter;
+import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
 import de.togginho.accounting.ui.conversion.FromStructuredSelectionConverter;
 import de.togginho.accounting.ui.conversion.StringToBigDecimalConverter;
 import de.togginho.accounting.ui.conversion.ToStructuredSelectionConverter;
@@ -115,7 +115,8 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		toPrice = new UpdateValueStrategy();
 		toPrice.setConverter(StringToBigDecimalConverter.getInstance());
 		fromPrice = new UpdateValueStrategy();
-		fromPrice.setConverter(CurrencyToStringConverter.getInstance());
+		//fromPrice.setConverter(CurrencyToStringConverter.getInstance());
+		fromPrice.setConverter(BigDecimalToStringConverter.getInstance());
 	}
 		
 	/**
@@ -186,7 +187,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 			public void keyTraversed(TraverseEvent e) {
 				String text = categoryCombo.getCombo().getText();
 				
-				if (!expenseCategories.contains(text)) {
+				if (!expenseCategories.contains(text) && !Constants.HYPHEN.equals(text)) {
 					LOG.debug("Adding new value to dropdown: " + text); //$NON-NLS-1$
 					categoryCombo.add(text);
 					categoryCombo.setSelection(new StructuredSelection(text));

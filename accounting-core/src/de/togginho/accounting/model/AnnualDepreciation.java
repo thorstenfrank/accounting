@@ -30,7 +30,9 @@ public class AnnualDepreciation implements Serializable {
 	private static final long serialVersionUID = 3456661660912928780L;
 
 	private int year;
-		
+	
+	private BigDecimal beginningOfYearBookValue;
+	
 	private BigDecimal endOfYearBookValue;
 	
 	private BigDecimal depreciationAmount;
@@ -50,6 +52,20 @@ public class AnnualDepreciation implements Serializable {
 	public void setYear(int year) {
 		this.year = year;
 	}
+
+	/**
+     * @return the beginningOfYearBookValue
+     */
+    public BigDecimal getBeginningOfYearBookValue() {
+    	return beginningOfYearBookValue;
+    }
+
+	/**
+     * @param beginningOfYearBookValue the beginningOfYearBookValue to set
+     */
+    public void setBeginningOfYearBookValue(BigDecimal beginningOfYearBookValue) {
+    	this.beginningOfYearBookValue = beginningOfYearBookValue;
+    }
 
 	/**
 	 * @return the endOfYearBookValue
