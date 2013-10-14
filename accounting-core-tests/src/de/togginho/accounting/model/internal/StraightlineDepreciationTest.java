@@ -50,11 +50,9 @@ public class StraightlineDepreciationTest extends BaseTestFixture {
 		Expense expense = new Expense();
 		expense.setNetAmount(new BigDecimal("2000"));
 		expense.setPaymentDate(cal.getTime());
-
-		depreciation = new StraightlineDepreciation();
-		depreciation.setDepreciationPeriodInYears(3);
-		depreciation.setExpense(expense);
-		depreciation.setSalvageValue(new BigDecimal("1"));
+		expense.setDepreciationPeriodInYears(3);
+		expense.setSalvageValue(new BigDecimal("1"));
+		depreciation = new StraightlineDepreciation(expense);
 	}
 
 	/**
@@ -102,13 +100,12 @@ public class StraightlineDepreciationTest extends BaseTestFixture {
 		assertEquals(2015, cal.get(Calendar.YEAR));
 		assertEquals(Calendar.APRIL, cal.get(Calendar.MONTH));
 		
-		StraightlineDepreciation dep2 = new StraightlineDepreciation();
-		dep2.setDepreciationPeriodInYears(5);
 		Expense e2 = new Expense();
 		cal.set(Calendar.YEAR, 2012);
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
 		e2.setPaymentDate(cal.getTime());
-		dep2.setExpense(e2);
+		e2.setDepreciationPeriodInYears(5);
+		StraightlineDepreciation dep2 = new StraightlineDepreciation(e2);
 		
 		assertNotNull(dep2.getDepreciationEnd());
 		cal.setTime(dep2.getDepreciationEnd());
@@ -162,10 +159,8 @@ public class StraightlineDepreciationTest extends BaseTestFixture {
 		Expense expense = new Expense();
 		expense.setNetAmount(new BigDecimal("5000"));
 		expense.setPaymentDate(cal.getTime());
-
-		depreciation = new StraightlineDepreciation();
-		depreciation.setDepreciationPeriodInYears(5);
-		depreciation.setExpense(expense);
+		expense.setDepreciationPeriodInYears(5);
+		depreciation = new StraightlineDepreciation(expense);
 		
 		List<AnnualDepreciation> plan = depreciation.getDepreciationSchedule();
 		assertEquals(5, plan.size());
