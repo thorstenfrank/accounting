@@ -28,14 +28,34 @@ import de.togginho.accounting.model.AnnualDepreciation;
  */
 public interface Depreciation extends Serializable {
 
+	/**
+	 * 
+	 * @return
+	 */
 	Date getDepreciationEnd();
 
+	/**
+	 * 
+	 * @return
+	 */
 	List<AnnualDepreciation> getDepreciationSchedule();
 
+	/**
+	 * 
+	 * @return
+	 */
 	BigDecimal getMonthlyDepreciationAmount();
 
+	/**
+	 * 
+	 * @return
+	 */
 	BigDecimal getAnnualDepreciationAmount();
 
+	/**
+	 * 
+	 * @return
+	 */
 	BigDecimal getTotalDepreciationAmount();
 
 }
