@@ -392,7 +392,7 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		assertNull(ec.getTimeFrame());
 		assertNotNull(ec.getExpenses());
-		assertTrue(ec.getExpenses().isEmpty());
+		assertTrue("Expenses should be empty, but contains: " + ec.getExpenses().size(), ec.getExpenses().isEmpty());
 		
 		Expense e1 = new Expense();
 		e1.setDescription("Expense 1");
@@ -480,6 +480,10 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		// check if sorting was done properly
 		assertEquals(cat1, categories.get(0));
 		assertEquals(cat2, categories.get(1));
+		
+		for (Expense saved : serviceUnderTest.findExpenses(null).getExpenses()) {
+			serviceUnderTest.deleteExpense(saved);
+		}
 	}
 	
 	/**
