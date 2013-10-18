@@ -74,6 +74,7 @@ public class Messages extends NLS {
 	public static String ExpenseType_OTHER;
 	
 	public static String DepreciationMethod_STRAIGHTLINE;
+	public static String DepreciationMethod_FULL;
 	
 	public static String TimeFrameType_currentMonth;
 	public static String TimeFrameType_lastMonth;

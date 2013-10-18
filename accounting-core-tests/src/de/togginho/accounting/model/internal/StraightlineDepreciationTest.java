@@ -15,187 +15,151 @@
  */
 package de.togginho.accounting.model.internal;
 
-import static org.junit.Assert.*;
-
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.BeforeClass;
 
-import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.AnnualDepreciation;
+import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 
 /**
  * @author thorsten
  *
  */
-public class StraightlineDepreciationTest extends BaseTestFixture {
-
-	private StraightlineDepreciation depreciation;
-
+public class StraightlineDepreciationTest extends DepreciationTestBase {
+	
+	private static final int NUMBER_OF_RUNS = 2;
+	
+	private static Expense[] EXPENSES;
+	private static List<AnnualDepreciation[]> EXPECTED_PLANS;
+	private static Calendar[] EXPECTED_END;
+	private static BigDecimal[] EXPECTED_ANNUAL_AMOUNTS;
+	private static BigDecimal[] EXPECTED_MONTHLY_AMOUNTS;
+	private static BigDecimal[] EXPECTED_TOTAL_AMOUNTS;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
-	public void setUp() throws Exception {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, Calendar.MAY);
-		cal.set(Calendar.YEAR, 2012);
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		EXPENSES = new Expense[NUMBER_OF_RUNS];
+		EXPECTED_PLANS = new ArrayList<AnnualDepreciation[]>(NUMBER_OF_RUNS);
+		EXPECTED_END = new Calendar[NUMBER_OF_RUNS];
+		EXPECTED_ANNUAL_AMOUNTS = new BigDecimal[NUMBER_OF_RUNS];
+		EXPECTED_MONTHLY_AMOUNTS = new BigDecimal[NUMBER_OF_RUNS];
+		EXPECTED_TOTAL_AMOUNTS = new BigDecimal[NUMBER_OF_RUNS];
 		
-		Expense expense = new Expense();
-		expense.setNetAmount(new BigDecimal("2000"));
-		expense.setPaymentDate(cal.getTime());
-		expense.setDepreciationPeriodInYears(3);
-		expense.setSalvageValue(new BigDecimal("1"));
-		depreciation = new StraightlineDepreciation(expense);
+		buildExpectedOne(0);
+		buildExpectedTwo(1);
 	}
 
 	/**
-	 * @throws java.lang.Exception
+	 * 
+	 * @param index
 	 */
-	@After
-	public void tearDown() throws Exception {
+	private static void buildExpectedOne(int index) {
+		EXPENSES[index] = createExpense(DepreciationMethod.STRAIGHTLINE, new BigDecimal("1738.58"), 2, Calendar.MAY, 2007, 3, BigDecimal.ONE);
+		EXPECTED_END[index] = Calendar.getInstance();
+		EXPECTED_END[index].set(Calendar.DAY_OF_MONTH, 2);
+		EXPECTED_END[index].set(Calendar.MONTH, Calendar.APRIL);
+		EXPECTED_END[index].set(Calendar.YEAR, 2010);
+		EXPECTED_ANNUAL_AMOUNTS[index] = new BigDecimal("579.19");
+		EXPECTED_MONTHLY_AMOUNTS[index] = new BigDecimal("48.27");
+		EXPECTED_TOTAL_AMOUNTS[index] = new BigDecimal("1737.58");
+
+		AnnualDepreciation[] plan = new AnnualDepreciation[4];
+		plan[0] = new AnnualDepreciation(2007, BigDecimal.ZERO, new BigDecimal("1352.42"), new BigDecimal("386.16"), BigDecimal.ZERO);
+		plan[1] = new AnnualDepreciation(2008, plan[0].getEndOfYearBookValue(), new BigDecimal("773.23"), EXPECTED_ANNUAL_AMOUNTS[index], plan[0].getDepreciationAmount());
+		plan[2] = new AnnualDepreciation(2009, plan[1].getEndOfYearBookValue(), new BigDecimal("194.04"), EXPECTED_ANNUAL_AMOUNTS[index], new BigDecimal("965.35"));
+		plan[3] = new AnnualDepreciation(2010, plan[2].getEndOfYearBookValue(), EXPENSES[index].getSalvageValue(), new BigDecimal("193.04"), new BigDecimal("1544.54"));
+		EXPECTED_PLANS.add(index, plan);
+	}
+	
+	/**
+	 * 
+	 * @param index
+	 */
+	private static void buildExpectedTwo(int index) {
+		EXPENSES[index] = createExpense(DepreciationMethod.STRAIGHTLINE, new BigDecimal("3846.45"), 30, Calendar.OCTOBER, 2013, 6, new BigDecimal("355"));
+		EXPECTED_END[index] = Calendar.getInstance();
+		EXPECTED_END[index].set(Calendar.DAY_OF_MONTH, 30);
+		EXPECTED_END[index].set(Calendar.MONTH, Calendar.SEPTEMBER);
+		EXPECTED_END[index].set(Calendar.YEAR, 2019);
+		EXPECTED_ANNUAL_AMOUNTS[index] = new BigDecimal("581.91");
+		EXPECTED_MONTHLY_AMOUNTS[index] = new BigDecimal("48.49");
+		EXPECTED_TOTAL_AMOUNTS[index] = new BigDecimal("3491.45");
+		
+		AnnualDepreciation[] plan = new AnnualDepreciation[7];
+		plan[0] = new AnnualDepreciation(2013, BigDecimal.ZERO, new BigDecimal("3700.98"), new BigDecimal("145.47"), BigDecimal.ZERO);
+		plan[1] = new AnnualDepreciation(2014, plan[0].getEndOfYearBookValue(), new BigDecimal("3119.07"), EXPECTED_ANNUAL_AMOUNTS[index], plan[0].getDepreciationAmount());
+		plan[2] = new AnnualDepreciation(2015, plan[1].getEndOfYearBookValue(), new BigDecimal("2537.16"), EXPECTED_ANNUAL_AMOUNTS[index], new BigDecimal("727.38"));
+		plan[3] = new AnnualDepreciation(2016, plan[2].getEndOfYearBookValue(), new BigDecimal("1955.25"), EXPECTED_ANNUAL_AMOUNTS[index], new BigDecimal("1309.29"));
+		plan[4] = new AnnualDepreciation(2017, plan[3].getEndOfYearBookValue(), new BigDecimal("1373.34"), EXPECTED_ANNUAL_AMOUNTS[index], new BigDecimal("1891.2"));
+		plan[5] = new AnnualDepreciation(2018, plan[4].getEndOfYearBookValue(), new BigDecimal("791.43"), EXPECTED_ANNUAL_AMOUNTS[index], new BigDecimal("2473.11"));
+		plan[6] = new AnnualDepreciation(2019, plan[5].getEndOfYearBookValue(), EXPENSES[index].getSalvageValue(), new BigDecimal("436.43"), new BigDecimal("3055.02"));
+		EXPECTED_PLANS.add(index, plan);
+	}
+		
+	/**
+	 * 
+	 * @return
+	 */
+	protected int getNumberOfRuns() {
+		return NUMBER_OF_RUNS;
+	}
+	
+	/**
+	 * 
+	 * @param testRunIndex
+	 * @return
+	 */
+	protected Expense getExpense(int testRunIndex) {
+		return EXPENSES[testRunIndex];
+	}
+	
+	/**
+	 * 
+	 * @param testRunIndex
+	 * @return
+	 */
+	protected AnnualDepreciation[] getExpectedPlan(int testRunIndex) {
+		return EXPECTED_PLANS.get(testRunIndex);
+	}
+	
+	/**
+	 * 
+	 * @param testRunIndex
+	 * @return
+	 */
+	protected Calendar getExpectedEnd(int testRunIndex) {
+		return EXPECTED_END[testRunIndex];
+	}
+	
+	/**
+	 * 
+	 * @param testRunIndex
+	 */
+	protected BigDecimal getExpectedAnnualAmount(int testRunIndex) {
+		return EXPECTED_ANNUAL_AMOUNTS[testRunIndex];
 	}
 
 	/**
-	 * Test method for {@link StraightlineDepreciation#getTotalDepreciationAmount()}.
+	 * 
+	 * @param testRunIndex
 	 */
-	@Test
-	public void testGetTotalDepreciationAmount() {
-		assertAreEqual(new BigDecimal("1999"), depreciation.getTotalDepreciationAmount());
-	}
-
-	/**
-	 * Test method for {@link StraightlineDepreciation#getAnnualDepreciationAmount()()}.
-	 */
-	@Test
-	public void testGetAnnualDepreciationAmount() {
-		assertAreEqual(new BigDecimal("666.67"), depreciation.getAnnualDepreciationAmount());
+	protected BigDecimal getExpectedMonthlyAmount(int testRunIndex) {
+		return EXPECTED_MONTHLY_AMOUNTS[testRunIndex];
 	}
 	
 	/**
-	 * Test method for {@link StraightlineDepreciation#getMonthlyDepreciationAmount()}.
+	 * 
+	 * @param testRunIndex
 	 */
-	@Test
-	public void testGetMonthlyDepreciationAmount() {
-		assertAreEqual(new BigDecimal("55.56"), depreciation.getMonthlyDepreciationAmount());
-	}
-	
-	/**
-	 * Test method for {@link StraightlineDepreciation#getDepreciationEnd()}.
-	 */
-	@Test
-	public void testGetDepreciationEnd() {
-		Date end = depreciation.getDepreciationEnd();
-		assertNotNull(end);
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(end);
-		
-		assertEquals(2015, cal.get(Calendar.YEAR));
-		assertEquals(Calendar.APRIL, cal.get(Calendar.MONTH));
-		
-		Expense e2 = new Expense();
-		cal.set(Calendar.YEAR, 2012);
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		e2.setPaymentDate(cal.getTime());
-		e2.setDepreciationPeriodInYears(5);
-		StraightlineDepreciation dep2 = new StraightlineDepreciation(e2);
-		
-		assertNotNull(dep2.getDepreciationEnd());
-		cal.setTime(dep2.getDepreciationEnd());
-		assertEquals(2016, cal.get(Calendar.YEAR));
-		assertEquals(Calendar.DECEMBER, cal.get(Calendar.MONTH));
-	}
-	
-	/**
-	 * Test method for {@link StraightlineDepreciation#getDepreciationSchedule()}.
-	 */
-	@Test
-	public void testGetDepreciationPlan() {
-		List<AnnualDepreciation> plan = depreciation.getDepreciationSchedule();
-		assertEquals(4, plan.size());
-		
-		AnnualDepreciation ad = plan.get(0);
-		
-		assertEquals(2012, ad.getYear());
-		assertAreEqual(new BigDecimal("444.44"), ad.getDepreciationAmount());
-		assertAreEqual(ad.getDepreciationAmount(), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("1555.56"), ad.getEndOfYearBookValue());
-		
-		ad = plan.get(1);
-		assertEquals(2013, ad.getYear());
-		assertAreEqual(new BigDecimal("666.67"), ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("1111.11"), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("888.89"), ad.getEndOfYearBookValue());
-
-		ad = plan.get(2);
-		assertEquals(2014, ad.getYear());
-		assertAreEqual(new BigDecimal("666.67"), ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("1777.78"), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("222.22"), ad.getEndOfYearBookValue());
-		
-		ad = plan.get(3);
-		assertEquals(2015, ad.getYear());
-		assertAreEqual(new BigDecimal("221.22"), ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("1999"), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("1"), ad.getEndOfYearBookValue());
-	}
-	
-	/**
-	 * Test method for {@link StraightlineDepreciation#getDepreciationSchedule()}.
-	 */
-	@Test
-	public void testGetDepreciationPlan2() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.YEAR, 2010);
-		
-		Expense expense = new Expense();
-		expense.setNetAmount(new BigDecimal("5000"));
-		expense.setPaymentDate(cal.getTime());
-		expense.setDepreciationPeriodInYears(5);
-		depreciation = new StraightlineDepreciation(expense);
-		
-		List<AnnualDepreciation> plan = depreciation.getDepreciationSchedule();
-		assertEquals(5, plan.size());
-		
-		BigDecimal depreciationAmount = new BigDecimal("1000");
-		
-		AnnualDepreciation ad = plan.get(0);
-		
-		assertEquals(2010, ad.getYear());
-		assertAreEqual(depreciationAmount, ad.getDepreciationAmount());
-		assertAreEqual(depreciationAmount, ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("4000"), ad.getEndOfYearBookValue());
-		
-		ad = plan.get(1);
-		assertEquals(2011, ad.getYear());
-		assertAreEqual(depreciationAmount, ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("2000"), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("3000"), ad.getEndOfYearBookValue());
-		
-		ad = plan.get(2);
-		assertEquals(2012, ad.getYear());
-		assertAreEqual(depreciationAmount, ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("3000"), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("2000"), ad.getEndOfYearBookValue());
-		
-		ad = plan.get(3);
-		assertEquals(2013, ad.getYear());
-		assertAreEqual(depreciationAmount, ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("4000"), ad.getAccumulatedDepreciation());
-		assertAreEqual(new BigDecimal("1000"), ad.getEndOfYearBookValue());
-		
-		ad = plan.get(4);
-		assertEquals(2014, ad.getYear());
-		assertAreEqual(depreciationAmount, ad.getDepreciationAmount());
-		assertAreEqual(new BigDecimal("5000"), ad.getAccumulatedDepreciation());
-		assertAreEqual(BigDecimal.ZERO, ad.getEndOfYearBookValue());
+	protected BigDecimal getExpectedTotalAmount(int testRunIndex) {
+		return EXPECTED_TOTAL_AMOUNTS[testRunIndex];
 	}
 }

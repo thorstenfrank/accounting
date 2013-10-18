@@ -200,4 +200,18 @@ public class Expense implements Serializable {
 	public void setSalvageValue(BigDecimal salvageValue) {
 		this.salvageValue = salvageValue;
 	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer("Expense: ");
+		sb.append(description);
+		sb.append(" / Category: ").append(category);
+		sb.append(" Type: ").append(expenseType != null ? expenseType.toString() : "null");
+		return sb.toString();
+	}
 }

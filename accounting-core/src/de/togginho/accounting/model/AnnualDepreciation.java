@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
+ * The depreciation expense of a single year, usually as part of a depreciation / amortization schedule.
+ * 
  * @author thorsten
  *
  */
@@ -38,6 +40,36 @@ public class AnnualDepreciation implements Serializable {
 	private BigDecimal depreciationAmount;
 	
 	private BigDecimal accumulatedDepreciation;
+	
+	/**
+	 * 
+	 */
+	public AnnualDepreciation() {
+		super();
+	}
+	
+	/**
+	 * @param year
+	 * @param beginningOfYearBookValue
+	 * @param endOfYearBookValue
+	 * @param depreciationAmount
+	 * @param accumulatedDepreciation
+	 */
+	public AnnualDepreciation(
+			int year, 
+			BigDecimal beginningOfYearBookValue, 
+			BigDecimal endOfYearBookValue, 
+			BigDecimal depreciationAmount, 
+			BigDecimal accumulatedDepreciation) {
+		
+		this.year = year;
+		this.beginningOfYearBookValue = beginningOfYearBookValue;
+		this.endOfYearBookValue = endOfYearBookValue;
+		this.depreciationAmount = depreciationAmount;
+		this.accumulatedDepreciation = accumulatedDepreciation;
+	}
+
+
 
 	/**
 	 * @return the year

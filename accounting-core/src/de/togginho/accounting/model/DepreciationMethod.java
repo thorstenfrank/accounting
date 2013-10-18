@@ -28,7 +28,12 @@ public enum DepreciationMethod implements Serializable {
 	/**
 	 * Straightline depreciation/amortisation.
 	 */
-	STRAIGHTLINE(Messages.DepreciationMethod_STRAIGHTLINE);
+	STRAIGHTLINE(Messages.DepreciationMethod_STRAIGHTLINE),
+	
+	/**
+	 * Immediate Write-Off
+	 */
+	FULL(Messages.DepreciationMethod_FULL);
 	
 	/**
 	 * Translated name.

@@ -23,29 +23,52 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
  *
  */
-public class StraightlineDepreciation implements Depreciation {
+class StraightlineDepreciation implements Depreciation {
 	
 	/**
      * 
      */
     private static final long serialVersionUID = 2147139507234466389L;
+    
+    /**
+     * 
+     */
+    private static final Logger LOG = Logger.getLogger(StraightlineDepreciation.class);
+    
+    /**
+     * 
+     */
 	private static final MathContext MATH_CONTEXT = new MathContext(34, RoundingMode.HALF_UP);
+	
+	/**
+	 * Default scale for monetary amounts: 2
+	 */
 	private static final int SCALE = 2;
+	
+	/**
+	 * 
+	 */
 	private static final int MONTHS_IN_YEAR = 12;
 	
+	/**
+	 * The expense being depreciated
+	 */
 	private Expense expense;
 	
 	/**
      * @param expense
      */
-    public StraightlineDepreciation(Expense expense) {
+    protected StraightlineDepreciation(Expense expense) {
 	    this.expense = expense;
     }
 
@@ -69,7 +92,7 @@ public class StraightlineDepreciation implements Depreciation {
 	 * @return
 	 */
 	private BigDecimal getAnnualDepreciationAmountUnrounded() {
-		return expense.getNetAmount().divide(new BigDecimal(expense.getDepreciationPeriodInYears()), MATH_CONTEXT);
+		return getTotalDepreciationAmount().divide(new BigDecimal(expense.getDepreciationPeriodInYears()), MATH_CONTEXT);
 	}
 	
 	/**
@@ -104,16 +127,26 @@ public class StraightlineDepreciation implements Depreciation {
 	 */
 	@Override
     public List<AnnualDepreciation> getDepreciationSchedule() {
+		LOG.debug("Building depreciation plan for Expense: " + expense.toString());
+		
 		List<AnnualDepreciation> schedule = new ArrayList<AnnualDepreciation>();
 		
 		BigDecimal annualDepreciationAmount = getAnnualDepreciationAmount();
 
+		LOG.debug("Annual amount: " + annualDepreciationAmount.toString());
+		
 		// calculate the number of months in the purchase year
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(expense.getPaymentDate());		
+		cal.setTime(expense.getPaymentDate());
+		LOG.debug("Payment date was: " + FormatUtil.formatDate(expense.getPaymentDate()));
 		
 		final int startingYear = cal.get(Calendar.YEAR);
+		
+		LOG.debug("Starting year: " + startingYear);
+		
 		final int monthsFirstYear = MONTHS_IN_YEAR - cal.get(Calendar.MONTH);
+		
+		LOG.debug("Months considered in first year: " + monthsFirstYear);
 		
 		int finalYear = startingYear + expense.getDepreciationPeriodInYears();
 		
@@ -122,18 +155,22 @@ public class StraightlineDepreciation implements Depreciation {
 			finalYear--;
 		}
 		
+		LOG.debug("Depreciation will end in " + finalYear);
+		
 		// Calculate first year
 		AnnualDepreciation adFirst = new AnnualDepreciation();
-		adFirst.setBeginningOfYearBookValue(expense.getNetAmount());
+		adFirst.setBeginningOfYearBookValue(BigDecimal.ZERO);
 		adFirst.setYear(startingYear);
 		adFirst.setDepreciationAmount(
-				getMonthlyDepreciationAmountUnrounded().multiply(new BigDecimal(monthsFirstYear), MATH_CONTEXT)
+				getMonthlyDepreciationAmount().multiply(new BigDecimal(monthsFirstYear), MATH_CONTEXT)
 				.setScale(SCALE, MATH_CONTEXT.getRoundingMode()));
-		adFirst.setAccumulatedDepreciation(adFirst.getDepreciationAmount());
+		adFirst.setAccumulatedDepreciation(BigDecimal.ZERO);
 		adFirst.setEndOfYearBookValue(expense.getNetAmount().subtract(adFirst.getDepreciationAmount()));
 		schedule.add(adFirst);
 		
-		BigDecimal accumulated = adFirst.getAccumulatedDepreciation();
+		LOG.debug(adFirst.toString());
+		
+		BigDecimal accumulated = adFirst.getDepreciationAmount();
 		BigDecimal currentBookValue = adFirst.getEndOfYearBookValue();
 		
 		int currentYear = startingYear + 1;
@@ -142,12 +179,14 @@ public class StraightlineDepreciation implements Depreciation {
 			ad.setYear(currentYear);
 			ad.setDepreciationAmount(annualDepreciationAmount);
 			ad.setBeginningOfYearBookValue(currentBookValue);
+			ad.setAccumulatedDepreciation(accumulated);
 			
-			accumulated = accumulated.add(annualDepreciationAmount);
+			accumulated = accumulated.add(ad.getDepreciationAmount());
 			currentBookValue = currentBookValue.subtract(annualDepreciationAmount);
 			
-			ad.setAccumulatedDepreciation(accumulated);
 			ad.setEndOfYearBookValue(currentBookValue);
+			
+			LOG.debug(ad.toString());
 			
 			schedule.add(ad);
 			currentYear++;
@@ -157,6 +196,7 @@ public class StraightlineDepreciation implements Depreciation {
 		AnnualDepreciation adLast = new AnnualDepreciation();
 		adLast.setYear(finalYear);
 		adLast.setBeginningOfYearBookValue(currentBookValue);
+		adLast.setAccumulatedDepreciation(accumulated);
 		
 		if (expense.getSalvageValue() != null) {
 			adLast.setDepreciationAmount(currentBookValue.subtract(expense.getSalvageValue()));
@@ -165,8 +205,10 @@ public class StraightlineDepreciation implements Depreciation {
 			adLast.setDepreciationAmount(currentBookValue);
 			adLast.setEndOfYearBookValue(BigDecimal.ZERO);
 		}
-		adLast.setAccumulatedDepreciation(accumulated.add(adLast.getDepreciationAmount()));
+		
 		schedule.add(adLast);
+		
+		LOG.debug(adLast.toString());
 		
 		return schedule;
 	}
