@@ -18,9 +18,16 @@ package de.togginho.accounting.ui.expense;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler;
 import de.togginho.accounting.ui.IDs;
@@ -46,7 +53,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 	 * 
 	 */
 	private static final String PARAMETER_NAME = "timeFrame"; //$NON-NLS-1$
-		
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
@@ -68,7 +75,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 			LOG.debug("No time frame supplied as parameter, now showing chooser dialog"); //$NON-NLS-1$
 			
 			setCurrentTimeFrame(expensesView.getCurrentTimeFrame());
-			if (!extractTimeFrameFromPopup(event)) {
+			if (!getQueryParamsFromPopup(event, expensesView)) {
 				LOG.debug("Choosing time frame was cancelled by user"); //$NON-NLS-1$
 				return;
 			}
@@ -123,7 +130,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 	/**
      * @param event
      */
-    private boolean extractTimeFrameFromPopup(ExecutionEvent event) {
+    private boolean getQueryParamsFromPopup(ExecutionEvent event, final ExpensesView view) {
 	    AbstractModalDialog dialog = new AbstractModalDialog(
 				getShell(event), 
 				Messages.ChangeExpensesViewTimeFrameCommand_title, 
@@ -131,7 +138,31 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 			
 			@Override
 			protected void createMainContents(Composite parent) {
-				buildTimeFrameSelectionComposite(parent);
+				Composite composite = new Composite(parent, SWT.NONE);
+				composite.setLayout(new GridLayout(2, false));
+				
+				buildTimeFrameSelectionComposite(composite);
+				
+				Composite typeSelector = new Composite(composite, SWT.NONE);
+				typeSelector.setLayout(new GridLayout(1, false));
+				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).applyTo(typeSelector);
+				
+				for (final ExpenseType type : ExpenseType.values()) {
+					final Button b = new Button(typeSelector, SWT.CHECK);
+					b.setText(type.getTranslatedString());
+					b.setSelection(view.getSelectedTypes().contains(type));
+					
+					b.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							if(b.getSelection()) {
+								view.getSelectedTypes().add(type);
+							} else {
+								view.getSelectedTypes().remove(type);
+							}
+						}
+					});
+				}
 			}
 		};
 		

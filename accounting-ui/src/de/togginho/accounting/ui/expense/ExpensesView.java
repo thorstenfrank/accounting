@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.ui.AbstractTableSorter;
 import de.togginho.accounting.ui.AbstractTableView;
 import de.togginho.accounting.ui.AccountingUI;
@@ -53,6 +54,7 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	private TableViewer tableViewer;
 	private ExpenseTableSorter sorter;
 	private TimeFrame currentTimeFrame;
+	private Set<ExpenseType> selectedTypes;
 	
 	/**
 	 * {@inheritDoc}
@@ -95,6 +97,12 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 		Menu menu = menuManager.createContextMenu(tableViewer.getControl());
 		tableViewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, tableViewer);
+		
+		// by default, select all known expense types
+		selectedTypes = new HashSet<ExpenseType>();
+		for (ExpenseType type : ExpenseType.values()) {
+			selectedTypes.add(type);
+		}
 		
 		modelChanged();
 	}
@@ -140,7 +148,11 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	 * @return
 	 */
 	private Set<ExpenseWrapper> getExpenses() {
-		final ExpenseCollection ec = AccountingUI.getAccountingService().findExpenses(currentTimeFrame);
+		ExpenseType[] types = null;
+		if (selectedTypes != null && !selectedTypes.isEmpty()) {
+			types = (ExpenseType[]) selectedTypes.toArray(new ExpenseType[selectedTypes.size()]);
+		}
+		final ExpenseCollection ec = AccountingUI.getAccountingService().findExpenses(currentTimeFrame, types);
 		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(ec.getExpenses().size());
 		
 		for (Expense expense : ec.getExpenses()) {
@@ -195,4 +207,13 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 			this.currentTimeFrame = newTimeFrame;
 		}
 	}
+
+	/**
+	 * @return the selectedTypes
+	 */
+	protected Set<ExpenseType> getSelectedTypes() {
+		return selectedTypes;
+	}
+	
+	
 }
