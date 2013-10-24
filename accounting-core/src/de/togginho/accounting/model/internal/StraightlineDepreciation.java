@@ -127,26 +127,26 @@ class StraightlineDepreciation implements Depreciation {
 	 */
 	@Override
     public List<AnnualDepreciation> getDepreciationSchedule() {
-		LOG.debug("Building depreciation plan for Expense: " + expense.toString());
+		LOG.debug("Building depreciation plan for Expense: " + expense.toString()); //$NON-NLS-1$
 		
 		List<AnnualDepreciation> schedule = new ArrayList<AnnualDepreciation>();
 		
 		BigDecimal annualDepreciationAmount = getAnnualDepreciationAmount();
 
-		LOG.debug("Annual amount: " + annualDepreciationAmount.toString());
+		LOG.debug("Annual amount: " + annualDepreciationAmount.toString()); //$NON-NLS-1$
 		
 		// calculate the number of months in the purchase year
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(expense.getPaymentDate());
-		LOG.debug("Payment date was: " + FormatUtil.formatDate(expense.getPaymentDate()));
+		LOG.debug("Payment date was: " + FormatUtil.formatDate(expense.getPaymentDate())); //$NON-NLS-1$
 		
 		final int startingYear = cal.get(Calendar.YEAR);
 		
-		LOG.debug("Starting year: " + startingYear);
+		LOG.debug("Starting year: " + startingYear); //$NON-NLS-1$
 		
 		final int monthsFirstYear = MONTHS_IN_YEAR - cal.get(Calendar.MONTH);
 		
-		LOG.debug("Months considered in first year: " + monthsFirstYear);
+		LOG.debug("Months considered in first year: " + monthsFirstYear); //$NON-NLS-1$
 		
 		int finalYear = startingYear + expense.getDepreciationPeriodInYears();
 		
@@ -155,7 +155,7 @@ class StraightlineDepreciation implements Depreciation {
 			finalYear--;
 		}
 		
-		LOG.debug("Depreciation will end in " + finalYear);
+		LOG.debug("Depreciation will end in " + finalYear); //$NON-NLS-1$
 		
 		// Calculate first year
 		AnnualDepreciation adFirst = new AnnualDepreciation();
