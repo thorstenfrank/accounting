@@ -86,6 +86,10 @@ public class Messages extends NLS {
 	public static String EditInvoiceCommand_uneditableText;
 	
 	public static String ExpenseEditor_title;
+	public static String ExpenseEditor_Depreciation;
+	public static String ExpenseEditor_DepreciationSchedule;
+	public static String ExpenseEditor_BeginningBookValue;
+	public static String ExpenseEditor_EndBookValue;
 	
 	public static String ExpensesView_title;
 	

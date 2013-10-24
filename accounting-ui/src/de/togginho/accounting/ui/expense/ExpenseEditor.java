@@ -15,9 +15,6 @@
  */
 package de.togginho.accounting.ui.expense;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -44,6 +41,7 @@ import org.eclipse.ui.menus.MenuUtil;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.AnnualDepreciation;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.ui.AbstractAccountingEditor;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
@@ -56,9 +54,7 @@ import de.togginho.accounting.util.FormatUtil;
  *
  */
 public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEditingHelperCallback {
-	
-	private static final Logger LOG = Logger.getLogger(ExpenseEditor.class);
-	
+		
 	// form 
 	private FormToolkit toolkit;
 	private ScrolledForm form;
@@ -169,7 +165,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	 */
 	private void createDepreciationSection() {
 		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
-		section.setText("Depreciation");
+		section.setText(Messages.ExpenseEditor_Depreciation);
 		
 		GridDataFactory grabHorizontal = GridDataFactory.fillDefaults().grab(true, false);
 		grabHorizontal.applyTo(section);
@@ -187,7 +183,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	 */
 	private void createDepreciationTableSection() {
 		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
-		section.setText("Depreciation Table");
+		section.setText(Messages.ExpenseEditor_DepreciationSchedule);
 		
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(section);
 		
@@ -200,10 +196,10 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		deprecTableViewer.getTable().setHeaderVisible(true);
 		deprecTableViewer.getTable().setLinesVisible(true);
 		
-		addColumn(0, "Year", tcl, SWT.LEFT);
-		addColumn(1, "Book Value", tcl, SWT.RIGHT);
-		addColumn(2, "Annual Amount", tcl, SWT.RIGHT);
-		addColumn(3, "End of Year Value", tcl, SWT.RIGHT);
+		addColumn(0, Messages.labelYear, tcl, SWT.LEFT);
+		addColumn(1, Messages.ExpenseEditor_BeginningBookValue, tcl, SWT.RIGHT);
+		addColumn(2, Messages.ExpenseEditor_Depreciation, tcl, SWT.RIGHT);
+		addColumn(3, Messages.ExpenseEditor_EndBookValue, tcl, SWT.RIGHT);
 		
 		deprecTableViewer.setLabelProvider(new DeprecTableLabelProvider());
 		deprecTableViewer.setContentProvider(new ArrayContentProvider());
@@ -228,13 +224,24 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	 * 
 	 */
 	private void updateDepreciationTable() {
-		deprecTableViewer.setInput(CalculationUtil.calculateDepreciationSchedule(getEditorInput().getExpense()));
+		Expense expense = getEditorInput().getExpense();
+		
+		String type = expense.getDepreciationMethod() != null ? expense.getDepreciationMethod().toString() : "NULL";
+		
+		System.out.println("Updating depreciation table: " + type); //$NON-NLS-1$
+		
+		if (expense.getExpenseType().isDepreciationPossible() && expense.getDepreciationMethod() != null) {
+			deprecTableViewer.setInput(CalculationUtil.calculateDepreciationSchedule(expense));
+		} else {
+			deprecTableViewer.setInput(null);
+		}
+		
 		deprecTableViewer.refresh();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.expense.ExpenseEditingHelperCallback#modelHasChanged()
+	 * @see ExpenseEditingHelperCallback#modelHasChanged()
 	 */
 	@Override
 	public void modelHasChanged() {
@@ -244,7 +251,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.expense.ExpenseEditingHelperCallback#createLabel(org.eclipse.swt.widgets.Composite, java.lang.String)
+	 * @see ExpenseEditingHelperCallback#createLabel(org.eclipse.swt.widgets.Composite, java.lang.String)
 	 */
 	@Override
 	public Label createLabel(Composite parent, String text) {
@@ -253,7 +260,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 
 	/**
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.expense.ExpenseEditingHelperCallback#createText(org.eclipse.swt.widgets.Composite, int)
+	 * @see ExpenseEditingHelperCallback#createText(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
 	public Text createText(Composite parent, int style) {
@@ -275,11 +282,21 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		}
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractAccountingEditor#setIsDirty(boolean)
+	 */
 	@Override
 	protected void setIsDirty(boolean dirty) {
 		super.setIsDirty(dirty);
 	}
 	
+	/**
+	 * 
+	 * @author thorsten
+	 *
+	 */
 	private class DeprecTableLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
 
 		/**

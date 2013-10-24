@@ -52,6 +52,7 @@ import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
+import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.conversion.BigDecimalToStringConverter;
@@ -101,6 +102,9 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	private Text salvageValue;
 	
 	private Collection<String> expenseCategories;
+	
+	private boolean preModelChange = true;
+	private boolean modelChanged = false;
 	
 	/**
 	 * 
@@ -240,6 +244,8 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 * @param parent
 	 */
 	protected void createDepreciationSection(Composite parent) {
+		final boolean enabled = expense.getExpenseType().isDepreciationPossible();
+		
 		// DEPRECIATION METHOD
 		callback.createLabel(parent, Messages.labelDepreciationMethod);
 		depreciationMethod = new ComboViewer(parent, SWT.READ_ONLY);
@@ -258,6 +264,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		});
 		
 		bind(DepreciationMethod.class, depreciationMethod, expense, Expense.FIELD_DEPRECIATION_METHOD);
+		depreciationMethod.getCombo().setEnabled(enabled);
 		
 		// DEPRECIATION PERIOD
 		callback.createLabel(parent, Messages.labelDepreciationPeriodInYears);
@@ -271,30 +278,31 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				periodObservable, 
 				PojoObservables.observeValue(expense, Expense.FIELD_DEPRECIATION_PERIOD));
 		periodObservable.addValueChangeListener(this);
+		depreciationPeriod.setEnabled(enabled);
 		
 		// SALVAGE VALUE
 		callback.createLabel(parent, Messages.labelScrapValue);
 		salvageValue = callback.createText(parent, SWT.SINGLE | SWT.BORDER);
 		WidgetHelper.grabHorizontal(salvageValue);
 		bind(salvageValue, expense, Expense.FIELD_SALVAGE_VALUE, toPrice, fromPrice, false);
-
-		enableOrDisableDepreciation(expense.getExpenseType());
+		salvageValue.setEnabled(enabled);
 	}
 	
 	/**
 	 * 
 	 */
-	private void enableOrDisableDepreciation(ExpenseType expenseType) {
+	private void enableOrDisableDepreciation() {
 		if (depreciationMethod == null) {
 			return;
 		}
 		
+		ExpenseType expenseType = expense.getExpenseType();
 		boolean enable = expenseType != null && expenseType.isDepreciationPossible();
 
 		if (!enable) {
-			depreciationMethod.setSelection(StructuredSelection.EMPTY);
 			depreciationPeriod.setSelection(0);
 			salvageValue.setText(Constants.EMPTY_STRING);
+			depreciationMethod.setSelection(StructuredSelection.EMPTY);
 		}
 		
 		depreciationMethod.getCombo().setEnabled(enable);
@@ -348,7 +356,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				ViewersObservables.observeSinglePostSelection(viewer), 
 				PojoObservables.observeValue(entity, field), from, to);
 		viewer.addSelectionChangedListener(this);
-		//viewer.addPostSelectionChangedListener(this);
+		viewer.addPostSelectionChangedListener(this);
 		
 		return binding;
 	}
@@ -402,13 +410,6 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				recalculatePrice();
 			}
 		}
-//			} else {
-//				LOG.debug(event.getSource());
-//				callback.modelHasChanged();
-//			}
-//		} else if (event.getSource() instanceof IObservableValue) {
-//			callback.modelHasChanged();
-//		}
 		
 		callback.modelHasChanged();
 	}
@@ -419,62 +420,127 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 	 */
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		if (event.getSource() instanceof ComboViewer) {
-			Object data = ((ComboViewer) event.getSource()).getData(KEY_WIDGET_DATA);
-			if (data == null) {
-				LOG.warn("No source specified"); //$NON-NLS-1$
-				return;
-			} 
-			
-			Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
-			
-			if (data.equals(Expense.FIELD_TYPE)) {
-				LOG.debug("Expense type changed"); //$NON-NLS-1$
+		if (preModelChange) {
+			LOG.debug("SelectionChanged - Pre model change"); //$NON-NLS-1$
+
+			if (!(event.getSource() instanceof ComboViewer)) {
+				LOG.warn("Event source not supported: " + event.getSource().toString()); //$NON-NLS-1$
+			} else {
+				Object data = ((ComboViewer) event.getSource()).getData(KEY_WIDGET_DATA);
+				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
 				
-				ExpenseType newType = selection instanceof ExpenseType ? newType = (ExpenseType) selection : null;
-				if (newType == null) {
-					if (expense.getExpenseType() != null) {
-						LOG.debug("Expense type was set to <null>"); //$NON-NLS-1$
-						callback.modelHasChanged();
-					}
-				} else if (newType.equals(expense.getExpenseType()) == false) {
-					LOG.debug(String.format(
-							"Expense type changed from [%s] to [%s]", expense.getExpenseType(), newType)); //$NON-NLS-1$
-					callback.modelHasChanged();					
-				}
-				enableOrDisableDepreciation(newType);
-			} else if (data.equals(Expense.FIELD_TAX_RATE)) {
-				LOG.debug("Tax Rate changed"); //$NON-NLS-1$
-				recalculatePrice();
-			} else if (data.equals(Expense.FIELD_CATEGORY)) {
-				LOG.debug("Expense category changed"); //$NON-NLS-1$	
-				
-				String newCat = selection instanceof String ? newCat = (String) selection : null;
-				if (newCat == null) {
-					if (expense.getCategory() != null) {
-						LOG.debug("Expense category was set to <null>"); //$NON-NLS-1$
-						callback.modelHasChanged();
-					}
-				} else if (newCat.equals(expense.getCategory()) == false) {
-						LOG.debug(String.format(
-								"Expense category changed from [%s] to [%s]", expense.getCategory(), newCat)); //$NON-NLS-1$
-						callback.modelHasChanged();
-				}
-			} else if (data.equals(Expense.FIELD_DEPRECIATION_METHOD)) {
-				LOG.debug("Depreciation Method changed"); //$NON-NLS-1$
-				DepreciationMethod method = selection instanceof DepreciationMethod ? method = (DepreciationMethod) selection : null;
-				if (method == null) {
-					if (expense.getDepreciationMethod() != null) {
-						LOG.debug("Depreciation method was set to <null>"); //$NON-NLS-1$
-						callback.modelHasChanged();						
-					}
-				} else if (method.equals(expense.getDepreciationMethod()) == false) {
-					LOG.debug(String.format(
-							"Depreciation method changed from [%s] to [%s]", 
-							expense.getDepreciationMethod(), method)); //$NON-NLS-1$
-					callback.modelHasChanged();
+				if (data.equals(Expense.FIELD_TYPE)) {
+					handleExpenseTypeSelection(selection);
+				} else if (data.equals(Expense.FIELD_TAX_RATE)) {
+					handleTaxRateSelection(selection);
+				} else if (data.equals(Expense.FIELD_CATEGORY)) {
+					handleCategorySelection(selection);
+				} else if (data.equals(Expense.FIELD_DEPRECIATION_METHOD)) {
+					handleDepreciationMethodSelection(selection);
 				}
 			}
+			
+			// reset the switch
+			preModelChange = false;
+		} else {
+			LOG.debug("SelectionChanged - Post model change"); //$NON-NLS-1$
+			if (modelChanged) {
+				LOG.debug("model changed...");
+				enableOrDisableDepreciation();
+				recalculatePrice();
+				callback.modelHasChanged();
+			}
+			
+			// reset the switch
+			preModelChange = true;
+		}
+	}
+
+	/**
+	 * @param selection
+	 */
+	private void handleExpenseTypeSelection(Object selection) {
+		LOG.debug("Expense type selection"); //$NON-NLS-1$
+		
+		ExpenseType newType = selection instanceof ExpenseType ? newType = (ExpenseType) selection : null;
+		if (newType == null) {
+			if (expense.getExpenseType() != null) {
+				LOG.debug("Expense type was set to <null>"); //$NON-NLS-1$
+				modelChanged = true;
+			} else {
+				modelChanged = false;
+			}
+		} else if (newType.equals(expense.getExpenseType()) == false) {
+			LOG.debug(String.format(
+					"Expense type changed from [%s] to [%s]", expense.getExpenseType(), newType)); //$NON-NLS-1$
+			modelChanged = true;
+		} else {
+			modelChanged = false;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param selection
+	 */
+	private void handleTaxRateSelection(Object selection) {
+		LOG.debug("Tax Rate selection"); //$NON-NLS-1$
+		
+		TaxRate newRate = selection instanceof TaxRate ? newRate = (TaxRate) selection : null;
+		if (newRate == null) {
+			if (expense.getTaxRate() != null) {
+				LOG.debug("TaxRate was set to <null>"); //$NON-NLS-1$
+				modelChanged = true;
+			} else {
+				modelChanged = false;
+			}
+		} else if (newRate.equals(expense.getTaxRate()) == false) {
+			LOG.debug(String.format(
+					"TaxRate changed from [%s] to [%s]", //$NON-NLS-1$ 
+					expense.getTaxRate().toShortString(), newRate.toShortString()));
+			modelChanged = true;
+		} else {
+			modelChanged = false;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param selection
+	 */
+	private void handleCategorySelection(Object selection) {
+		LOG.debug("Expense category changed"); //$NON-NLS-1$	
+		
+		String newCat = selection instanceof String ? newCat = (String) selection : null;
+		if (newCat == null) {
+			if (expense.getCategory() != null) {
+				LOG.debug("Expense category was set to <null>"); //$NON-NLS-1$
+				modelChanged = true;
+			}
+		} else if (newCat.equals(expense.getCategory()) == false) {
+				LOG.debug(String.format(
+						"Expense category changed from [%s] to [%s]", expense.getCategory(), newCat)); //$NON-NLS-1$
+				modelChanged = true;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param selection
+	 */
+	private void handleDepreciationMethodSelection(Object selection) {
+		LOG.debug("Depreciation Method changed"); //$NON-NLS-1$
+		DepreciationMethod method = selection instanceof DepreciationMethod ? method = (DepreciationMethod) selection : null;
+		if (method == null) {
+			if (expense.getDepreciationMethod() != null) {
+				LOG.debug("Depreciation method was set to <null>"); //$NON-NLS-1$
+				modelChanged = true;						
+			}
+		} else if (method.equals(expense.getDepreciationMethod()) == false) {
+			LOG.debug(String.format(
+					"Depreciation method changed from [%s] to [%s]", 
+					expense.getDepreciationMethod(), method)); //$NON-NLS-1$
+			modelChanged = true;
 		}
 	}
 }
