@@ -80,6 +80,21 @@
             <category>ExpenseCategory</category>
         </expense>
         <expense>
+            <description>CapexDescription</description>
+            <expenseType>CAPEX</expenseType>
+            <netAmount>100</netAmount>
+            <paymentDate>2011-01-01</paymentDate>
+            <taxRate>
+                <abbreviation>JUT</abbreviation>
+                <name>JUnitTax</name>
+                <rate>0.15</rate>
+            </taxRate>
+            <category>CapexCategory</category>
+            <depreciationMethod>STRAIGHTLINE</depreciationMethod>
+            <depreciationPeriodInYears>3</depreciationPeriodInYears>
+            <salvageValue>1</salvageValue>
+        </expense>
+        <expense>
             <description>ExpenseDescription</description>
             <expenseType>OTHER</expenseType>
             <netAmount>20.23</netAmount>

@@ -141,6 +141,13 @@
     	</xs:restriction>
     </xs:simpleType>
     
+    <xs:simpleType name="xmlDepreciationMethod">
+    	<xs:restriction base="xs:string">
+    		<xs:enumeration value="STRAIGHTLINE" />
+    		<xs:enumeration value="FULL" />
+    	</xs:restriction>
+    </xs:simpleType>
+    
     <xs:complexType name="xmlExpenses">
     	<xs:sequence>
     		<xs:element name="expense" type="xmlExpense" minOccurs="1" maxOccurs="unbounded" />
@@ -149,12 +156,16 @@
     
     <xs:complexType name="xmlExpense">
     	<xs:sequence>
+    		<xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1" />
     		<xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1" />
     		<xs:element name="expenseType" type="xmlExpenseType" minOccurs="0" maxOccurs="1"/>
     		<xs:element name="netAmount" type="xs:decimal" minOccurs="1" maxOccurs="1" />
     		<xs:element name="paymentDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
     		<xs:element name="taxRate" type="xmlTaxRate" minOccurs="0" maxOccurs="1"/>
     		<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="depreciationMethod" type="xmlDepreciationMethod" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="depreciationPeriodInYears" type="xs:int" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="salvageValue" type="xs:decimal" minOccurs="0" maxOccurs="1" />
     	</xs:sequence>
     </xs:complexType>
 </xs:schema>

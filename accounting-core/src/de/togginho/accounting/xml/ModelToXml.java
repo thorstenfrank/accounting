@@ -38,6 +38,7 @@ import de.togginho.accounting.xml.generated.XmlAddress;
 import de.togginho.accounting.xml.generated.XmlBankAccount;
 import de.togginho.accounting.xml.generated.XmlClient;
 import de.togginho.accounting.xml.generated.XmlClients;
+import de.togginho.accounting.xml.generated.XmlDepreciationMethod;
 import de.togginho.accounting.xml.generated.XmlExpense;
 import de.togginho.accounting.xml.generated.XmlExpenseType;
 import de.togginho.accounting.xml.generated.XmlExpenses;
@@ -273,6 +274,12 @@ class ModelToXml {
 				xmlExpense.setPaymentDate(convertDate(expense.getPaymentDate()));
 				xmlExpense.setTaxRate(converTaxRate(expense.getTaxRate()));
 				xmlExpense.setCategory(expense.getCategory());
+				if (expense.getDepreciationMethod() != null) {
+					xmlExpense.setDepreciationMethod(XmlDepreciationMethod.fromValue(expense.getDepreciationMethod().name()));
+				}
+				
+				xmlExpense.setDepreciationPeriodInYears(expense.getDepreciationPeriodInYears());
+				xmlExpense.setSalvageValue(expense.getSalvageValue());
 				xmlExpenses.getExpense().add(xmlExpense);
 			}
 			

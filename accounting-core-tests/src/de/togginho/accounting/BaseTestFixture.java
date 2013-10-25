@@ -144,7 +144,12 @@ public abstract class BaseTestFixture {
 	 * @param actual
 	 */
 	protected static void assertAreEqual(BigDecimal expected, BigDecimal actual) {
-		assertEquals("Expected: " + expected.toString() + ", actual: " + actual.toString(), 0, actual.compareTo(expected));
+		if (expected == null) {
+			assertNull(actual);
+		} else {
+			assertEquals("Expected: " + expected.toString() + ", actual: " + actual.toString(), 0, actual.compareTo(expected));
+		}
+		
 	}
 	
 	/**

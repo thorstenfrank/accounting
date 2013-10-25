@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,6 +28,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
+import de.togginho.accounting.model.DepreciationMethod;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.xml.generated.XmlExpense;
 import de.togginho.accounting.xml.generated.XmlUser;
@@ -73,12 +76,25 @@ public class XmlToModelTest extends XmlTestBase {
 			assertInvoicesSame(createInvoice(), xmlUser.getInvoices().getInvoice().get(0));
 			// EXPENSES
 			assertNotNull(xmlUser.getExpenses());
-			assertEquals(2, xmlUser.getExpenses().getExpense().size());
+			assertEquals(3, xmlUser.getExpenses().getExpense().size());
 			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpense()) {
-				if (xmlExpense.getTaxRate() != null) {
+				switch (xmlExpense.getExpenseType()) {
+				case OPEX:
 					assertExpensesSame(createExpense(ExpenseType.OPEX, true), xmlExpense);
-				} else {
+					break;
+				case CAPEX:
+					Expense capex = createExpense(ExpenseType.CAPEX, true);
+					capex.setCategory("CapexCategory");
+					capex.setDescription("CapexDescription");
+					capex.setNetAmount(new BigDecimal("100"));
+					capex.setDepreciationMethod(DepreciationMethod.STRAIGHTLINE);
+					capex.setDepreciationPeriodInYears(3);
+					capex.setSalvageValue(BigDecimal.ONE);
+					assertExpensesSame(capex, xmlExpense);
+					break;
+				case OTHER:
 					assertExpensesSame(createExpense(ExpenseType.OTHER, false), xmlExpense);
+					break;
 				}
 			}
 		} catch (JAXBException e) {

@@ -288,6 +288,19 @@ class XmlTestBase extends BaseTestFixture {
 		assertEquals(expense.getNetAmount(), xmlExpense.getNetAmount());
 		assertDatesSame(expense.getPaymentDate(), xmlExpense.getPaymentDate());
 		assertTaxRatesSame(expense.getTaxRate(), xmlExpense.getTaxRate());
+		if (expense.getDepreciationMethod() == null) {
+			assertNull(xmlExpense.getDepreciationMethod());
+		} else {
+			assertEquals(expense.getDepreciationMethod().name(), xmlExpense.getDepreciationMethod().name());
+		}
+		
+		if (expense.getDepreciationPeriodInYears() == null) {
+			assertNull(xmlExpense.getDepreciationPeriodInYears());
+		} else {
+			assertEquals(expense.getDepreciationPeriodInYears(), xmlExpense.getDepreciationPeriodInYears());
+		}
+		
+		assertAreEqual(expense.getSalvageValue(), xmlExpense.getSalvageValue());
 	}
 	
 	/**

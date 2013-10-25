@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
@@ -206,20 +207,16 @@ class XmlToModel {
 				Expense expense = new Expense();
 				expense.setDescription(xmlExpense.getDescription());
 				if (xmlExpense.getExpenseType() != null) {
-					switch (xmlExpense.getExpenseType()) {
-					case OPEX:
-						expense.setExpenseType(ExpenseType.OPEX);
-						break;
-					case CAPEX:
-						expense.setExpenseType(ExpenseType.CAPEX);
-						break;
-					default:
-						break;
-					}					
+					expense.setExpenseType(ExpenseType.valueOf(xmlExpense.getExpenseType().name()));
 				}
 				expense.setNetAmount(xmlExpense.getNetAmount());
 				expense.setPaymentDate(convertDate(xmlExpense.getPaymentDate()));
 				expense.setTaxRate(findOrCreateTaxRate(xmlExpense.getTaxRate()));
+				
+				if (xmlExpense.getDepreciationMethod() != null) {
+					expense.setDepreciationMethod(DepreciationMethod.valueOf(xmlExpense.getDepreciationMethod().name()));
+				}
+				
 				this.expenses.add(expense);
 			}
 			
