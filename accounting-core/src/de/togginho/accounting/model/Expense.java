@@ -18,6 +18,7 @@ package de.togginho.accounting.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author thorsten
@@ -40,6 +41,7 @@ public class Expense implements Serializable {
     public static final String FIELD_DEPRECIATION_METHOD = "depreciationMethod";
     public static final String FIELD_DEPRECIATION_PERIOD = "depreciationPeriodInYears";
     public static final String FIELD_SALVAGE_VALUE = "salvageValue";
+    public static final String FIELD_DEPRECIATION_SCHEDULE = "depreciationSchedule";
     
     private String id;
     
@@ -60,6 +62,8 @@ public class Expense implements Serializable {
     private Integer depreciationPeriodInYears;
     
     private BigDecimal salvageValue;
+    
+    private List<AnnualDepreciation> depreciationSchedule;
     
 	/**
 	 * @return the id
@@ -201,6 +205,21 @@ public class Expense implements Serializable {
 		this.salvageValue = salvageValue;
 	}
 	
+	/**
+	 * @return the depreciationSchedule
+	 */
+	public List<AnnualDepreciation> getDepreciationSchedule() {
+		return depreciationSchedule;
+	}
+
+	/**
+	 * @param depreciationSchedule the depreciationSchedule to set
+	 */
+	public void setDepreciationSchedule(
+			List<AnnualDepreciation> depreciationSchedule) {
+		this.depreciationSchedule = depreciationSchedule;
+	}
+
 	/**
 	 * 
 	 * {@inheritDoc}

@@ -90,6 +90,8 @@ public class Messages extends NLS {
 	public static String ExpenseEditor_DepreciationSchedule;
 	public static String ExpenseEditor_BeginningBookValue;
 	public static String ExpenseEditor_EndBookValue;
+	public static String ExpenseEditor_DepreciationCalculatedTitle;
+	public static String ExpenseEditor_DepreciationCalculatedMessage;
 	
 	public static String ExpensesView_title;
 	

@@ -15,8 +15,10 @@
  */
 package de.togginho.accounting.ui.expense;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -54,7 +56,9 @@ import de.togginho.accounting.util.FormatUtil;
  *
  */
 public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEditingHelperCallback {
-		
+
+	private static final Logger LOG = Logger.getLogger(ExpenseEditor.class);
+	
 	// form 
 	private FormToolkit toolkit;
 	private ScrolledForm form;
@@ -122,7 +126,12 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		toolkit.decorateFormHeading(form.getForm());
 		form.reflow(true);
 		
-		updateDepreciationTable();
+		if (getEditorInput().getExpense().getDepreciationSchedule() != null) {
+			updateDepreciationTable(false);
+		} else {
+			updateDepreciationTable(true);
+		}
+		
 	}
 	
 	/**
@@ -223,15 +232,30 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	/**
 	 * 
 	 */
-	private void updateDepreciationTable() {
+	private void updateDepreciationTable(boolean recalculate) {
 		Expense expense = getEditorInput().getExpense();
 		
-		String type = expense.getDepreciationMethod() != null ? expense.getDepreciationMethod().toString() : "NULL";
+		String type = expense.getDepreciationMethod() != null ? expense.getDepreciationMethod().toString() : "NONE"; //$NON-NLS-N$
 		
-		System.out.println("Updating depreciation table: " + type); //$NON-NLS-1$
+		LOG.debug("Updating depreciation table: " + type); //$NON-NLS-1$
 		
 		if (expense.getExpenseType().isDepreciationPossible() && expense.getDepreciationMethod() != null) {
-			deprecTableViewer.setInput(CalculationUtil.calculateDepreciationSchedule(expense));
+			if (recalculate) {
+				LOG.debug("Recalculating depreciation schedule"); //$NON-NLS-1$
+				expense.setDepreciationSchedule(CalculationUtil.calculateDepreciationSchedule(expense));
+				// this should only happen when opening an expense without a saved schedule for the first time
+				if (!isDirty()) {
+					setIsDirty(true);
+					MessageDialog.openInformation(
+							getSite().getShell(), 
+							Messages.ExpenseEditor_DepreciationCalculatedTitle, 
+							Messages.ExpenseEditor_DepreciationCalculatedMessage);
+				}
+			} else {
+				LOG.debug("Using data from Expense model"); //$NON-NLS-1$
+			}
+			
+			deprecTableViewer.setInput(expense.getDepreciationSchedule());
 		} else {
 			deprecTableViewer.setInput(null);
 		}
@@ -245,7 +269,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	 */
 	@Override
 	public void modelHasChanged() {
-		updateDepreciationTable();
+		updateDepreciationTable(true);
 		setIsDirty(true);
 	}
 
