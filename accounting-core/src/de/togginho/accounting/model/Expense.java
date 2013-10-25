@@ -57,7 +57,7 @@ public class Expense implements Serializable {
     
     private DepreciationMethod depreciationMethod;
     
-    private int depreciationPeriodInYears;
+    private Integer depreciationPeriodInYears;
     
     private BigDecimal salvageValue;
     
@@ -176,14 +176,14 @@ public class Expense implements Serializable {
 	/**
 	 * @return the depreciationPeriodInYears
 	 */
-	public int getDepreciationPeriodInYears() {
+	public Integer getDepreciationPeriodInYears() {
 		return depreciationPeriodInYears;
 	}
 
 	/**
 	 * @param depreciationPeriodInYears the depreciationPeriodInYears to set
 	 */
-	public void setDepreciationPeriodInYears(int depreciationPeriodInYears) {
+	public void setDepreciationPeriodInYears(Integer depreciationPeriodInYears) {
 		this.depreciationPeriodInYears = depreciationPeriodInYears;
 	}
 
