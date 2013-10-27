@@ -53,6 +53,7 @@ import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.io.ExpenseImporter;
+import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -905,6 +906,27 @@ public class AccountingServiceImpl implements AccountingService {
 		BUSINESS_LOG.info(String.format("Deleted expense [%s]", expense.getDescription())); //$NON-NLS-1$
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.AccountingService#getDepreciationForYear(int)
+	 */
+	@Override
+	public List<AnnualDepreciation> getDepreciationForYear(int year) {
+		ObjectSet<Expense> expenses = objectContainer.query(new FindDepreciationPredicate(year));
+		
+		List<AnnualDepreciation> returnMe = new ArrayList<AnnualDepreciation>();
+		
+		for (Expense expense : expenses) {
+			for (AnnualDepreciation annual : expense.getDepreciationSchedule()) {
+				if (annual.getYear() == year) {
+					returnMe.add(annual);
+				}
+			}
+		}
+		
+		return returnMe;
+	}
+
 	/**
      * {@inheritDoc}.
      * @see AccountingService#getIncomeStatement(TimeFrame)

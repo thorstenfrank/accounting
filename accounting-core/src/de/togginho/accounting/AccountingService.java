@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
@@ -362,7 +363,16 @@ public interface AccountingService {
 	 */
 	@ModelChanging
 	void deleteExpense(Expense expense);
-		
+	
+	/**
+	 * Returns all single {@link AnnualDepreciation} entries for the supplied year
+	 * 
+	 * @param year the year to search for as a four-digit number, e.g. 2010, 1999, etc.
+	 * 
+	 * @return a list of all annual depreciation entries for the supplied year
+	 */
+	List<AnnualDepreciation> getDepreciationForYear(int year);
+	
 	/**
 	 * 
 	 * @param timeFrame
@@ -396,9 +406,11 @@ public interface AccountingService {
 	AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation);
 	
 	/**
+	 * Imports expenses from a comma-separated-values file.
 	 * 
-	 * @param sourceFile
-	 * @return
+	 * @param sourceFile the file to import from
+	 * 
+	 * @return the imported expenses
 	 */
 	Collection<Expense> importExpenses(String sourceFile);
 }
