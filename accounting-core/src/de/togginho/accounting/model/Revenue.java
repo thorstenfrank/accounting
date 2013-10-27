@@ -44,6 +44,8 @@ public class Revenue implements Serializable {
 	
 	private Map<Invoice, Price> invoiceRevenues;
 	
+	private Price regularRevenue;
+	private Price otherRevenue;
 	private Price totalRevenue;
 	
 	/**
@@ -73,7 +75,13 @@ public class Revenue implements Serializable {
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
 		this.invoiceRevenues = new HashMap<Invoice, Price>();
-		
+		updateTotals();
+	}
+
+	/**
+	 * 
+	 */
+	private void updateTotals() {
 		BigDecimal revenueGross = BigDecimal.ZERO;
 		BigDecimal revenueNet = BigDecimal.ZERO;
 		BigDecimal revenueTax = BigDecimal.ZERO;
@@ -88,18 +96,20 @@ public class Revenue implements Serializable {
 			}
 		}
 		
-		this.totalRevenue = new Price(revenueNet, revenueTax, revenueGross);
+		this.regularRevenue = new Price(revenueNet, revenueTax, revenueGross);
+		this.totalRevenue = new Price(revenueNet, revenueTax, revenueGross);		
 	}
-
+	
 	/**
-	 * @return the totalRevenue
+	 * @return total revenue for the period
 	 */
 	public Price getTotalRevenue() {
 		return totalRevenue;
 	}
 
 	/**
-     * @return the revenueNet
+	 * 
+     * @return total net revenue
      */
     public BigDecimal getRevenueNet() {
     	return totalRevenue.getNet();
@@ -119,6 +129,22 @@ public class Revenue implements Serializable {
     	return totalRevenue.getGross();
     }
 
+    /**
+     * 
+     * @return
+     */
+    public Price getRegularRevenue() {
+    	return regularRevenue;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Price getOtherRevenue() {
+    	return otherRevenue;
+    }
+    
 	/**
 	 * @return the invoiceRevenues
 	 */
