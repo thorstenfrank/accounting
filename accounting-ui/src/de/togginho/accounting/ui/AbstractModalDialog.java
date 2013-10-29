@@ -25,9 +25,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import de.togginho.accounting.Constants;
-import de.togginho.accounting.ui.util.WidgetHelper;
-
 /**
  * A basic modal dialog with classic Ok and Cancel buttons. It also provides a basic layout and simple way to customize
  * the title, message and icon of the dialog. The actual content creation is then delegated to subclasses.
@@ -107,28 +104,20 @@ public abstract class AbstractModalDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-    	Composite composite = new Composite(parent, SWT.NONE);
+    	Composite composite = (Composite) super.createDialogArea(parent); //new Composite(parent, SWT.NONE);
     	GridLayout layout = new GridLayout(1, false);
     	layout.marginHeight = 0;
     	layout.marginWidth = 0;
     	
     	composite.setLayout(layout);
-    	GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(composite);
-    	
-    	// TOP SEPARATOR
-		final Label topSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(topSeparator);
+    	GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
 		
 		// Let subclasses build the main contents				
 		createMainContents(composite);
 		
-		// SPACER TO BOTTOM SEPARATOR
-		final Label fillToBottom = WidgetHelper.createLabel(composite, Constants.EMPTY_STRING);
-		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(fillToBottom);
-		
 		// BOTTOM SEPARATOR
 		final Label bottomSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bottomSeparator);
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).align(SWT.FILL, SWT.END).applyTo(bottomSeparator);
 		
 		return composite;
 	}
