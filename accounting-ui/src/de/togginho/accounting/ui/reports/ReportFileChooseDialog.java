@@ -17,6 +17,8 @@ package de.togginho.accounting.ui.reports;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,9 +37,7 @@ import de.togginho.accounting.ui.util.WidgetHelper;
  *
  */
 public class ReportFileChooseDialog extends AbstractModalDialog {
-	
-	private Text filePath;
-	
+		
 	private String targetFile;
 	
 	private boolean openAfterExport;
@@ -76,7 +76,13 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 		
 		WidgetHelper.createLabel(composite, "Export to file:");
 		
-		filePath = WidgetHelper.createSingleBorderText(composite, targetFile);
+		final Text filePath = WidgetHelper.createSingleBorderText(composite, targetFile);
+		filePath.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				targetFile = filePath.getText();
+			}
+		});
 		
 		Button openFileDialog = new Button(composite, SWT.PUSH);
 		openFileDialog.setText("...");
@@ -92,22 +98,29 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 				String selected = fd.open();
 				if (selected != null) {
 					filePath.setText(selected);
+					targetFile = selected;
 				}
 			}
 		});
 		
-		Button openAfter = new Button(composite, SWT.CHECK);
+		final Button openAfter = new Button(composite, SWT.CHECK);
 		openAfter.setSelection(openAfterExport);
 		openAfter.setText("Open file after exporting");
 		GridDataFactory.fillDefaults().span(3, 1).applyTo(openAfter);
 		
+		openAfter.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				openAfterExport = openAfter.getSelection();
+			}
+		});
 	}
 
 	/**
 	 * @return the targetFile
 	 */
 	protected String getTargetFile() {
-		return filePath.getText();
+		return targetFile;
 	}
 
 	/**

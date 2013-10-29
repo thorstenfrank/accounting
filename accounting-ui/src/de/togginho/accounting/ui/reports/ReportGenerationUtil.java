@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
@@ -118,32 +118,32 @@ public class ReportGenerationUtil {
 	    	throw new AccountingException(Messages.ReportGenerationUtil_errorNoReportingService);
 	    }
 	    
-	    
-		FileDialog fd = new FileDialog(shell, SWT.SAVE);
-		fd.setFileName(handler.getTargetFileNameSuggestion());
-		fd.setFilterExtensions(new String[]{"*.pdf"}); //$NON-NLS-1$
-		fd.setFilterNames(new String[]{Messages.ReportGenerationUtil_labelPdfFiles});
-		
-		targetFileName = fd.open();
-		
-		if (targetFileName != null && confirmOverwrite(shell, targetFileName)) {
-			try {
-				LOG.info("Starting PDF generation to file " + targetFileName); //$NON-NLS-1$
-				ProgressMonitor generation = new ProgressMonitor();
-				new ProgressMonitorDialog(shell).run(true, false, generation);
-			} catch (Exception e) {
-				LOG.error("Error creating PDF", e); //$NON-NLS-1$
-				throw new AccountingException(Messages.ReportGenerationUtil_errorGeneratingInvoice, e);
-			}
-			
-			// show some success message.
-			MessageBox msgBox = new MessageBox(shell, SWT.ICON_INFORMATION | SWT.OK);
-			msgBox.setMessage(Messages.bind(Messages.ReportGenerationUtil_successMsg, targetFileName));
-			msgBox.setText(Messages.ReportGenerationUtil_successText);
-			msgBox.open();
-		} else {
-			LOG.debug("PDF export was cancelled"); //$NON-NLS-1$
-		}
+	    ReportFileChooseDialog dlg = new ReportFileChooseDialog(shell, handler.getTargetFileNameSuggestion());
+	    if (dlg.show()) {
+	    	targetFileName = dlg.getTargetFile();
+	    	if (targetFileName != null && confirmOverwrite(shell, targetFileName)) {
+				try {
+					LOG.info("Starting PDF generation to file " + targetFileName); //$NON-NLS-1$
+					ProgressMonitor generation = new ProgressMonitor();
+					new ProgressMonitorDialog(shell).run(true, false, generation);
+				} catch (Exception e) {
+					LOG.error("Error creating PDF", e); //$NON-NLS-1$
+					throw new AccountingException(Messages.ReportGenerationUtil_errorGeneratingInvoice, e);
+				}
+				
+				MessageBox msgBox = new MessageBox(shell, SWT.ICON_INFORMATION | SWT.OK);
+				msgBox.setMessage(Messages.bind(Messages.ReportGenerationUtil_successMsg, targetFileName));
+				msgBox.setText(Messages.ReportGenerationUtil_successText);
+				msgBox.open();
+				
+				if (dlg.isOpenAfterExport()) {
+					Program p = Program.findProgram("pdf");
+					p.execute(targetFileName);
+				}
+	    	}
+	    } else {
+	    	LOG.info("PDF export was cancelled"); //$NON-NLS-1$
+	    }
 	}
 	
 	/**
