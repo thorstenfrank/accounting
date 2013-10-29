@@ -211,6 +211,15 @@
                      style="pulldown">
                </command>
             </menu>
+            <separator
+                  name="viewMenuSep3"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  icon="icons/cog.png"
+                  style="push">
+            </command>
          </menu>
          <menu
                label="%menu.help.label"
@@ -1122,5 +1131,19 @@
             id="de.togginho.accounting.ui.util.ExportModelToXmlWizard"
             name="%export.model.wizard">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.togginho.accounting.ui.prefs.AccountingPreferencesPage"
+            id="de.togginho.accounting.ui.AccountingPreferences"
+            name="%preferences.accounting">
+      </page>
+      <page
+            category="de.togginho.accounting.ui.AccountingPreferences"
+            class="de.togginho.accounting.ui.prefs.ReportingPreferencesPage"
+            id="de.togginho.accounting.ui.ReportingPreferences"
+            name="%preferences.reporting">
+      </page>
    </extension>
 </plugin>
