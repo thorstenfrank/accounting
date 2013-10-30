@@ -85,7 +85,12 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
 					listener.modelChanged();
 				}
 			}
-				
+			
+			if (result instanceof AccountingContext) {
+				LOG.info("New context was read by service, will re-init now...");
+				setAccountingContext((AccountingContext) result);
+			}
+			
 			return result;
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof AccountingException) {
@@ -111,15 +116,14 @@ final class AccountingServiceInvocationHandler implements InvocationHandler {
      */
     protected void setAccountingContext(AccountingContext accountingContext) {
     	if (this.accountingContext != null) {
-    		LOG.warn("Overwriting accounting context");
+    		LOG.warn("Overwriting accounting context"); //$NON-NLS-1$
     	}
     	
     	this.accountingContext = accountingContext;
     	
-    	LOG.info("Calling init on AccountingService");
+    	LOG.info("Calling init on AccountingService"); //$NON-NLS-1$
     	
     	// try initialising the service with the new context
-    	// --> don't need to call init() explicitly, since that is done in getService()
     	getService();
     }
 

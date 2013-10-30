@@ -39,6 +39,9 @@ public class Messages extends NLS {
 	public static String AccountingSplashHandler_welcomeDialogUseExisting;
 	public static String AccountingSplashHandler_welcomeDialogImportXml;
 	
+	public static String AccountingUI_errorContextReInit;
+	public static String AccountingUI_errorContextInfoIncomplete;
+	
 	public static String AddressWizardPage_desc;
 	public static String AddressWizardPage_title;
 

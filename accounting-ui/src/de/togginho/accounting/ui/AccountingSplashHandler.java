@@ -18,6 +18,7 @@ package de.togginho.accounting.ui;
 import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -30,8 +31,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.splash.AbstractSplashHandler;
+import org.osgi.service.prefs.BackingStoreException;
 
+import de.togginho.accounting.AccountingContext;
+import de.togginho.accounting.AccountingContextFactory;
+import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.ui.prefs.AccountingPreferences;
+import de.togginho.accounting.ui.prefs.AccountingPreferencesConstants;
 import de.togginho.accounting.ui.setup.ImportFromXmlWizard;
 import de.togginho.accounting.ui.setup.SetupExistingDataWizard;
 import de.togginho.accounting.ui.setup.SetupWizard;
@@ -66,12 +73,11 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 	 */
 	@Override
 	public void init(Shell splash) {
-		super.init(splash);
-		
+		super.init(splash);		
 		
 		try {
 			LOG.debug("reading preferences and reading stored data..."); //$NON-NLS-1$
-			initialised = AccountingUI.getDefault().initContext();
+			initialised = initContext();
 			
 			if (!initialised) {
 				// no prefs found - assume we're running for the first time
@@ -157,7 +163,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 			LOG.info("Wizard finished normally, now starting up application core"); //$NON-NLS-1$
 			User user = wizard.getConfiguredUser();
 			
-			AccountingUI.getDefault().initContext(user.getName(), wizard.getDbFileLocation());
+			initContext(user.getName(), wizard.getDbFileLocation());
 			
 			try {
 				LOG.info("Initial save of user " +user.getName()); //$NON-NLS-1$
@@ -183,7 +189,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 		} else {
 			LOG.info("Now running useExisting stuff..."); //$NON-NLS-1$
 			
-			AccountingUI.getDefault().initContext(wizard.getUserName(), wizard.getFileLocation());
+			initContext(wizard.getUserName(), wizard.getFileLocation());
 			
 			User user = AccountingUI.getAccountingService().getCurrentUser();
 			if (user == null) {
@@ -210,7 +216,7 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 			handleSetupCancelledByUser();
 		} else {
 			try {
-	            AccountingUI.getDefault().initContextFromImport(wizard.getXmlFile(), wizard.getDbFile());
+	            initContextFromImport(wizard.getXmlFile(), wizard.getDbFile());
 	            initialised = true;
             } catch (Exception e) {
             	errorMessage = e.getMessage();
@@ -227,6 +233,84 @@ public class AccountingSplashHandler extends AbstractSplashHandler {
 		errorMessage = Messages.AccountingSplashHandler_setupDialogCancelledMsg;
 	}
 
+	/**
+	 * Initialises the context from preferences and system properties.
+	 * 
+	 * @return <code>true</code> if the context was properly initialised, <code>false</code> if not
+	 */
+	private boolean initContext() {		
+		LOG.info("Initialising AccountingContext"); //$NON-NLS-1$
+		
+		try {
+			AccountingUI.getDefault().initServiceWithContext(AccountingPreferences.readContextFromPreferences());
+		} catch (Exception e) {
+			LOG.error("Error reading application context from preferences", e); //$NON-NLS-1$
+		}
+		
+		return (AccountingUI.getDefault().isServiceContextInitialised());
+	}
+	
+	/**
+	 * 
+	 * @param xmlFile
+	 * @param dbFileLocation
+	 */
+	private void initContextFromImport(final String xmlFile, final String dbFileLocation) {
+		saveInitialContext(AccountingUI.getAccountingService().importModelFromXml(xmlFile, dbFileLocation));
+	}
+	
+	/**
+	 * Initialises the context from the supplied values. This method should be called only during the first run of
+	 * the application!
+	 * 
+	 * @param userName
+	 * @param dbFileLocation
+	 */
+	private void initContext(final String userName, final String dbFileLocation) {
+		// if there already is a context present, calling this method is not permitted
+		if (initContext()) {
+			LOG.error("Context already stored in DB! Re-Init of context is not permitted!"); //$NON-NLS-1$
+			throw new AccountingException(Messages.AccountingUI_errorContextReInit);
+		}
+		
+		if (userName == null || userName.isEmpty() || dbFileLocation == null || dbFileLocation.isEmpty()) {
+			LOG.warn(String.format("Cannot build context, both user [%s] and DB file location [%s] must be supplied!", 
+					userName, dbFileLocation)); //$NON-NLS-1$
+			throw new AccountingException(
+					Messages.bind(Messages.AccountingUI_errorContextInfoIncomplete, userName, dbFileLocation));
+		}
+		
+		// build the context
+		LOG.info(String.format(
+				"Building new accounting context for user [%s] with DB file [%s]",  //$NON-NLS-1$
+				userName, dbFileLocation)); //$NON-NLS-1$
+		
+		// build the context and immediately init the AccountingService
+		LOG.info("Propagating context to AccountingService proxy..."); //$NON-NLS-1$
+		AccountingContext ctx = AccountingContextFactory.buildContext(userName, dbFileLocation);
+		AccountingUI.getDefault().initServiceWithContext(ctx);
+		
+		// and save the context to preferences right away...
+		saveInitialContext(ctx);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 */
+	private void saveInitialContext(AccountingContext ctx) {
+		LOG.info("Saving newly created context to preferences"); //$NON-NLS-1$
+		IEclipsePreferences prefs = AccountingPreferences.getAccountingPreferences();
+		prefs.put(AccountingPreferencesConstants.ACCOUNTING_USER_NAME, ctx.getUserName());
+		prefs.put(AccountingPreferencesConstants.ACCOUNTING_DB_FILE, ctx.getDbFileName());
+		
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			LOG.error("Error saving context!", e); //$NON-NLS-1$
+		}
+	}
+	
 	/**
 	 * Setup mode used when no existing preferences are found...
 	 */

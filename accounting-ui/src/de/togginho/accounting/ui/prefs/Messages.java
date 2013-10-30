@@ -29,6 +29,8 @@ public class Messages extends NLS {
 	public static String AccountingPrefs_UserName;
 	public static String AccountingPrefs_DBfile;
 
+	public static String Preferences_ErrorUnavailable;
+	
 	public static String ReportingPrefs_DefaultExportDir;
 	public static String ReportingPrefs_OpenAfterExport;
 	
