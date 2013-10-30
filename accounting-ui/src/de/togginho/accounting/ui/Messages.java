@@ -54,6 +54,12 @@ public class Messages extends NLS {
 	public static String ChangeInvoicesFilterCommand_message;
 	public static String ChangeInvoicesFilterCommand_title;
 
+	public static String ChooseExportTargetDialog_labelPdfFiles;
+	public static String ChooseExportTargetDialog_message;
+	public static String ChooseExportTargetDialog_openAfterExport;
+	public static String ChooseExportTargetDialog_targetFile;
+	public static String ChooseExportTargetDialog_title;
+
 	public static String ChooseReportCommand_message;
 	public static String ChooseReportCommand_title;
 	
@@ -196,7 +202,6 @@ public class Messages extends NLS {
 	
 	public static String ReportGenerationUtil_errorGeneratingInvoice;
 	public static String ReportGenerationUtil_errorNoReportingService;
-	public static String ReportGenerationUtil_labelPdfFiles;
 	public static String ReportGenerationUtil_successMsg;
 	public static String ReportGenerationUtil_successText;
 	public static String ReportGenerationUtil_confirmOverwriteMsg;

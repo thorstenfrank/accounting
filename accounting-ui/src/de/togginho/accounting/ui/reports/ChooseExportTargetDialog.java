@@ -36,7 +36,7 @@ import de.togginho.accounting.ui.util.WidgetHelper;
  * @author thorsten
  *
  */
-public class ReportFileChooseDialog extends AbstractModalDialog {
+public class ChooseExportTargetDialog extends AbstractModalDialog {
 		
 	private String targetFile;
 	
@@ -47,7 +47,7 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 	 * @param parentShell
 	 * @param targetFile
 	 */
-	public ReportFileChooseDialog(Shell parentShell, String targetFile) {
+	public ChooseExportTargetDialog(Shell parentShell, String targetFile) {
 		this(parentShell, targetFile, false);
 	}
 	
@@ -57,8 +57,8 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 	 * @param targetFile
 	 * @param openAfterExport
 	 */
-	public ReportFileChooseDialog(Shell parentShell, String targetFile, boolean openAfterExport) {
-		super(parentShell, "This is the title", "This is the message");
+	public ChooseExportTargetDialog(Shell parentShell, String targetFile, boolean openAfterExport) {
+		super(parentShell, Messages.ChooseExportTargetDialog_title, Messages.ChooseExportTargetDialog_message);
 		this.targetFile = targetFile;
 		this.openAfterExport = openAfterExport;
 	}
@@ -74,7 +74,7 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 		WidgetHelper.grabBoth(composite);
 		
 		
-		WidgetHelper.createLabel(composite, "Export to file:");
+		WidgetHelper.createLabel(composite, Messages.ChooseExportTargetDialog_targetFile);
 		
 		final Text filePath = WidgetHelper.createSingleBorderText(composite, targetFile);
 		filePath.addKeyListener(new KeyAdapter() {
@@ -85,7 +85,7 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 		});
 		
 		Button openFileDialog = new Button(composite, SWT.PUSH);
-		openFileDialog.setText("...");
+		openFileDialog.setText("..."); //$NON-NLS-1$
 		
 		openFileDialog.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -93,7 +93,7 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 				FileDialog fd = new FileDialog(getParentShell(), SWT.SAVE);
 				fd.setFileName(filePath.getText());
 				fd.setFilterExtensions(new String[]{"*.pdf"}); //$NON-NLS-1$
-				fd.setFilterNames(new String[]{Messages.ReportGenerationUtil_labelPdfFiles});
+				fd.setFilterNames(new String[]{Messages.ChooseExportTargetDialog_labelPdfFiles});
 				
 				String selected = fd.open();
 				if (selected != null) {
@@ -105,7 +105,7 @@ public class ReportFileChooseDialog extends AbstractModalDialog {
 		
 		final Button openAfter = new Button(composite, SWT.CHECK);
 		openAfter.setSelection(openAfterExport);
-		openAfter.setText("Open file after exporting");
+		openAfter.setText(Messages.ChooseExportTargetDialog_openAfterExport);
 		GridDataFactory.fillDefaults().span(3, 1).applyTo(openAfter);
 		
 		openAfter.addSelectionListener(new SelectionAdapter() {

@@ -21,12 +21,14 @@ import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.osgi.service.prefs.BackingStoreException;
 
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Constants;
@@ -34,6 +36,8 @@ import de.togginho.accounting.ReportGenerationMonitor;
 import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.prefs.AccountingPreferences;
+import de.togginho.accounting.ui.prefs.ReportingPreferencesConstants;
 import de.togginho.accounting.util.TimeFrame;
 
 /**
@@ -45,10 +49,15 @@ public class ReportGenerationUtil {
 	/** */
 	private static final Logger LOG = Logger.getLogger(ReportGenerationUtil.class);
 	
+	private static final String SEPARATOR = System.getProperty("file.separator"); //$NON-NLS-1$
+	
+	/** */
 	private ReportingService reportingService;
 	
+	/** */
 	private ReportGenerationHandler handler;
 	
+	/** */
 	private String targetFileName;
 	
 	/**
@@ -71,6 +80,7 @@ public class ReportGenerationUtil {
 	 * Builds a filename suggestion appended by optional timeframe data.
 	 * 
 	 * <ul>
+	 * <li><code>[fileNameBase]</code> if start and end dates are in different years (no modifications made)</li>
 	 * <li><code>[fileNameBase]_[year][month]</code> if start and end dates are within the same month and year</li>
 	 * <li><code>[fileNameBase]_[year]</code> if start and end dates are within the same year but different months</li>
 	 * </ul>
@@ -110,6 +120,7 @@ public class ReportGenerationUtil {
 	/**
 	 * 
 	 * @param handler
+	 * @param shell
 	 */
 	private void doExecuteReportGeneration(ReportGenerationHandler handler, Shell shell) {
 		this.handler = handler;
@@ -118,7 +129,21 @@ public class ReportGenerationUtil {
 	    	throw new AccountingException(Messages.ReportGenerationUtil_errorNoReportingService);
 	    }
 	    
-	    ReportFileChooseDialog dlg = new ReportFileChooseDialog(shell, handler.getTargetFileNameSuggestion());
+	    IEclipsePreferences prefs = AccountingPreferences.getAccountingPreferences();
+	    StringBuilder sb = new StringBuilder();
+		String dir = prefs.get(ReportingPreferencesConstants.LAST_SAVE_DIR, System.getProperty("user.home")); //$NON-NLS-1$
+		
+		if (dir != null && dir.isEmpty() == false) {
+			sb.append(dir);
+			if (dir.endsWith(SEPARATOR) == false) {
+				sb.append(SEPARATOR);
+			}
+		}
+		sb.append(handler.getTargetFileNameSuggestion());
+		boolean openAfterExport = prefs.getBoolean(ReportingPreferencesConstants.OPEN_AFTER_EXPORT, false);
+		
+	    ChooseExportTargetDialog dlg = new ChooseExportTargetDialog(shell, sb.toString(), openAfterExport);
+	    
 	    if (dlg.show()) {
 	    	targetFileName = dlg.getTargetFile();
 	    	if (targetFileName != null && confirmOverwrite(shell, targetFileName)) {
@@ -131,14 +156,26 @@ public class ReportGenerationUtil {
 					throw new AccountingException(Messages.ReportGenerationUtil_errorGeneratingInvoice, e);
 				}
 				
-				MessageBox msgBox = new MessageBox(shell, SWT.ICON_INFORMATION | SWT.OK);
-				msgBox.setMessage(Messages.bind(Messages.ReportGenerationUtil_successMsg, targetFileName));
-				msgBox.setText(Messages.ReportGenerationUtil_successText);
-				msgBox.open();
+				showSuccessPopup(shell);
 				
 				if (dlg.isOpenAfterExport()) {
-					Program p = Program.findProgram("pdf");
-					p.execute(targetFileName);
+					openFileInExternalProgram();
+				}
+				
+				// save any changes to defaults to preferences
+				if (openAfterExport != dlg.isOpenAfterExport()) {
+					prefs.putBoolean(ReportingPreferencesConstants.OPEN_AFTER_EXPORT, dlg.isOpenAfterExport());
+				}
+				
+				File actualFile = new File(targetFileName);
+				if (dir.equals(actualFile.getParent()) == false) {
+					prefs.put(ReportingPreferencesConstants.LAST_SAVE_DIR, actualFile.getParent());
+				}
+				
+				try {
+					prefs.flush();
+				} catch (BackingStoreException e) {
+					LOG.error("Error saving preferences", e); //$NON-NLS-1$
 				}
 	    	}
 	    } else {
@@ -161,6 +198,28 @@ public class ReportGenerationUtil {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * @param shell
+	 */
+	private void showSuccessPopup(Shell shell) {
+		MessageBox msgBox = new MessageBox(shell, SWT.ICON_INFORMATION | SWT.OK);
+		msgBox.setMessage(Messages.bind(Messages.ReportGenerationUtil_successMsg, targetFileName));
+		msgBox.setText(Messages.ReportGenerationUtil_successText);
+		msgBox.open();
+	}
+	
+	/**
+	 * 
+	 */
+	private void openFileInExternalProgram() {
+		try {
+			Program p = Program.findProgram("pdf");
+			p.execute(targetFileName);
+		} catch (Exception e) {
+			LOG.error(String.format("Could not open file [%s] in external program", targetFileName)); //$NON-NLS-1$
+		}
 	}
 	
 	/**
