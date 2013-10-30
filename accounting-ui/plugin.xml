@@ -142,6 +142,148 @@
             </command>
          </menu>
          <menu
+               label="%menu.edit.label"
+               mnemonic="%menu.edit.mnemonic">
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.EditInvoiceCommand"
+                  icon="icons/page_edit.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsInvoice">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.CopyInvoiceCommand"
+                  icon="icons/page_copy.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsInvoice">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+                  icon="icons/page_go.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsInvoice">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
+                  icon="icons/money.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsInvoice">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
+                  icon="icons/cancel.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsInvoice">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+                  icon="icons/page_delete.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsInvoice">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="editMenuSep1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="de.togginho.accounting.ui.client.EditClientCommand"
+                  icon="icons/group_edit.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsClient">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.client.DeleteClientCommand"
+                  icon="icons/group_delete.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsClient">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="editMenuSep2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+                  icon="icons/tag_blue_edit.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsSingleExpense">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.expense.MultiEditExpenseCommand"
+                  icon="icons/tag_blue_edit.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsMultipleExpenses">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand"
+                  icon="icons/page_copy.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsSingleExpense">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+                  icon="icons/tag_blue_delete.png"
+                  style="push">
+               <visibleWhen>
+                  <reference
+                        definitionId="selectionIsSingleExpense">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="editMenuSep3"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  icon="icons/cog.png"
+                  label="%menu.edit.preferences.label"
+                  style="push">
+            </command>
+         </menu>
+         <menu
                label="%menu.window.label"
                mnemonic="%menu.window.mnemonic">
             <command
@@ -215,11 +357,6 @@
                   name="viewMenuSep3"
                   visible="true">
             </separator>
-            <command
-                  commandId="org.eclipse.ui.window.preferences"
-                  icon="icons/cog.png"
-                  style="push">
-            </command>
          </menu>
          <menu
                label="%menu.help.label"
@@ -904,6 +1041,17 @@
                       value="(1-">
                 </count>
             </and>
+      </definition>
+      <definition
+            id="clientIsActivePart">
+         <or>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="de.togginho.accounting.ui.client.ClientView">
+               </equals>
+            </with>
+         </or>
       </definition>
    </extension>
    <extension
