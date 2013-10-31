@@ -19,6 +19,7 @@ import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.model.User;
 
 /**
  * @author thorsten
@@ -65,4 +66,12 @@ public interface ReportingService {
 	 * @param monitor
 	 */
 	void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor);
+	
+	/**
+	 * 
+	 * @param user
+	 * @param fileLocation
+	 * @param monitor
+	 */
+	void generateLetterhead(User user, String fileLocation, ReportGenerationMonitor monitor);
 }

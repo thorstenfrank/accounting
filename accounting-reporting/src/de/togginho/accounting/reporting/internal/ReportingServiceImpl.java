@@ -19,6 +19,7 @@ import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.model.User;
 import de.togginho.accounting.reporting.ReportGenerationMonitor;
 import de.togginho.accounting.reporting.ReportingService;
 
@@ -34,8 +35,7 @@ public class ReportingServiceImpl implements ReportingService {
 	 */
 	@Override
 	public void generateInvoiceToPdf(Invoice invoice, String fileLocation, ReportGenerationMonitor monitor) {
-		InvoiceGenerator generator = new InvoiceGenerator(invoice);
-		generator.generateReportToFile(fileLocation, monitor);
+		doGenerateReport(new InvoiceGenerator(invoice), fileLocation, monitor);
 	}
 
 	/**
@@ -44,8 +44,7 @@ public class ReportingServiceImpl implements ReportingService {
      */
     @Override
     public void generateRevenueToPdf(Revenue revenue, String fileLocation, ReportGenerationMonitor monitor) {
-	    RevenueReportGenerator generator = new RevenueReportGenerator(revenue);
-	    generator.generateReportToFile(fileLocation, monitor);
+    	doGenerateReport(new RevenueReportGenerator(revenue), fileLocation, monitor);
     }
 
     /**
@@ -55,8 +54,7 @@ public class ReportingServiceImpl implements ReportingService {
      */
     @Override
     public void generateExpensesToPdf(ExpenseCollection expenseCollection, String fileLocation, ReportGenerationMonitor monitor) {
-    	ExpensesReportGenerator generator = new ExpensesReportGenerator(expenseCollection);
-    	generator.generateReportToFile(fileLocation, monitor);
+    	doGenerateReport(new ExpensesReportGenerator(expenseCollection), fileLocation, monitor);
     }
     
     /**
@@ -65,8 +63,7 @@ public class ReportingServiceImpl implements ReportingService {
      */
     @Override
     public void generateIncomeStatementSummaryToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
-    	IncomeStatementSummaryReportGenerator generator = new IncomeStatementSummaryReportGenerator(incomeStatement);
-	    generator.generateReportToFile(fileLocation, monitor);
+    	doGenerateReport(new IncomeStatementSummaryReportGenerator(incomeStatement), fileLocation, monitor);
     }
 
 	/**
@@ -76,7 +73,25 @@ public class ReportingServiceImpl implements ReportingService {
      */
     @Override
     public void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
-    	IncomeStatementReportGenerator generator = new IncomeStatementReportGenerator(incomeStatement);
+    	doGenerateReport(new IncomeStatementReportGenerator(incomeStatement), fileLocation, monitor);
+    }
+
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.reporting.ReportingService#generateLetterhead(de.togginho.accounting.model.User, java.lang.String, de.togginho.accounting.reporting.ReportGenerationMonitor)
+     */
+    @Override
+    public void generateLetterhead(User user, String fileLocation, ReportGenerationMonitor monitor) {
+    	doGenerateReport(new LetterheadReportGenerator(user), fileLocation, monitor);
+    }
+    
+    /**
+     * 
+     * @param generator
+     * @param fileLocation
+     * @param monitor
+     */
+    private void doGenerateReport(AbstractReportGenerator generator, String fileLocation, ReportGenerationMonitor monitor) {
     	generator.generateReportToFile(fileLocation, monitor);
     }
 }
