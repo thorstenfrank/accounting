@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
+	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
 	<field name="incomeStatement" class="de.togginho.accounting.reporting.model.IncomeStatementWrapper"/>
 	<field name="incomeStatement.title" class="java.lang.String"/>
 	<field name="net.title" class="java.lang.String"/>

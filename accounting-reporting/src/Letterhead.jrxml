@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="226"/>
-	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
+	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

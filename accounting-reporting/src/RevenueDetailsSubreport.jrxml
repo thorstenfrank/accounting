@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
+	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
 	<field name="invoiceDate" class="java.lang.String">
 		<fieldDescription><![CDATA[invoiceDate]]></fieldDescription>
 	</field>
