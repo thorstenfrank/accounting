@@ -15,8 +15,8 @@
  */
 package de.togginho.accounting.ui.reports;
 
-import de.togginho.accounting.ReportGenerationMonitor;
-import de.togginho.accounting.ReportingService;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportingService;
 
 /**
  * @author thorsten

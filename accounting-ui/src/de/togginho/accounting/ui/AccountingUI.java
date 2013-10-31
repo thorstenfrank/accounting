@@ -26,7 +26,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import de.togginho.accounting.AccountingContext;
 import de.togginho.accounting.AccountingService;
-import de.togginho.accounting.ReportingService;
+import de.togginho.accounting.reporting.ReportingService;
 
 /**
  * The activator class controls the plug-in life cycle

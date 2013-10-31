@@ -32,8 +32,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Constants;
-import de.togginho.accounting.ReportGenerationMonitor;
-import de.togginho.accounting.ReportingService;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.prefs.AccountingPreferences;
@@ -248,7 +248,7 @@ public class ReportGenerationUtil {
 				
 		/**
 		 * {@inheritDoc}.
-		 * @see de.togginho.accounting.ReportGenerationMonitor#startingReportGeneration()
+		 * @see de.togginho.accounting.reporting.ReportGenerationMonitor#startingReportGeneration()
 		 */
 		@Override
 		public void startingReportGeneration() {
@@ -258,7 +258,7 @@ public class ReportGenerationUtil {
 		
 		/**
 		 * {@inheritDoc}.
-		 * @see de.togginho.accounting.ReportGenerationMonitor#loadingTemplate()
+		 * @see de.togginho.accounting.reporting.ReportGenerationMonitor#loadingTemplate()
 		 */
 		@Override
 		public void loadingTemplate() {
@@ -268,7 +268,7 @@ public class ReportGenerationUtil {
 		
 		/**
 		 * {@inheritDoc}.
-		 * @see de.togginho.accounting.ReportGenerationMonitor#addingReportParameters()
+		 * @see de.togginho.accounting.reporting.ReportGenerationMonitor#addingReportParameters()
 		 */
 		@Override
 		public void addingReportParameters() {
@@ -278,7 +278,7 @@ public class ReportGenerationUtil {
 		
 		/**
 		 * {@inheritDoc}.
-		 * @see de.togginho.accounting.ReportGenerationMonitor#fillingReport()
+		 * @see de.togginho.accounting.reporting.ReportGenerationMonitor#fillingReport()
 		 */
 		@Override
 		public void fillingReport() {
@@ -288,7 +288,7 @@ public class ReportGenerationUtil {
 		
 		/**
 		 * {@inheritDoc}.
-		 * @see de.togginho.accounting.ReportGenerationMonitor#exportingReport()
+		 * @see de.togginho.accounting.reporting.ReportGenerationMonitor#exportingReport()
 		 */
 		@Override
 		public void exportingReport() {

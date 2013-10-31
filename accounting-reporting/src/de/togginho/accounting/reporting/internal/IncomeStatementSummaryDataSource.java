@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting;
+package de.togginho.accounting.reporting.internal;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class IncomeStatementSummaryDataSource extends AbstractReportDataSource {
     
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.reporting.AbstractReportDataSource#addFieldsToMap(java.util.Map)
+	 * @see de.togginho.accounting.reporting.internal.AbstractReportDataSource#addFieldsToMap(java.util.Map)
 	 */
 	@Override
 	protected void addFieldsToMap(Map<String, Object> fieldMap) {

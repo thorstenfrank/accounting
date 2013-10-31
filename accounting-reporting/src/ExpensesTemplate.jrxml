@@ -4,7 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<template><![CDATA["InvoiceStyleSheet.jrtx"]]></template>
-	<field name="expenses" class="de.togginho.accounting.reporting.ExpensesWrapper"/>
+	<field name="expenses" class="de.togginho.accounting.reporting.internal.ExpensesWrapper"/>
 	<field name="expenses.title" class="java.lang.String"/>
 	<field name="from.title" class="java.lang.String"/>
 	<field name="until.title" class="java.lang.String"/>

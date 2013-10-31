@@ -13,13 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.reporting;
 
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import de.togginho.accounting.reporting.internal.ReportingServiceImpl;
 
 /**
  * 

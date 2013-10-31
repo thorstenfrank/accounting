@@ -44,10 +44,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.Constants;
-import de.togginho.accounting.ReportGenerationMonitor;
-import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.reports.AbstractReportDialog;

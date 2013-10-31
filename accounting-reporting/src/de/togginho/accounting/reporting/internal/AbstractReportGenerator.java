@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting;
+package de.togginho.accounting.reporting.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.log4j.Logger;
 
 import de.togginho.accounting.AccountingException;
-import de.togginho.accounting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
 
 /**
  * Abstract base class of report generators, taking care of the actual Jasper calls. This class is currently only

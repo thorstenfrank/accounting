@@ -42,12 +42,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.Constants;
-import de.togginho.accounting.ReportGenerationMonitor;
-import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Price;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.reports.AbstractReportDialog;
@@ -348,7 +348,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 
 		/**
 		 * {@inheritDoc}
-		 * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#handleReportGeneration(de.togginho.accounting.ReportingService, java.lang.String, de.togginho.accounting.ReportGenerationMonitor)
+		 * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#handleReportGeneration(de.togginho.accounting.reporting.ReportingService, java.lang.String, de.togginho.accounting.reporting.ReportGenerationMonitor)
 		 */
 		@Override
 		public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {

@@ -13,23 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting;
+package de.togginho.accounting.reporting.internal;
 
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.reporting.IncomeStatementSummaryReportGenerator;
-import de.togginho.accounting.reporting.ExpensesReportGenerator;
-import de.togginho.accounting.reporting.IncomeStatementReportGenerator;
-import de.togginho.accounting.reporting.InvoiceGenerator;
-import de.togginho.accounting.reporting.RevenueReportGenerator;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportingService;
 
 /**
  * @author thorsten
  *
  */
-class ReportingServiceImpl implements ReportingService {
+public class ReportingServiceImpl implements ReportingService {
 
 	/**
 	 * {@inheritDoc}.

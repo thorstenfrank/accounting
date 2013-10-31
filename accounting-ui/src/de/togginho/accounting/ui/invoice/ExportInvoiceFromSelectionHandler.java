@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.togginho.accounting.ReportGenerationMonitor;
-import de.togginho.accounting.ReportingService;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
+import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 

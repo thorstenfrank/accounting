@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting;
+package de.togginho.accounting.reporting.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 	
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#addReportParameters(java.util.Map)
+	 * @see de.togginho.accounting.reporting.internal.AbstractReportGenerator#addReportParameters(java.util.Map)
 	 */
 	@Override
 	protected void addReportParameters(Map<String, Object> params) {
@@ -90,7 +90,7 @@ public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 	
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#getReportTemplatePath()
+	 * @see de.togginho.accounting.reporting.internal.AbstractReportGenerator#getReportTemplatePath()
 	 */
 	@Override
 	protected String getReportTemplatePath() {
@@ -99,7 +99,7 @@ public class IncomeStatementReportGenerator extends AbstractReportGenerator {
 
 	/**
 	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.reporting.AbstractReportGenerator#getReportDataSource()
+	 * @see de.togginho.accounting.reporting.internal.AbstractReportGenerator#getReportDataSource()
 	 */
 	@Override
 	protected AbstractReportDataSource getReportDataSource() {
