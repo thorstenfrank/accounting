@@ -113,6 +113,7 @@ public abstract class AbstractReportGenerator {
 					Messages.AbstractReportGenerator_errorCreatingReport, getReportTemplatePath()), e);
 		}
 		
+		monitor.exportFinished();
 		LOG.info("Report generation finished successfully");
 	}
 

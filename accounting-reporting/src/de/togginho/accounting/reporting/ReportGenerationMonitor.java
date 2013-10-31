@@ -16,18 +16,40 @@
 package de.togginho.accounting.reporting;
 
 /**
+ * An interface that provides detailed callback to reporting clients during generation of reports.
+ * 
  * @author thorsten
  *
  */
 public interface ReportGenerationMonitor {
 
+	/**
+	 * Step 1 - initial setup of the report generator.
+	 */
 	void startingReportGeneration();
 	
+	/**
+	 * Step 2 - the report template is loaded into memory.
+	 */
 	void loadingTemplate();
 	
+	/**
+	 * Step 3 - parameters such as internationalised labels are added to the report.
+	 */
 	void addingReportParameters();
 	
+	/**
+	 * Step 4 - the report is filled with the actual source data.
+	 */
 	void fillingReport();
 	
+	/**
+	 * Step 5 - export of the report into its target format and file starts.
+	 */
 	void exportingReport();
+	
+	/**
+	 * Step 6 - exporting has finished successfully.
+	 */
+	void exportFinished();
 }

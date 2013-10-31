@@ -103,12 +103,6 @@ public class Messages extends NLS {
 	public static String ExpenseEditor_DepreciationCalculatedMessage;
 	
 	public static String ExpensesView_title;
-	
-	public static String ExportInvoiceCommand_addingReportParameters;
-	public static String ExportInvoiceCommand_exportingReportToFile;
-	public static String ExportInvoiceCommand_fillingReport;
-	public static String ExportInvoiceCommand_loadingTemplate;
-	public static String ExportInvoiceCommand_startingReportGeneration;
 
 	public static String ExportModelToXmlWizard_fileDialogTitle;
 	public static String ExportModelToXmlWizard_title;
@@ -205,6 +199,13 @@ public class Messages extends NLS {
 	public static String ReportGenerationUtil_successMsg;
 	public static String ReportGenerationUtil_successText;
 	public static String ReportGenerationUtil_confirmOverwriteMsg;
+	
+	public static String ReportProgressMonitor_addingReportParameters;
+	public static String ReportProgressMonitor_exportingReportToFile;
+	public static String ReportProgressMonitor_fillingReport;
+	public static String ReportProgressMonitor_loadingTemplate;
+	public static String ReportProgressMonitor_startingReportGeneration;
+	public static String ReportProgressMonitor_exportFinished;
 	
 	public static String RevenueByYearDialog_title;
 	public static String RevenueByYearDialog_details;

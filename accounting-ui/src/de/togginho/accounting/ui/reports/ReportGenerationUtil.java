@@ -151,7 +151,7 @@ public class ReportGenerationUtil {
 	    	if (targetFileName != null && confirmOverwrite(shell, targetFileName)) {
 				try {
 					LOG.info("Starting PDF generation to file " + targetFileName); //$NON-NLS-1$
-					ProgressMonitor generation = new ProgressMonitor();
+					ReportProgressMonitor generation = new ReportProgressMonitor();
 					new ProgressMonitorDialog(shell).run(true, false, generation);
 				} catch (Exception e) {
 					LOG.error("Error creating PDF", e); //$NON-NLS-1$
@@ -227,7 +227,7 @@ public class ReportGenerationUtil {
 	/**
 	 *
 	 */
-	private class ProgressMonitor implements IRunnableWithProgress, ReportGenerationMonitor {
+	private class ReportProgressMonitor implements IRunnableWithProgress, ReportGenerationMonitor {
 		
 		/** */
 		private IProgressMonitor monitor;
@@ -252,7 +252,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void startingReportGeneration() {
-			monitor.beginTask(Messages.ExportInvoiceCommand_startingReportGeneration, 5);
+			monitor.beginTask(Messages.ReportProgressMonitor_startingReportGeneration, 5);
 			monitor.worked(1);
 		}
 		
@@ -262,7 +262,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void loadingTemplate() {
-		    monitor.subTask(Messages.ExportInvoiceCommand_loadingTemplate);
+		    monitor.subTask(Messages.ReportProgressMonitor_loadingTemplate);
 		    monitor.worked(1);
 		}
 		
@@ -272,7 +272,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void addingReportParameters() {
-		    monitor.subTask(Messages.ExportInvoiceCommand_addingReportParameters);
+		    monitor.subTask(Messages.ReportProgressMonitor_addingReportParameters);
 		    monitor.worked(1);
 		}
 		
@@ -282,7 +282,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void fillingReport() {
-			monitor.subTask(Messages.ExportInvoiceCommand_fillingReport);
+			monitor.subTask(Messages.ReportProgressMonitor_fillingReport);
 			monitor.worked(1);
 		}
 		
@@ -292,8 +292,18 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void exportingReport() {
-		    monitor.subTask(Messages.ExportInvoiceCommand_exportingReportToFile);
+		    monitor.subTask(Messages.ReportProgressMonitor_exportingReportToFile);
 		    monitor.worked(1);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see de.togginho.accounting.reporting.ReportGenerationMonitor#exportFinished()
+		 */
+		@Override
+		public void exportFinished() {
+			monitor.subTask(Messages.ReportProgressMonitor_exportFinished);
+			monitor.done();
 		}
 	}
 }

@@ -24,6 +24,7 @@ import org.osgi.framework.BundleContext;
 import de.togginho.accounting.reporting.internal.ReportingServiceImpl;
 
 /**
+ * Bundle Activator for the reporting plugin/bundle.
  * 
  * @author thorsten
  *
