@@ -12,6 +12,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
  lib/commons-digester-2.1.jar,
  lib/iText-2.1.7.jar,
- lib/jasperreports-4.8.0.jar,
+ lib/jasperreports-5.5.0.jar,
+ lib/servlet-api-2.4.jar,
  .
 Export-Package: de.togginho.accounting.reporting
