@@ -352,6 +352,11 @@
                      icon="icons/report_user.png"
                      style="pulldown">
                </command>
+               <command
+                     commandId="de.togginho.accounting.ui.reports.LetterheadExport"
+                     icon="icons/page_white_text.png"
+                     style="push">
+               </command>
             </menu>
             <separator
                   name="viewMenuSep3"
@@ -724,6 +729,11 @@
                icon="icons/report_user.png"
                style="pulldown">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.reports.LetterheadExport"
+               icon="icons/page_white_text.png"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -925,6 +935,11 @@
             defaultHandler="de.togginho.accounting.ui.util.LanguageSelectionHandler"
             id="de.togginho.accounting.ui.util.LanguageSelection"
             name="%command.switch.language">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.reports.LetterheadExportHandler"
+            id="de.togginho.accounting.ui.reports.LetterheadExport"
+            name="%command.reports.letterhead">
       </command>
    </extension>
    <extension
