@@ -1294,4 +1294,43 @@
             name="%preferences.reporting">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+            contextId="de.togginho.accounting.ui.expense"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DELETE">
+      </key>
+      <key
+            commandId="de.togginho.accounting.ui.client.DeleteClientCommand"
+            contextId="de.togginho.accounting.ui.client"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DELETE">
+      </key>
+      <key
+            commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+            contextId="de.togginho.accounting.ui.invoice"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DELETE">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="de.togginho.accounting.ui.expense"
+            name="Expense Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+      <context
+            id="de.togginho.accounting.ui.client"
+            name="Client context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+      <context
+            id="de.togginho.accounting.ui.invoice"
+            name="Invoice context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
 </plugin>

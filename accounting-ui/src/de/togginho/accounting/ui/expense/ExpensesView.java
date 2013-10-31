@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
@@ -55,6 +57,8 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	private ExpenseTableSorter sorter;
 	private TimeFrame currentTimeFrame;
 	private Set<ExpenseType> selectedTypes;
+
+	private IContextActivation contextActivation;
 	
 	/**
 	 * {@inheritDoc}
@@ -63,6 +67,9 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	@Override
 	public void createPartControl(Composite parent) {
 		AccountingUI.addModelChangeListener(this);
+		
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextActivation = contextService.activateContext(getClass().getPackage().getName());
 		
 		Composite tableComposite = new Composite(parent, SWT.NONE);
 		TableColumnLayout tcl = new TableColumnLayout();
@@ -169,6 +176,11 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	public void dispose() {
 		// unregister myself as a listener
 		AccountingUI.removeModelChangeListener(this);
+		
+		// unregister the context
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextService.deactivateContext(contextActivation);
+		
 		super.dispose();
 	}
 

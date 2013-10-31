@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Client;
@@ -75,6 +77,8 @@ public class InvoiceView extends AbstractTableView implements ModelChangeListene
 	private static final int COL_INDEX_AMOUNT_NET = 4;
 	private static final int COL_INDEX_AMOUNT_GROSS = 5;
 	
+	private IContextActivation contextActivation;
+	
 	/** The viewer. */
 	private TableViewer tableViewer;
 	private InvoiceViewTableSorter sorter;
@@ -102,6 +106,9 @@ public class InvoiceView extends AbstractTableView implements ModelChangeListene
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		
 		AccountingUI.addModelChangeListener(this);
+		
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextActivation = contextService.activateContext(getClass().getPackage().getName());
 		
 		initInvoiceStateImageMap();
 		
@@ -188,6 +195,10 @@ public class InvoiceView extends AbstractTableView implements ModelChangeListene
 	public void dispose() {
 		// unregister myself as a listener
 		AccountingUI.removeModelChangeListener(this);
+		
+		// unregister the context
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextService.deactivateContext(contextActivation);
 		
 		// dispose the images used for visualizing the invoice states
 		for (InvoiceState state : INVOICE_STATE_TO_IMAGE_MAP.keySet()) {

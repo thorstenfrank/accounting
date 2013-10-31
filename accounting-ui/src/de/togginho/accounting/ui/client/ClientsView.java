@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
@@ -48,6 +50,8 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Model
 	
 	private static final Logger LOG = Logger.getLogger(ClientsView.class);
 	
+	private IContextActivation contextActivation;
+	
 	private TableViewer viewer;
 
 	/**
@@ -57,6 +61,9 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Model
 	public void createPartControl(Composite parent) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, HELP_CONTEXT_ID);
 		AccountingUI.addModelChangeListener(this);		
+		
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextActivation = contextService.activateContext(getClass().getPackage().getName());
 		
 		viewer = new TableViewer(parent, SWT.FULL_SELECTION);
 		getSite().setSelectionProvider(viewer);
@@ -137,6 +144,11 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Model
 	public void dispose() {
 		LOG.debug("Disposing client list viewer"); //$NON-NLS-1$
 		AccountingUI.removeModelChangeListener(this);
+		
+		// unregister the context
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextService.deactivateContext(contextActivation);
+		
 		super.dispose();
 	}
 	
