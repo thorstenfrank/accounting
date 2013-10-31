@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting.internal;
+package de.togginho.accounting.reporting.model;
 
 import java.io.Serializable;
 
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.IncomeStatement;
+import de.togginho.accounting.reporting.internal.Messages;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -37,7 +38,7 @@ public class IncomeStatementWrapper implements Serializable {
 	/**
      * @param incomeStatement
      */
-    IncomeStatementWrapper(IncomeStatement incomeStatement) {
+    public IncomeStatementWrapper(IncomeStatement incomeStatement) {
 	    this.incomeStatement = incomeStatement;
     }
     

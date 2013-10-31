@@ -19,6 +19,7 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.reporting.model.InvoiceWrapper;
 
 /**
  *

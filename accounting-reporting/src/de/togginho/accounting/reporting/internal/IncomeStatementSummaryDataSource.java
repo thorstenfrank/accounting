@@ -19,6 +19,7 @@ import java.util.Map;
 
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.IncomeStatement;
+import de.togginho.accounting.reporting.model.IncomeStatementWrapper;
 
 /**
  * @author thorsten

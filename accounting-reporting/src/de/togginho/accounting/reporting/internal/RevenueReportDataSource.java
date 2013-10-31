@@ -17,6 +17,8 @@ package de.togginho.accounting.reporting.internal;
 
 import java.util.Map;
 
+import de.togginho.accounting.reporting.model.RevenueWrapper;
+
 /**
  * Jasperreport data source to produce revenue reports.
  * 

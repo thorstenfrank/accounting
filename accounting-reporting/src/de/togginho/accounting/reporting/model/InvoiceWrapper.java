@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting.internal;
+package de.togginho.accounting.reporting.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.reporting.internal.Messages;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 

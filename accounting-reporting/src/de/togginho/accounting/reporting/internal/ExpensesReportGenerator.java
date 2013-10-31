@@ -18,6 +18,7 @@ package de.togginho.accounting.reporting.internal;
 import java.util.Map;
 
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.reporting.model.ExpensesWrapper;
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting.internal;
+package de.togginho.accounting.reporting.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +69,7 @@ public class ExpensesWrapper {
 	/**
      * @return the expenseCollection
      */
-    protected ExpenseCollection getExpenseCollection() {
+    public ExpenseCollection getExpenseCollection() {
     	return expenseCollection;
     }
 

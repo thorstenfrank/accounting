@@ -21,6 +21,8 @@ import java.util.Map;
 
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Price;
+import de.togginho.accounting.reporting.model.IncomeStatementDetailsWrapper;
+import de.togginho.accounting.reporting.model.IncomeStatementWrapper;
 import de.togginho.accounting.util.FormatUtil;
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;

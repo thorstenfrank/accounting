@@ -13,13 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.reporting.internal;
+package de.togginho.accounting.reporting.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
+import de.togginho.accounting.reporting.internal.InvoiceGenerator;
+import de.togginho.accounting.reporting.internal.RevenueDetailWrapper;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
