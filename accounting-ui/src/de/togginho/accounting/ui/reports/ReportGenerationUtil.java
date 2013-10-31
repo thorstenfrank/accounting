@@ -140,6 +140,8 @@ public class ReportGenerationUtil {
 			}
 		}
 		sb.append(handler.getTargetFileNameSuggestion());
+		sb.append(".pdf");
+		
 		boolean openAfterExport = prefs.getBoolean(ReportingPreferencesConstants.OPEN_AFTER_EXPORT, false);
 		
 	    ChooseExportTargetDialog dlg = new ChooseExportTargetDialog(shell, sb.toString(), openAfterExport);
