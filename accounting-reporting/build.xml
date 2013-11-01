@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- ====================================================================== 
-Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+Copyright 2011, 2012, 2013 thorsten frank (thorsten.frank@gmx.de).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,7 +27,10 @@ limitations under the License.
     <property name="reporting" location="${basedir}" />
     <property name="reports" location="${reporting}/src" />
     <property name="core" location="${reporting}/../accounting-core" />
-    
+	
+    <!--
+       Classpath includes all jar files in lib directory as well as the binary output of this project in bin
+    -->
     <path id="classpath">
         <pathelement location="${reporting}/bin"/>
         <pathelement location="${core}/bin"/>
@@ -38,16 +41,22 @@ limitations under the License.
             <include name="**/*.jar" />
         </fileset>      
     </path>
-    
+
+   <!--
+       Jasper Compiler task definition
+    -->
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
         <classpath refid="classpath" />
     </taskdef>
 
-    <target name="compile.reports" depends="clean">
+   <!--
+       Compilation of jrxml source files
+    -->
+    <target name="compile.reports">
         <echo message="Basedir: ${basedir}" />
-        <jrc srcdir="${reports}" destdir="${reports}" tempdir="${reports}" keepjava="false">
-            <classpath refid="classpath" />
-            <include name="**/*.jrxml" />
+        <jrc srcdir="${reports}" destdir="${reports}" tempdir="${reports}" keepjava="false" xmlvalidation="true">
+        	<classpath refid="classpath" />
+        	<include name="**/*.jrxml" />
         </jrc>
         
     	<echo message="Copying compiled report files to ${reporting}/bin" />
@@ -58,10 +67,16 @@ limitations under the License.
         </copy>
     </target>
 
+	<!--
+	   Clean all jasper files to force recompilation
+	-->
     <target name="clean">
     	<echo message="Deleting all existing Jasper files from ${reports}"/>
         <delete dir="${reports}">
             <include name="**/*.jasper"/>
         </delete>
     </target>
+	
+	<!-- Clean and Build all -->
+	<target name="clean.build" depends="clean, compile.reports" />
 </project>
