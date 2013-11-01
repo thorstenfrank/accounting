@@ -25,6 +25,8 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "de.togginho.accounting.reporting.internal.messages"; //$NON-NLS-1$
 	
+	public static String Letterhead;
+	
 	public static String AbstractReportGenerator_errorTemplateNotFound;
 	public static String AbstractReportGenerator_errorFillingReport;
 	public static String AbstractReportGenerator_errorCreatingReport;
@@ -57,11 +59,6 @@ public class Messages extends NLS {
 	public static String InvoiceDataSource_totalGrossTitle;
 	public static String InvoiceDataSource_totalNetTitle;
 	public static String InvoiceDataSource_totalTaxAmountTitle;
-	public static String InvoiceDataSource_userBankAccountTitle;
-	public static String InvoiceDataSource_userBankBicTitle;
-	public static String InvoiceDataSource_userBankCodeTitle;
-	public static String InvoiceDataSource_userBankIbanTitle;
-	public static String InvoiceDataSource_userBankTitle;
 	public static String InvoiceDataSource_userTaxNumberHeader;
 	public static String InvoiceDataSource_paymentConditionTradeCredit;
 	
@@ -72,6 +69,12 @@ public class Messages extends NLS {
 	public static String RevenueReportGenerator_paymentDateTitle;
 	public static String RevenueReportGenerator_revenueTitle;
 
+	public static String bankAccount;
+	public static String bankBIC;
+	public static String bankIBAN;
+	public static String bankCode;
+	public static String bank;
+	
 	public static String dateTitle;
 	public static String descriptionTitle;
 	public static String fromTitle;

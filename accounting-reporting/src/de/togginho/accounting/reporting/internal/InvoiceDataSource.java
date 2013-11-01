@@ -59,16 +59,16 @@ public class InvoiceDataSource extends AbstractReportDataSource {
 		fieldMap.put("position.header.pricePerUnit", Messages.InvoiceDataSource_positionHeaderPricePerUnit); //$NON-NLS-1$
 		fieldMap.put("position.header.totalPrice", Messages.InvoiceDataSource_positionHeaderPrice); //$NON-NLS-1$
 		fieldMap.put("position.header.tax", Messages.InvoiceDataSource_positionHeaderTax); //$NON-NLS-1$
-		fieldMap.put("user.bank.title", Messages.InvoiceDataSource_userBankTitle); //$NON-NLS-1$
-		fieldMap.put("user.bank.account.title", Messages.InvoiceDataSource_userBankAccountTitle); //$NON-NLS-1$
-		fieldMap.put("user.bank.code.title", Messages.InvoiceDataSource_userBankCodeTitle); //$NON-NLS-1$
+		fieldMap.put("user.bank.title", Messages.bank); //$NON-NLS-1$
+		fieldMap.put("user.bank.account.title", Messages.bankAccount); //$NON-NLS-1$
+		fieldMap.put("user.bank.code.title", Messages.bankCode); //$NON-NLS-1$
 		
 		// only add BIC and IBAN labels if present in bank account
 		if (wrapper.getUserBankBIC() != null && !wrapper.getUserBankBIC().isEmpty()) {
-			fieldMap.put("user.bank.bic.title", Messages.InvoiceDataSource_userBankBicTitle); //$NON-NLS-1$
+			fieldMap.put("user.bank.bic.title", Messages.bankBIC); //$NON-NLS-1$
 		}
 		if (wrapper.getUserBankIBAN() != null && !wrapper.getUserBankIBAN().isEmpty()) {
-			fieldMap.put("user.bank.iban.title", Messages.InvoiceDataSource_userBankIbanTitle); //$NON-NLS-1$
+			fieldMap.put("user.bank.iban.title", Messages.bankIBAN); //$NON-NLS-1$
 		}
 
 		fieldMap.put("total.net.title", Messages.InvoiceDataSource_totalNetTitle); //$NON-NLS-1$

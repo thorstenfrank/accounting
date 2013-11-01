@@ -15,13 +15,21 @@
  */
 package de.togginho.accounting.reporting;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Hashtable;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import de.togginho.accounting.reporting.internal.ReportingServiceImpl;
+import de.togginho.accounting.reporting.xml.generated.AccountingReports;
 
 /**
  * Bundle Activator for the reporting plugin/bundle.
@@ -58,12 +66,37 @@ public class ReportingPlugin implements BundleActivator {
 
 		// register the service
 		LOG.info("Registering ReportingService"); //$NON-NLS-1$
+		
+		ReportingServiceImpl service = new ReportingServiceImpl();
+		service.setAvailableReports(readConfig());
+		
 		context.registerService(
 				ReportingService.class, 
-				new ReportingServiceImpl(), 
+				service, 
 				new Hashtable<String, String>());
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+    private AccountingReports readConfig() {
+		try {
+			URL url = getContext().getBundle().getEntry("bin/reporting_config.xml");
+			LOG.debug("Looking for URL: " + url.toString());
+			File file = new File(FileLocator.resolve(url).toURI());
+			
+			Unmarshaller unmarshaller = JAXBContext.newInstance("de.togginho.accounting.reporting.xml.generated").createUnmarshaller();
+			JAXBElement<AccountingReports> result = (JAXBElement<AccountingReports>) unmarshaller.unmarshal(file);
+			return result.getValue();
+		} catch (Throwable t) {
+			LOG.warn("Couldn't read config", t);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */

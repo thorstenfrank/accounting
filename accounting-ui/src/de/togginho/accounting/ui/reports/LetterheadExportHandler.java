@@ -65,7 +65,7 @@ public class LetterheadExportHandler extends AbstractAccountingHandler implement
      */
     @Override
     public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-    	reportingService.generateLetterhead(AccountingUI.getAccountingService().getCurrentUser(), targetFileName, monitor);
+    	reportingService.generateReport("Letterhead", AccountingUI.getAccountingService().getCurrentUser(), targetFileName, monitor);
     }
 
 	

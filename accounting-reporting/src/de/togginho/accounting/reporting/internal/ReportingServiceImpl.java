@@ -15,13 +15,19 @@
  */
 package de.togginho.accounting.reporting.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.model.User;
 import de.togginho.accounting.reporting.ReportGenerationMonitor;
 import de.togginho.accounting.reporting.ReportingService;
+import de.togginho.accounting.reporting.xml.generated.AccountingReports;
+import de.togginho.accounting.reporting.xml.generated.Report;
 
 /**
  * @author thorsten
@@ -29,6 +35,75 @@ import de.togginho.accounting.reporting.ReportingService;
  */
 public class ReportingServiceImpl implements ReportingService {
 
+	/**
+	 * 
+	 */
+	private static final Logger LOG = Logger.getLogger(ReportingServiceImpl.class);
+	
+	/**
+	 * 
+	 */
+	private AccountingReports availableReports;
+
+	/**
+     * @param availableReports the availableReports to set
+     */
+    public void setAvailableReports(AccountingReports availableReports) {
+    	this.availableReports = availableReports;
+    }
+	
+	/**
+     * @return the availableReports
+     */
+    public Map<String, String> getAvailableReports() {
+    	Map<String, String> map = new HashMap<String, String>();
+    	
+    	for (Report report : availableReports.getReports().getReport()) {
+			String name = report.getId();
+
+			try {
+	            name = (String) Messages.class.getField(report.getId()).get(new String());
+            } catch (IllegalArgumentException e) {
+            	LOG.error("Error translating report name for " + name, e);
+            } catch (IllegalAccessException e) {
+            	LOG.error("Error translating report name for " + name, e);
+            } catch (NoSuchFieldException e) {
+            	LOG.warn("No proper translation provided for report ID: " + name, e);
+            } catch (SecurityException e) {
+            	LOG.error("Error translating report name for " + name, e);
+            }
+			
+			map.put(report.getId(), name);
+    	}
+    	
+    	return map;
+    }
+    
+	/**
+     * {@inheritDoc}.
+     * @see ReportingService#generateReport(String, Object, String, ReportGenerationMonitor)
+     */
+    @Override
+    public void generateReport(String reportId, Object model, String fileLocation, ReportGenerationMonitor monitor) {
+	    JasperReportGenerator generator = new JasperReportGenerator(getReportById(reportId), model);
+	    generator.generateReport(fileLocation, monitor);
+    }
+
+    /**
+     * 
+     * @param id
+     * @return
+     */
+    private Report getReportById(String id) {
+    	for (Report report : availableReports.getReports().getReport()) {
+    		if (report.getId().equals(id)) {
+    			return report;
+    		}
+    	}
+    	
+    	return null;
+    }
+    
 	/**
 	 * {@inheritDoc}.
 	 * @see ReportingService#generateInvoiceToPdf(Invoice, java.lang.String, ReportGenerationMonitor)
@@ -74,15 +149,6 @@ public class ReportingServiceImpl implements ReportingService {
     @Override
     public void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
     	doGenerateReport(new IncomeStatementReportGenerator(incomeStatement), fileLocation, monitor);
-    }
-
-	/**
-     * {@inheritDoc}.
-     * @see de.togginho.accounting.reporting.ReportingService#generateLetterhead(de.togginho.accounting.model.User, java.lang.String, de.togginho.accounting.reporting.ReportGenerationMonitor)
-     */
-    @Override
-    public void generateLetterhead(User user, String fileLocation, ReportGenerationMonitor monitor) {
-    	doGenerateReport(new LetterheadReportGenerator(user), fileLocation, monitor);
     }
     
     /**

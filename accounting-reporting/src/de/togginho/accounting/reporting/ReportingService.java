@@ -15,17 +15,33 @@
  */
 package de.togginho.accounting.reporting;
 
+import java.util.Map;
+
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.model.User;
 
 /**
  * @author thorsten
  *
  */
 public interface ReportingService {
+	
+	/**
+	 * 
+	 * @return
+	 */
+	Map<String, String> getAvailableReports();
+	
+	/**
+	 * 
+	 * @param reportId
+	 * @param model
+	 * @param fileLocation
+	 * @param monitor
+	 */
+	void generateReport(String reportId, Object model, String fileLocation, ReportGenerationMonitor monitor);
 	
 	/**
 	 * 
@@ -66,12 +82,4 @@ public interface ReportingService {
 	 * @param monitor
 	 */
 	void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor);
-	
-	/**
-	 * 
-	 * @param user
-	 * @param fileLocation
-	 * @param monitor
-	 */
-	void generateLetterhead(User user, String fileLocation, ReportGenerationMonitor monitor);
 }
