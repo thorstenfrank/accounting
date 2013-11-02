@@ -132,15 +132,6 @@ public class ReportingServiceImpl implements ReportingService {
     	doGenerateReport(new ExpensesReportGenerator(expenseCollection), fileLocation, monitor);
     }
     
-    /**
-     * {@inheritDoc}.
-     * @see ReportingService#generateIncomeStatementSummaryToPdf(IncomeStatement, String, ReportGenerationMonitor)
-     */
-    @Override
-    public void generateIncomeStatementSummaryToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
-    	doGenerateReport(new IncomeStatementSummaryReportGenerator(incomeStatement), fileLocation, monitor);
-    }
-
 	/**
      * 
      * {@inheritDoc}.

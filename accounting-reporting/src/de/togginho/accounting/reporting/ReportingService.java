@@ -73,13 +73,5 @@ public interface ReportingService {
 	 * @param fileLocation
 	 * @param monitor
 	 */
-	void generateIncomeStatementSummaryToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor);
-	
-	/**
-	 * 
-	 * @param incomeStatement
-	 * @param fileLocation
-	 * @param monitor
-	 */
 	void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor);
 }

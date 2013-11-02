@@ -27,6 +27,9 @@ public class Messages extends NLS {
 	
 	public static String Letterhead;
 	
+	public static String CashFlowStatement;
+	public static String CashFlowStatement_title;
+	
 	public static String AbstractReportGenerator_errorTemplateNotFound;
 	public static String AbstractReportGenerator_errorFillingReport;
 	public static String AbstractReportGenerator_errorCreatingReport;
@@ -90,6 +93,10 @@ public class Messages extends NLS {
 	public static String taxTitle;
 	public static String untilTitle;
 
+	public static String from;
+	public static String until;
+	public static String operatingExpenses;
+	public static String result;
 	public static String TaxId;
 	public static String Phone;
 	public static String Mobile;

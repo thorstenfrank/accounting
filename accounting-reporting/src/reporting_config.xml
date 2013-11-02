@@ -4,5 +4,8 @@
     <Report id="Letterhead" template="Letterhead.jasper">
       <Model id="user" class="de.togginho.accounting.model.User" />
     </Report>
+    <Report id="CashFlowStatement" template="CashFlowStatement.jasper">
+      <Model id="cashFlow" class="de.togginho.accounting.model.IncomeStatement" />
+    </Report>
   </Reports>
 </AccountingReports>

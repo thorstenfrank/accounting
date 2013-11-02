@@ -15,13 +15,16 @@
  */
 package de.togginho.accounting.reporting.internal;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.User;
+import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -30,6 +33,8 @@ import de.togginho.accounting.model.User;
 public class ModelWrapper {
 	
 	private static final String DOT = "."; //$NON-NLS-1$
+
+	private static final String GET = "get"; //$NON-NLS-1$
 	
 	private static final Logger LOG = Logger.getLogger(ModelWrapper.class);
 	
@@ -73,6 +78,16 @@ public class ModelWrapper {
     
     /**
      * 
+     * @param property
+     * @param binding
+     * @return
+     */
+    public String bindAsDate(String property, String binding) {
+    	return Messages.bind(getMessage(binding), formatAsDate(property));
+    }
+    
+    /**
+     * 
      * @param key
      * @return
      */
@@ -94,6 +109,44 @@ public class ModelWrapper {
     
     /**
      * 
+     * @param property
+     * @return
+     */
+    public String formatAsDate(String property) {
+    	try {
+	        Object result = get(model, property);
+	        
+	        if (result != null && result instanceof Date) {
+	        	return FormatUtil.formatDate((Date) result);
+	        }
+        } catch (Exception e) {
+        	LOG.error(String.format("Error parsing date from property [%s]", property), e); //$NON-NLS-1$
+        }
+    	
+    	return null;
+    }
+    
+    /**
+     * 
+     * @param property
+     * @return
+     */
+    public String formatAsCurrency(String property) {
+    	try {
+	        Object result = get(model, property);
+	        
+	        if (result != null && result instanceof BigDecimal) {
+	        	return FormatUtil.formatCurrency((BigDecimal) result);
+	        }
+        } catch (Exception e) {
+        	LOG.error(String.format("Error parsing currency from property [%s]", property), e); //$NON-NLS-1$
+        }
+    	
+    	return Constants.HYPHEN;    	
+    }
+    
+    /**
+     * 
      * @param object
      * @param property
      * @return
@@ -107,9 +160,11 @@ public class ModelWrapper {
     		property = property.substring(0, property.indexOf(DOT));
     	}
     	
-    	PropertyDescriptor desc = new PropertyDescriptor(property, object.getClass());
-    	Method readMethod = desc.getReadMethod();
+    	final String readMethodName = GET + property.substring(0, 1).toUpperCase() + property.substring(1);
+    	LOG.debug("Looking for accessor method " + readMethodName); //$NON-NLS-1$
     	
+    	Method readMethod = object.getClass().getMethod(readMethodName);
+    	    	    	
     	Object result = readMethod.invoke(object);
     	
     	if (children != null && result != null) {
