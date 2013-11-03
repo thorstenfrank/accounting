@@ -83,7 +83,7 @@ public class ReportingPlugin implements BundleActivator {
 	@SuppressWarnings("unchecked")
     private AccountingReports readConfig() {
 		try {
-			URL url = getContext().getBundle().getEntry("bin/reporting_config.xml");
+			URL url = getContext().getBundle().getEntry("config/reporting_config.xml");
 			LOG.debug("Looking for URL: " + url.toString());
 			File file = new File(FileLocator.resolve(url).toURI());
 			
