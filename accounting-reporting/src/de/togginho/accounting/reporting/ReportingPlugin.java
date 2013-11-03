@@ -15,16 +15,17 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -68,12 +69,22 @@ public class ReportingPlugin implements BundleActivator {
 		LOG.info("Registering ReportingService"); //$NON-NLS-1$
 		
 		ReportingServiceImpl service = new ReportingServiceImpl();
-		service.setAvailableReports(readConfig());
+		
+		try {
+	        service.setAvailableReports(readConfig());
+        } catch (Exception e) {
+        	LOG.error("Error reading XML report configuration", e); //$NON-NLS-1$
+        	throw e;
+        }
+		
+		LOG.info("Registering service implementation"); //$NON-NLS-1$
 		
 		context.registerService(
 				ReportingService.class, 
 				service, 
 				new Hashtable<String, String>());
+		
+		LOG.info("Reporting Plugin startup complete"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -81,20 +92,23 @@ public class ReportingPlugin implements BundleActivator {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-    private AccountingReports readConfig() {
-		try {
-			URL url = getContext().getBundle().getEntry("config/reporting_config.xml");
-			LOG.debug("Looking for URL: " + url.toString());
-			File file = new File(FileLocator.resolve(url).toURI());
-			
-			Unmarshaller unmarshaller = JAXBContext.newInstance("de.togginho.accounting.reporting.xml.generated").createUnmarshaller();
-			JAXBElement<AccountingReports> result = (JAXBElement<AccountingReports>) unmarshaller.unmarshal(file);
-			return result.getValue();
-		} catch (Throwable t) {
-			LOG.warn("Couldn't read config", t);
-		}
+    private AccountingReports readConfig() throws IOException, JAXBException {
+		URL url = getContext().getBundle().getEntry("/config/reporting_config.xml");
+		LOG.debug("Looking for URL: " + url.toString());
+		InputStream inputStream = url.openStream();
+		LOG.debug("Opened input stream, now creating JAXB context"); //$NON-NLS-1$
 		
-		return null;
+		try {
+			Unmarshaller unmarshaller = JAXBContext.newInstance("de.togginho.accounting.reporting.xml.generated").createUnmarshaller();
+			LOG.debug("Unmarshalling configuration from XML"); //$NON-NLS-1$
+			
+			JAXBElement<AccountingReports> result = (JAXBElement<AccountingReports>) unmarshaller.unmarshal(inputStream);
+			LOG.debug("Done reading XML config");//$NON-NLS-1$
+			return result.getValue();			
+		} finally {
+			inputStream.close();
+		}
+
 	}
 	
 	/**
