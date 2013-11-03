@@ -116,8 +116,7 @@ public class TaxRate implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "TaxRate [shortName=" + shortName + ", longName=" + longName
-				+ ", rate=" + rate + "]";
+		return toShortString();
 	}
 
 	/**
