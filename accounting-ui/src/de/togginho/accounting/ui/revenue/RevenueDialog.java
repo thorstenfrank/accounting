@@ -334,9 +334,8 @@ public class RevenueDialog extends AbstractReportDialog {
          * @see ReportGenerationHandler#handleReportGeneration(ReportingService, String, ReportGenerationMonitor)
          */
         @Override
-        public void handleReportGeneration(ReportingService reportingService, String targetFileName,
-                ReportGenerationMonitor monitor) {
-	        reportingService.generateRevenueToPdf(revenue, targetFileName, monitor);
+        public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
+	        reportingService.generateReport("Revenue", revenue, targetFileName, monitor);
         }
 		
 	}

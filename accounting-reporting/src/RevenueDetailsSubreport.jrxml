@@ -4,71 +4,41 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
-	<field name="invoiceDate" class="java.lang.String">
-		<fieldDescription><![CDATA[invoiceDate]]></fieldDescription>
-	</field>
-	<field name="invoiceNumber" class="java.lang.String">
-		<fieldDescription><![CDATA[invoiceNumber]]></fieldDescription>
-	</field>
-	<field name="paymentDate" class="java.lang.String">
-		<fieldDescription><![CDATA[paymentDate]]></fieldDescription>
-	</field>
-	<field name="netPrice" class="java.lang.String">
-		<fieldDescription><![CDATA[netPrice]]></fieldDescription>
-	</field>
-	<field name="taxRate" class="java.lang.String">
-		<fieldDescription><![CDATA[taxRate]]></fieldDescription>
-	</field>
-	<field name="taxAmount" class="java.lang.String">
-		<fieldDescription><![CDATA[taxAmount]]></fieldDescription>
-	</field>
-	<field name="grossPrice" class="java.lang.String">
-		<fieldDescription><![CDATA[grossPrice]]></fieldDescription>
-	</field>
-	<field name="clientName" class="java.lang.String">
-		<fieldDescription><![CDATA[clientName]]></fieldDescription>
+	<field name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper">
+		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement uuid="0ec0ed54-7a8e-4d57-8945-c886c0497ab4" style="INVOICE_TX_10" x="525" y="0" width="35" height="20"/>
+				<reportElement style="INVOICE_TX_10" x="0" y="0" width="100" height="20" uuid="69bf6528-5029-4cc5-9785-02ff8c9c34ea"/>
+				<textFieldExpression><![CDATA[$F{wrapper}.get("number")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_10" x="100" y="0" width="100" height="20" uuid="f09fc7ef-8edb-4266-93ea-bab48d32a864"/>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsDate("invoiceDate")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_10" x="200" y="0" width="100" height="20" uuid="d2f38614-f267-4579-8e85-9ff2097acd3e"/>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsDate("paymentDate")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_10" x="300" y="0" width="160" height="20" uuid="e6b159fb-3aa4-4a83-81c9-def586966368"/>
+				<textFieldExpression><![CDATA[$F{wrapper}.get("client.name")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_10" x="460" y="0" width="100" height="20" uuid="7fc7278d-b05e-4c22-a648-b1be4d5ffe73"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{taxRate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7fc7278d-b05e-4c22-a648-b1be4d5ffe73" style="INVOICE_TX_10" x="425" y="0" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_10" x="560" y="0" width="100" height="20" uuid="6f8d6f1f-b59c-410f-a5d8-a3b26020a5a9"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{netPrice}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6f8d6f1f-b59c-410f-a5d8-a3b26020a5a9" style="INVOICE_TX_10" x="560" y="0" width="100" height="20"/>
+				<reportElement style="INVOICE_TX_10" x="660" y="0" width="100" height="20" uuid="ed6403fd-f65e-44d8-973d-b914470fc8f3"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{taxAmount}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="ed6403fd-f65e-44d8-973d-b914470fc8f3" style="INVOICE_TX_10" x="660" y="0" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{grossPrice}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="69bf6528-5029-4cc5-9785-02ff8c9c34ea" style="INVOICE_TX_10" x="0" y="0" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoiceNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="d2f38614-f267-4579-8e85-9ff2097acd3e" style="INVOICE_TX_10" x="325" y="0" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{paymentDate}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="f09fc7ef-8edb-4266-93ea-bab48d32a864" style="INVOICE_TX_10" x="100" y="0" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoiceDate}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="e6b159fb-3aa4-4a83-81c9-def586966368" style="INVOICE_TX_10" x="200" y="0" width="125" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{clientName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.gross")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

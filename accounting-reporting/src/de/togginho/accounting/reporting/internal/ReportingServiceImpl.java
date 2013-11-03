@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
-import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.reporting.ReportGenerationMonitor;
 import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.reporting.xml.generated.AccountingReports;
@@ -101,15 +100,6 @@ public class ReportingServiceImpl implements ReportingService {
     	}
     	
     	return null;
-    }
-
-	/**
-     * {@inheritDoc}.
-     * @see ReportingService#generateRevenueToPdf(Revenue, java.lang.String, ReportGenerationMonitor)
-     */
-    @Override
-    public void generateRevenueToPdf(Revenue revenue, String fileLocation, ReportGenerationMonitor monitor) {
-    	doGenerateReport(new RevenueReportGenerator(revenue), fileLocation, monitor);
     }
 
     /**

@@ -10,5 +10,8 @@
     <Report id="CashFlowStatement" template="CashFlowStatement.jasper">
       <Model id="cashFlow" class="de.togginho.accounting.model.IncomeStatement" />
     </Report>
+    <Report id="Revenue" template="RevenueTemplate.jasper">
+      <Model id="revenue" class="de.togginho.accounting.model.Revenue" />
+    </Report>
   </Reports>
 </AccountingReports>
