@@ -60,15 +60,21 @@ public class AccountingUI extends AbstractUIPlugin {
 		plugin = this;
 		
 		LOG.info("Creating service trackers"); //$NON-NLS-1$
+		
 		ServiceTracker<AccountingService, AccountingService> accountingServiceTracker = 
 				new ServiceTracker<AccountingService, AccountingService>(context, AccountingService.class, null);
+		LOG.debug("Opening service tracker for AccountingService"); //$NON-NLS-1$
 		accountingServiceTracker.open();
+		LOG.debug("Done"); //$NON-NLS-1$
 		
 		accountingServiceProxy = new AccountingServiceInvocationHandler(accountingServiceTracker);
 		
 		reportingServiceTracker = new ServiceTracker<ReportingService, ReportingService>(
 				context, ReportingService.class, null);
+		LOG.debug("Opening service tracker for ReportingService"); //$NON-NLS-1$
 		reportingServiceTracker.open();
+		LOG.debug("Done"); //$NON-NLS-1$
+		LOG.info("AccountingUI startup complete"); //$NON-NLS-1$
 	}
 
 	/**
