@@ -5,7 +5,6 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
-	<parameter name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper"/>
 	<queryString language="xPath">
 		<![CDATA[]]>
 	</queryString>
