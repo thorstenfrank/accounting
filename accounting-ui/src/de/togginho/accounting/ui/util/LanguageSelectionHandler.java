@@ -110,6 +110,11 @@ public class LanguageSelectionHandler extends AbstractAccountingHandler {
 	 * @return
 	 */
 	private boolean changeLocale(ExecutionEvent event) {
+		if (newLocale == null) {
+			LOG.warn("No locale was selected! Skipping writing to config"); //$NON-NLS-1$
+			return false;
+		}
+		
 		File configFile = getConfigFile();
 		if (configFile == null || !configFile.exists() || configFile.isDirectory()) {
 			MessageDialog.openError(getShell(event), 
