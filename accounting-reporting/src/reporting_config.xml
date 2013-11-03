@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AccountingReports xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="reporting_config.xsd">
   <Reports>
+    <Report id="Invoice" template="InvoiceTemplate.jasper" >
+        <Model id="invoice" class="de.togginho.accounting.model.Invoice" />
+    </Report>
     <Report id="Letterhead" template="Letterhead.jasper">
       <Model id="user" class="de.togginho.accounting.model.User" />
     </Report>

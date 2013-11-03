@@ -72,7 +72,6 @@ public class JasperReportGenerator implements JRDataSource {
 		
 		this.running = true;
 		this.fieldMap = new HashMap<String, Object>();
-		fieldMap.put("wrapper", wrapper);
 		
 		monitor.loadingTemplate();
 		InputStream in = getTemplateAsStream();
@@ -86,6 +85,7 @@ public class JasperReportGenerator implements JRDataSource {
 
 		// add report params
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("wrapper", wrapper);
 		
 		monitor.fillingReport();
 		JasperPrint print = null;

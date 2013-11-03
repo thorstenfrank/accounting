@@ -17,13 +17,21 @@ package de.togginho.accounting.reporting.internal;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
+import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.log4j.Logger;
 
 import de.togginho.accounting.Constants;
-import de.togginho.accounting.model.Address;
-import de.togginho.accounting.model.User;
+import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.model.InvoicePosition;
+import de.togginho.accounting.model.PaymentType;
+import de.togginho.accounting.model.Price;
+import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -32,6 +40,8 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class ModelWrapper {
 	
+	public static final String CALCULATED_TOTAL = "CALCULATED_TOTAL"; //$NON-NLS-1$
+	
 	private static final String DOT = "."; //$NON-NLS-1$
 
 	private static final String GET = "get"; //$NON-NLS-1$
@@ -39,12 +49,35 @@ public class ModelWrapper {
 	private static final Logger LOG = Logger.getLogger(ModelWrapper.class);
 	
 	private Object model;
-
+	
+	private Price calculatedTotal;
+	
+	/**
+     * 
+     */
+    public ModelWrapper() {
+	    super();
+    }
+    
+    /**
+     * 
+     * @param model
+     */
+    public ModelWrapper(Object model) {
+    	setModel(model);
+    }
+    
 	/**
      * @param model the model to set
      */
     public void setModel(Object model) {
     	this.model = model;
+    	
+    	if (model instanceof InvoicePosition) {
+    		calculatedTotal = CalculationUtil.calculatePrice((InvoicePosition) model);
+    	} else if (model instanceof Invoice) {
+    		calculatedTotal = CalculationUtil.calculateTotalPrice((Invoice) model);
+    	}
     }
     
     /**
@@ -53,11 +86,18 @@ public class ModelWrapper {
      * @return
      */
     public String get(String property) {
-    	try {
+    	
+    	try {    		
 	        Object result = get(model, property);
 	        
 	        if (result != null) {
-	        	return result instanceof String ? (String) result : result.toString();
+	        	if (result instanceof String) {
+	        		return (String) result;
+	        	} else if (result instanceof BigDecimal) {
+	        		return FormatUtil.formatDecimalValue((BigDecimal) result);
+	        	}
+	        	
+	        	return result.toString();
 	        }
         } catch (Exception e) {
         	LOG.error(String.format("Error reading property [%s] from model of type [%s]", property, model.getClass().getName()), e);
@@ -69,21 +109,38 @@ public class ModelWrapper {
     /**
      * 
      * @param property
-     * @param binding
+     * @param defaultValue
      * @return
      */
-    public String bind(String property, String binding) {
-    	return Messages.bind(getMessage(binding), get(property));
+    public String get(String property, String defaultValue) {
+    	String result = get(property);
+    	return result != null ? result : defaultValue;
     }
     
     /**
      * 
-     * @param property
-     * @param binding
+     * @param msgKey
+     * @param propertyToBind
      * @return
      */
-    public String bindAsDate(String property, String binding) {
-    	return Messages.bind(getMessage(binding), formatAsDate(property));
+    public String bind(String msgKey, String propertyToBind) {
+    	String msg = getMessage(msgKey);
+    	String binding = get(propertyToBind);
+    	if (msg != null) {
+    		return binding != null ? Messages.bind(msg, binding) : msg;
+    	}
+    
+    	return null;
+    }
+    
+    /**
+     * 
+     * @param msgKey
+     * @param propertyToBind
+     * @return
+     */
+    public String bindAsDate(String msgKey, String propertyToBind) {
+    	return Messages.bind(getMessage(msgKey), formatAsDate(propertyToBind));
     }
     
     /**
@@ -147,6 +204,29 @@ public class ModelWrapper {
     
     /**
      * 
+     * @param property
+     * @return
+     */
+    public JRDataSource getAsDataSource(String property) {
+    	try {
+	        Object result = get(model, property);
+	        if (result instanceof Collection) {
+	        	List<ModelWrapper> wrapped = new ArrayList<ModelWrapper>();
+	        	for (Object source : (Collection<?>) result) {
+	        		wrapped.add(new ModelWrapper(source));
+	        	}
+	        	
+	        	return new CollectionDataSource(wrapped);
+	        }
+        } catch (Exception e) {
+	        LOG.error("Could not build data source", e);
+        }
+    	
+    	return null;
+    }
+    
+    /**
+     * 
      * @param object
      * @param property
      * @return
@@ -154,6 +234,11 @@ public class ModelWrapper {
      */
     private Object get(Object object, String property) throws Exception {
     	String children = null;
+    	
+    	if (property.startsWith(CALCULATED_TOTAL)) {
+    		property = property.substring(property.indexOf(DOT) + 1);
+    		object = calculatedTotal;
+    	}
     	
     	if (property.contains(DOT)) {
     		children = property.substring(property.indexOf(DOT) + 1);
@@ -175,18 +260,6 @@ public class ModelWrapper {
     }
     
     public static void main(String[] args) {
-	    User user = new User();
-	    user.setName("My User Name");
-	    
-	    Address address = new Address();
-	    address.setCity("Da Ciddy");
-	    user.setAddress(address);
-	    
-	    ModelWrapper wrapper = new ModelWrapper();
-	    wrapper.setModel(user);
-	    
-	    System.out.println("Name: " + wrapper.get("name"));
-	    System.out.println("City: " + wrapper.get("address.city"));
-	    System.out.println(wrapper.bind("name", "Email"));
+    	System.out.println(PaymentType.TRADE_CREDIT instanceof Object);
     }
 }

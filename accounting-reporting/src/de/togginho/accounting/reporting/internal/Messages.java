@@ -50,20 +50,19 @@ public class Messages extends NLS {
 	public static String IncomeStatement_vat;
 	public static String IncomeStatement_vatSum;
 	
-	public static String InvoiceDataSource_invoiceDateTitle;
-	public static String InvoiceDataSource_invoiceNumberTitle;
-	public static String InvoiceDataSource_invoiceTitle;
-	public static String InvoiceDataSource_positionHeaderDescription;
-	public static String InvoiceDataSource_positionHeaderPrice;
-	public static String InvoiceDataSource_positionHeaderPricePerUnit;
-	public static String InvoiceDataSource_positionHeaderQuantity;
-	public static String InvoiceDataSource_positionHeaderTax;
-	public static String InvoiceDataSource_positionHeaderUnit;
-	public static String InvoiceDataSource_totalGrossTitle;
-	public static String InvoiceDataSource_totalNetTitle;
-	public static String InvoiceDataSource_totalTaxAmountTitle;
-	public static String InvoiceDataSource_userTaxNumberHeader;
-	public static String InvoiceDataSource_paymentConditionTradeCredit;
+	public static String invoiceDateTitle;
+	public static String invoiceNumberTitle;
+	public static String invoiceTitle;
+	public static String invoicePositionDescription;
+	public static String invoicePositionTotalPrice;
+	public static String invoicePositionPricePerUnit;
+	public static String invoicePositionQuantity;
+	public static String invoicePositionTax;
+	public static String invoicePositionUnit;
+	public static String invoiceTotalGross;
+	public static String invoiceTotalNet;
+	public static String invoiceTotalTax;
+	public static String paymentTermsTRADE_CREDIT;
 	
 	public static String RevenueReportGenerator_clientTitle;
 
@@ -90,6 +89,7 @@ public class Messages extends NLS {
 	public static String sumTitle;
 	public static String taxAmountTitle;
 	public static String taxRateTitle;
+	public static String taxes;
 	public static String taxTitle;
 	public static String untilTitle;
 

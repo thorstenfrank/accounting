@@ -20,7 +20,6 @@ import java.util.List;
 
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.reporting.internal.InvoiceGenerator;
 import de.togginho.accounting.util.FormatUtil;
 
 /**

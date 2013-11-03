@@ -2,179 +2,155 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InvoiceTemplate" pageWidth="595" pageHeight="841" columnWidth="459" leftMargin="68" rightMargin="68" topMargin="22" bottomMargin="22" uuid="796f7472-1dcf-4486-9df1-f169608d3012">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="226"/>
+	<property name="ireport.y" value="0"/>
 	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
-	<field name="invoice" class="de.togginho.accounting.reporting.model.InvoiceWrapper"/>
-	<field name="invoice.title" class="java.lang.String"/>
-	<field name="invoice.number.title" class="java.lang.String"/>
-	<field name="invoice.date.title" class="java.lang.String"/>
-	<field name="position.header.quantity" class="java.lang.String"/>
-	<field name="position.header.unit" class="java.lang.String"/>
-	<field name="position.header.description" class="java.lang.String"/>
-	<field name="position.header.pricePerUnit" class="java.lang.String"/>
-	<field name="position.header.totalPrice" class="java.lang.String"/>
-	<field name="position.header.tax" class="java.lang.String"/>
-	<field name="user.bank.title" class="java.lang.String"/>
-	<field name="user.bank.account.title" class="java.lang.String"/>
-	<field name="user.bank.code.title" class="java.lang.String"/>
-	<field name="user.bank.bic.title" class="java.lang.String"/>
-	<field name="user.bank.iban.title" class="java.lang.String"/>
-	<field name="total.net.title" class="java.lang.String"/>
-	<field name="total.tax.amount.title" class="java.lang.String"/>
-	<field name="total.gross.title" class="java.lang.String"/>
-	<field name="paymentConditionText" class="java.lang.String"/>
+	<parameter name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="246" splitType="Stretch">
 			<textField>
-				<reportElement uuid="3884c932-51f7-4d59-a9af-2d738c547785" style="INVOICE_TX_12" isPrintRepeatedValues="false" x="281" y="0" width="178" height="16"/>
+				<reportElement style="INVOICE_TX_12" isPrintRepeatedValues="false" x="281" y="0" width="178" height="16" uuid="3884c932-51f7-4d59-a9af-2d738c547785"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.name")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a0ef5434-9814-42d8-b6ad-52823b5735e4" style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="17" width="178" height="83" isRemoveLineWhenBlank="true"/>
+				<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="281" y="17" width="178" height="83" isRemoveLineWhenBlank="true" uuid="a0ef5434-9814-42d8-b6ad-52823b5735e4"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserHeaderInformation()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.description")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="4835faea-f877-4ff1-b674-32c94300cff9" style="INVOICE_TX_08" x="0" y="100" width="241" height="11"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserCompactAddress()]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_08" x="0" y="100" width="241" height="11" uuid="4835faea-f877-4ff1-b674-32c94300cff9"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.name") + " - " + $P{wrapper}.get("user.address.street") + " - " + $P{wrapper}.get("user.address.postalCode") +" " + $P{wrapper}.get("user.address.city")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5bb8dd9f-a144-44f6-a73c-f3e2b6ccfbc7" style="INVOICE_TX_12" x="0" y="117" width="241" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice}.getClientName()]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="0" y="117" width="241" height="16" uuid="5bb8dd9f-a144-44f6-a73c-f3e2b6ccfbc7"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("client.name")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7c4f9bce-5259-4c5f-addb-f82e415e59e7" style="INVOICE_TX_12" x="0" y="133" width="241" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice}.getClientStreet()]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="0" y="133" width="241" height="16" uuid="7c4f9bce-5259-4c5f-addb-f82e415e59e7"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("client.address.street")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5cbfc5f4-5e8c-4527-b05e-58fd091df48e" style="INVOICE_TX_12" x="0" y="151" width="241" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice}.getClientPostcodeAndCity()]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="0" y="151" width="241" height="16" uuid="5cbfc5f4-5e8c-4527-b05e-58fd091df48e"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("client.address.city")]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="88" splitType="Stretch">
 			<textField>
-				<reportElement uuid="39464a21-8792-4fa4-b31a-80496469ba9f" style="INVOICE_TX_18B" x="0" y="5" width="180" height="23"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice.title}]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_18B" x="0" y="5" width="180" height="23" uuid="39464a21-8792-4fa4-b31a-80496469ba9f"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoiceTitle")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="73ef9c82-ea55-4bf6-8c17-e64c9122c728" style="INVOICE_TX_12" x="0" y="49" width="115" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice.number.title}]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="0" y="49" width="115" height="16" uuid="73ef9c82-ea55-4bf6-8c17-e64c9122c728"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoiceNumberTitle")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="fee1f6f2-3c88-43c3-b314-8edb8f34c805" style="INVOICE_TX_12" x="0" y="65" width="115" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice.date.title}]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="0" y="65" width="115" height="16" uuid="fee1f6f2-3c88-43c3-b314-8edb8f34c805"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoiceDateTitle")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c6737f2a-651b-4fda-844c-c36c260de865" style="INVOICE_TX_12" x="120" y="49" width="100" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice}.getInvoiceNumber()]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="120" y="49" width="100" height="16" uuid="c6737f2a-651b-4fda-844c-c36c260de865"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("number")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f02c0e48-eaa1-4a7f-9926-7f74812cd9fa" style="INVOICE_TX_12" x="120" y="65" width="100" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{invoice}.getInvoiceDate()]]></textFieldExpression>
+				<reportElement style="INVOICE_TX_12" x="120" y="65" width="100" height="16" uuid="f02c0e48-eaa1-4a7f-9926-7f74812cd9fa"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.formatAsDate("invoiceDate")]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="38" splitType="Stretch">
 			<line>
-				<reportElement uuid="7b838375-ecae-4b4e-a129-a21b63a0d585" x="0" y="0" width="459" height="1"/>
+				<reportElement x="0" y="0" width="459" height="1" uuid="7b838375-ecae-4b4e-a129-a21b63a0d585"/>
 			</line>
 			<textField pattern="">
-				<reportElement uuid="9b6ce810-f32a-41b0-bf6b-75cfb0217a25" style="INVOICE_TX_10B" x="0" y="5" width="55" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="0" y="5" width="55" height="30" uuid="9b6ce810-f32a-41b0-bf6b-75cfb0217a25"/>
 				<textElement textAlignment="Left" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$F{position.header.quantity}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionQuantity")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="bf52ea38-51cc-4f3e-9120-6b68bd8f9ddc" style="INVOICE_TX_10B" x="55" y="5" width="55" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="55" y="5" width="55" height="30" uuid="bf52ea38-51cc-4f3e-9120-6b68bd8f9ddc"/>
 				<textElement textAlignment="Left" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$F{position.header.unit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionUnit")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="2df0f9a7-597d-4d72-871d-a3933a7eb46a" style="INVOICE_TX_10B" x="110" y="5" width="149" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="110" y="5" width="149" height="30" uuid="2df0f9a7-597d-4d72-871d-a3933a7eb46a"/>
 				<textElement textAlignment="Left" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$F{position.header.description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionDescription")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="af5173be-4930-47d6-9b61-e13e461c91e4" style="INVOICE_TX_10B" x="259" y="5" width="75" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="259" y="5" width="75" height="30" uuid="af5173be-4930-47d6-9b61-e13e461c91e4"/>
 				<textElement textAlignment="Right" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$F{position.header.pricePerUnit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionPricePerUnit")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9f2ca92e-e938-45ca-a018-d8b4746e5712" style="INVOICE_TX_10B" x="334" y="5" width="75" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="334" y="5" width="75" height="30" uuid="9f2ca92e-e938-45ca-a018-d8b4746e5712"/>
 				<textElement textAlignment="Right" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$F{position.header.totalPrice}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionTotalPrice")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="4bca98c3-e18e-4c46-8fe7-4426c39cd087" style="INVOICE_TX_10B" x="409" y="5" width="50" height="30"/>
+				<reportElement style="INVOICE_TX_10B" x="409" y="5" width="50" height="30" uuid="4bca98c3-e18e-4c46-8fe7-4426c39cd087"/>
 				<textElement textAlignment="Center" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$F{position.header.tax}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionTax")]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="8dd0e31a-0343-401d-90aa-666184c0b724" x="0" y="35" width="459" height="1"/>
+				<reportElement x="0" y="35" width="459" height="1" uuid="8dd0e31a-0343-401d-90aa-666184c0b724"/>
 			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="30" splitType="Stretch">
 			<subreport>
-				<reportElement uuid="af0e1555-b0f0-40fc-aeed-62a77ce463c4" positionType="Float" x="0" y="0" width="459" height="30" isPrintWhenDetailOverflows="true"/>
-				<dataSourceExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}.get("INVOICE_POSITION_DATASOURCE")]]></dataSourceExpression>
+				<reportElement positionType="Float" x="0" y="0" width="459" height="30" isPrintWhenDetailOverflows="true" uuid="af0e1555-b0f0-40fc-aeed-62a77ce463c4"/>
+				<subreportParameter name="wrapper">
+					<subreportParameterExpression><![CDATA[$P{wrapper}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$P{wrapper}.getAsDataSource("invoicePositions")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["InvoicePositionTemplate.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="111">
 			<line>
-				<reportElement uuid="405e1c7b-07d9-4307-b2ce-8f1a185745a8" x="0" y="5" width="457" height="1"/>
+				<reportElement x="0" y="5" width="457" height="1" uuid="405e1c7b-07d9-4307-b2ce-8f1a185745a8"/>
 			</line>
 			<textField>
-				<reportElement uuid="ed655cd9-486a-4f55-828e-7c60ccf74d1f" style="INVOICE_TX_10B" x="220" y="10" width="120" height="20"/>
+				<reportElement style="INVOICE_TX_10B" x="220" y="10" width="120" height="20" uuid="ed655cd9-486a-4f55-828e-7c60ccf74d1f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{total.net.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoiceTotalNet")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8b2cc4a2-1505-4e8d-aea8-4089ca076b5f" style="INVOICE_TX_10B" x="220" y="30" width="120" height="20"/>
+				<reportElement style="INVOICE_TX_10B" x="220" y="30" width="120" height="20" uuid="8b2cc4a2-1505-4e8d-aea8-4089ca076b5f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{total.tax.amount.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoiceTotalTax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5f7c0678-01dc-4211-9987-ca7d236da8b9" style="INVOICE_TX_12B" x="220" y="50" width="120" height="20"/>
+				<reportElement style="INVOICE_TX_12B" x="220" y="50" width="120" height="20" uuid="5f7c0678-01dc-4211-9987-ca7d236da8b9"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{total.gross.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoiceTotalGross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8b5124d0-aee4-4801-be43-41693922d1bd" style="INVOICE_TX_10B" x="340" y="10" width="119" height="20"/>
+				<reportElement style="INVOICE_TX_10B" x="340" y="10" width="119" height="20" uuid="8b5124d0-aee4-4801-be43-41693922d1bd"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getTotalNet()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("CALCULATED_TOTAL.net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="872853fb-deb2-416c-ad63-cf4b52b98ed1" style="INVOICE_TX_10B" x="340" y="30" width="119" height="20"/>
+				<reportElement style="INVOICE_TX_10B" x="340" y="30" width="119" height="20" uuid="872853fb-deb2-416c-ad63-cf4b52b98ed1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getTotalTaxAmount()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("CALCULATED_TOTAL.tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="cbbb345d-d2fc-481c-85fb-9ef5ef250b92" style="INVOICE_TX_12B" x="340" y="50" width="119" height="20"/>
+				<reportElement style="INVOICE_TX_12B" x="340" y="50" width="119" height="20" uuid="cbbb345d-d2fc-481c-85fb-9ef5ef250b92"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getTotalGross()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("CALCULATED_TOTAL.gross")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="ad1fde94-a5aa-454b-b5cd-13ebe646e0f1" style="INVOICE_TX_12" isPrintRepeatedValues="false" x="0" y="91" width="457" height="20"/>
+				<reportElement style="INVOICE_TX_12" isPrintRepeatedValues="false" x="0" y="91" width="457" height="20" uuid="ad1fde94-a5aa-454b-b5cd-13ebe646e0f1"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{paymentConditionText}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.bind("paymentTerms" + $P{wrapper}.get("paymentTerms.paymentType"), "paymentTerms.fullPaymentTargetInDays")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -184,92 +160,92 @@
 	<pageFooter>
 		<band height="104" splitType="Stretch">
 			<line>
-				<reportElement uuid="ad975b74-d75f-44c6-8d95-8ec4bf44493d" x="0" y="0" width="459" height="1"/>
+				<reportElement x="0" y="0" width="459" height="1" uuid="ad975b74-d75f-44c6-8d95-8ec4bf44493d"/>
 			</line>
 			<textField>
-				<reportElement uuid="97d01cb2-ea6e-46b0-a32a-affd68644385" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="2" width="70" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="2" width="70" height="13" uuid="73272921-8387-4c4c-a895-88dfc71dbf35"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{user.bank.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("bank")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a5d42a19-60e1-447d-bca0-8be053d3b654" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="15" width="70" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="15" width="70" height="13" uuid="791f1ebf-e67d-46ff-83c3-a39d1a533f4c"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{user.bank.account.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("bankAccount")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="ba75dbe1-4c5a-43b2-963f-630e04c11063" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="28" width="70" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="28" width="70" height="13" uuid="392fb8cd-48fb-486a-8ea2-fd9a3edb05a2"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{user.bank.code.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("bankCode")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="3cccbfe4-a847-4966-9413-0d0129d1bede" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="41" width="70" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="41" width="70" height="13" uuid="a0e27b81-a9f5-4c89-ae3f-9e7c360316bb"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{user.bank.bic.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("bankBIC")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="e0d3254d-8ea8-4d21-be14-79b6fda52643" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="54" width="70" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="2" y="54" width="70" height="13" uuid="66448d3c-1a5c-4d5f-8139-ccb69be560bf"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{user.bank.iban.title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("bankIBAN")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5a25190d-9b6f-4184-914c-666eea865f89" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="2" width="175" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="2" width="175" height="13" uuid="04f9cccb-d22b-44d8-800b-9bba9052dca6"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserBankName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.bankAccount.bankName")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5cf8ec58-aa1a-4f0e-aec8-9348f0b68044" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="15" width="175" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="15" width="175" height="13" uuid="b51a4961-06bb-4fcc-9a09-3d4219858b73"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserBankAccountNumber()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.bankAccount.accountNumber")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d12c3aa2-7063-48ad-ba50-44124699a01e" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="28" width="175" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="28" width="175" height="13" uuid="5e126b95-59ac-4966-845e-9f52c5be5b60"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserBankCode()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.bankAccount.bankCode")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c27ee7bf-cc73-42b5-940a-40f6e765ed6a" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="41" width="175" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="41" width="175" height="13" uuid="83327585-1e25-4737-a343-1b14e6b87cf5"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserBankBIC()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.bankAccount.bic")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="50cc3096-eca5-48be-a044-11b5fb010c07" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="54" width="175" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="70" y="54" width="175" height="13" uuid="4a3935d3-f2db-4e54-ae39-0ce025e6fdb4"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserBankIBAN()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.bankAccount.iban")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="68e6118e-bc5e-4896-8c64-5a4dd4723056" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="2" width="178" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="2" width="178" height="13" uuid="b113a6cf-79d7-447a-abc9-1eff4c62d799"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.name")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="3789b17e-ddd1-474d-8fd2-cc8b1b270c50" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="15" width="178" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="15" width="178" height="13" uuid="ee186db2-b74e-456d-94fc-a2125ff647de"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserStreet()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.address.street")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c02ea0a6-dc9e-4b1e-8283-60810eb6ec2c" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="28" width="178" height="13"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="28" width="178" height="13" uuid="118e5c57-f95f-4cb4-9a50-2ca48a501516"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserPostcodeAndCity()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("user.address.postalCode") + " " + $P{wrapper}.get("user.address.city")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="41180132-ce3d-47e3-8aa1-1b14fe2edc5b" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="41" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="41" width="178" height="13" isRemoveLineWhenBlank="true" uuid="9dbad37a-df32-4a1c-8bed-2a1fa3a265a6"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserPhone()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.bind("Phone", "user.address.phoneNumber")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f1a0302a-17cc-4e04-a23f-a42bc7bfd80c" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="54" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="54" width="178" height="13" isRemoveLineWhenBlank="true" uuid="8a8269f6-3bfa-4664-91c0-f8e7c9abad5c"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserMobile()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.bind("Mobile", "user.address.mobileNumber")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="2d70d21c-9f62-47f7-b2db-df6e80da0803" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="67" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="67" width="178" height="13" isRemoveLineWhenBlank="true" uuid="166144f7-a9ac-4d90-91c4-1c8f15e7b417"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserEmail()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.bind("Email", "user.address.email")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="08aebd3a-395f-49dc-8999-ff2429873210" style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="89" width="178" height="13" isRemoveLineWhenBlank="true"/>
+				<reportElement style="INVOICE_TX_08" isPrintRepeatedValues="false" x="281" y="89" width="178" height="13" isRemoveLineWhenBlank="true" uuid="4b80a054-f1fe-47ca-8ad4-b49a82b993f8"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{invoice}.getUserTaxNumberFormatted()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.bind("TaxId", "user.taxNumber")]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

@@ -71,7 +71,7 @@ public class ExportInvoiceFromSelectionHandler extends AbstractInvoiceHandler im
      */
     @Override
     public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-    	reportingService.generateInvoiceToPdf(currentInvoice, targetFileName, monitor);
+    	reportingService.generateReport("Invoice", currentInvoice, targetFileName, monitor);
     }
 
 	/**
