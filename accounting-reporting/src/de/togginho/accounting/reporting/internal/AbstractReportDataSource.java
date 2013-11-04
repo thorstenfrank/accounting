@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
  * 
  * @see JRDataSource
  * 
+ * @deprecated
  */
 abstract class AbstractReportDataSource implements JRDataSource {
 

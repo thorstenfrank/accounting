@@ -352,7 +352,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 		 */
 		@Override
 		public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-			reportingService.generateExpensesToPdf(expenseCollection, targetFileName, monitor);
+			reportingService.generateReport("Expenses", expenseCollection, targetFileName, monitor);
 		}
 		
 	}

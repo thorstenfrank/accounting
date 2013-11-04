@@ -27,6 +27,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.PaymentType;
@@ -77,6 +78,8 @@ public class ModelWrapper {
     		calculatedTotal = CalculationUtil.calculatePrice((InvoicePosition) model);
     	} else if (model instanceof Invoice) {
     		calculatedTotal = CalculationUtil.calculateTotalPrice((Invoice) model);
+    	} else if (model instanceof Expense) {
+    		calculatedTotal = CalculationUtil.calculatePrice((Expense) model);
     	}
     }
     
@@ -184,11 +187,21 @@ public class ModelWrapper {
     }
     
     /**
+     * This is a shortcut for calling <code>formatAsCurrency(property, Constants.HYPHEN)}
      * 
      * @param property
      * @return
      */
     public String formatAsCurrency(String property) {
+    	return formatAsCurrency(property, Constants.HYPHEN);
+    }
+    
+    /**
+     * 
+     * @param property
+     * @return
+     */
+    public String formatAsCurrency(String property, String defaultIfNull) {
     	try {
 	        Object result = get(model, property);
 	        
@@ -199,7 +212,27 @@ public class ModelWrapper {
         	LOG.error(String.format("Error parsing currency from property [%s]", property), e); //$NON-NLS-1$
         }
     	
-    	return Constants.HYPHEN;    	
+    	return defaultIfNull;    	
+    }
+    
+    /**
+     * 
+     * @param property
+     * @param defaultIfNull
+     * @return
+     */
+    public String formatAsPercentage(String property, String defaultIfNull) {
+    	try {
+	        Object result = get(model, property);
+	        
+	        if (result != null && result instanceof BigDecimal) {
+	        	return FormatUtil.formatPercentValue((BigDecimal) result);
+	        }
+        } catch (Exception e) {
+        	LOG.error(String.format("Error parsing percentage from property [%s]", property), e); //$NON-NLS-1$
+        }
+    	
+    	return defaultIfNull;
     }
     
     /**

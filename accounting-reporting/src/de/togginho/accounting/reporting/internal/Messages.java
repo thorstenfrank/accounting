@@ -34,8 +34,9 @@ public class Messages extends NLS {
 	public static String AbstractReportGenerator_errorFillingReport;
 	public static String AbstractReportGenerator_errorCreatingReport;
 	
-	public static String ExpensesDataSource_expensesTitle;
-	public static String ExpensesDataSource_expenseCategory;
+	public static String Expenses;
+	public static String expensesTitle;
+	public static String expenseCategoryTitle;
 	
 	public static String IncomeStatement_title;
 	public static String IncomeStatementSummary_title;

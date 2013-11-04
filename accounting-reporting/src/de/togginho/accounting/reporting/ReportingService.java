@@ -17,7 +17,6 @@ package de.togginho.accounting.reporting;
 
 import java.util.Map;
 
-import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 
 /**
@@ -40,15 +39,7 @@ public interface ReportingService {
 	 * @param monitor
 	 */
 	void generateReport(String reportId, Object model, String fileLocation, ReportGenerationMonitor monitor);
-		
-	/**
-	 * 
-	 * @param expenseCollection
-	 * @param fileLocation
-	 * @param monitor
-	 */
-	void generateExpensesToPdf(ExpenseCollection expenseCollection, String fileLocation, ReportGenerationMonitor monitor);
-		
+	
 	/**
 	 * 
 	 * @param incomeStatement

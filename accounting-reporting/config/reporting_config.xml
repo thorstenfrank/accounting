@@ -13,5 +13,8 @@
     <Report id="Revenue" template="RevenueTemplate.jasper">
       <Model id="revenue" class="de.togginho.accounting.model.Revenue" />
     </Report>
+    <Report id="Expenses" template="ExpensesTemplate.jasper">
+      <Model id="expenseCollection" class="de.togginho.accounting.model.ExpenseCollection" />
+    </Report>
   </Reports>
 </AccountingReports>

@@ -51,6 +51,8 @@ import de.togginho.accounting.reporting.ReportGenerationMonitor;
  * @author thorsten frank
  * 
  * @see AbstractReportDataSource
+ * 
+ * @deprecated
  *
  */
 public abstract class AbstractReportGenerator {

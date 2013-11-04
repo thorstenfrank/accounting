@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.reporting.ReportGenerationMonitor;
 import de.togginho.accounting.reporting.ReportingService;
@@ -100,16 +99,6 @@ public class ReportingServiceImpl implements ReportingService {
     	}
     	
     	return null;
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     * @see ReportingService#generateExpensesToPdf(ExpenseCollection, String, ReportGenerationMonitor)
-     */
-    @Override
-    public void generateExpensesToPdf(ExpenseCollection expenseCollection, String fileLocation, ReportGenerationMonitor monitor) {
-    	doGenerateReport(new ExpensesReportGenerator(expenseCollection), fileLocation, monitor);
     }
     
 	/**
