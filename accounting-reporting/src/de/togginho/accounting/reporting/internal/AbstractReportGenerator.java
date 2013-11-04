@@ -79,7 +79,7 @@ public abstract class AbstractReportGenerator {
 		if (in == null) {
 			LOG.error(String.format("Could not load template: [%s]", getReportTemplatePath())); //$NON-NLS-1$
 			throw new AccountingException(
-					Messages.bind(Messages.AbstractReportGenerator_errorTemplateNotFound, getReportTemplatePath()));
+					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, getReportTemplatePath()));
 		}
 		
 		monitor.addingReportParameters();		
@@ -95,7 +95,7 @@ public abstract class AbstractReportGenerator {
         	LOG.error("Error filling report", e); //$NON-NLS-1$
         	closeInputStream(in);
         	throw new AccountingException(
-        			Messages.bind(Messages.AbstractReportGenerator_errorFillingReport, getReportTemplatePath()), e);
+        			Messages.bind(Messages.JasperReportGenerator_errorFillingReport, getReportTemplatePath()), e);
         }
 		
 		try {
@@ -112,7 +112,7 @@ public abstract class AbstractReportGenerator {
 			LOG.error("Error occured during report generation", e);
 			closeInputStream(in);
 			throw new AccountingException(Messages.bind(
-					Messages.AbstractReportGenerator_errorCreatingReport, getReportTemplatePath()), e);
+					Messages.JasperReportGenerator_errorCreatingReport, getReportTemplatePath()), e);
 		}
 		
 		monitor.exportFinished();
@@ -139,7 +139,7 @@ public abstract class AbstractReportGenerator {
 		} else {
 			LOG.error("Template URL not found: " + templatePath);
 			throw new AccountingException(
-					Messages.bind(Messages.AbstractReportGenerator_errorTemplateNotFound, templatePath));
+					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, templatePath));
 		}
 		
 		return loader.getResourceAsStream(templatePath); 

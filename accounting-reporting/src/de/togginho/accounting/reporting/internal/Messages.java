@@ -30,9 +30,9 @@ public class Messages extends NLS {
 	public static String CashFlowStatement;
 	public static String CashFlowStatement_title;
 	
-	public static String AbstractReportGenerator_errorTemplateNotFound;
-	public static String AbstractReportGenerator_errorFillingReport;
-	public static String AbstractReportGenerator_errorCreatingReport;
+	public static String JasperReportGenerator_errorTemplateNotFound;
+	public static String JasperReportGenerator_errorFillingReport;
+	public static String JasperReportGenerator_errorCreatingReport;
 	
 	public static String Expenses;
 	public static String expensesTitle;
@@ -64,6 +64,8 @@ public class Messages extends NLS {
 	public static String invoiceTotalNet;
 	public static String invoiceTotalTax;
 	public static String paymentTermsTRADE_CREDIT;
+	
+	public static String ModelWrapper_errorIllegalTypeForDataSource;
 	
 	public static String RevenueReportGenerator_clientTitle;
 

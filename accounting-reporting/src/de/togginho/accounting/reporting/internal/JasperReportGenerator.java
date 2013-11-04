@@ -56,8 +56,7 @@ public class JasperReportGenerator implements JRDataSource {
 	 */
 	JasperReportGenerator(Report report, Object model) {
 		this.report = report;
-		wrapper = new ModelWrapper();
-		wrapper.setModel(model);
+		wrapper = new ModelWrapper(model);
 	}
 	
 	/**
@@ -78,7 +77,7 @@ public class JasperReportGenerator implements JRDataSource {
 		if (in == null) {
 			LOG.error(String.format("Could not load template: [%s]", report.getTemplate())); //$NON-NLS-1$
 			throw new AccountingException(
-					Messages.bind(Messages.AbstractReportGenerator_errorTemplateNotFound, report.getTemplate()));
+					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, report.getTemplate()));
 		}
 		
 		monitor.addingReportParameters();		
@@ -95,7 +94,7 @@ public class JasperReportGenerator implements JRDataSource {
         	LOG.error("Error filling report", e); //$NON-NLS-1$
         	closeInputStream(in);
         	throw new AccountingException(
-        			Messages.bind(Messages.AbstractReportGenerator_errorFillingReport, report.getTemplate()), e);
+        			Messages.bind(Messages.JasperReportGenerator_errorFillingReport, report.getTemplate()), e);
         }
 		
 		try {
@@ -112,7 +111,7 @@ public class JasperReportGenerator implements JRDataSource {
 			LOG.error("Error occured during report generation", e);
 			closeInputStream(in);
 			throw new AccountingException(Messages.bind(
-					Messages.AbstractReportGenerator_errorCreatingReport, report.getTemplate()), e);
+					Messages.JasperReportGenerator_errorCreatingReport, report.getTemplate()), e);
 		}
 		
 		monitor.exportFinished();
@@ -135,7 +134,7 @@ public class JasperReportGenerator implements JRDataSource {
 		} else {
 			LOG.error("Template URL not found: " + report.getTemplate());
 			throw new AccountingException(
-					Messages.bind(Messages.AbstractReportGenerator_errorTemplateNotFound, report.getTemplate()));
+					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, report.getTemplate()));
 		}
 		
 		return loader.getResourceAsStream(report.getTemplate());

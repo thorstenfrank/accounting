@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.log4j.Logger;
 
+import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
@@ -42,7 +44,7 @@ public class ModelWrapper {
 	
 	public static final String CALCULATED_TOTAL = "CALCULATED_TOTAL"; //$NON-NLS-1$
 	
-	private static final String DOT = "."; //$NON-NLS-1$
+	protected static final String DOT = "."; //$NON-NLS-1$
 
 	private static final String GET = "get"; //$NON-NLS-1$
 	
@@ -52,25 +54,18 @@ public class ModelWrapper {
 	
 	private Price calculatedTotal;
 	
-	/**
-     * 
-     */
-    public ModelWrapper() {
-	    super();
-    }
-    
     /**
      * 
      * @param model
      */
-    public ModelWrapper(Object model) {
+    protected ModelWrapper(Object model) {
     	setModel(model);
     }
     
 	/**
      * @param model the model to set
      */
-    public void setModel(Object model) {
+    protected void setModel(Object model) {
     	this.model = model;
     	
     	if (model instanceof InvoicePosition) {
@@ -80,6 +75,14 @@ public class ModelWrapper {
     	} else if (model instanceof Expense) {
     		calculatedTotal = CalculationUtil.calculatePrice((Expense) model);
     	}
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    protected Object getModel() {
+    	return model;
     }
     
     /**
@@ -257,14 +260,27 @@ public class ModelWrapper {
     public JRDataSource getAsDataSource(String property) {
     	try {
 	        Object result = get(model, property);
-	        if (result instanceof Collection) {
-	        	List<ModelWrapper> wrapped = new ArrayList<ModelWrapper>();
+	        List<ModelWrapper> wrapped = new ArrayList<ModelWrapper>();
+	        
+	        if (result == null) {
+	        	LOG.warn(String.format("Property [%s] returned null, will return empty data source!", property)); //$NON-NLS-1$
+	        } else if (result instanceof Collection) {
 	        	for (Object source : (Collection<?>) result) {
 	        		wrapped.add(new ModelWrapper(source));
 	        	}
-	        	
-	        	return new CollectionDataSource(wrapped);
+	        } else if (result instanceof Map) {
+	        	Map<?,?> map = (Map<?,?>) result;
+	        	for (Object key : map.keySet()) {
+	        		wrapped.add(new KeyValueModelWrapper(key, map.get(key)));
+	        	}
+	        } else {
+	        	final String msg = Messages.bind(
+	        			Messages.ModelWrapper_errorIllegalTypeForDataSource, property, result.getClass().getName());
+	        	LOG.error(msg);
+	        	throw new AccountingException(msg);
 	        }
+	        
+	        return new CollectionDataSource(wrapped);
         } catch (Exception e) {
 	        LOG.error("Could not build data source", e);
         }
@@ -279,7 +295,7 @@ public class ModelWrapper {
      * @return
      * @throws Exception
      */
-    private Object get(Object object, String property) throws Exception {
+    protected Object get(Object object, String property) throws Exception {
     	String children = null;
     	
     	if (property.startsWith(CALCULATED_TOTAL)) {
