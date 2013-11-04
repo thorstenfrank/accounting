@@ -79,7 +79,9 @@ public class Messages extends NLS {
 	public static String bank;
 	
 	public static String dateTitle;
+	public static String depreciationTitle;
 	public static String descriptionTitle;
+	public static String ebitTitle;
 	public static String fromTitle;
 	public static String grossPriceTitle;
 	public static String operatingProfitTitle;

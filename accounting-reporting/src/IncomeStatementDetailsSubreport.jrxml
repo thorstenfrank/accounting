@@ -8,18 +8,9 @@
 	<queryString language="xPath">
 		<![CDATA[]]>
 	</queryString>
-	<field name="category" class="java.lang.String">
-		<fieldDescription><![CDATA[category]]></fieldDescription>
-	</field>
-	<field name="net" class="java.lang.String">
-		<fieldDescription><![CDATA[net]]></fieldDescription>
-	</field>
-	<field name="tax" class="java.lang.String">
-		<fieldDescription><![CDATA[tax]]></fieldDescription>
-	</field>
-	<field name="gross" class="java.lang.String">
-		<fieldDescription><![CDATA[gross]]></fieldDescription>
-	</field>
+    <field name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -36,33 +27,33 @@
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="80a92fa3-7957-485d-9632-33863784f9bb" style="INVOICE_TX_10" positionType="Float" x="125" y="0" width="109" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{wrapper}.get("KEY")]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+                <reportElement uuid="7a087570-17b9-4375-a6b4-e50331655357" style="INVOICE_TX_10" positionType="Float" x="234" y="0" width="75" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("VALUE.net")]]></textFieldExpression>
+            </textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement uuid="3af116dc-e4ff-4a64-85ce-4b6066a53876" style="INVOICE_TX_10" positionType="Float" x="309" y="0" width="75" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tax}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="7a087570-17b9-4375-a6b4-e50331655357" style="INVOICE_TX_10" positionType="Float" x="234" y="0" width="75" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{net}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="80a92fa3-7957-485d-9632-33863784f9bb" style="INVOICE_TX_10" positionType="Float" x="125" y="0" width="109" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("VALUE.tax")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement uuid="741e82b4-f8ca-44c8-a4f3-67f95f7701ce" style="INVOICE_TX_10" positionType="Float" x="384" y="0" width="75" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{gross}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("VALUE.gross")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -256,6 +256,10 @@ public class ModelWrapper {
      * {@link JRDataSource#getFieldValue(net.sf.jasperreports.engine.JRField)} will always return a {@link ModelWrapper}
      * instance.
      * 
+     * <p>
+     * If the property's type is {@link Map}, the data source will contain instances of type {@link KeyValueModelWrapper}.
+     * </p>
+     * 
      * @param property
      * 
      * @return a {@link JRDataSource} containing 0 to n {@link ModelWrapper} objects

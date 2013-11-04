@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.reporting.ReportGenerationMonitor;
 import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.reporting.xml.generated.AccountingReports;
@@ -99,25 +98,5 @@ public class ReportingServiceImpl implements ReportingService {
     	}
     	
     	return null;
-    }
-    
-	/**
-     * 
-     * {@inheritDoc}.
-     * @see ReportingService#generateIncomeStatementToPdf(IncomeStatement, String, ReportGenerationMonitor)
-     */
-    @Override
-    public void generateIncomeStatementToPdf(IncomeStatement incomeStatement, String fileLocation, ReportGenerationMonitor monitor) {
-    	doGenerateReport(new IncomeStatementReportGenerator(incomeStatement), fileLocation, monitor);
-    }
-    
-    /**
-     * 
-     * @param generator
-     * @param fileLocation
-     * @param monitor
-     */
-    private void doGenerateReport(AbstractReportGenerator generator, String fileLocation, ReportGenerationMonitor monitor) {
-    	generator.generateReportToFile(fileLocation, monitor);
     }
 }

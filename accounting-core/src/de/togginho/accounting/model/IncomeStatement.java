@@ -202,6 +202,30 @@ public class IncomeStatement implements Serializable {
     	
     	return grossProfit;
     }
+
+    /**
+     * TODO implement me
+     * @return
+     */
+    public Price getEBIT() {
+    	return null;
+    }
+    
+    /**
+     * TODO implement me
+     * @return
+     */
+    public Price getDepreciation() {
+    	return null;
+    }
+    
+    /**
+     * TODO implement me
+     * @return
+     */
+    public Map<String, Price> getDepreciationCategories() {
+    	return null;
+    }
     
     /**
      * @return the taxSum

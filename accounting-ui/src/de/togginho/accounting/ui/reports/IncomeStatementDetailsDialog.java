@@ -431,8 +431,7 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 		
 		@Override
 		public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-			reportingService.generateIncomeStatementToPdf(incomeStatement, targetFileName, monitor);
-			
+			reportingService.generateReport("IncomeStatement", incomeStatement, targetFileName, monitor);
 		}
 		
 		@Override
