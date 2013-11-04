@@ -27,7 +27,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.log4j.Logger;
 
-import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
@@ -253,9 +252,13 @@ public class ModelWrapper {
     }
     
     /**
+     * Builds a {@link JRDataSource} for the value of the supplied property, where the 
+     * {@link JRDataSource#getFieldValue(net.sf.jasperreports.engine.JRField)} will always return a {@link ModelWrapper}
+     * instance.
      * 
      * @param property
-     * @return
+     * 
+     * @return a {@link JRDataSource} containing 0 to n {@link ModelWrapper} objects
      */
     public JRDataSource getAsDataSource(String property) {
     	try {
@@ -274,13 +277,10 @@ public class ModelWrapper {
 	        		wrapped.add(new KeyValueModelWrapper(key, map.get(key)));
 	        	}
 	        } else {
-	        	final String msg = Messages.bind(
-	        			Messages.ModelWrapper_errorIllegalTypeForDataSource, property, result.getClass().getName());
-	        	LOG.error(msg);
-	        	throw new AccountingException(msg);
+	        	wrapped.add(new ModelWrapper(result));
 	        }
 	        
-	        return new CollectionDataSource(wrapped);
+	        return new ModelWrapperDataSource(wrapped);
         } catch (Exception e) {
 	        LOG.error("Could not build data source", e);
         }

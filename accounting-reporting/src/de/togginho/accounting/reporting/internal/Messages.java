@@ -64,9 +64,7 @@ public class Messages extends NLS {
 	public static String invoiceTotalNet;
 	public static String invoiceTotalTax;
 	public static String paymentTermsTRADE_CREDIT;
-	
-	public static String ModelWrapper_errorIllegalTypeForDataSource;
-	
+		
 	public static String RevenueReportGenerator_clientTitle;
 
 	public static String RevenueReportGenerator_invoiceDate;

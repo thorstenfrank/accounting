@@ -28,9 +28,9 @@ import org.apache.log4j.Logger;
  * @author thorsten
  *
  */
-public class CollectionDataSource implements JRDataSource {
+class ModelWrapperDataSource implements JRDataSource {
 
-	private static final Logger LOG = Logger.getLogger(CollectionDataSource.class);
+	private static final Logger LOG = Logger.getLogger(ModelWrapperDataSource.class);
 
 	private Collection<ModelWrapper> wrapper;
 	
@@ -41,7 +41,7 @@ public class CollectionDataSource implements JRDataSource {
 	/**
 	 * @param beanCollection
 	 */
-	public CollectionDataSource(Collection<ModelWrapper> beanCollection) {
+	ModelWrapperDataSource(Collection<ModelWrapper> beanCollection) {
 		this.wrapper = beanCollection;
 		this.iterator = wrapper.iterator();
 	}
