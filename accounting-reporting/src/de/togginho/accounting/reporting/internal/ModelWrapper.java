@@ -30,7 +30,6 @@ import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
-import de.togginho.accounting.model.PaymentType;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
@@ -118,6 +117,21 @@ public class ModelWrapper {
     public String get(String property, String defaultValue) {
     	String result = get(property);
     	return result != null ? result : defaultValue;
+    }
+    
+    /**
+     * 
+     * @param property
+     * @return
+     */
+    public Object getRaw(String property) {
+    	try {
+			return get(model, property);
+		} catch (Exception e) {
+			LOG.error(String.format("Error reading raw property [%s] from model of type [%s]", property, model.getClass().getName()), e);
+		}
+    	
+    	return null;
     }
     
     /**
@@ -290,9 +304,5 @@ public class ModelWrapper {
     	}
     	
     	return result;
-    }
-    
-    public static void main(String[] args) {
-    	System.out.println(PaymentType.TRADE_CREDIT instanceof Object);
     }
 }

@@ -11,8 +11,16 @@
 	<pageHeader>
 		<band height="58" splitType="Stretch">
 			<textField>
-				<reportElement style="INVOICE_TX_18B" x="0" y="0" width="300" height="32" uuid="07aff601-c50a-4a95-ab60-cd31f46d9921"/>
+				<reportElement style="INVOICE_TX_18B" x="0" y="0" width="300" height="32" uuid="07aff601-c50a-4a95-ab60-cd31f46d9921">
+					<printWhenExpression><![CDATA[((java.util.Set)$P{wrapper}.getRaw("includedTypes")).size() > 1]]></printWhenExpression>
+				</reportElement>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("expensesTitle")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="INVOICE_TX_18B" x="0" y="0" width="300" height="32" uuid="5d8a36c8-d9c2-41a9-8624-8db89dbab2f4">
+					<printWhenExpression><![CDATA[((java.util.Set)$P{wrapper}.getRaw("includedTypes")).size() == 1]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[((de.togginho.accounting.model.ExpenseType)((java.util.Set)$P{wrapper}.getRaw("includedTypes")).iterator().next()).getTranslatedString()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="INVOICE_TX_10" x="0" y="37" width="100" height="20" uuid="698d58cb-c96f-4e92-9576-97b460e98182"/>
