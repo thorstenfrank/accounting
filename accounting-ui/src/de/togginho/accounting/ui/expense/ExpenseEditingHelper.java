@@ -222,6 +222,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				WidgetHelper.createTaxRateCombo(parent, bindingContext, expense, Expense.FIELD_TAX_RATE);
 		taxRateCombo.setData(KEY_WIDGET_DATA, Expense.FIELD_TAX_RATE);
 		taxRateCombo.addPostSelectionChangedListener(this);
+		taxRateCombo.addSelectionChangedListener(this);
 		
 		// TAX AMOUNT
 		callback.createLabel(parent, Messages.labelTaxes);
@@ -495,9 +496,10 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 				modelChanged = false;
 			}
 		} else if (newRate.equals(expense.getTaxRate()) == false) {
+			String old = expense.getTaxRate() != null ? expense.getTaxRate().toShortString() : "null"; //$NON-NLS-1$
 			LOG.debug(String.format(
 					"TaxRate changed from [%s] to [%s]", //$NON-NLS-1$ 
-					expense.getTaxRate().toShortString(), newRate.toShortString()));
+					old, newRate.toShortString()));
 			modelChanged = true;
 		} else {
 			modelChanged = false;
