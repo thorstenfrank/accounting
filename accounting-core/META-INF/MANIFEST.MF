@@ -19,7 +19,7 @@ Export-Package: de.togginho.accounting,
  org.apache.commons.logging,
  org.apache.log4j
 Require-Bundle: org.eclipse.core.runtime,
- db4o_osgi;bundle-version="8.0.184"
+ db4o_osgi;bundle-version="8.0.249"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/log4j-1.2.13.jar,
