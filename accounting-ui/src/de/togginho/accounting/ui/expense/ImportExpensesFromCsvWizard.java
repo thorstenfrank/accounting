@@ -15,12 +15,16 @@
  */
 package de.togginho.accounting.ui.expense;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
+import de.togginho.accounting.model.ExpenseImportParams;
+import de.togginho.accounting.model.ExpenseImportResult;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 
 /**
@@ -29,8 +33,12 @@ import de.togginho.accounting.ui.Messages;
  */
 public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard {
 	
+	private static final Logger LOG = Logger.getLogger(ImportExpensesFromCsvWizard.class);
+	
 	private ImportWizardPageOne pageOne;
 	private ImportWizardPageTwo pageTwo;
+
+	private ExpenseImportResult result;
 	
 	/**
      * {@inheritDoc}.
@@ -62,5 +70,17 @@ public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard
 	public boolean performFinish() {
 		//AccountingUI.getAccountingService().saveExpenses(selectedExpenses);
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param fileName
+	 * @param params
+	 * @return
+	 */
+	protected boolean runImport(String fileName, ExpenseImportParams params) {
+		LOG.debug("Import expenses from " + fileName); //$NON-NLS-1$
+		this.result = AccountingUI.getAccountingService().importExpenses(fileName, params);
+		return result.hasError() == false;
 	}
 }

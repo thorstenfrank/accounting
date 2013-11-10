@@ -17,12 +17,10 @@ package de.togginho.accounting.ui.expense;
 
 import java.io.File;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -38,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.model.ExpenseImportParams;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
@@ -52,12 +51,6 @@ class ImportWizardPageOne extends WizardPage {
 	 * 
 	 */
 	private static final String[] VALID_EXTENSIONS = new String[]{"*.csv", "*.txt"}; //$NON-NLS-1$ //$NON-NLS-2$
-
-	/**
-	 * 
-	 */
-	private static final String DEFAULT_SEPARATOR = 
-			String.valueOf(((DecimalFormat) DecimalFormat.getInstance()).getDecimalFormatSymbols().getDecimalSeparator());
 	
 	/**
 	 * 
@@ -68,7 +61,10 @@ class ImportWizardPageOne extends WizardPage {
 	 * 
 	 */
 	private String sourceFile;
-		
+	
+	
+	private ExpenseImportParams params;
+	
 	/**
 	 * 
 	 */
@@ -80,8 +76,17 @@ class ImportWizardPageOne extends WizardPage {
 	ImportWizardPageOne() {
 		super("ChooseFilePage", Messages.ImportExpensesWizard_title, AccountingUI.getImageDescriptor(Messages.iconsExpenseAdd));
 		setMessage(Messages.ImportExpensesWizard_message);
+		params = new ExpenseImportParams();
 	}
 
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible == false) {
+			((ImportExpensesFromCsvWizard)getWizard()).runImport(sourceFile, params);			
+		}
+	    super.setVisible(visible);
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
@@ -93,6 +98,7 @@ class ImportWizardPageOne extends WizardPage {
         
         buildMandatoryInfo(composite);
         buildCustomDatePatternSelector(composite);
+        buildDecimalSeparator(composite);
         
         setPageComplete(false);
         setControl(composite);
@@ -127,26 +133,46 @@ class ImportWizardPageOne extends WizardPage {
 				}
 			}
 		});
-        
+    }
+	
+    /**
+     * 
+     * @param parent
+     */
+    private void buildDecimalSeparator(Composite parent) {
 		WidgetHelper.createLabel(parent, "Decimal Separator:");
 		final Combo combo = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(combo);
 		combo.add(Constants.DOT);
 		combo.add(Constants.COMMA);
 		WidgetHelper.createLabel(parent, Constants.EMPTY_STRING);
-		if (DEFAULT_SEPARATOR.equals(Constants.COMMA)) {
+		if (Constants.COMMA.equals(params.getDecimalMark())) {
 			combo.select(1);
 		} else {
 			combo.select(0);
 		}
+		
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				switch (combo.getSelectionIndex()) {
+				case 1:
+					params.setDecimalMark(Constants.COMMA);
+					break;
+				default:
+					params.setDecimalMark(Constants.DOT);
+					break;
+				}
+			}
+		});
     }
-	
+    
 	/**
 	 * 
 	 * @param parent
 	 */
 	private void buildCustomDatePatternSelector(Composite parent) {
-        final Button useCustomDatePattern = new Button(parent, SWT.CHECK);
-        useCustomDatePattern.setText("Custom Date Format Pattern:");
+        WidgetHelper.createLabel(parent, "Date Format Pattern:");
         
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(3, false));
@@ -186,28 +212,8 @@ class ImportWizardPageOne extends WizardPage {
 				}
 			}
 		});
-		
-		useCustomDatePattern.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				customDatePatternCombo.setEnabled(useCustomDatePattern.getSelection());
-				if (useCustomDatePattern.getSelection()) {
-					updateDateFormatExample(customDatePatternCombo.getText(), example);
-				}
-			}
-		});		
 	}
 	
-	/**
-     * {@inheritDoc}.
-     * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
-     */
-    @Override
-    public IWizardPage getNextPage() {
-    	System.out.println("GET NEXT PAGE");
-	    return super.getNextPage();
-    }
-
 	/**
 	 * 
 	 * @param pattern
@@ -217,10 +223,15 @@ class ImportWizardPageOne extends WizardPage {
 		try {
 	        format = new SimpleDateFormat(pattern);
 	        example.setText(format.format(TODAY));
+	        params.setDateFormatPattern(pattern);
+	        checkSourceFile();
 	        return true;
         } catch (Exception e) {
         	example.setText(Constants.EMPTY_STRING);
         	setErrorMessage(String.format("[%s] is not a valid date formatting pattern!", pattern));
+        	if (isPageComplete()) {
+        		setPageComplete(false);
+        	}
         	return false;
         }
 	}

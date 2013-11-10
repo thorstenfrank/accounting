@@ -66,6 +66,7 @@ class ImportWizardPageTwo extends WizardPage {
      */
     @Override
     public void setVisible(boolean visible) {
+    	System.out.println("VISIBLE: " + visible);
 	    super.setVisible(visible);
     }
 

@@ -17,6 +17,7 @@ package de.togginho.accounting.model;
 
 import java.io.Serializable;
 
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -30,7 +31,7 @@ public class ExpenseImportParams implements Serializable {
      */
     private static final long serialVersionUID = 6259396423161494789L;
     
-    public static final String DEFAULT_SEPARATOR = ";"; //$NON-NLS-1$
+    public static final String DEFAULT_SEPARATOR = Constants.SEMICOLON; //$NON-NLS-1$
     
     private String separator;
     
