@@ -8,8 +8,6 @@ Bundle-Vendor: Thorsten Frank
 Export-Package: de.togginho.accounting,
  de.togginho.accounting.model,
  de.togginho.accounting.util,
- de.togginho.commons.exception,
- de.togginho.commons.resources,
  org.apache.commons.beanutils,
  org.apache.commons.beanutils.converters,
  org.apache.commons.beanutils.expression,
@@ -23,7 +21,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/log4j-1.2.13.jar,
- lib/togginho-commons-1.4-SNAPSHOT.jar,
  lib/commons-beanutils-1.8.3.jar,
  lib/commons-logging-1.1.jar,
  .
