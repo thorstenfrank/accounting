@@ -23,18 +23,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
+import de.togginho.accounting.model.ExpenseImportParams;
+import de.togginho.accounting.model.ExpenseImportResult;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.TaxRate;
-import de.togginho.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -42,70 +46,42 @@ import de.togginho.accounting.util.FormatUtil;
  */
 public class ExpenseImporter {
 
+	private static final String NON_DIGITS = "[^\\d]";
+
 	private static final Logger LOG = Logger.getLogger(ExpenseImporter.class);
 	
-	private static final String DEFAULT_ENCODING = "ISO-8859-1"; //$NON-NLS-1$
-	private static final String DEFAULT_SEPARATOR = ";"; //$NON-NLS-1$
-	
-	/**
-	 * 
-	 * @param sourceFile
-	 * @param knownTaxRates
-	 * @return
-	 * @throws AccountingException
-	 */
-	public static Collection<Expense> importExpenses(String sourceFile, Set<TaxRate> knownTaxRates) {
-		return importExpenses(new File(sourceFile), knownTaxRates);
-	}
-	
-	/**
-	 * 
-	 * @param sourceFile
-	 * @param knownTaxRates
-	 * @return
-	 */
-	public static Collection<Expense> importExpenses(File sourceFile, Set<TaxRate> knownTaxRates) {		
-        return new ExpenseImporter(sourceFile, knownTaxRates).parse();
-	}
+	//private static final String DEFAULT_ENCODING = "ISO-8859-1"; //$NON-NLS-1$
 	
 	private File inputFile;
 	private Set<TaxRate> knownTaxRates;
-	private String encoding;
-	private String separator;
+	private ExpenseImportParams params;
+	private DateFormat dateFormatter;
+	
+	private ExpenseImportResult result;
 	
 	/**
      * @param inputFile
      * @param knownTaxRates
      */
-    private ExpenseImporter(File inputFile, Set<TaxRate> knownTaxRates) {
-    	this(inputFile, knownTaxRates, DEFAULT_ENCODING, DEFAULT_SEPARATOR);
-    }
-
-    /**
-     * 
-     * @param inputFile
-     * @param knownTaxRates
-     * @param encoding
-     * @param separator
-     */
-    private ExpenseImporter(File inputFile, Set<TaxRate> knownTaxRates, String encoding, String separator) {
-	    this.inputFile = inputFile;
-	    this.knownTaxRates = knownTaxRates;
-	    this.encoding = encoding;
-	    this.separator = separator;
+    public ExpenseImporter(File inputFile, Set<TaxRate> knownTaxRates, ExpenseImportParams params) {
+    	this.inputFile = inputFile;
+    	this.knownTaxRates = knownTaxRates;
+    	this.params = params;
+    	this.dateFormatter = new SimpleDateFormat(params.getDateFormatPattern());
     }
     
-    /**
+	/**
      * 
      * @return
      */
-    private Collection<Expense> parse() {
-    	Collection<Expense> imported = new ArrayList<Expense>();
-    	    	
+    public ExpenseImportResult parse() {
+    	result = new ExpenseImportResult();
+    	result.setExpenses(new ArrayList<Expense>());
+    	result.setWarnings(new HashMap<Expense, String>());
     	for (String line : readInputFileByLine()) {
     		LOG.debug("Importing line: " + line); //$NON-NLS-1$
     		
-	    	String[] parts = line.split(separator);
+	    	String[] parts = line.split(params.getSeparator());
 			if (parts.length < 1) {
 				LOG.warn("Empty or illegal line in import file!"); //$NON-NLS-1$
 				continue;
@@ -145,10 +121,10 @@ public class ExpenseImporter {
 				index++;
 			}
 			
-			imported.add(current);
+			result.getExpenses().add(current);
     	}
     	
-		return imported;
+		return result;
     }
     
     /**
@@ -156,13 +132,27 @@ public class ExpenseImporter {
      * @return
      */
     private List<String> readInputFileByLine() {
-    	
+    	LOG.debug("Reading input file"); //$NON-NLS-1$
+    	final List<String> lines = new ArrayList<>();
+    	BufferedReader in = null;
 		try {
-	        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), encoding));
-	        
-	        final List<String> lines = new ArrayList<>();
-	        
+	        in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));//, encoding));
+
 	        String line = in.readLine();
+	        
+	        // remove any control characters from the first line (such as Byte Order Marks)
+	        if (Character.getType(line.charAt(0)) == Character.FORMAT) {
+	        	int startAt = 1;
+	        	LOG.debug("First char is a format char, will remove until clean..."); //$NON-NLS-1$
+	        	for (int i = startAt; i < line.length(); i++) {
+	        		if (Character.getType(line.charAt(i)) == Character.FORMAT) {
+	        			startAt++;
+	        		} else {
+	        			break;
+	        		}
+	        	}
+	        	line = line.substring(startAt);
+	        }
 	        
 	        while (line != null) {
 	        	lines.add(line);
@@ -170,18 +160,26 @@ public class ExpenseImporter {
 	        }
 	        
 	        in.close();
-	        
-	        return lines;
         } catch (UnsupportedEncodingException e) {
         	LOG.error("Unknown encoding", e); //$NON-NLS-1$
-        	throw new AccountingException("Unknown encoding", e);
+        	result.setError("Unsupported Encoding!");
         } catch (FileNotFoundException e) {
         	LOG.error("File not found", e); //$NON-NLS-1$
-        	throw new AccountingException("File not found", e);
+        	result.setError("File not found");
         } catch (IOException e) {
         	LOG.error("I/O Error", e); //$NON-NLS-1$
-        	throw new AccountingException("I/O Error", e);
+        	result.setError("I/O Error");
+        } finally {
+        	if (in != null) {
+        		try {
+	                in.close();
+                } catch (IOException e) {
+                	LOG.warn("Trouble closing input stream", e); //$NON-NLS-1$
+                }
+        	}
         }
+		
+		return lines;
     }
     
     /**
@@ -191,9 +189,9 @@ public class ExpenseImporter {
      */
     private void parseDate(Expense target, String source) {
     	try {
-	        target.setPaymentDate(FormatUtil.parseDate(source));
-        } catch (AccountingException e) {
-        	LOG.warn("Date could not be parsed: " + source); //$NON-NLS-1$
+    		target.setPaymentDate(dateFormatter.parse(source));
+        } catch (Exception e) {
+        	LOG.warn("Date could not be parsed: " + source, e); //$NON-NLS-1$
         }
     }
     
@@ -210,11 +208,7 @@ public class ExpenseImporter {
      * @param source
      */
     private void parseNetAmount(Expense target, String source) {
-    	try {
-	        target.setNetAmount(FormatUtil.parseDecimalValue(source));
-        } catch (AccountingException e) {
-        	LOG.warn("Error parsing decimal value: " + source, e); //$NON-NLS-1$
-        }
+    	target.setNetAmount(parseDecimal(source));
     }
     
     /**
@@ -224,11 +218,16 @@ public class ExpenseImporter {
      */
     private void parseTaxRate(Expense target, String source) {
     	if (source == null || source.isEmpty()) {
-    		LOG.info("No tax rate specified");
+    		LOG.info("No tax rate specified"); //$NON-NLS-1$
     		return;
     	}
     	
-    	BigDecimal rate = FormatUtil.parseDecimalValue(source);
+    	BigDecimal rate = parseDecimal(source);
+    	if (rate == null) {
+    		LOG.warn(String.format("Tax rate [%s] could not be parsed into a number, skipping!", source)); //$NON-NLS-1$
+    		return;
+    	}
+    	
     	for (TaxRate taxRate : knownTaxRates) {
     		if (rate.compareTo(taxRate.getRate()) == 0) {
     			target.setTaxRate(taxRate);
@@ -237,5 +236,34 @@ public class ExpenseImporter {
     	}
     	
     	LOG.warn("No known tax rate found for: " + source); //$NON-NLS-1$
+    }
+    
+    /**
+     * 
+     * @param source
+     * @return
+     */
+    private BigDecimal parseDecimal(String source) {
+    	try {
+    		int mark = source.lastIndexOf(params.getDecimalMark());
+    		StringBuilder sb = new StringBuilder();
+    		if (mark < 0) { // no fraction digits
+    			sb.append(source.replaceAll(NON_DIGITS, Constants.EMPTY_STRING));
+    		} else {
+    			sb.append(source.substring(0, mark).replaceAll(NON_DIGITS, Constants.EMPTY_STRING));
+    			sb.append(Constants.DOT);
+    			sb.append(source.substring(mark + 1).replaceAll(NON_DIGITS, Constants.EMPTY_STRING));
+    		}
+    		
+    		if (sb.length() < 1) {
+    			LOG.warn(String.format("Not a valid number value: [%s] (sanitized: [%s]", source, sb.toString())); //$NON-NLS-1$
+    			return null;
+    		}
+    		
+    		return new BigDecimal(sb.toString());
+        } catch (AccountingException e) {
+        	LOG.warn("Error parsing decimal value: " + source, e); //$NON-NLS-1$
+        	return null;
+        }
     }
 }

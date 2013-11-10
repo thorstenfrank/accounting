@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.service;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,6 +58,8 @@ import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseImportParams;
+import de.togginho.accounting.model.ExpenseImportResult;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
@@ -1022,11 +1025,12 @@ public class AccountingServiceImpl implements AccountingService {
     
 	/**
      * {@inheritDoc}.
-     * @see AccountingService#importExpenses(String)
+     * @see AccountingService#importExpenses(String, ExpenseImportParams)
      */
     @Override
-    public Collection<Expense> importExpenses(String sourceFile) {
-	    return ExpenseImporter.importExpenses(sourceFile, getCurrentUser().getTaxRates());
+    public ExpenseImportResult importExpenses(String sourceFile, ExpenseImportParams params) {
+    	ExpenseImporter importer = new ExpenseImporter(new File(sourceFile), getCurrentUser().getTaxRates(), params);
+	    return importer.parse();
     }
 
 	/**

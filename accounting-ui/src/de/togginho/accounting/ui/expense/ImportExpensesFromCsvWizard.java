@@ -15,54 +15,22 @@
  */
 package de.togginho.accounting.ui.expense;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.eclipse.jface.dialogs.IDialogPage;
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
-import de.togginho.accounting.AccountingException;
-import de.togginho.accounting.Constants;
-import de.togginho.accounting.model.Expense;
-import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
-import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
  * @author thorsten
  *
  */
 public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard {
-	private static final String[] VALID_EXTENSIONS = new String[]{"*.csv", "*.txt"}; //$NON-NLS-1$ //$NON-NLS-2$
 	
-	private String sourceFile;
-	Collection<Expense> importedExpenses;
-	private Collection<Expense> selectedExpenses;
-	private Label summaryLabel;
-	private Button selectAll;
-	private Button selectNone;
+	private ImportWizardPageOne pageOne;
+	private ImportWizardPageTwo pageTwo;
 	
 	/**
      * {@inheritDoc}.
@@ -80,7 +48,10 @@ public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard
      */
     @Override
     public void addPages() {
-	    addPage(new ChooseFilePage());
+    	pageOne = new ImportWizardPageOne();
+    	pageTwo = new ImportWizardPageTwo();
+	    addPage(pageOne);
+	    addPage(pageTwo);
     }
     
 	/**
@@ -89,210 +60,7 @@ public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard
 	 */
 	@Override
 	public boolean performFinish() {
-		AccountingUI.getAccountingService().saveExpenses(selectedExpenses);
+		//AccountingUI.getAccountingService().saveExpenses(selectedExpenses);
 		return true;
 	}
-
-	/**
-	 * 
-	 * @author thorsten
-	 *
-	 */
-	private class ChooseFilePage extends WizardPage {
-		
-		private CheckboxTableViewer expensesViewer;
-
-		/**
-		 * 
-		 */
-		private ChooseFilePage() {
-			super("ChooseFilePage", //$NON-NLS-1$
-				   Messages.ImportExpensesWizard_title, 
-				   AccountingUI.getImageDescriptor(Messages.iconsExpenseAdd));
-			setMessage(Messages.ImportExpensesWizard_message);
-		}
-		
-		/**
-         * {@inheritDoc}.
-         * @see IDialogPage#createControl(Composite)
-         */
-        @Override
-        public void createControl(Composite parent) {
-	        final Composite composite = new Composite(parent, SWT.NONE);
-	        composite.setLayout(new GridLayout(2, false));
-	        
-	        Composite queryComposite = new Composite(composite, SWT.NONE);
-	        queryComposite.setLayout(new GridLayout(3, false));
-	        GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(queryComposite);
-	        
-	        Label label = new Label(queryComposite, SWT.NONE);
-	        label.setText(Messages.ImportExpensesWizard_sourceFile);
-	        
-	        final Text fileText = new Text(queryComposite, SWT.BORDER);
-	        fileText.setEnabled(false);
-	        WidgetHelper.grabHorizontal(fileText);
-	        
-	        Button browse = new Button(queryComposite, SWT.PUSH);
-	        browse.setText(Messages.labelBrowse);
-	        browse.addSelectionListener(new SelectionAdapter() {
-    			@Override
-    			public void widgetSelected(SelectionEvent e) {
-    				FileDialog fd = new FileDialog(composite.getShell(), SWT.OPEN);
-    				fd.setFilterExtensions(VALID_EXTENSIONS);
-    				fd.setText(Messages.ImportExpensesWizard_fileDialogTitle);
-    				fd.setFileName(fileText.getText());
-    				String selected = fd.open();
-    				if (selected != null) {
-    					fileText.setText(selected);
-    					sourceFile = fileText.getText();
-    					checkSourceFile();
-    				}
-    			}
-			});
-	        
-			Composite expensesComposite = new Composite(composite, SWT.NONE);
-			expensesComposite.setLayout(new GridLayout(1, false));
-			GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(expensesComposite);
-			
-			Table expensesTable = new Table(expensesComposite, SWT.H_SCROLL | SWT.V_SCROLL
-					| SWT.FULL_SELECTION | SWT.MULTI | SWT.CHECK | SWT.BORDER);
-			expensesTable.setHeaderVisible(true);
-			WidgetHelper.grabBoth(expensesTable);
-			
-			TableColumn selectCol = new TableColumn(expensesTable, SWT.LEFT);
-			selectCol.setText(Messages.MultiEditExpensesHandler_apply);
-			selectCol.setWidth(50);
-			
-			TableColumn dateCol = new TableColumn(expensesTable, SWT.LEFT);
-			dateCol.setText(Messages.labelDate);
-			dateCol.setWidth(75);
-			
-			TableColumn descCol = new TableColumn(expensesTable, SWT.LEFT);
-			descCol.setText(Messages.labelDescription);
-			descCol.setWidth(150);
-			
-			TableColumn catCol = new TableColumn(expensesTable, SWT.LEFT);
-			catCol.setText(Messages.labelCategory);
-			catCol.setWidth(150);
-			
-			TableColumn typeCol = new TableColumn(expensesTable, SWT.LEFT);
-			typeCol.setText(Messages.labelExpenseType);
-			typeCol.setWidth(100);
-			
-			TableColumn netCol = new TableColumn(expensesTable, SWT.RIGHT);
-			netCol.setText(Messages.labelNet);
-			netCol.setWidth(100);
-			
-			TableColumn taxCol = new TableColumn(expensesTable, SWT.CENTER);
-			taxCol.setText(Messages.labelTaxes);
-			taxCol.setWidth(75);
-			
-			expensesViewer = new CheckboxTableViewer(expensesTable);
-			expensesViewer.setContentProvider(ArrayContentProvider.getInstance());
-			expensesViewer.setLabelProvider(new ExpensesLabelProvider());
-			expensesViewer.addCheckStateListener(new ICheckStateListener() {
-				
-				@Override
-				public void checkStateChanged(CheckStateChangedEvent event) {
-					Expense expense = (Expense) event.getElement();
-					if (event.getChecked()) {
-						selectedExpenses.add(expense);
-					} else {
-						selectedExpenses.remove(expense);
-					}
-					updatePage();
-				}
-			});
-			
-			Composite summaryComposite = new Composite(composite, SWT.NONE);
-			summaryComposite.setLayout(new GridLayout(1, false));
-			WidgetHelper.grabHorizontal(summaryComposite);
-			summaryLabel = WidgetHelper.createLabel(summaryComposite, Constants.BLANK_STRING);
-			WidgetHelper.grabHorizontal(summaryLabel);
-
-			Composite buttonComposite = new Composite(composite, SWT.NONE);
-			buttonComposite.setLayout(new GridLayout(2, false));
-			GridDataFactory.fillDefaults().grab(true, false).align(SWT.END, SWT.CENTER).applyTo(buttonComposite);
-			
-	        selectAll = new Button(buttonComposite, SWT.PUSH);
-	        selectAll.setEnabled(false);
-	        selectAll.setText(Messages.labelSelectAll);
-	        selectAll.addSelectionListener(new SelectionAdapter() {
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                	expensesViewer.setAllChecked(true);
-                	selectedExpenses = new ArrayList<Expense>(importedExpenses);
-                	updatePage();
-                }
-	        	
-			});
-	        
-	        selectNone = new Button(buttonComposite, SWT.PUSH);
-	        selectNone.setEnabled(false);
-	        selectNone.setText(Messages.labelSelectNone);
-	        selectNone.addSelectionListener(new SelectionAdapter() {
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                	expensesViewer.setAllChecked(false);
-                	selectedExpenses.clear();
-                	updatePage();
-                }
-	        	
-			});
-			
-	        setPageComplete(false);
-	        setControl(composite);
-        }
-		
-        /**
-         * 
-         */
-        private void checkSourceFile() {
-        	File file = new File(sourceFile);
-        	if (!file.exists() || file.isDirectory()) {
-        		setErrorMessage(Messages.ImportExpensesWizard_errorFileNotValid);
-        	} else {
-        		try {
-	                importedExpenses = AccountingUI.getAccountingService().importExpenses(sourceFile);
-	                expensesViewer.setInput(importedExpenses);
-	                expensesViewer.setAllChecked(true);
-	                selectedExpenses = new ArrayList<Expense>(importedExpenses);
-	                updatePage();
-                } catch (AccountingException e) {
-                	setErrorMessage(e.getMessage());
-                }
-        	}
-        	
-
-        }
-        
-        /**
-         * 
-         */
-        private void updatePage() {
-        	int noSelected = 0;
-        	int noAvailable = 0;
-        	
-        	if (importedExpenses != null && importedExpenses.size() > 0) {
-            	selectAll.setEnabled(true);
-            	selectNone.setEnabled(true);
-            	noSelected = selectedExpenses.size();
-            	noAvailable = importedExpenses.size();
-        	} else {
-            	selectAll.setEnabled(false);
-            	selectNone.setEnabled(false);
-        	}
-        	
-        	summaryLabel.setText(Messages.bind(Messages.ImportExpensesWizard_summary, noSelected, noAvailable));
-        	
-        	if (selectedExpenses.isEmpty()) {
-        		setErrorMessage(Messages.MultiEditExpensesHandler_errorNoExpensesSelected);
-        		setPageComplete(false);
-        	} else {
-        		setErrorMessage(null);
-        		setPageComplete(true);
-        	}
-        }
-	}
-	
 }

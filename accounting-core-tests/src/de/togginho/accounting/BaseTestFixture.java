@@ -229,16 +229,16 @@ public abstract class BaseTestFixture {
 		assertEquals(0, new BigDecimal("1200").compareTo(revenue.getTax()));
     }
     
-	/**
-	 * 
-	 * @param category
-	 * @param description
-	 * @param type
-	 * @param netAmount
-	 * @param useTax
-	 * @return
-	 */
-	protected static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax) {
+    /**
+     * 
+     * @param category
+     * @param description
+     * @param type
+     * @param netAmount
+     * @param useTax
+     * @return
+     */
+    protected static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax) {
 		Expense expense = new Expense();
 		expense.setCategory(category);
 		expense.setDescription(description);
@@ -246,7 +246,30 @@ public abstract class BaseTestFixture {
 		expense.setNetAmount(new BigDecimal(netAmount));
 		if (useTax){
 			expense.setTaxRate(getTestUser().getTaxRates().iterator().next());
-		}		
+		}
+		return expense;
+    }
+    
+    /**
+     * 
+     * @param category
+     * @param description
+     * @param type
+     * @param netAmount
+     * @param useTax
+     * @param day
+     * @param month
+     * @param year
+     * @return
+     */
+	protected static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax, int day, int month, int year) {
+		Expense expense = createExpense(category, description, type, netAmount, useTax);		
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, day);
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.YEAR, year);
+		expense.setPaymentDate(cal.getTime());
+		
 		return expense;
 	}
 	
@@ -259,9 +282,9 @@ public abstract class BaseTestFixture {
      */
     protected static Set<Expense> createTestExpenses() {
     	Set<Expense> expenses = new HashSet<Expense>();
-    	expenses.add(createExpense("Capex Category", "Capex Description", ExpenseType.CAPEX, "1000", true)); //$NON-NLS-1$
-    	expenses.add(createExpense("Opex Cat One", "Opex Desc One", ExpenseType.OPEX, "100", true)); //$NON-NLS-1$
-    	expenses.add(createExpense("Opex Cat Two", "Opex Desc Two", ExpenseType.OPEX, "200", false)); //$NON-NLS-1$
+    	expenses.add(createExpense("Capex Category", "Capex Description", ExpenseType.CAPEX, "1000", true, 23, Calendar.FEBRUARY, 2010)); //$NON-NLS-1$
+    	expenses.add(createExpense("Opex Cat One", "Opex Desc One", ExpenseType.OPEX, "100", true, 1, Calendar.JANUARY, 2010)); //$NON-NLS-1$
+    	expenses.add(createExpense("Opex Cat Two", "Opex Desc Two", ExpenseType.OPEX, "200", false, 15, Calendar.JANUARY, 2010)); //$NON-NLS-1$
     	expenses.add(createExpense(null, null, null, "0", false));
     	return expenses;
     }
@@ -289,19 +312,38 @@ public abstract class BaseTestFixture {
 			if ("Capex Description".equals(expense.getDescription())) {
 				assertEquals("Capex Category", expense.getCategory());
 				assertNotNull(expense.getTaxRate());
+				assertDatesMatch(23, Calendar.FEBRUARY, 2010, expense.getPaymentDate());
 				found++;
 			} else if ("Opex Desc One".equals(expense.getDescription())) {
 				assertEquals("Opex Cat One", expense.getCategory());
 				assertNotNull(expense.getTaxRate());
+				assertDatesMatch(1, Calendar.JANUARY, 2010, expense.getPaymentDate());
 				found++;
 			} else if ("Opex Desc Two".equals(expense.getDescription())) {
 				assertEquals("Opex Cat Two", expense.getCategory());
 				assertNull(expense.getTaxRate());
+				assertDatesMatch(15, Calendar.JANUARY, 2010, expense.getPaymentDate());
 				found++;
 			}
 		}
 		
 		assertEquals(3, found);
+    }
+    
+    /**
+     * 
+     * @param dayExpected
+     * @param monthExpected
+     * @param yearExpected
+     * @param actual
+     */
+    protected static void assertDatesMatch(int dayExpected, int monthExpected, int yearExpected, Date actual) {
+    	assertNotNull(actual);
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(actual);
+    	assertEquals(dayExpected, cal.get(Calendar.DAY_OF_MONTH));
+    	assertEquals(monthExpected, cal.get(Calendar.MONTH));
+    	assertEquals(yearExpected, cal.get(Calendar.YEAR));
     }
     
     /**

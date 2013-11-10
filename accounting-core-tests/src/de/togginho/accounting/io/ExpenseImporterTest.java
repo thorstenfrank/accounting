@@ -19,33 +19,59 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Test;
 
 import de.togginho.accounting.BaseTestFixture;
+import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseImportParams;
+import de.togginho.accounting.model.ExpenseImportResult;
 
 /**
  * @author thorsten
  *
  */
 public class ExpenseImporterTest extends BaseTestFixture {
-
-	private static final String TEST_FILE = "ExpenseImportTestData.csv";
 	
 	/**
 	 * Test method for {@link de.togginho.accounting.io.ExpenseImporter#importExpenses(java.lang.String, java.util.Set)}.
 	 */
 	@Test
 	public void testImportExpenses() {
-		Set<Expense> imported = new HashSet<>(ExpenseImporter.importExpenses(new File(TEST_FILE), getTestUser().getTaxRates()));
-		assertEquals(3, imported.size());
-		
-		ExpenseCollection ec = new ExpenseCollection(imported);
-		
-		assertIsTestExpenses(ec);
+		ExpenseImportParams params = new ExpenseImportParams();
+		params.setDateFormatPattern("dd.MM.yyyy");
+		params.setDecimalMark(Constants.COMMA);
+		ExpenseImporter importer = new ExpenseImporter(
+				new File("ExpenseImportTestData.csv"), getTestUser().getTaxRates(), params);
+		parseAndAssert(importer);
 	}
 
+	/**
+	 * 
+	 */
+	@Test
+	public void testImportCustomDate() {
+		ExpenseImportParams params = new ExpenseImportParams();
+		params.setDateFormatPattern("yyyy-MM-dd");
+		params.setDecimalMark(Constants.DOT);		
+		ExpenseImporter importer = new ExpenseImporter(
+				new File("ExpenseImportTestData_customDate.csv"), getTestUser().getTaxRates(), params);
+		parseAndAssert(importer);
+	}
+	
+	/**
+	 * 
+	 * @param importer
+	 */
+	private void parseAndAssert(ExpenseImporter importer) {
+		ExpenseImportResult result = importer.parse();
+		assertEquals(3, result.getExpenses().size());
+		
+		ExpenseCollection ec = new ExpenseCollection(new HashSet<Expense>(result.getExpenses()));
+		
+		assertIsTestExpenses(ec);		
+	}
+	
 }

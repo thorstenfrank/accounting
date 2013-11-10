@@ -24,6 +24,8 @@ import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
+import de.togginho.accounting.model.ExpenseImportParams;
+import de.togginho.accounting.model.ExpenseImportResult;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
@@ -412,5 +414,5 @@ public interface AccountingService {
 	 * 
 	 * @return the imported expenses
 	 */
-	Collection<Expense> importExpenses(String sourceFile);
+	ExpenseImportResult importExpenses(String sourceFile, ExpenseImportParams params);
 }

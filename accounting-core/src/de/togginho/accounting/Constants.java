@@ -37,6 +37,15 @@ public interface Constants {
 	/** The percentage sign (%). */
 	public static final String PERCENTAGE_SIGN = "%";
 	
-	/** And underscore (_). */
+	/** An underscore (_). */
 	public static final String UNDERSCORE = "_";
+	
+	/** A dot (.). */
+	public static final String DOT = ".";
+	
+	/** A comma (,). */
+	public static final String COMMA = ",";
+	
+	/** A semicolon (;). */
+	public static final String SEMICOLON = ";";
 }
