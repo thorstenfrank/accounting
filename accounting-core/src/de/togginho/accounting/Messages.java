@@ -89,6 +89,13 @@ public class Messages extends NLS {
 	public static String TimeFrameType_lastYear;
 	public static String TimeFrameType_custom;
 	
+	public static String DateFormatPattern_DMY;
+	public static String DateFormatPattern_MDY;
+	public static String DateFormatPattern_YMD;
+	public static String DateFormatPattern_MYD;
+	public static String DateFormatPattern_DYM;
+	public static String DateFormatPattern_YDM;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

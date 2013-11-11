@@ -21,9 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -54,8 +53,6 @@ public class ExpenseImporter {
 	private File inputFile;
 	private Set<TaxRate> knownTaxRates;
 	private ExpenseImportParams params;
-	private DateFormat dateFormatter;
-	
 	private ExpenseImportResult result;
 	
 	/**
@@ -66,7 +63,6 @@ public class ExpenseImporter {
     	this.inputFile = inputFile;
     	this.knownTaxRates = knownTaxRates;
     	this.params = params;
-    	this.dateFormatter = new SimpleDateFormat(params.getDateFormatPattern());
     }
     
 	/**
@@ -184,12 +180,58 @@ public class ExpenseImporter {
      * @param rawDate
      */
     private void parseDate(Expense target, String source, StringBuilder warnings) {
-    	try {
-    		target.setPaymentDate(dateFormatter.parse(source));
-        } catch (Exception e) {
-        	LOG.warn("Unparseable date: " + source, e); //$NON-NLS-1$
+    	Calendar cal = Calendar.getInstance();
+    	
+    	String[] parts = source.split(NON_DIGITS);
+    	
+    	if (parts.length != 3) {
+        	LOG.warn("Unparseable date: " + source); //$NON-NLS-1$
         	addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnparseableDate, source));
-        }
+    	}
+    	
+    	int[] values = new int[parts.length];
+    	for (int i=0; i < values.length; i++) {
+    		try {
+				values[i] = Integer.valueOf(parts[i]);
+			} catch (NumberFormatException e) {
+				LOG.error("Cannot parse: " +source, e); //$NON-NLS-1$
+				addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnparseableDate, source));
+			}
+    	}    	
+    	switch (params.getDateFormatPattern()) {
+		case DMY:
+			cal.set(Calendar.DAY_OF_MONTH, values[0]);
+			cal.set(Calendar.MONTH, values[1] - 1);
+			cal.set(Calendar.YEAR, values[2]);
+			break;
+		case DYM:
+			cal.set(Calendar.DAY_OF_MONTH, values[0]);
+			cal.set(Calendar.MONTH, values[2] - 1);
+			cal.set(Calendar.YEAR, values[1]);
+			break;
+		case MDY:
+			cal.set(Calendar.DAY_OF_MONTH, values[1]);
+			cal.set(Calendar.MONTH, values[0] - 1);
+			cal.set(Calendar.YEAR, values[2]);
+			break;
+		case MYD:
+			cal.set(Calendar.DAY_OF_MONTH, values[2]);
+			cal.set(Calendar.MONTH, values[0] - 1);
+			cal.set(Calendar.YEAR, values[1]);
+			break;
+		case YDM:
+			cal.set(Calendar.DAY_OF_MONTH, values[1]);
+			cal.set(Calendar.MONTH, values[2] - 1);
+			cal.set(Calendar.YEAR, values[0]);
+			break;
+		case YMD:
+			cal.set(Calendar.DAY_OF_MONTH, values[2]);
+			cal.set(Calendar.MONTH, values[1] - 1);
+			cal.set(Calendar.YEAR, values[0]);
+			break;
+		}
+    	
+    	target.setPaymentDate(cal.getTime());
     }
     
 	/**
@@ -252,7 +294,7 @@ public class ExpenseImporter {
      */
     private BigDecimal parseDecimal(String source) {
     	try {
-    		int mark = source.lastIndexOf(params.getDecimalMark());
+    		int mark = source.lastIndexOf(params.getDecimalMark().getValue());
     		StringBuilder sb = new StringBuilder();
     		if (mark < 0) { // no fraction digits
     			sb.append(source.replaceAll(NON_DIGITS, Constants.EMPTY_STRING));

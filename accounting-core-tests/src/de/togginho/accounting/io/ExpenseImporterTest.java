@@ -23,10 +23,11 @@ import java.util.HashSet;
 import org.junit.Test;
 
 import de.togginho.accounting.BaseTestFixture;
-import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.ExpenseImportParams;
+import de.togginho.accounting.model.ExpenseImportParams.DateFormatPattern;
+import de.togginho.accounting.model.ExpenseImportParams.DecimalMark;
 import de.togginho.accounting.model.ExpenseImportResult;
 
 /**
@@ -41,8 +42,8 @@ public class ExpenseImporterTest extends BaseTestFixture {
 	@Test
 	public void testImportExpenses() {
 		ExpenseImportParams params = new ExpenseImportParams();
-		params.setDateFormatPattern("dd.MM.yyyy");
-		params.setDecimalMark(Constants.COMMA);
+		params.setDateFormatPattern(DateFormatPattern.DMY);
+		params.setDecimalMark(DecimalMark.COMMA);
 		ExpenseImporter importer = new ExpenseImporter(
 				new File("ExpenseImportTestData.csv"), getTestUser().getTaxRates(), params);
 		parseAndAssert(importer);
@@ -54,8 +55,8 @@ public class ExpenseImporterTest extends BaseTestFixture {
 	@Test
 	public void testImportCustomDate() {
 		ExpenseImportParams params = new ExpenseImportParams();
-		params.setDateFormatPattern("yyyy-MM-dd");
-		params.setDecimalMark(Constants.DOT);		
+		params.setDateFormatPattern(DateFormatPattern.YMD);
+		params.setDecimalMark(DecimalMark.DOT);		
 		ExpenseImporter importer = new ExpenseImporter(
 				new File("ExpenseImportTestData_customDate.csv"), getTestUser().getTaxRates(), params);
 		parseAndAssert(importer);

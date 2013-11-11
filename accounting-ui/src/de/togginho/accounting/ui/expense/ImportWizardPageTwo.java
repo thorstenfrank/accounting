@@ -87,7 +87,7 @@ class ImportWizardPageTwo extends WizardPage {
     			expensesViewer.setInput(importedExpenses);
     			
     			updatePage();
-    			
+    			setErrorMessage(null);
     			if (result.hasWarnings()) {
     				setWarningMessage(Messages.ImportExpensesWizard_warningsExist);
     			} else {

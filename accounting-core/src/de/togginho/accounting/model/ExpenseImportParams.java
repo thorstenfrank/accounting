@@ -18,6 +18,7 @@ package de.togginho.accounting.model;
 import java.io.Serializable;
 
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.Messages;
 import de.togginho.accounting.util.FormatUtil;
 
 /**
@@ -33,19 +34,66 @@ public class ExpenseImportParams implements Serializable {
     
     public static final String DEFAULT_SEPARATOR = Constants.SEMICOLON; //$NON-NLS-1$
     
+    /** 
+     *
+     */
+    public enum DecimalMark {
+    	DOT(Constants.DOT), COMMA(Constants.COMMA);
+    	
+    	private String value;
+    	
+    	private DecimalMark(String value) {
+    		this.value = value;
+    	}
+    	
+    	public String getValue() {
+    		return value;
+    	}
+    }
+    
+    /**
+     *
+     */
+    public enum DateFormatPattern {
+    	
+    	DMY(Messages.DateFormatPattern_DMY), 
+    	MDY(Messages.DateFormatPattern_MDY), 
+    	YMD(Messages.DateFormatPattern_YMD), 
+    	MYD(Messages.DateFormatPattern_MYD), 
+    	DYM(Messages.DateFormatPattern_DYM), 
+    	YDM(Messages.DateFormatPattern_YDM);
+    	
+    	private String translation;
+    	
+    	private DateFormatPattern(String translation) {
+    		this.translation = translation;
+    	}
+
+		/**
+		 * @return the translation
+		 */
+		public String getTranslation() {
+			return translation;
+		}
+    }
+    
     private String separator;
     
-    private String decimalMark;
+    private DecimalMark decimalMark;
     
-    private String dateFormatPattern;
+    private DateFormatPattern dateFormatPattern;
 
 	/**
      * 
      */
     public ExpenseImportParams() {
 	    this.separator = DEFAULT_SEPARATOR;
-	    this.decimalMark = FormatUtil.getDecimalMark();
-	    this.dateFormatPattern = FormatUtil.getDateFormattingPattern();
+	    if (Constants.COMMA.equals(FormatUtil.getDecimalMark())) {
+	    	this.decimalMark = DecimalMark.COMMA;
+	    } else {
+	    	this.decimalMark = DecimalMark.DOT;
+	    }
+	    this.dateFormatPattern = DateFormatPattern.DMY;
     }
 
 	/**
@@ -63,30 +111,30 @@ public class ExpenseImportParams implements Serializable {
     }
 
 	/**
-     * @return the decimalMark
-     */
-    public String getDecimalMark() {
-    	return decimalMark;
-    }
+	 * @return the decimalMark
+	 */
+	public DecimalMark getDecimalMark() {
+		return decimalMark;
+	}
 
 	/**
-     * @param decimalMark the decimalMark to set
-     */
-    public void setDecimalMark(String decimalMark) {
-    	this.decimalMark = decimalMark;
-    }
+	 * @param decimalMark the decimalMark to set
+	 */
+	public void setDecimalMark(DecimalMark decimalMark) {
+		this.decimalMark = decimalMark;
+	}
 
 	/**
-     * @return the dateFormatPattern
-     */
-    public String getDateFormatPattern() {
-    	return dateFormatPattern;
-    }
+	 * @return the dateFormatPattern
+	 */
+	public DateFormatPattern getDateFormatPattern() {
+		return dateFormatPattern;
+	}
 
 	/**
-     * @param dateFormatPattern the dateFormatPattern to set
-     */
-    public void setDateFormatPattern(String dateFormatPattern) {
-    	this.dateFormatPattern = dateFormatPattern;
-    }
+	 * @param dateFormatPattern the dateFormatPattern to set
+	 */
+	public void setDateFormatPattern(DateFormatPattern dateFormatPattern) {
+		this.dateFormatPattern = dateFormatPattern;
+	}
 }

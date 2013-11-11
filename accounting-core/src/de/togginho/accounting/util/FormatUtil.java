@@ -21,7 +21,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -321,27 +320,6 @@ public final class FormatUtil {
      */
     public static Date parseDate(String dateString) {
     	return parseDate(Locale.getDefault(), dateString);
-    }
-    
-    /**
-     * 
-     * @return
-     */
-    public static String getDateFormattingPattern() {
-    	return getDateFormattingPattern(Locale.getDefault());
-    }
-    
-    /**
-     * 
-     * @param locale
-     * @return
-     */
-    public static String getDateFormattingPattern(Locale locale) {
-    	DateFormat format = getDateFormatter(locale);
-    	if (format instanceof SimpleDateFormat) {
-    		return ((SimpleDateFormat) format).toPattern();
-    	}
-    	return null;
     }
     
     /**
