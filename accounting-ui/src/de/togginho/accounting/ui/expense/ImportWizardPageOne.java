@@ -50,6 +50,11 @@ class ImportWizardPageOne extends WizardPage {
 	/**
 	 * 
 	 */
+	private static final String PAGE_NAME = "ImportWizardPageOne"; //$NON-NLS-1$
+
+	/**
+	 * 
+	 */
 	private static final String[] VALID_EXTENSIONS = new String[]{"*.csv", "*.txt"}; //$NON-NLS-1$ //$NON-NLS-2$
 	
 	/**
@@ -62,7 +67,9 @@ class ImportWizardPageOne extends WizardPage {
 	 */
 	private String sourceFile;
 	
-	
+	/**
+	 * 
+	 */
 	private ExpenseImportParams params;
 	
 	/**
@@ -74,17 +81,23 @@ class ImportWizardPageOne extends WizardPage {
 	 * @param pageName
 	 */
 	ImportWizardPageOne() {
-		super("ChooseFilePage", Messages.ImportExpensesWizard_title, AccountingUI.getImageDescriptor(Messages.iconsExpenseAdd));
-		setMessage(Messages.ImportExpensesWizard_message);
+		super(PAGE_NAME, Messages.ImportExpensesWizard_title, AccountingUI.getImageDescriptor(Messages.iconsExpenseAdd));
+		setMessage(Messages.ImportExpensesWizard_pageOne);
 		params = new ExpenseImportParams();
 	}
+	
+	/**
+	 * @return the sourceFile
+	 */
+	protected String getSourceFile() {
+		return sourceFile;
+	}
 
-	@Override
-	public void setVisible(boolean visible) {
-		if (visible == false) {
-			((ImportExpensesFromCsvWizard)getWizard()).runImport(sourceFile, params);			
-		}
-	    super.setVisible(visible);
+	/**
+	 * @return the params
+	 */
+	protected ExpenseImportParams getParams() {
+		return params;
 	}
 	
 	/**
@@ -96,7 +109,7 @@ class ImportWizardPageOne extends WizardPage {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(3, false));
         
-        buildMandatoryInfo(composite);
+        buildFileChooser(composite);
         buildCustomDatePatternSelector(composite);
         buildDecimalSeparator(composite);
         
@@ -108,7 +121,7 @@ class ImportWizardPageOne extends WizardPage {
      * @param parent
      * @return
      */
-    private void buildMandatoryInfo(final Composite parent) {        
+    private void buildFileChooser(final Composite parent) {        
         Label label = new Label(parent, SWT.NONE);
         label.setText(Messages.ImportExpensesWizard_sourceFile);
         
@@ -140,12 +153,13 @@ class ImportWizardPageOne extends WizardPage {
      * @param parent
      */
     private void buildDecimalSeparator(Composite parent) {
-		WidgetHelper.createLabel(parent, "Decimal Separator:");
-		final Combo combo = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(combo);
+		WidgetHelper.createLabel(parent, Messages.ImportExpensesWizard_decimalMark);
+		final Combo combo = new Combo(parent, SWT.READ_ONLY | SWT.DROP_DOWN);		
 		combo.add(Constants.DOT);
 		combo.add(Constants.COMMA);
+		
 		WidgetHelper.createLabel(parent, Constants.EMPTY_STRING);
+		
 		if (Constants.COMMA.equals(params.getDecimalMark())) {
 			combo.select(1);
 		} else {
@@ -172,7 +186,7 @@ class ImportWizardPageOne extends WizardPage {
 	 * @param parent
 	 */
 	private void buildCustomDatePatternSelector(Composite parent) {
-        WidgetHelper.createLabel(parent, "Date Format Pattern:");
+        WidgetHelper.createLabel(parent, Messages.ImportExpensesWizard_datePattern);
         
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(3, false));
@@ -186,10 +200,9 @@ class ImportWizardPageOne extends WizardPage {
 		customDatePatternCombo.add("MM/dd/yyyy");
 		customDatePatternCombo.add("yyyy-MM-dd");
 		
-		customDatePatternCombo.setEnabled(false);
 		customDatePatternCombo.select(0);
 		
-		WidgetHelper.createLabel(composite, "Example:");
+		WidgetHelper.createLabel(composite, Messages.ImportExpensesWizard_example);
 		
 		final Text example = new Text(composite, SWT.BORDER);
 		WidgetHelper.grabHorizontal(example);
@@ -228,7 +241,7 @@ class ImportWizardPageOne extends WizardPage {
 	        return true;
         } catch (Exception e) {
         	example.setText(Constants.EMPTY_STRING);
-        	setErrorMessage(String.format("[%s] is not a valid date formatting pattern!", pattern));
+        	setErrorMessage(Messages.bind(Messages.ImportExpensesWizard_errorInvalidDatePattern, pattern));
         	if (isPageComplete()) {
         		setPageComplete(false);
         	}

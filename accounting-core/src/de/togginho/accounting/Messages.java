@@ -57,6 +57,13 @@ public class Messages extends NLS {
 	public static String AccountingService_errorClientNameExists;
 	public static String AccountingService_errorClientNumberExists;
 	
+	public static String ExpenseImporter_WarningUnparseableAmount;
+	public static String ExpenseImporter_WarningUnparseableDate;
+	public static String ExpenseImporter_WarningUnparseableTaxRate;
+	public static String ExpenseImporter_WarningUnknownTaxRate;
+	public static String ExpenseImporter_WarningInvalidType;
+	public static String ExpenseImporter_ErrorReadingFile;
+	
 	public static String ModelMapper_errorDuringExport;
 	public static String ModelMapper_errorDuringImport;
 		

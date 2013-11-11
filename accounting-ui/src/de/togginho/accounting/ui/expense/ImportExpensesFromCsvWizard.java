@@ -15,14 +15,12 @@
  */
 package de.togginho.accounting.ui.expense;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
-import de.togginho.accounting.model.ExpenseImportParams;
 import de.togginho.accounting.model.ExpenseImportResult;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
@@ -32,8 +30,6 @@ import de.togginho.accounting.ui.Messages;
  *
  */
 public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard {
-	
-	private static final Logger LOG = Logger.getLogger(ImportExpensesFromCsvWizard.class);
 	
 	private ImportWizardPageOne pageOne;
 	private ImportWizardPageTwo pageTwo;
@@ -62,25 +58,38 @@ public class ImportExpensesFromCsvWizard extends Wizard implements IImportWizard
 	    addPage(pageTwo);
     }
     
+    /**
+     * 
+     * {@inheritDoc}
+     * @see org.eclipse.jface.wizard.Wizard#canFinish()
+     */
+    @Override
+    public boolean canFinish() {
+    	return pageTwo.isPageComplete();
+    }
+    
 	/**
 	 * {@inheritDoc}.
 	 * @see Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
-		//AccountingUI.getAccountingService().saveExpenses(selectedExpenses);
-		return true;
+		if (pageTwo.getSelectedExpenses() != null) {
+			AccountingUI.getAccountingService().saveExpenses(pageTwo.getSelectedExpenses());
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
 	 * 
-	 * @param fileName
-	 * @param params
 	 * @return
 	 */
-	protected boolean runImport(String fileName, ExpenseImportParams params) {
-		LOG.debug("Import expenses from " + fileName); //$NON-NLS-1$
-		this.result = AccountingUI.getAccountingService().importExpenses(fileName, params);
-		return result.hasError() == false;
+	protected ExpenseImportResult getImportResult() {
+		if (result == null) {
+			result = AccountingUI.getAccountingService().importExpenses(pageOne.getSourceFile(), pageOne.getParams());
+		}
+		return result;
 	}
 }

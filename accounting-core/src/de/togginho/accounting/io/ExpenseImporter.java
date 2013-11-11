@@ -18,10 +18,8 @@ package de.togginho.accounting.io;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Constants;
+import de.togginho.accounting.Messages;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseImportParams;
 import de.togginho.accounting.model.ExpenseImportResult;
@@ -88,7 +87,7 @@ public class ExpenseImporter {
 			}
 			
 			Expense current = new Expense();
-			
+			StringBuilder warnings = new StringBuilder();
 			int index = 0;
 			for (String part : parts) {
 				part = part.trim();
@@ -96,22 +95,22 @@ public class ExpenseImporter {
 				if (part.length() > 0) {
 					switch (index) {
 					case 0:
-						parseDate(current, part);
+						parseDate(current, part, warnings);
 						break;
 					case 1:
 						current.setDescription(part);
 						break;
 					case 2:
-						parseExpenseType(current, part);
+						parseExpenseType(current, part, warnings);
 						break;
 					case 3:
 						current.setCategory(part);
 						break;
 					case 4:
-						parseNetAmount(current, part);
+						parseNetAmount(current, part, warnings);
 						break;
 					case 5:
-						parseTaxRate(current, part);
+						parseTaxRate(current, part, warnings);
 						break;
 					default:
 						break;
@@ -122,6 +121,9 @@ public class ExpenseImporter {
 			}
 			
 			result.getExpenses().add(current);
+			if (warnings.length() > 0) {
+				result.getWarnings().put(current, warnings.toString());
+			}
     	}
     	
 		return result;
@@ -160,15 +162,9 @@ public class ExpenseImporter {
 	        }
 	        
 	        in.close();
-        } catch (UnsupportedEncodingException e) {
-        	LOG.error("Unknown encoding", e); //$NON-NLS-1$
-        	result.setError("Unsupported Encoding!");
-        } catch (FileNotFoundException e) {
-        	LOG.error("File not found", e); //$NON-NLS-1$
-        	result.setError("File not found");
-        } catch (IOException e) {
-        	LOG.error("I/O Error", e); //$NON-NLS-1$
-        	result.setError("I/O Error");
+        } catch (Exception e) {
+        	LOG.error("Error reading file", e); //$NON-NLS-1$
+        	result.setError(Messages.ExpenseImporter_ErrorReadingFile);
         } finally {
         	if (in != null) {
         		try {
@@ -187,11 +183,12 @@ public class ExpenseImporter {
      * @param expense
      * @param rawDate
      */
-    private void parseDate(Expense target, String source) {
+    private void parseDate(Expense target, String source, StringBuilder warnings) {
     	try {
     		target.setPaymentDate(dateFormatter.parse(source));
         } catch (Exception e) {
-        	LOG.warn("Date could not be parsed: " + source, e); //$NON-NLS-1$
+        	LOG.warn("Unparseable date: " + source, e); //$NON-NLS-1$
+        	addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnparseableDate, source));
         }
     }
     
@@ -199,16 +196,24 @@ public class ExpenseImporter {
      * @param target
      * @param source
      */
-    private void parseExpenseType(Expense target, String source) {
-	    target.setExpenseType(ExpenseType.valueOf(source));
+    private void parseExpenseType(Expense target, String source, StringBuilder warnings) {
+	    try {
+			target.setExpenseType(ExpenseType.valueOf(source));
+		} catch (IllegalArgumentException e) {
+			LOG.warn("Not a valid expense type: " + source, e);
+			addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningInvalidType, source));
+		}
     }
     
 	/**
      * @param target
      * @param source
      */
-    private void parseNetAmount(Expense target, String source) {
+    private void parseNetAmount(Expense target, String source, StringBuilder warnings) {
     	target.setNetAmount(parseDecimal(source));
+    	if (target.getNetAmount() == null) {
+    		addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnparseableAmount, source));
+    	}
     }
     
     /**
@@ -216,7 +221,7 @@ public class ExpenseImporter {
      * @param target
      * @param source
      */
-    private void parseTaxRate(Expense target, String source) {
+    private void parseTaxRate(Expense target, String source, StringBuilder warnings) {
     	if (source == null || source.isEmpty()) {
     		LOG.info("No tax rate specified"); //$NON-NLS-1$
     		return;
@@ -225,6 +230,7 @@ public class ExpenseImporter {
     	BigDecimal rate = parseDecimal(source);
     	if (rate == null) {
     		LOG.warn(String.format("Tax rate [%s] could not be parsed into a number, skipping!", source)); //$NON-NLS-1$
+    		addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnparseableTaxRate, source));
     		return;
     	}
     	
@@ -236,6 +242,7 @@ public class ExpenseImporter {
     	}
     	
     	LOG.warn("No known tax rate found for: " + source); //$NON-NLS-1$
+    	addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnknownTaxRate, source));
     }
     
     /**
@@ -265,5 +272,17 @@ public class ExpenseImporter {
         	LOG.warn("Error parsing decimal value: " + source, e); //$NON-NLS-1$
         	return null;
         }
+    }
+    
+    /**
+     * 
+     * @param warnings
+     * @param message
+     */
+    private void addToWarnings(StringBuilder warnings, String message) {
+    	if (warnings.length() > 0) {
+    		warnings.append("\n");
+    	}
+    	warnings.append(message);
     }
 }

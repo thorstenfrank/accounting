@@ -93,4 +93,13 @@ public class ExpenseImportResult implements Serializable {
     public boolean hasWarnings() {
     	return warnings != null && warnings.size() > 0;
     }
+    
+    /**
+     * 
+     * @param expense
+     * @return
+     */
+    public boolean hasWarningFor(Expense expense) {
+    	return warnings != null && warnings.containsKey(expense);
+    }
 }

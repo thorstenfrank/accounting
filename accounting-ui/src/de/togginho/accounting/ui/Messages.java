@@ -117,11 +117,18 @@ public class Messages extends NLS {
 	public static String FindInvoiceCommand_noresultTitle;
 	
 	public static String ImportExpensesWizard_errorFileNotValid;
+	public static String ImportExpensesWizard_errorInvalidDatePattern;
+	public static String ImportExpensesWizard_errorNoImportResult;
 	public static String ImportExpensesWizard_fileDialogTitle;
-	public static String ImportExpensesWizard_message;
+	public static String ImportExpensesWizard_pageOne;
+	public static String ImportExpensesWizard_pageTwo;
 	public static String ImportExpensesWizard_sourceFile;
 	public static String ImportExpensesWizard_summary;
 	public static String ImportExpensesWizard_title;
+	public static String ImportExpensesWizard_decimalMark;
+	public static String ImportExpensesWizard_datePattern;
+	public static String ImportExpensesWizard_example;
+	public static String ImportExpensesWizard_warningsExist;
 	
 	public static String ImportFromXmlWizard_dataFileLabel;
 	public static String ImportFromXmlWizard_errorDataFileExists;
@@ -325,6 +332,7 @@ public class Messages extends NLS {
 	public static String labelDown;
 	
 	// ICONS
+	public static String iconsError;
 	public static String iconsGroupEdit;
 	public static String iconsUserEdit;
 	public static String iconsExportToPdf;
