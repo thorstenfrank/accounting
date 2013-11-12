@@ -37,6 +37,7 @@ import de.togginho.accounting.model.ExpenseImportParams;
 import de.togginho.accounting.model.ExpenseImportResult;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.TaxRate;
+import de.togginho.accounting.model.ExpenseImportParams.DateFormatPattern;
 
 /**
  * @author thorsten
@@ -197,39 +198,13 @@ public class ExpenseImporter {
 				LOG.error("Cannot parse: " +source, e); //$NON-NLS-1$
 				addToWarnings(warnings, Messages.bind(Messages.ExpenseImporter_WarningUnparseableDate, source));
 			}
-    	}    	
-    	switch (params.getDateFormatPattern()) {
-		case DMY:
-			cal.set(Calendar.DAY_OF_MONTH, values[0]);
-			cal.set(Calendar.MONTH, values[1] - 1);
-			cal.set(Calendar.YEAR, values[2]);
-			break;
-		case DYM:
-			cal.set(Calendar.DAY_OF_MONTH, values[0]);
-			cal.set(Calendar.MONTH, values[2] - 1);
-			cal.set(Calendar.YEAR, values[1]);
-			break;
-		case MDY:
-			cal.set(Calendar.DAY_OF_MONTH, values[1]);
-			cal.set(Calendar.MONTH, values[0] - 1);
-			cal.set(Calendar.YEAR, values[2]);
-			break;
-		case MYD:
-			cal.set(Calendar.DAY_OF_MONTH, values[2]);
-			cal.set(Calendar.MONTH, values[0] - 1);
-			cal.set(Calendar.YEAR, values[1]);
-			break;
-		case YDM:
-			cal.set(Calendar.DAY_OF_MONTH, values[1]);
-			cal.set(Calendar.MONTH, values[2] - 1);
-			cal.set(Calendar.YEAR, values[0]);
-			break;
-		case YMD:
-			cal.set(Calendar.DAY_OF_MONTH, values[2]);
-			cal.set(Calendar.MONTH, values[1] - 1);
-			cal.set(Calendar.YEAR, values[0]);
-			break;
-		}
+    	}
+    	
+    	DateFormatPattern pattern = params.getDateFormatPattern();
+    	
+		cal.set(Calendar.DAY_OF_MONTH, values[pattern.getDayOrder()]);
+		cal.set(Calendar.MONTH, values[pattern.getMonthOrder()] - 1);
+		cal.set(Calendar.YEAR, values[pattern.getYearOrder()]);
     	
     	target.setPaymentDate(cal.getTime());
     }
