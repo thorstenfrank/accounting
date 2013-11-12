@@ -6,7 +6,7 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

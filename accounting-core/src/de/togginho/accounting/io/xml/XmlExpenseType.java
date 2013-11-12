@@ -6,37 +6,40 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for xmlPaymentType.
+ * <p>Java class for xmlExpenseType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="xmlPaymentType">
+ * &lt;simpleType name="xmlExpenseType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="NET"/>
+ *     &lt;enumeration value="OPEX"/>
+ *     &lt;enumeration value="CAPEX"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "xmlPaymentType")
+@XmlType(name = "xmlExpenseType")
 @XmlEnum
-public enum XmlPaymentType {
+public enum XmlExpenseType {
 
-    NET;
+    OPEX,
+    CAPEX,
+    OTHER;
 
     public String value() {
         return name();
     }
 
-    public static XmlPaymentType fromValue(String v) {
+    public static XmlExpenseType fromValue(String v) {
         return valueOf(v);
     }
 

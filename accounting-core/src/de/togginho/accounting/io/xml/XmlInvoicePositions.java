@@ -6,7 +6,7 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for xmlClients complex type.
+ * <p>Java class for xmlInvoicePositions complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="xmlClients">
+ * &lt;complexType name="xmlInvoicePositions">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="client" type="{}xmlClient" maxOccurs="unbounded"/>
+ *         &lt;element name="invoicePosition" type="{}xmlInvoicePosition" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,41 +36,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "xmlClients", propOrder = {
-    "client"
+@XmlType(name = "xmlInvoicePositions", propOrder = {
+    "invoicePosition"
 })
-public class XmlClients {
+public class XmlInvoicePositions {
 
     @XmlElement(required = true)
-    protected List<XmlClient> client;
+    protected List<XmlInvoicePosition> invoicePosition;
 
     /**
-     * Gets the value of the client property.
+     * Gets the value of the invoicePosition property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the client property.
+     * This is why there is not a <CODE>set</CODE> method for the invoicePosition property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getClient().add(newItem);
+     *    getInvoicePosition().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlClient }
+     * {@link XmlInvoicePosition }
      * 
      * 
      */
-    public List<XmlClient> getClient() {
-        if (client == null) {
-            client = new ArrayList<XmlClient>();
+    public List<XmlInvoicePosition> getInvoicePosition() {
+        if (invoicePosition == null) {
+            invoicePosition = new ArrayList<XmlInvoicePosition>();
         }
-        return this.client;
+        return this.invoicePosition;
     }
 
 }

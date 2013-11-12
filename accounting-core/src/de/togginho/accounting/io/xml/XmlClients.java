@@ -6,7 +6,7 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for xmlInvoices complex type.
+ * <p>Java class for xmlClients complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="xmlInvoices">
+ * &lt;complexType name="xmlClients">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="invoice" type="{}xmlInvoice" maxOccurs="unbounded"/>
+ *         &lt;element name="client" type="{}xmlClient" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,41 +36,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "xmlInvoices", propOrder = {
-    "invoice"
+@XmlType(name = "xmlClients", propOrder = {
+    "client"
 })
-public class XmlInvoices {
+public class XmlClients {
 
     @XmlElement(required = true)
-    protected List<XmlInvoice> invoice;
+    protected List<XmlClient> client;
 
     /**
-     * Gets the value of the invoice property.
+     * Gets the value of the client property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the invoice property.
+     * This is why there is not a <CODE>set</CODE> method for the client property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getInvoice().add(newItem);
+     *    getClient().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlInvoice }
+     * {@link XmlClient }
      * 
      * 
      */
-    public List<XmlInvoice> getInvoice() {
-        if (invoice == null) {
-            invoice = new ArrayList<XmlInvoice>();
+    public List<XmlClient> getClient() {
+        if (client == null) {
+            client = new ArrayList<XmlClient>();
         }
-        return this.invoice;
+        return this.client;
     }
 
 }

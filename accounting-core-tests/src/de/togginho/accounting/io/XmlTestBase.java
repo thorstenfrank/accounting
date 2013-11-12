@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.xml;
+package de.togginho.accounting.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +28,16 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import de.togginho.accounting.BaseTestFixture;
+import de.togginho.accounting.io.xml.XmlAddress;
+import de.togginho.accounting.io.xml.XmlBankAccount;
+import de.togginho.accounting.io.xml.XmlClient;
+import de.togginho.accounting.io.xml.XmlExpense;
+import de.togginho.accounting.io.xml.XmlInvoice;
+import de.togginho.accounting.io.xml.XmlInvoicePosition;
+import de.togginho.accounting.io.xml.XmlPaymentTerms;
+import de.togginho.accounting.io.xml.XmlPaymentType;
+import de.togginho.accounting.io.xml.XmlTaxRate;
+import de.togginho.accounting.io.xml.XmlUser;
 import de.togginho.accounting.model.Address;
 import de.togginho.accounting.model.BankAccount;
 import de.togginho.accounting.model.Client;
@@ -38,16 +48,6 @@ import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.TaxRate;
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.xml.generated.XmlAddress;
-import de.togginho.accounting.xml.generated.XmlBankAccount;
-import de.togginho.accounting.xml.generated.XmlClient;
-import de.togginho.accounting.xml.generated.XmlExpense;
-import de.togginho.accounting.xml.generated.XmlInvoice;
-import de.togginho.accounting.xml.generated.XmlInvoicePosition;
-import de.togginho.accounting.xml.generated.XmlPaymentTerms;
-import de.togginho.accounting.xml.generated.XmlPaymentType;
-import de.togginho.accounting.xml.generated.XmlTaxRate;
-import de.togginho.accounting.xml.generated.XmlUser;
 
 /**
  * @author thorsten

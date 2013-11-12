@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.xml;
+package de.togginho.accounting.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,11 +28,14 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
+import de.togginho.accounting.io.XmlImportResult;
+import de.togginho.accounting.io.AccountingXmlImportExport;
+import de.togginho.accounting.io.XmlToModel;
+import de.togginho.accounting.io.xml.XmlExpense;
+import de.togginho.accounting.io.xml.XmlUser;
 import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
-import de.togginho.accounting.xml.generated.XmlExpense;
-import de.togginho.accounting.xml.generated.XmlUser;
 
 /**
  * @author thorsten
@@ -44,11 +47,11 @@ public class XmlToModelTest extends XmlTestBase {
 	private static final String TEST_FILE_NAME = "XmlMappingTestFile.xml";
 	
 	/**
-	 * Test method for {@link ModelMapper#xmlToModel(String)}.
+	 * Test method for {@link AccountingXmlImportExport#importModelFromXml(String)}.
 	 */
 	@Test
 	public void testModelMapper() {
-		ImportResult result = ModelMapper.xmlToModel(TEST_FILE_NAME);
+		XmlImportResult result = AccountingXmlImportExport.importModelFromXml(TEST_FILE_NAME);
 		assertNotNull(result);
 		assertNotNull(result.getImportedUser());
 		assertNotNull(result.getImportedClients());
@@ -62,7 +65,7 @@ public class XmlToModelTest extends XmlTestBase {
 	@Test
 	public void testConvert() {
         try {
-			Unmarshaller unmarshaller = JAXBContext.newInstance(ModelMapper.JAXB_CONTEXT).createUnmarshaller();
+			Unmarshaller unmarshaller = JAXBContext.newInstance(AccountingXmlImportExport.JAXB_CONTEXT).createUnmarshaller();
 			final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(TEST_FILE_NAME));
 			// USER
 			assertUserSame(getTestUser(), xmlUser);

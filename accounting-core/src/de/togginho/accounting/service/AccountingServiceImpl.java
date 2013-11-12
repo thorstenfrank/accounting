@@ -54,6 +54,8 @@ import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.io.ExpenseImporter;
+import de.togginho.accounting.io.XmlImportResult;
+import de.togginho.accounting.io.AccountingXmlImportExport;
 import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
@@ -71,8 +73,6 @@ import de.togginho.accounting.model.User;
 import de.togginho.accounting.model.internal.InvoiceSequencer;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
-import de.togginho.accounting.xml.ImportResult;
-import de.togginho.accounting.xml.ModelMapper;
 
 /**
  * Implementation of the {@link AccountingService} that used DB4o for
@@ -952,7 +952,7 @@ public class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public void exportModelToXml(String targetFileName) {
-    	ModelMapper.modelToXml(getCurrentUser(), getClients(), findInvoices(), getExpensesAsSet(null), targetFileName);
+    	AccountingXmlImportExport.exportModelToXml(getCurrentUser(), getClients(), findInvoices(), getExpensesAsSet(null), targetFileName);
     }
     
     /**
@@ -968,7 +968,7 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	BUSINESS_LOG.info(String.format("Importing data from XML file [%s] to DB file [%s]", sourceXmlFile, dbFileLocation)); //$NON-NLS-1$
     	LOG.info("Importing from " + sourceXmlFile); //$NON-NLS-1$
-    	ImportResult importResult = ModelMapper.xmlToModel(sourceXmlFile);
+    	XmlImportResult importResult = AccountingXmlImportExport.importModelFromXml(sourceXmlFile);
     	
     	final String userName = importResult.getImportedUser().getName();
     	

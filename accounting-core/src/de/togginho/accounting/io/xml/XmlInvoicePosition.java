@@ -6,7 +6,7 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;

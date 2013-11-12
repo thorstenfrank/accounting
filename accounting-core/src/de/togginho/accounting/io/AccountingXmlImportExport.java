@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.xml;
+package de.togginho.accounting.io;
 
 import java.io.File;
 import java.util.Set;
@@ -26,29 +26,29 @@ import org.apache.log4j.Logger;
 
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Messages;
+import de.togginho.accounting.io.xml.XmlUser;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.xml.generated.XmlUser;
 
 /**
  * @author thorsten
  *
  */
-public class ModelMapper {
+public class AccountingXmlImportExport {
 
-	private static final Logger LOG = Logger.getLogger(ModelMapper.class);
+	private static final Logger LOG = Logger.getLogger(AccountingXmlImportExport.class);
 	
 	/**
 	 * 
 	 */
-	protected static final String JAXB_CONTEXT = "de.togginho.accounting.xml.generated";	
+	protected static final String JAXB_CONTEXT = "de.togginho.accounting.io.xml";	
 	
 	/**
 	 * 
 	 */
-	private ModelMapper() {
+	private AccountingXmlImportExport() {
 		
 	}
 	
@@ -59,7 +59,7 @@ public class ModelMapper {
 	 * @param expenses
 	 * @param targetFile
 	 */
-	public static void modelToXml(
+	public static void exportModelToXml(
 			User user, Set<Client> clients, Set<Invoice> invoices, Set<Expense> expenses, String targetFile) {
 		try {
 	        Marshaller marshaller = JAXBContext.newInstance(JAXB_CONTEXT).createMarshaller();
@@ -80,9 +80,9 @@ public class ModelMapper {
 	 * @param fileName
 	 * @return
 	 */
-	public static ImportResult xmlToModel(String fileName) {
+	public static XmlImportResult importModelFromXml(String fileName) {
 		try {
-			final ImportResult importResult = new ImportResult();
+			final XmlImportResult importResult = new XmlImportResult();
 			LOG.info("Importing model data from file " + fileName); //$NON-NLS-1$
 	        Unmarshaller unmarshaller = JAXBContext.newInstance(JAXB_CONTEXT).createUnmarshaller();
 	        final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(fileName));

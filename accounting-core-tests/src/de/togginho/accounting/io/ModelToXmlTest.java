@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.xml;
+package de.togginho.accounting.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,14 +28,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.togginho.accounting.io.AccountingXmlImportExport;
+import de.togginho.accounting.io.ModelToXml;
+import de.togginho.accounting.io.xml.XmlExpense;
+import de.togginho.accounting.io.xml.XmlUser;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.DepreciationMethod;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.User;
-import de.togginho.accounting.xml.generated.XmlExpense;
-import de.togginho.accounting.xml.generated.XmlUser;
 
 /**
  * @author thorsten
@@ -72,7 +74,7 @@ public class ModelToXmlTest extends XmlTestBase {
 	
 	/**
 	 * Test method for {@link ModelToXml#convertToXml(User, java.util.Set, java.util.Set)} and
-	 * {@link ModelMapper#modelToXml(User, Set, Set, String)}.
+	 * {@link AccountingXmlImportExport#modelToXml(User, Set, Set, String)}.
 	 */
 	@Test
 	public void testConvertToXml() {
@@ -123,7 +125,7 @@ public class ModelToXmlTest extends XmlTestBase {
 		}
 		
 		// test writing to XML
-		ModelMapper.modelToXml(user, clients, invoices, expenses, XML_TEST_FILE);
+		AccountingXmlImportExport.exportModelToXml(user, clients, invoices, expenses, XML_TEST_FILE);
 		File file = new File(XML_TEST_FILE);
 		assertTrue(file.exists());
 	}

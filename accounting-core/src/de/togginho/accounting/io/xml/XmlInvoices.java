@@ -6,7 +6,7 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for xmlTaxRates complex type.
+ * <p>Java class for xmlInvoices complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="xmlTaxRates">
+ * &lt;complexType name="xmlInvoices">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="taxRate" type="{}xmlTaxRate" maxOccurs="unbounded"/>
+ *         &lt;element name="invoice" type="{}xmlInvoice" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,41 +36,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "xmlTaxRates", propOrder = {
-    "taxRate"
+@XmlType(name = "xmlInvoices", propOrder = {
+    "invoice"
 })
-public class XmlTaxRates {
+public class XmlInvoices {
 
     @XmlElement(required = true)
-    protected List<XmlTaxRate> taxRate;
+    protected List<XmlInvoice> invoice;
 
     /**
-     * Gets the value of the taxRate property.
+     * Gets the value of the invoice property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the taxRate property.
+     * This is why there is not a <CODE>set</CODE> method for the invoice property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getTaxRate().add(newItem);
+     *    getInvoice().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlTaxRate }
+     * {@link XmlInvoice }
      * 
      * 
      */
-    public List<XmlTaxRate> getTaxRate() {
-        if (taxRate == null) {
-            taxRate = new ArrayList<XmlTaxRate>();
+    public List<XmlInvoice> getInvoice() {
+        if (invoice == null) {
+            invoice = new ArrayList<XmlInvoice>();
         }
-        return this.taxRate;
+        return this.invoice;
     }
 
 }

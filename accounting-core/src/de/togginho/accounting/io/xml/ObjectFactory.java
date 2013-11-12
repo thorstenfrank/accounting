@@ -6,7 +6,7 @@
 //
 
 
-package de.togginho.accounting.xml.generated;
+package de.togginho.accounting.io.xml;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -17,7 +17,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the de.togginho.accounting.xml.generated package. 
+ * generated in the de.togginho.accounting.io.xml package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -34,7 +34,7 @@ public class ObjectFactory {
     private final static QName _User_QNAME = new QName("", "user");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: de.togginho.accounting.xml.generated
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: de.togginho.accounting.io.xml
      * 
      */
     public ObjectFactory() {

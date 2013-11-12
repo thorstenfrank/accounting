@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.togginho.accounting.xml;
+package de.togginho.accounting.io;
 
 import java.util.Set;
 
@@ -26,7 +26,7 @@ import de.togginho.accounting.model.User;
  * @author tfrank1
  *
  */
-public class ImportResult {
+public class XmlImportResult {
 
 	private User importedUser;
 	
