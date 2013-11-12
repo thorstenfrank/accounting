@@ -28,9 +28,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
-import de.togginho.accounting.io.XmlImportResult;
-import de.togginho.accounting.io.AccountingXmlImportExport;
-import de.togginho.accounting.io.XmlToModel;
 import de.togginho.accounting.io.xml.XmlExpense;
 import de.togginho.accounting.io.xml.XmlUser;
 import de.togginho.accounting.model.DepreciationMethod;
@@ -51,12 +48,12 @@ public class XmlToModelTest extends XmlTestBase {
 	 */
 	@Test
 	public void testModelMapper() {
-		XmlImportResult result = AccountingXmlImportExport.importModelFromXml(TEST_FILE_NAME);
+		XmlModelDTO result = AccountingXmlImportExport.importModelFromXml(TEST_FILE_NAME);
 		assertNotNull(result);
-		assertNotNull(result.getImportedUser());
-		assertNotNull(result.getImportedClients());
-		assertNotNull(result.getImportedInvoices());
-		assertNotNull(result.getImportedExpenses());
+		assertNotNull(result.getUser());
+		assertNotNull(result.getClients());
+		assertNotNull(result.getInvoices());
+		assertNotNull(result.getExpenses());
 	}
 	
 	/**

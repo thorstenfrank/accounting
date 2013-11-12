@@ -16,7 +16,6 @@
 package de.togginho.accounting.io;
 
 import java.io.File;
-import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -27,10 +26,6 @@ import org.apache.log4j.Logger;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.Messages;
 import de.togginho.accounting.io.xml.XmlUser;
-import de.togginho.accounting.model.Client;
-import de.togginho.accounting.model.Expense;
-import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.model.User;
 
 /**
  * @author thorsten
@@ -54,20 +49,17 @@ public class AccountingXmlImportExport {
 	
 	/**
 	 * 
-	 * @param user
-	 * @param invoices
-	 * @param expenses
+	 * @param model
 	 * @param targetFile
 	 */
-	public static void exportModelToXml(
-			User user, Set<Client> clients, Set<Invoice> invoices, Set<Expense> expenses, String targetFile) {
+	public static void exportModelToXml(XmlModelDTO model, String targetFile) {
 		try {
 	        Marshaller marshaller = JAXBContext.newInstance(JAXB_CONTEXT).createMarshaller();
 	        
 	        marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
 	        
 	        LOG.info("Exporting model data to file " + targetFile); //$NON-NLS-1$
-	        marshaller.marshal(new ModelToXml().convertToXml(user, clients, invoices, expenses), new File(targetFile));
+	        marshaller.marshal(new ModelToXml().convertToXml(model), new File(targetFile));
 	        LOG.info("export finished successfully"); //$NON-NLS-1$
         } catch (Exception e) {
         	LOG.error("Error exporting data to xml", e); //$NON-NLS-1$
@@ -80,21 +72,20 @@ public class AccountingXmlImportExport {
 	 * @param fileName
 	 * @return
 	 */
-	public static XmlImportResult importModelFromXml(String fileName) {
+	public static XmlModelDTO importModelFromXml(String fileName) {
 		try {
-			final XmlImportResult importResult = new XmlImportResult();
 			LOG.info("Importing model data from file " + fileName); //$NON-NLS-1$
 	        Unmarshaller unmarshaller = JAXBContext.newInstance(JAXB_CONTEXT).createUnmarshaller();
 	        final XmlUser xmlUser = (XmlUser) unmarshaller.unmarshal(new File(fileName));
 	        
 	        XmlToModel xmlToModel = new XmlToModel();
-	        xmlToModel.convert(xmlUser);
-	        importResult.setImportedUser(xmlToModel.getUser());
-	        importResult.setImportedClients(xmlToModel.getClients());
-	        importResult.setImportedInvoices(xmlToModel.getInvoices());
-	        importResult.setImportedExpenses(xmlToModel.getExpenses());
-	        LOG.info("import finished successfully"); //$NON-NLS-1$
-	        return importResult;
+	        XmlModelDTO model = xmlToModel.convert(xmlUser);
+	        if (model != null && model.getUser() != null) {
+	        	LOG.info("import finished successfully"); //$NON-NLS-1$
+	        } else {
+	        	LOG.warn("No proper user found in XML model!"); //$NON-NLS-1$
+	        }
+	        return model;
         } catch (Exception e) {
         	LOG.error("Error importing data from XML", e); //$NON-NLS-1$
 	        throw new AccountingException(Messages.ModelMapper_errorDuringImport, e);

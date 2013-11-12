@@ -81,7 +81,9 @@ class ModelToXml {
 	 * @param invoices
 	 * @return
 	 */
-	protected XmlUser convertToXml(User user, Set<Client> clients, Set<Invoice> invoices, Set<Expense> expenses) {
+	protected XmlUser convertToXml(XmlModelDTO model) {
+		User user = model.getUser();
+		
 		LOG.info("Exporting User to XML: " + user.getName()); //$NON-NLS-1$
 		
 		xmlUser = new XmlUser();
@@ -95,23 +97,23 @@ class ModelToXml {
 			xmlUser.setAddress(convertAddress(user.getAddress()));
 		}
 		
-		convertClients(clients);
+		convertClients(model.getClients());
 		
 		convertTaxRates(user);
 		
-		if (invoices != null && !invoices.isEmpty()) {
+		if (model.getInvoices() != null && !model.getInvoices().isEmpty()) {
 			LOG.debug("Converting invoices..."); //$NON-NLS-1$
         	XmlInvoices xmlInvoices = new XmlInvoices();
         	xmlUser.setInvoices(xmlInvoices);
         	
-        	for (Invoice invoice : invoices) {
+        	for (Invoice invoice : model.getInvoices()) {
         		xmlInvoices.getInvoice().add(convertInvoice(invoice));
         	}
 		} else {
 			LOG.debug("No invoices to convert!"); //$NON-NLS-1$
 		}
 		
-		convertExpenses(expenses);
+		convertExpenses(model.getExpenses());
 		
 		return xmlUser;
 	}

@@ -53,9 +53,9 @@ import de.togginho.accounting.AccountingContextFactory;
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.Messages;
-import de.togginho.accounting.io.ExpenseImporter;
-import de.togginho.accounting.io.XmlImportResult;
 import de.togginho.accounting.io.AccountingXmlImportExport;
+import de.togginho.accounting.io.ExpenseImporter;
+import de.togginho.accounting.io.XmlModelDTO;
 import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.model.Expense;
@@ -952,7 +952,12 @@ public class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public void exportModelToXml(String targetFileName) {
-    	AccountingXmlImportExport.exportModelToXml(getCurrentUser(), getClients(), findInvoices(), getExpensesAsSet(null), targetFileName);
+    	XmlModelDTO model = new XmlModelDTO();
+    	model.setUser(getCurrentUser());
+    	model.setClients(getClients());
+    	model.setInvoices(findInvoices());
+    	model.setExpenses(getExpensesAsSet(null));
+    	AccountingXmlImportExport.exportModelToXml(model, targetFileName);
     }
     
     /**
@@ -968,9 +973,9 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	BUSINESS_LOG.info(String.format("Importing data from XML file [%s] to DB file [%s]", sourceXmlFile, dbFileLocation)); //$NON-NLS-1$
     	LOG.info("Importing from " + sourceXmlFile); //$NON-NLS-1$
-    	XmlImportResult importResult = AccountingXmlImportExport.importModelFromXml(sourceXmlFile);
+    	XmlModelDTO importResult = AccountingXmlImportExport.importModelFromXml(sourceXmlFile);
     	
-    	final String userName = importResult.getImportedUser().getName();
+    	final String userName = importResult.getUser().getName();
     	
     	LOG.info("Building context for imported user " + userName); //$NON-NLS-1$
     	this.context = AccountingContextFactory.buildContext(userName, dbFileLocation);
@@ -979,11 +984,11 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	// save all entities imported from XML...
     	LOG.info("Now saving imported user to DB file");
-    	objectContainer.store(importResult.getImportedUser());
+    	objectContainer.store(importResult.getUser());
     	
-    	BUSINESS_LOG.info("Saved imported user " + importResult.getImportedUser().getName()); //$NON-NLS-1$
+    	BUSINESS_LOG.info("Saved imported user " + importResult.getUser().getName()); //$NON-NLS-1$
     	
-    	final Set<Client> importedClients = importResult.getImportedClients();
+    	final Set<Client> importedClients = importResult.getClients();
     	if (importedClients != null && !importedClients.isEmpty()) {
     		LOG.info("Now saving imported clients: " + importedClients.size()); //$NON-NLS-1$
     		for (Client client : importedClients) {
@@ -994,7 +999,7 @@ public class AccountingServiceImpl implements AccountingService {
     		LOG.info("No clients to import"); //$NON-NLS-1$
     	}
     	
-    	final Set<Invoice> importedInvoices = importResult.getImportedInvoices();
+    	final Set<Invoice> importedInvoices = importResult.getInvoices();
     	if (importedInvoices != null && !importedInvoices.isEmpty()) {
     		LOG.info("Now saving imported Invoices to DB file: " + importedInvoices.size()); //$NON-NLS-1$
     		for (Invoice invoice : importedInvoices) {
@@ -1005,7 +1010,7 @@ public class AccountingServiceImpl implements AccountingService {
     		LOG.info("No invoices to import"); //$NON-NLS-1$
     	}
     	
-    	final Set<Expense> importedExpenses = importResult.getImportedExpenses();
+    	final Set<Expense> importedExpenses = importResult.getExpenses();
     	if (importedExpenses != null && !importedExpenses.isEmpty()) {
     		LOG.info("Now saving imported Expenses to DB file: " + importedExpenses.size()); //$NON-NLS-1$
     		for (Expense expense : importedExpenses) {

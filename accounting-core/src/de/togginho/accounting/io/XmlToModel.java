@@ -30,8 +30,10 @@ import de.togginho.accounting.io.xml.XmlBankAccount;
 import de.togginho.accounting.io.xml.XmlClient;
 import de.togginho.accounting.io.xml.XmlClients;
 import de.togginho.accounting.io.xml.XmlExpense;
+import de.togginho.accounting.io.xml.XmlExpenses;
 import de.togginho.accounting.io.xml.XmlInvoice;
 import de.togginho.accounting.io.xml.XmlInvoicePosition;
+import de.togginho.accounting.io.xml.XmlInvoices;
 import de.togginho.accounting.io.xml.XmlPaymentTerms;
 import de.togginho.accounting.io.xml.XmlTaxRate;
 import de.togginho.accounting.io.xml.XmlTaxRates;
@@ -60,20 +62,7 @@ class XmlToModel {
 	 */
 	private static final Logger LOG = Logger.getLogger(XmlToModel.class);
 	
-	/** Source XML data. */
-	private XmlUser xmlUser;
-	
-	/** Target user object. */
-	private User user;
-	
-	/** Target clients. */
-	private Set<Client> clients;
-	
-	/** Target invoices. */
-	private Set<Invoice> invoices;
-	
-	/** Target expenses. */
-	private Set<Expense> expenses;
+	private XmlModelDTO model;
 	
 	/**
 	 * 
@@ -86,86 +75,83 @@ class XmlToModel {
 	 * 
 	 * @param xmlUser
 	 */
-    protected void convert(XmlUser xmlUser) {
+    protected XmlModelDTO convert(XmlUser xmlUser) {
     	LOG.info("Converting data imported from XML..."); //$NON-NLS-1$
-    	this.xmlUser = xmlUser;
-
+    	
+    	this.model = new XmlModelDTO();
+    	
     	// convert the user first
-    	convertUser();
+    	model.setUser(convertUser(xmlUser));
     	
     	// then the clients
-    	convertClients();
+    	model.setClients(convertClients(xmlUser.getClients()));
     	
     	// the invoices
-    	convertInvoices();
+    	model.setInvoices(convertInvoices(xmlUser.getInvoices()));
     	
     	// and the expenses
-    	convertExpenses();
+    	model.setExpenses(convertExpenses(xmlUser.getExpenses()));
+    	
+    	return model;
     }
-	
-	/**
-     * @return the user
-     */
-    User getUser() {
-    	return user;
-    }
-
-    /**
-     * 
-     * @return the clients
-     */
-    Set<Client> getClients() {
-    	return clients;
-    }
-    
-	/**
-     * @return the invoices
-     */
-    Set<Invoice> getInvoices() {
-    	return invoices;
-    }
-    
-	/**
-	 * @return the expenses
-	 */
-	Set<Expense> getExpenses() {
-		return expenses;
-	}
 
 	/**
 	 * 
 	 */
-	private void convertUser() {
+	private User convertUser(XmlUser xmlUser) {
 		LOG.debug("Converting user " + xmlUser.getName()); //$NON-NLS-1$
-		user = new User();
+		User user = new User();
 		user.setName(xmlUser.getName());
 		user.setDescription(xmlUser.getDescription());
 		user.setTaxNumber(xmlUser.getTaxId());
 		
-		convertBankAccount();
-		
+		user.setBankAccount(convertBankAccount(xmlUser.getBankAccount()));
 		if (xmlUser.getAddress() != null) {
 			user.setAddress(convertAddress(xmlUser.getAddress()));
 		}
-		
-		convertTaxRates();
+		user.setTaxRates(convertTaxRates(xmlUser.getTaxRates()));
+		return user;
 	}
 
 	/**
 	 * 
 	 */
-	private void convertInvoices() {
-		if (xmlUser.getInvoices() != null) {
+	private Set<Client> convertClients(XmlClients xmlClients) {
+		Set<Client> clients = new HashSet<Client>();
+		if (xmlClients != null && !xmlClients.getClient().isEmpty()) {
+			LOG.debug("Converting clients..."); //$NON-NLS-1$
+			clients = new HashSet<Client>();
+			for (XmlClient xmlClient : xmlClients.getClient()) {
+				LOG.debug("Converting client " + xmlClient.getName()); //$NON-NLS-1$
+				Client client = new Client();
+				client.setName(xmlClient.getName());
+				client.setClientNumber(xmlClient.getClientNumber());
+				client.setAddress(convertAddress(xmlClient.getAddress()));
+				client.setDefaultPaymentTerms(convertPaymentTerms(xmlClient.getDefaultPaymentTerms()));
+				clients.add(client);
+			}
+		} else {
+			LOG.debug("No clients to convert"); //$NON-NLS-1$
+		}
+		return clients;
+    }
+	
+	/**
+	 * 
+	 */
+	private Set<Invoice> convertInvoices(XmlInvoices xmlInvoices) {
+		Set<Invoice> invoices = null;
+		if (xmlInvoices != null) {
 			LOG.debug("Converting invoices..."); //$NON-NLS-1$
 			invoices = new HashSet<Invoice>();
 			
-			for (XmlInvoice xmlInvoice : xmlUser.getInvoices().getInvoice()) {
+			for (XmlInvoice xmlInvoice : xmlInvoices.getInvoice()) {
 				LOG.debug("Converting invoice " + xmlInvoice.getNumber()); //$NON-NLS-1$
 				Invoice invoice = new Invoice();
 				invoices.add(invoice);
 				invoice.setNumber(xmlInvoice.getNumber());
 				invoice.setClient(findOrCreateClient(xmlInvoice.getClient()));
-				invoice.setUser(user);
+				invoice.setUser(this.model.getUser());
 				
 				invoice.setCancelledDate(convertDate(xmlInvoice.getCancelledDate()));
 				invoice.setCreationDate(convertDate(xmlInvoice.getCreationDate()));
@@ -192,18 +178,20 @@ class XmlToModel {
 		} else {
 			LOG.debug("No invoices to convert."); //$NON-NLS-1$
 		}
+		return invoices;
 	}
 	
 	/**
 	 * 
 	 */
-	private void convertExpenses() {
-		if (xmlUser.getExpenses() != null) {
+	private Set<Expense> convertExpenses(XmlExpenses xmlExpenses) {
+		Set<Expense> expenses = null;
+		if (xmlExpenses != null) {
 			LOG.debug("Converting expenses..."); //$NON-NLS-1$
-			this.expenses = new HashSet<Expense>();
+			expenses = new HashSet<Expense>();
 			
-			for (XmlExpense xmlExpense : xmlUser.getExpenses().getExpense()) {
-				LOG.debug("Converting expense " + xmlExpense.getDescription());
+			for (XmlExpense xmlExpense : xmlExpenses.getExpense()) {
+				LOG.debug("Converting expense " + xmlExpense.getDescription()); //$NON-NLS-1$
 				Expense expense = new Expense();
 				expense.setDescription(xmlExpense.getDescription());
 				if (xmlExpense.getExpenseType() != null) {
@@ -217,12 +205,13 @@ class XmlToModel {
 					expense.setDepreciationMethod(DepreciationMethod.valueOf(xmlExpense.getDepreciationMethod().name()));
 				}
 				
-				this.expenses.add(expense);
+				expenses.add(expense);
 			}
 			
 		} else {
 			LOG.debug("No expenses to convert."); //$NON-NLS-1$
 		}
+		return expenses;
 	}
 	
 	/**
@@ -234,7 +223,7 @@ class XmlToModel {
 		if (xmlTaxRate == null) {
 			return null;
 		}
-		for (TaxRate existing : user.getTaxRates()) {
+		for (TaxRate existing : model.getUser().getTaxRates()) {
 			if (existing.getLongName().equals(xmlTaxRate.getName()) 
 				&& existing.getShortName().equals(xmlTaxRate.getAbbreviation()) 
 			    && existing.getRate().equals(xmlTaxRate.getRate())) {
@@ -244,7 +233,7 @@ class XmlToModel {
 		
 		// wasn't found in existing, add
 		TaxRate taxRate = convertTaxRate(xmlTaxRate);
-		user.getTaxRates().add(taxRate);
+		model.getUser().getTaxRates().add(taxRate);
 		return taxRate;
 	}
 	
@@ -254,7 +243,7 @@ class XmlToModel {
 	 * @return
 	 */
 	private Client findOrCreateClient(String clientName) {
-		for (Client client : clients) {
+		for (Client client : model.getClients()) {
 			if (client.getName().equals(clientName)) {
 				return client;
 			}
@@ -263,46 +252,25 @@ class XmlToModel {
 		// client not found, create a new one
 		Client client = new Client();
 		client.setName(clientName);
-		clients.add(client);
+		model.getClients().add(client);
 		return client;
 	}
-	
-	/**
-	 * 
-	 */
-	private void convertClients() {
-	    XmlClients xmlClients = xmlUser.getClients();
-		if (xmlClients != null && !xmlClients.getClient().isEmpty()) {
-			LOG.debug("Converting clients..."); //$NON-NLS-1$
-			clients = new HashSet<Client>();
-			for (XmlClient xmlClient : xmlClients.getClient()) {
-				LOG.debug("Converting client " + xmlClient.getName()); //$NON-NLS-1$
-				Client client = new Client();
-				client.setName(xmlClient.getName());
-				client.setClientNumber(xmlClient.getClientNumber());
-				client.setAddress(convertAddress(xmlClient.getAddress()));
-				client.setDefaultPaymentTerms(convertPaymentTerms(xmlClient.getDefaultPaymentTerms()));
-				clients.add(client);
-			}
-		} else {
-			LOG.debug("No clients to convert"); //$NON-NLS-1$
-		}
-    }
 
 	/**
 	 * 
+	 * @param xmlTaxRates
+	 * @return
 	 */
-	private void convertTaxRates() {
-	    XmlTaxRates xmlTaxRates = xmlUser.getTaxRates();
+	private Set<TaxRate> convertTaxRates(XmlTaxRates xmlTaxRates) {
+		Set<TaxRate> taxRates = null;
 		if (xmlTaxRates != null && !xmlTaxRates.getTaxRate().isEmpty()) {
 			LOG.debug("Converting tax rates..."); //$NON-NLS-1$
-			Set<TaxRate> taxRates = new HashSet<TaxRate>();
-			user.setTaxRates(taxRates);
+			taxRates = new HashSet<TaxRate>();
 			for (XmlTaxRate xmlRate : xmlTaxRates.getTaxRate()) {
 				taxRates.add(convertTaxRate(xmlRate));
-				
 			}
 		}
+		return taxRates;
     }
 
 	/**
@@ -318,24 +286,26 @@ class XmlToModel {
 	    LOG.debug("Converted tax rate " + rate.toLongString()); //$NON-NLS-1$
 	    return rate;
     }
-
+	
 	/**
 	 * 
+	 * @param xmlBankAccount
+	 * @return
 	 */
-	private void convertBankAccount() {
-	    if (xmlUser.getBankAccount() != null) {
+	private BankAccount convertBankAccount(XmlBankAccount xmlBankAccount) {
+		BankAccount account = null;
+		if (xmlBankAccount != null) {
 	    	LOG.debug("Converting bank account"); //$NON-NLS-1$
-			XmlBankAccount xmlAccount = xmlUser.getBankAccount();
-			BankAccount account = new BankAccount();
-			user.setBankAccount(account);
-			account.setAccountNumber(xmlAccount.getAccountNumber());
-			account.setBankCode(xmlAccount.getBankCode());
-			account.setBankName(xmlAccount.getBankName());
-			account.setBic(xmlAccount.getBic());
-			account.setIban(xmlAccount.getIban());
+			account = new BankAccount();
+			account.setAccountNumber(xmlBankAccount.getAccountNumber());
+			account.setBankCode(xmlBankAccount.getBankCode());
+			account.setBankName(xmlBankAccount.getBankName());
+			account.setBic(xmlBankAccount.getBic());
+			account.setIban(xmlBankAccount.getIban());
 		} else {
 			LOG.debug("No bank account to convert."); //$NON-NLS-1$
 		}
+		return account;
     }
     
 		

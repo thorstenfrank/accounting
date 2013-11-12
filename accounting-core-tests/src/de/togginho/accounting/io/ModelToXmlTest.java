@@ -28,8 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.togginho.accounting.io.AccountingXmlImportExport;
-import de.togginho.accounting.io.ModelToXml;
 import de.togginho.accounting.io.xml.XmlExpense;
 import de.togginho.accounting.io.xml.XmlUser;
 import de.togginho.accounting.model.Client;
@@ -98,7 +96,13 @@ public class ModelToXmlTest extends XmlTestBase {
 		capex.setSalvageValue(BigDecimal.ONE);
 		expenses.add(capex);
 		
-		XmlUser xmlUser = modelToXml.convertToXml(user, clients, invoices, expenses);
+		XmlModelDTO model = new XmlModelDTO();
+		model.setUser(user);
+		model.setClients(clients);
+		model.setInvoices(invoices);
+		model.setExpenses(expenses);
+		
+		XmlUser xmlUser = modelToXml.convertToXml(model);
 		assertUserSame(user, xmlUser);
 		
 		assertNotNull(xmlUser.getClients());
@@ -125,7 +129,7 @@ public class ModelToXmlTest extends XmlTestBase {
 		}
 		
 		// test writing to XML
-		AccountingXmlImportExport.exportModelToXml(user, clients, invoices, expenses, XML_TEST_FILE);
+		AccountingXmlImportExport.exportModelToXml(model, XML_TEST_FILE);
 		File file = new File(XML_TEST_FILE);
 		assertTrue(file.exists());
 	}
