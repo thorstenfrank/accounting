@@ -57,7 +57,7 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	private ExpenseTableSorter sorter;
 	private TimeFrame currentTimeFrame;
 	private Set<ExpenseType> selectedTypes;
-
+	private ExpenseCollection expenseCollection;
 	private IContextActivation contextActivation;
 	
 	/**
@@ -159,10 +159,10 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 		if (selectedTypes != null && !selectedTypes.isEmpty()) {
 			types = (ExpenseType[]) selectedTypes.toArray(new ExpenseType[selectedTypes.size()]);
 		}
-		final ExpenseCollection ec = AccountingUI.getAccountingService().findExpenses(currentTimeFrame, types);
-		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(ec.getExpenses().size());
+		expenseCollection = AccountingUI.getAccountingService().findExpenses(currentTimeFrame, types);
+		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(expenseCollection.getExpenses().size());
 		
-		for (Expense expense : ec.getExpenses()) {
+		for (Expense expense : expenseCollection.getExpenses()) {
 			wrappers.add(new ExpenseWrapper(expense));
 		}
 		
@@ -227,5 +227,11 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 		return selectedTypes;
 	}
 	
-	
+	/**
+	 * 
+	 * @return
+	 */
+	protected ExpenseCollection getExpenseCollection() {
+		return expenseCollection;
+	}
 }

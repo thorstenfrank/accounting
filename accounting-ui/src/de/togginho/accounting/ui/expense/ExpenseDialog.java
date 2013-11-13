@@ -49,7 +49,6 @@ import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.reports.AbstractReportDialog;
-import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
@@ -321,45 +320,10 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 */
 	@Override
 	protected void handleExport() {
-		ReportGenerationUtil.executeReportGeneration(new ExpensesExportHandler(), getShell());
-	}
-	
-	/**
-	 *
-	 */
-	class ExpensesExportHandler implements ReportGenerationHandler {
-
-		/**
-		 * {@inheritDoc}
-		 * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getTargetFileNameSuggestion()
-		 */
-		@Override
-		public String getTargetFileNameSuggestion() {
-			if (selectedType == null) {
-				return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
-						Messages.labelExpenses, expenseCollection.getTimeFrame());
-			} else {
-				return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
-						selectedType.getTranslatedString(), expenseCollection.getTimeFrame());
-			}
-		}
-
-		/**
-         * {@inheritDoc}.
-         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getModelObject()
-         */
-        @Override
-        public Object getModelObject() {
-	        return expenseCollection;
-        }
-
-		/**
-         * {@inheritDoc}.
-         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getReportId()
-         */
-        @Override
-        public String getReportId() {
-	        return "Expenses";
-        }		
+		ReportGenerationUtil.executeReportGeneration(
+				new ExpensesReportGenerationHandler(
+						expenseCollection, 
+						selectedType != null ? selectedType.getTranslatedString() : Messages.labelExpenses), 
+						getShell());
 	}
 }

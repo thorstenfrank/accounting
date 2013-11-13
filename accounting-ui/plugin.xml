@@ -597,6 +597,11 @@
                icon="icons/tag_blue_add.png"
                style="push">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.expense.ExportExpensesReport"
+               icon="icons/page_white_acrobat.png"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -940,6 +945,12 @@
             defaultHandler="de.togginho.accounting.ui.reports.LetterheadExportHandler"
             id="de.togginho.accounting.ui.reports.LetterheadExport"
             name="%command.reports.letterhead">
+      </command>
+      <command
+            categoryId="de.togginho.accounting.ui.expense"
+            defaultHandler="de.togginho.accounting.ui.expense.ExportExpensesReportHandler"
+            id="de.togginho.accounting.ui.expense.ExportExpensesReport"
+            name="%command.expenses.report">
       </command>
    </extension>
    <extension
