@@ -508,12 +508,18 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
 				if (!selection.isEmpty()) {
 					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
-					LOG.debug("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
 					List<InvoicePosition> ips = getEditorInput().getInvoice().getInvoicePositions();
 					int index = ips.indexOf(pos);
-					InvoicePosition ip = ips.remove(index);
-					ips.add(index - 1, ip);
-					refreshInvoicePositionsAndFireDirty();
+					int newIndex = index - 1;
+					if (newIndex >= 0) {
+						LOG.debug("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
+						InvoicePosition ip = ips.remove(index);
+						ips.add(newIndex, ip);
+						refreshInvoicePositionsAndFireDirty();						
+					} else {
+						LOG.debug("Invoice position is already at the top"); //$NON-NLS-1$
+					}
+
 				}				
 			}
 		});
@@ -526,12 +532,17 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 				IStructuredSelection selection = (IStructuredSelection) invoicePositionViewer.getSelection();
 				if (!selection.isEmpty()) {
 					InvoicePosition pos = (InvoicePosition) selection.getFirstElement();
-					LOG.debug("Moving invoice position up" + pos.getDescription()); //$NON-NLS-1$
 					List<InvoicePosition> ips = getEditorInput().getInvoice().getInvoicePositions();
 					int index = ips.indexOf(pos);
-					InvoicePosition ip = ips.remove(index);
-					ips.add(index + 1, ip);
-					refreshInvoicePositionsAndFireDirty();
+					int newIndex = index + 1;
+					if (newIndex < ips.size()) {
+						LOG.debug("Moving invoice position down" + pos.getDescription()); //$NON-NLS-1$
+						InvoicePosition ip = ips.remove(index);
+						ips.add(index + 1, ip);
+						refreshInvoicePositionsAndFireDirty();						
+					} else {
+						LOG.debug("Invoice position is already at the bottom"); //$NON-NLS-1$
+					}
 				}				
 			}
 		});
