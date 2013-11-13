@@ -46,8 +46,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.reports.AbstractReportDialog;
@@ -331,12 +329,20 @@ public class RevenueDialog extends AbstractReportDialog {
 
 		/**
          * {@inheritDoc}.
-         * @see ReportGenerationHandler#handleReportGeneration(ReportingService, String, ReportGenerationMonitor)
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getModelObject()
          */
         @Override
-        public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-	        reportingService.generateReport("Revenue", revenue, targetFileName, monitor);
+        public Object getModelObject() {
+	        return revenue;
         }
-		
+
+		/**
+         * {@inheritDoc}.
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getReportId()
+         */
+        @Override
+        public String getReportId() {
+	        return "Revenue";
+        }
 	}
 }

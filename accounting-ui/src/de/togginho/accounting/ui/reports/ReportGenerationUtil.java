@@ -240,8 +240,8 @@ public class ReportGenerationUtil {
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			this.monitor = monitor;
 			
-			handler.handleReportGeneration(reportingService, targetFileName, this);
-			
+			reportingService.generateReport(handler.getReportId(), handler.getModelObject(), targetFileName, this);
+						
 			monitor.worked(1);
 			monitor.done();
 		}

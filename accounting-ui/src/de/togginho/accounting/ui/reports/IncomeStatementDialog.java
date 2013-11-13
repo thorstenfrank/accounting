@@ -31,8 +31,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Price;
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.util.TimeFrame;
@@ -367,13 +365,20 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 
 		/**
          * {@inheritDoc}.
-         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#handleReportGeneration(de.togginho.accounting.reporting.ReportingService, java.lang.String, de.togginho.accounting.reporting.ReportGenerationMonitor)
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getModelObject()
          */
         @Override
-        public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-        	//reportingService.generateIncomeStatementSummaryToPdf(incomeStatement, targetFileName, monitor);
-        	reportingService.generateReport("CashFlowStatement", incomeStatement, targetFileName, monitor);
+        public Object getModelObject() {
+	        return incomeStatement;
         }
-		
+
+		/**
+         * {@inheritDoc}.
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getReportId()
+         */
+        @Override
+        public String getReportId() {
+	        return "CashFlowStatement";
+        }
 	}
 }

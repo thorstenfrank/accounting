@@ -15,8 +15,6 @@
  */
 package de.togginho.accounting.ui.reports;
 
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.ReportingService;
 
 /**
  * @author thorsten
@@ -32,9 +30,13 @@ public interface ReportGenerationHandler {
 	
 	/**
 	 * 
-	 * @param reportingService
-	 * @param targetFileName
-	 * @param monitor
+	 * @return
 	 */
-	void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor);
+	Object getModelObject();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	String getReportId();
 }

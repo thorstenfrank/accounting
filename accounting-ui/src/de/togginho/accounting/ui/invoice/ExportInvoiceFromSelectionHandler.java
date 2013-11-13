@@ -20,8 +20,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import de.togginho.accounting.model.Invoice;
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.ReportingService;
+import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 
@@ -65,15 +64,23 @@ public class ExportInvoiceFromSelectionHandler extends AbstractInvoiceHandler im
     }
 
     /**
-     * 
      * {@inheritDoc}.
-     * @see ReportGenerationHandler#handleReportGeneration(ReportingService, String, ReportGenerationMonitor)
+     * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getModelObject()
      */
     @Override
-    public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-    	reportingService.generateReport("Invoice", currentInvoice, targetFileName, monitor);
+    public Object getModelObject() {
+	    return currentInvoice;
     }
 
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getReportId()
+     */
+    @Override
+    public String getReportId() {
+	    return "Invoice";
+    }
+    
 	/**
 	 * {@inheritDoc}.
 	 * @see AbstractAccountingHandler#getLogger()

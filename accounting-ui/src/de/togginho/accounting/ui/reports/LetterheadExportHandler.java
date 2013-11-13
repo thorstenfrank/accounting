@@ -19,8 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.AccountingUI;
 
@@ -61,12 +59,19 @@ public class LetterheadExportHandler extends AbstractAccountingHandler implement
 
 	/**
      * {@inheritDoc}.
-     * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#handleReportGeneration(de.togginho.accounting.reporting.ReportingService, java.lang.String, de.togginho.accounting.reporting.ReportGenerationMonitor)
+     * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getModelObject()
      */
     @Override
-    public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-    	reportingService.generateReport("Letterhead", AccountingUI.getAccountingService().getCurrentUser(), targetFileName, monitor);
+    public Object getModelObject() {
+	    return AccountingUI.getAccountingService().getCurrentUser();
     }
 
-	
+	/**
+     * {@inheritDoc}.
+     * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getReportId()
+     */
+    @Override
+    public String getReportId() {
+	    return "Letterhead";
+    }
 }

@@ -42,8 +42,6 @@ import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.Price;
 import de.togginho.accounting.model.Revenue;
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.ReportingService;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
@@ -430,14 +428,27 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 	private class IncomeStatementGenerationHandler implements ReportGenerationHandler {
 		
 		@Override
-		public void handleReportGeneration(ReportingService reportingService, String targetFileName, ReportGenerationMonitor monitor) {
-			reportingService.generateReport("IncomeStatement", incomeStatement, targetFileName, monitor);
-		}
-		
-		@Override
 		public String getTargetFileNameSuggestion() {
 			return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(
 					Messages.IncomeStatementDetailsDialog_fileNameSuggestion, incomeStatement.getTimeFrame());
-		}		
+		}
+
+		/**
+         * {@inheritDoc}.
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getModelObject()
+         */
+        @Override
+        public Object getModelObject() {
+	        return incomeStatement;
+        }
+
+		/**
+         * {@inheritDoc}.
+         * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getReportId()
+         */
+        @Override
+        public String getReportId() {
+	        return "IncomeStatement";
+        }		
 	}
 }
