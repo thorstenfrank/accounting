@@ -31,12 +31,12 @@ public class TimeFrame {
 	/**
 	 * Start (inclusive).
 	 */
-	private Date from;
+	private Calendar from;
 	
 	/**
 	 * End (inclusive).
 	 */
-	private Date until;
+	private Calendar until;
     
 	/**
 	 * 
@@ -57,46 +57,42 @@ public class TimeFrame {
      * @param until End (inclusive)
      */
     public TimeFrame(Date from, Date until) {
-    	type = TimeFrameType.CUSTOM;
-    	
-    	Calendar cal = Calendar.getInstance();
-    	cal.setTime(from);
-    	setToStartOfDay(cal);
-    	this.from = cal.getTime();
-    	
-    	cal.setTime(until);
-    	setToEndOfDay(cal);
-    	this.until = cal.getTime();
+    	this.from = Calendar.getInstance();
+    	this.until = Calendar.getInstance();
+    	setFrom(from);
+    	setUntil(until);
     }
 
 	/**
      * @return the start (inclusive)
      */
     public Date getFrom() {
-    	return from;
+    	return from.getTime();
     }
 
 	/**
-     * @param from the start (inclusive)
+     * @param date the start (inclusive)
      */
-    public void setFrom(Date from) {
-    	this.from = from;
-    	this.type = TimeFrameType.CUSTOM;
+    public void setFrom(Date date) {
+    	from.setTime(date);
+    	setToStartOfDay(from);
+    	type = TimeFrameType.CUSTOM;
     }
 
 	/**
      * @return the end (inclusive)
      */
     public Date getUntil() {
-    	return until;
+    	return until.getTime();
     }
 
 	/**
-     * @param until the end (inclusive)
+     * @param date the end (inclusive)
      */
-    public void setUntil(Date until) {
-    	this.until = until;
-    	this.type = TimeFrameType.CUSTOM;
+    public void setUntil(Date date) {
+    	until.setTime(date);
+    	setToEndOfDay(until);
+    	type = TimeFrameType.CUSTOM;
     }
     
     /**
@@ -107,6 +103,26 @@ public class TimeFrame {
 	}
 
 	/**
+	 * 
+	 * @param month
+	 */
+	public void setMonth(int month, boolean adjustDaysAndYear) {
+		if (month >= Calendar.JANUARY && month <= Calendar.DECEMBER) {
+			from.set(Calendar.MONTH, month);
+			until.set(Calendar.MONTH, month);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param year
+	 */
+	public void setYear(int year) {
+		from.set(Calendar.YEAR, year);
+		until.set(Calendar.YEAR, year);
+	}
+	
+	/**
      * Returns whether the supplied date is within this timeframe.
      * 
      * @param date the {@link Date} to check
@@ -116,7 +132,15 @@ public class TimeFrame {
     	if (date == null) {
     		return false;
     	}
-    	return (from.compareTo(date) <= 0 && until.compareTo(date) >= 0);
+    	return (from.getTimeInMillis() >= date.getTime() && until.getTimeInMillis() <= date.getTime());
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public boolean isWithinOneYear() {
+    	return from.get(Calendar.YEAR) == until.get(Calendar.YEAR);
     }
     
     /**
@@ -128,9 +152,9 @@ public class TimeFrame {
     public String toString() {
     	StringBuilder sb = new StringBuilder(getClass().getName());
     	sb.append(Constants.BLANK_STRING);
-    	sb.append(FormatUtil.formatDate(from));
+    	sb.append(FormatUtil.formatDate(from.getTime()));
     	sb.append(Constants.BLANK_STRING).append(Constants.HYPHEN).append(Constants.BLANK_STRING);
-    	sb.append(FormatUtil.formatDate(until));
+    	sb.append(FormatUtil.formatDate(until.getTime()));
         return sb.toString();
     }
     
@@ -141,15 +165,14 @@ public class TimeFrame {
 	public static TimeFrame currentMonth() {
 		TimeFrame thisMonth = new TimeFrame(TimeFrameType.CURRENT_MONTH);
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		setToStartOfDay(cal);
-		thisMonth.from = cal.getTime();
-		
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		setToEndOfDay(cal);
-		thisMonth.until = cal.getTime();
-		
+		thisMonth.from = Calendar.getInstance();
+		thisMonth.setToStartOfDay(thisMonth.from);
+		thisMonth.from.set(Calendar.DAY_OF_MONTH, 1);
+				
+		thisMonth.until = Calendar.getInstance();
+		thisMonth.setToEndOfDay(thisMonth.until);
+		thisMonth.until.set(Calendar.DAY_OF_MONTH, thisMonth.until.getActualMaximum(Calendar.DAY_OF_MONTH));
+				
 		return thisMonth;		
 	}
     
@@ -161,15 +184,15 @@ public class TimeFrame {
 	public static TimeFrame lastMonth() {
 		TimeFrame lastMonth = new TimeFrame(TimeFrameType.LAST_MONTH);
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.add(Calendar.MONTH, -1);
-		setToStartOfDay(cal);
-		lastMonth.from = cal.getTime();
+		lastMonth.from = Calendar.getInstance();
+		lastMonth.from.set(Calendar.DAY_OF_MONTH, 1);
+		lastMonth.from.add(Calendar.MONTH, -1);
+		lastMonth.setToStartOfDay(lastMonth.from);
 		
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		setToEndOfDay(cal);
-		lastMonth.until = cal.getTime();
+		lastMonth.until = Calendar.getInstance();
+		lastMonth.until.setTime(lastMonth.from.getTime());
+		lastMonth.until.set(Calendar.DAY_OF_MONTH, lastMonth.until.getActualMaximum(Calendar.DAY_OF_MONTH));
+		lastMonth.setToEndOfDay(lastMonth.until);
 		
 		return lastMonth;
 	}
@@ -184,17 +207,16 @@ public class TimeFrame {
 	public static TimeFrame currentYear() {
 		TimeFrame thisYear = new TimeFrame(TimeFrameType.CURRENT_YEAR);
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, 0);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		setToStartOfDay(cal);
-		thisYear.from = cal.getTime();
+		thisYear.from = Calendar.getInstance();
+		thisYear.from.set(Calendar.MONTH, Calendar.JANUARY);
+		thisYear.from.set(Calendar.DAY_OF_MONTH, 1);
+		thisYear.setToStartOfDay(thisYear.from);
 		
-		cal.set(Calendar.MONTH, 11);
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		setToEndOfDay(cal);
-		thisYear.until = cal.getTime();
-		
+		thisYear.until = Calendar.getInstance();
+		thisYear.until.set(Calendar.MONTH, Calendar.DECEMBER);
+		thisYear.until.set(Calendar.DAY_OF_MONTH, 31);
+		thisYear.setToEndOfDay(thisYear.until);
+				
 		return thisYear;
 	}
 	
@@ -206,17 +228,16 @@ public class TimeFrame {
 	public static TimeFrame lastYear() {
 		TimeFrame lastYear = new TimeFrame(TimeFrameType.LAST_YEAR);
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.add(Calendar.YEAR, -1);
-		setToStartOfDay(cal);
-		lastYear.from = cal.getTime();
+		lastYear.from = Calendar.getInstance();
+		lastYear.from.set(Calendar.MONTH, Calendar.JANUARY);
+		lastYear.from.set(Calendar.DAY_OF_MONTH, 1);
+		lastYear.from.add(Calendar.YEAR, -1);
+		lastYear.setToStartOfDay(lastYear.from);
 		
-		cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		setToEndOfDay(cal);
-		lastYear.until = cal.getTime();
+		lastYear.until = Calendar.getInstance();
+		lastYear.until.set(Calendar.MONTH, Calendar.DECEMBER);
+		lastYear.until.set(Calendar.DAY_OF_MONTH, 31);
+		lastYear.setToEndOfDay(lastYear.until);
 		
 		return lastYear;		
 	}
@@ -226,7 +247,7 @@ public class TimeFrame {
 	 * 
 	 * @param cal the {@link Calendar} to nullify
 	 */
-	private static void setToStartOfDay(Calendar cal) {
+	private void setToStartOfDay(Calendar cal) {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -245,7 +266,7 @@ public class TimeFrame {
 	 * 
 	 * @param cal the {@link Calendar} to manipulate
 	 */
-	private static void setToEndOfDay(Calendar cal) {
+	private void setToEndOfDay(Calendar cal) {
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
