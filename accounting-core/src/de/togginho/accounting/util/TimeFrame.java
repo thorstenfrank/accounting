@@ -132,7 +132,7 @@ public class TimeFrame {
     	if (date == null) {
     		return false;
     	}
-    	return (from.getTimeInMillis() >= date.getTime() && until.getTimeInMillis() <= date.getTime());
+    	return (from.getTimeInMillis() <= date.getTime() && until.getTimeInMillis() >= date.getTime());
     }
     
     /**
@@ -235,6 +235,7 @@ public class TimeFrame {
 		lastYear.setToStartOfDay(lastYear.from);
 		
 		lastYear.until = Calendar.getInstance();
+		lastYear.until.setTime(lastYear.from.getTime());
 		lastYear.until.set(Calendar.MONTH, Calendar.DECEMBER);
 		lastYear.until.set(Calendar.DAY_OF_MONTH, 31);
 		lastYear.setToEndOfDay(lastYear.until);
