@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 
@@ -152,25 +153,6 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
     
 	/**
 	 * 
-	 * @return
-	 */
-	private Set<ExpenseWrapper> getExpenses() {
-		ExpenseType[] types = null;
-		if (selectedTypes != null && !selectedTypes.isEmpty()) {
-			types = (ExpenseType[]) selectedTypes.toArray(new ExpenseType[selectedTypes.size()]);
-		}
-		expenseCollection = AccountingUI.getAccountingService().findExpenses(currentTimeFrame, types);
-		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(expenseCollection.getExpenses().size());
-		
-		for (Expense expense : expenseCollection.getExpenses()) {
-			wrappers.add(new ExpenseWrapper(expense));
-		}
-		
-		return wrappers;
-	}
-	
-	/**
-	 * 
 	 */
 	@Override
 	public void dispose() {
@@ -183,25 +165,54 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 		
 		super.dispose();
 	}
-
+	
+	/**
+	 * 
+	 * @param timeFrame
+	 */
+	protected void updateExpenses(TimeFrame timeFrame) {
+		if (timeFrame != null) {
+			this.currentTimeFrame = timeFrame;
+		}
+		
+		ExpenseType[] types = null;
+		if (selectedTypes != null && !selectedTypes.isEmpty()) {
+			types = (ExpenseType[]) selectedTypes.toArray(new ExpenseType[selectedTypes.size()]);
+		}
+		
+		expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame, types);
+		final Set<ExpenseWrapper> wrappers = new HashSet<ExpenseWrapper>(expenseCollection.getExpenses().size());
+		
+		for (Expense expense : expenseCollection.getExpenses()) {
+			wrappers.add(new ExpenseWrapper(expense));
+		}
+		
+		tableViewer.setInput(wrappers);
+		tableViewer.refresh();
+		
+		StringBuilder title = new StringBuilder();
+		if (timeFrame == null) {
+			title.append(Messages.ExpensesView_allExpenses);
+		} else if (timeFrame.getType() == TimeFrameType.CUSTOM) {
+			title.append(FormatUtil.formatDate(timeFrame.getFrom()));
+			title.append(Constants.HYPHEN);
+			title.append(FormatUtil.formatDate(timeFrame.getUntil()));
+		} else {
+			title.append(timeFrame.getType().getTranslatedName());
+		}
+		
+		setPartName(Messages.bind(Messages.ExpensesView_title, title.toString()));
+		IActionBars bars = getViewSite().getActionBars();
+		bars.getStatusLineManager().setMessage(Messages.bind(Messages.ExpensesView_statusLine, wrappers.size()));
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.ModelChangeListener#modelChanged()
 	 */
 	@Override
 	public void modelChanged() {
-		tableViewer.setInput(getExpenses());
-		tableViewer.refresh();
-		
-		String titlePart = currentTimeFrame.getType().getTranslatedName();
-		if (currentTimeFrame.getType() == TimeFrameType.CUSTOM) {
-			StringBuilder sb = new StringBuilder(FormatUtil.formatDate(currentTimeFrame.getFrom()));
-			sb.append(Constants.HYPHEN);
-			sb.append(FormatUtil.formatDate(currentTimeFrame.getUntil()));
-			titlePart = sb.toString();
-		}
-		
-		setPartName(Messages.bind(Messages.ExpensesView_title, titlePart));
+		updateExpenses(currentTimeFrame);
 	}	
 	
 	/**
@@ -209,15 +220,6 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 	 */
 	protected TimeFrame getCurrentTimeFrame() {
 		return currentTimeFrame;
-	}
-
-	/**
-	 * @param currentTimeFrame the currentTimeFrame to set
-	 */
-	protected void setCurrentTimeFrame(TimeFrame newTimeFrame) {
-		if (newTimeFrame != null) {
-			this.currentTimeFrame = newTimeFrame;
-		}
 	}
 
 	/**

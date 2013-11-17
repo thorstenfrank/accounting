@@ -50,6 +50,7 @@ public class Messages extends NLS {
 
 	public static String ChangeExpensesViewTimeFrameCommand_message;
 	public static String ChangeExpensesViewTimeFrameCommand_title;
+	public static String ChangeExpensesViewTimeFrameCommand_allExpenses;
 	
 	public static String ChangeInvoicesFilterCommand_message;
 	public static String ChangeInvoicesFilterCommand_title;
@@ -103,6 +104,8 @@ public class Messages extends NLS {
 	public static String ExpenseEditor_DepreciationCalculatedMessage;
 	
 	public static String ExpensesView_title;
+	public static String ExpensesView_allExpenses;
+	public static String ExpensesView_statusLine;
 
 	public static String ExportModelToXmlWizard_fileDialogTitle;
 	public static String ExportModelToXmlWizard_title;

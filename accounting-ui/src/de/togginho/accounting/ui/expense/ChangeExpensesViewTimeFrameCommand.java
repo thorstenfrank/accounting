@@ -81,13 +81,8 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 			}
 		}
 		
-		if (getCurrentTimeFrame() != null) {
-			LOG.info("Changing expenses view"); //$NON-NLS-1$
-			expensesView.setCurrentTimeFrame(getCurrentTimeFrame());
-			expensesView.modelChanged();
-		} else {
-			LOG.warn("No time frame provided, cancelling execution of this command!"); //$NON-NLS-1$
-		}
+		LOG.info("Changing expenses view"); //$NON-NLS-1$
+		expensesView.updateExpenses(getCurrentTimeFrame());
 	}
 
 	/**
@@ -141,7 +136,22 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 				Composite composite = new Composite(parent, SWT.NONE);
 				composite.setLayout(new GridLayout(2, false));
 				
-				buildTimeFrameSelectionComposite(composite);
+				Composite tf = buildTimeFrameSelectionComposite(composite);
+				final Button all = new Button(tf, SWT.RADIO);
+				all.setText(Messages.ChangeExpensesViewTimeFrameCommand_allExpenses);
+				GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(all);
+				all.addSelectionListener(new SelectionAdapter() {
+					private TimeFrame lastKnown;
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						if (all.getSelection()) {
+							lastKnown = getCurrentTimeFrame();
+							setCurrentTimeFrame(null);
+						} else {
+							setCurrentTimeFrame(lastKnown);
+						}
+					}
+				});
 				
 				Composite typeSelector = new Composite(composite, SWT.NONE);
 				typeSelector.setLayout(new GridLayout(1, false));
