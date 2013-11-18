@@ -217,11 +217,32 @@ public class InvoiceView extends AbstractTableView implements ModelChangeListene
     public void modelChanged() {
 		LOG.info("Model data changed, refreshing invoices..."); //$NON-NLS-1$
 
+		Set<Invoice> invoices = null;
+		
+		InvoiceState[] states = null;
+		if (invoiceStateFilter != null && !invoiceStateFilter.isEmpty()) {
+			invoices = AccountingUI.getAccountingService().findInvoices();
+			states = (InvoiceState[]) invoiceStateFilter.toArray(new InvoiceState[invoiceStateFilter.size()]);
+		} 
+		
+		invoices = AccountingUI.getAccountingService().findInvoices(timeFrameFilter, states);
+		
+		LOG.debug("Number of invoices found: " + invoices.size()); //$NON-NLS-1$
+		
+		// re-create the price map for viewing and sorting so the prices don't have to be re-calculated constantly
+		invoicePrices = new HashMap<Invoice, Price>();
+		
+		for (Invoice invoice : invoices) {
+			invoicePrices.put(invoice, CalculationUtil.calculateTotalPrice(invoice));
+		}
+		
 		// reload open invoices
-		tableViewer.setInput(getInvoicesWithFilter());
+		tableViewer.setInput(invoices);
 		tableViewer.refresh();
 		
-		// update selection to force re-evaluation of handlers on the current selection
+		getViewSite().getActionBars().getStatusLineManager().setMessage(
+				AccountingUI.getImageDescriptor(Messages.iconsInvoices).createImage(),
+				Messages.bind(Messages.InvoiceView_statusLine, invoices.size()));
     }
     
 	/**
@@ -250,33 +271,6 @@ public class InvoiceView extends AbstractTableView implements ModelChangeListene
 	 */
 	protected void setTimeFrameFilter(TimeFrame timeFrameFilter) {
 		this.timeFrameFilter = timeFrameFilter;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private Set<Invoice> getInvoicesWithFilter() {
-		Set<Invoice> invoices = null;
-		
-		InvoiceState[] states = null;
-		if (invoiceStateFilter != null && !invoiceStateFilter.isEmpty()) {
-			invoices = AccountingUI.getAccountingService().findInvoices();
-			states = (InvoiceState[]) invoiceStateFilter.toArray(new InvoiceState[invoiceStateFilter.size()]);
-		} 
-		
-		invoices = AccountingUI.getAccountingService().findInvoices(timeFrameFilter, states);
-		
-		LOG.debug("Number of invoices found: " + invoices.size()); //$NON-NLS-1$
-		
-		// re-create the price map for viewing and sorting so the prices don't have to be re-calculated constantly
-		invoicePrices = new HashMap<Invoice, Price>();
-		
-		for (Invoice invoice : invoices) {
-			invoicePrices.put(invoice, CalculationUtil.calculateTotalPrice(invoice));
-		}
-		
-		return invoices;
 	}
 	
 	/**

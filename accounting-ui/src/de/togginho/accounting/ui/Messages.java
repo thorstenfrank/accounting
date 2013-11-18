@@ -165,6 +165,7 @@ public class Messages extends NLS {
 	public static String InvoiceView_number;
 	public static String InvoiceView_state;
 	public static String InvoiceView_dueDate;
+	public static String InvoiceView_statusLine;
 	
 	public static String LanguageSelectionHandler_Language;
 	public static String LanguageSelectionHandler_Title;
@@ -350,6 +351,7 @@ public class Messages extends NLS {
 	public static String iconsInvoiceOverdue;
 	public static String iconsInvoicePaid;
 	public static String iconsInvoiceSend;
+	public static String iconsInvoices;
 	public static String iconsRevenue;
 	public static String iconsExpenses;
 	public static String iconsExpenseAdd;

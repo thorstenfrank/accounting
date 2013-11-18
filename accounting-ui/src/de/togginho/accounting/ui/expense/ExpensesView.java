@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 
@@ -202,8 +201,9 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 		}
 		
 		setPartName(Messages.bind(Messages.ExpensesView_title, title.toString()));
-		IActionBars bars = getViewSite().getActionBars();
-		bars.getStatusLineManager().setMessage(Messages.bind(Messages.ExpensesView_statusLine, wrappers.size()));
+		getViewSite().getActionBars().getStatusLineManager().setMessage(
+				AccountingUI.getImageDescriptor(Messages.iconsExpenses).createImage(),
+				Messages.bind(Messages.ExpensesView_statusLine, wrappers.size()));
 	}
 	
 	/**
