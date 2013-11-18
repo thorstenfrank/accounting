@@ -602,10 +602,16 @@
                icon="icons/page_white_acrobat.png"
                style="push">
          </command>
+         <command
+               commandId="de.togginho.accounting.ui.expenseView.menu.pulldown"
+               icon="icons/table_gear.png"
+               label="%command.changeExpensesViewTimeFrame.name"
+               style="pulldown">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="menu:de.togginho.accounting.ui.expense.ExpensesView">
+            locationURI="menu:de.togginho.accounting.ui.expenseView.menu.pulldown">
          <command
                commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
                label="%command.changeTimeFrame.currentMonth"
@@ -641,25 +647,6 @@
                   name="timeFrame"
                   value="LAST_YEAR">
             </parameter>
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
-               icon="icons/table_gear.png"
-               label="%command.changeTimeFrame.custom"
-               style="push">
-            <parameter
-                  name="timeFrame"
-                  value="CUSTOM">
-            </parameter>
-         </command>
-         <separator
-               name="expensesView.pulldown.separator1"
-               visible="true">
-         </separator>
-         <command
-               commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
-               icon="icons/tag_blue_add.png"
-               style="push">
          </command>
       </menuContribution>
       <menuContribution
@@ -951,6 +938,11 @@
             defaultHandler="de.togginho.accounting.ui.expense.ExportExpensesReportHandler"
             id="de.togginho.accounting.ui.expense.ExportExpensesReport"
             name="%command.expenses.report">
+      </command>
+      <command
+            defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+            id="de.togginho.accounting.ui.expenseView.menu.pulldown"
+            name="de.togginho.accounting.ui.expenseView.menu.pulldown">
       </command>
    </extension>
    <extension
