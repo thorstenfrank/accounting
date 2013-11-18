@@ -53,7 +53,7 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	private static final int PRESET_INDEX_LY = 4;
 	
 	private TimeFrame currentTimeFrame;
-	private boolean timeFrameActive;
+	private boolean timeFrameActive = true;
 	
 	private DateTime from;
 	private DateTime to;
