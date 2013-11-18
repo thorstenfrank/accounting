@@ -157,7 +157,7 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.info("Building model meta information..."); //$NON-NLS-1$
 		this.modelMetaInformation = new ModelMetaInformationImpl();
 		
-		Set<Expense> expenses = getExpensesAsSet(null);
+		ObjectSet<Expense> expenses = objectContainer.query(Expense.class);
 		LOG.debug("Searching for oldest expense, total found: " + expenses.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfExpenses(expenses.size());
 		Calendar oldestExpense = Calendar.getInstance();
@@ -169,7 +169,7 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("Oldest known expense is from: " + FormatUtil.formatDate(oldestExpense.getTime())); //$NON-NLS-1$
 		modelMetaInformation.setOldestExpense(oldestExpense);
 		
-		Set<Invoice> invoices = findInvoices();
+		ObjectSet<Invoice> invoices = objectContainer.query(Invoice.class);
 		LOG.debug("Searching for oldest invoice, total found: " + invoices.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfInvoices(invoices.size());
 		Calendar oldestInvoice = Calendar.getInstance();

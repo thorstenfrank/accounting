@@ -49,6 +49,7 @@ import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.AccountingService;
 import de.togginho.accounting.BaseTestFixture;
 import de.togginho.accounting.model.Client;
+import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.model.PaymentTerms;
@@ -65,6 +66,16 @@ import de.togginho.accounting.model.User;
  */
 public class AccountingServiceImplTest extends BaseTestFixture {
 
+	/**
+	 * 
+	 */
+	private static final DummyObjectSet<Expense> DUMMY_EXPENSES = new DummyObjectSet<Expense>();
+	
+	/**
+	 * 
+	 */
+	private static final DummyObjectSet<Invoice> DUMMY_INVOICES = new DummyObjectSet<Invoice>();
+	
 	/** DB4o mock. */
 	private ObjectContainer ocMock;
 	
@@ -126,6 +137,9 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		expect(db4oServiceMock.openFile(configurationMock, TEST_DB_FILE)).andReturn(ocMock);
 		
+		expect(ocMock.query(Expense.class)).andReturn(DUMMY_EXPENSES);
+		expect(ocMock.query(Invoice.class)).andReturn(DUMMY_INVOICES);
+		
 		replay(initMocks);
 	}
 
@@ -136,6 +150,10 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	public void tearDown() throws Exception {
 		verify(initMocks);
 		verify(ocMock);
+		
+		assertNotNull(serviceUnderTest.getModelMetaInformation());
+		assertNotNull(serviceUnderTest.getModelMetaInformation().getOldestKnownExpenseDate());
+		assertNotNull(serviceUnderTest.getModelMetaInformation().getOldestKnownInvoiceDate());
 	}
 	
 	/**
@@ -193,14 +211,14 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testSaveUser() {
-		serviceUnderTest.init(getTestContext());
-		
 		ocMock.store(getTestUser());
 		ocMock.commit();
 		
 		setupMockForEntitySaveWithExceptions(getTestUser());
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		// null save - nothing should happen
 		assertNull(serviceUnderTest.saveCurrentUser(null));
@@ -218,8 +236,6 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testClientExceptionHandling() {
-		serviceUnderTest.init(getTestContext());
-		
 		ocMock.store(getTestClient());
 		ocMock.commit();
 		expectLastCall().andThrow(new UniqueFieldValueConstraintViolationException(Client.class.getName(), "name"));
@@ -228,6 +244,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		setupMockForEntitySaveWithExceptions(getTestClient());
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		saveClientWithException();
 		saveClientWithException();
@@ -241,11 +259,11 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	public void testSaveInvoice() {
 		Invoice invoice = new Invoice();
 		
-		serviceUnderTest.init(getTestContext());
-		
 		setupMockForEntitySaveWithExceptions(invoice);
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		// make sure nothing happens if trying to save [null]
 		assertNull(serviceUnderTest.saveInvoice(null));
@@ -385,15 +403,22 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testMarkInvoiceAsPaid() {
-		serviceUnderTest.init(getTestContext());
-		
-		assertNull(serviceUnderTest.markAsPaid(null, null));
-		
 		Invoice invoice = new Invoice();
 		invoice.setUser(getTestUser());
 		invoice.setClient(new Client());
 		invoice.setCreationDate(new Date());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
+		
+		// mock behavior
+		ocMock.store(invoice);
+		expectLastCall().once();
+		ocMock.commit();
+		expectLastCall().once();
+		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
+		
+		assertNull(serviceUnderTest.markAsPaid(null, null));
 		
 		serviceUnderTest.markAsPaid(invoice, null);
 		assertNull(invoice.getPaymentDate());
@@ -409,13 +434,6 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		
 		invoice.setSentDate(new Date());
 		
-		// mock behavior
-		ocMock.store(invoice);
-		expectLastCall().once();
-		ocMock.commit();
-		expectLastCall().once();
-		replay(ocMock);
-		
 		Invoice paid = serviceUnderTest.markAsPaid(invoice, paymentDate);
 		assertEquals(invoice, paid);
 		assertEquals(paymentDate, paid.getPaymentDate());
@@ -426,8 +444,6 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testCancelInvoice() {
-		serviceUnderTest.init(getTestContext());
-		
 		assertNull(serviceUnderTest.cancelInvoice(null));
 		
 		Invoice invoice = new Invoice();
@@ -440,6 +456,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		ocMock.commit();
 		expectLastCall().once();
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		try {
 	        Invoice cancelled = serviceUnderTest.cancelInvoice(invoice);
@@ -455,12 +473,12 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	@SuppressWarnings("unchecked")
     @Test
 	public void testGetInvoiceExceptionHandling() {
-		serviceUnderTest.init(getTestContext());
-				
 		expect(ocMock.query(anyObject(Predicate.class))).andThrow(new Db4oIOException());
 		expect(ocMock.query(anyObject(Predicate.class))).andThrow(new DatabaseClosedException());
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		final String testInvoiceNo = "JUnitTestInvoiceNo";
 		
@@ -484,12 +502,12 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testFindInvoicesExceptionHandling() {
-		serviceUnderTest.init(getTestContext());
-		
 		expect(ocMock.query(anyObject(FindInvoicesPredicate.class))).andThrow(new Db4oIOException());
 		expect(ocMock.query(anyObject(FindInvoicesPredicate.class))).andThrow(new DatabaseClosedException());
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		try {
 			serviceUnderTest.findInvoices(InvoiceState.CREATED, InvoiceState.SENT);
@@ -516,8 +534,6 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		invoice.setNumber("JUnitInvoiceNo");
 		
 		// mocks
-		serviceUnderTest.init(getTestContext());
-		
 		ocMock.delete(invoice);
 		expectLastCall().once();
 		ocMock.commit();
@@ -537,6 +553,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		expectLastCall().once();
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		// try deleting [null]
 		serviceUnderTest.deleteInvoice(null);
@@ -597,11 +615,12 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testGetCurrentUserExceptionHandling() {
-		serviceUnderTest.init(getTestContext());
 		expect(ocMock.query(anyObject(FindCurrentUserPredicate.class))).andThrow(new Db4oIOException());
 		expect(ocMock.query(anyObject(FindCurrentUserPredicate.class))).andThrow(new DatabaseClosedException());
 		
 		replay(ocMock);
+		
+		serviceUnderTest.init(getTestContext());
 		
 		try {
 			serviceUnderTest.getCurrentUser();
