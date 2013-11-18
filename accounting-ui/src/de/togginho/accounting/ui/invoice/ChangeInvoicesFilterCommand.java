@@ -22,14 +22,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IViewPart;
 
 import de.togginho.accounting.model.InvoiceState;
@@ -49,7 +48,6 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 	private static final Logger LOG = Logger.getLogger(ChangeInvoicesFilterCommand.class);
 	
 	private Set<InvoiceState> stateSelection;
-	private boolean timeSelection;
 	
 	/**
 	 * {@inheritDoc}.
@@ -69,10 +67,8 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 		stateSelection = invoiceView.getInvoiceStateFilter();
 		
 		if (invoiceView.getTimeFrameFilter() != null) {
-			timeSelection = true;
 			setCurrentTimeFrame(invoiceView.getTimeFrameFilter());
 		} else {
-			timeSelection = false;
 			setCurrentTimeFrame(TimeFrame.currentYear());
 		}
 		
@@ -84,19 +80,20 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 			@Override
 			protected void createMainContents(Composite parent) {
 				Composite composite = new Composite(parent, SWT.NONE);
-				composite.setLayout(new GridLayout(3, false));
-				WidgetHelper.grabHorizontal(composite);
+				composite.setLayout(new GridLayout(1, false));
+				WidgetHelper.grabBoth(composite);
 				
-				Composite buttonComp = new Composite(composite, SWT.NONE);
-				buttonComp.setLayout(new GridLayout(1, false));
-				GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(buttonComp);
+				Group typeSelectors = new Group(composite, SWT.SHADOW_NONE);
+				typeSelectors.setText("Types to show");
+				typeSelectors.setLayout(new GridLayout(3, false));
+				WidgetHelper.grabBoth(typeSelectors);
 				
 				final List<Button> stateButtons = new ArrayList<Button>();
         		for (InvoiceState state : InvoiceState.values()) {
         			if (state.equals(InvoiceState.UNSAVED)) {
         				continue;
         			}
-        			Button b = new Button(buttonComp, SWT.CHECK);
+        			Button b = new Button(typeSelectors, SWT.CHECK);
         			b.setData(state);
         			b.setText(state.getTranslatedString());
         			WidgetHelper.grabHorizontal(b);
@@ -119,23 +116,7 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
         			stateButtons.add(b);
         		}
         		
-        		Composite timeComp = new Composite(composite, SWT.NONE);
-        		timeComp.setLayout(new GridLayout(1, false));
-        		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(timeComp);
-        		
-        		final Button useTime = new Button(timeComp, SWT.CHECK);
-        		useTime.setText("Use Time");
-        		useTime.setSelection(timeSelection);
-        		
-        		final Composite timeSelector = buildTimeFrameSelectionComposite(timeComp);
-        		enableOrDisableTimeSelector(timeSelection, timeSelector);
-        		
-        		useTime.addSelectionListener(new SelectionAdapter() {
-        			@Override
-        			public void widgetSelected(SelectionEvent e) {
-        				enableOrDisableTimeSelector(useTime.getSelection(), timeSelector);
-        			}
-				});
+        		buildTimeFrameSelectionComposite(composite, false);
 			}
 		};
 		
@@ -147,26 +128,11 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 			LOG.info(sb.toString());
 			
 			invoiceView.setInvoiceStateFilter(stateSelection);
-			if (timeSelection) {
-				invoiceView.setTimeFrameFilter(getCurrentTimeFrame());
-			} else {
-				invoiceView.setTimeFrameFilter(null);
-			}
-			
+			invoiceView.setTimeFrameFilter(getCurrentTimeFrame());			
 			
 			invoiceView.modelChanged();
 		} else {
 			LOG.debug("Change invoice filter was cancelled"); //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * 
-	 */
-	private void enableOrDisableTimeSelector(boolean enable, Composite timeSelector) {
-		timeSelection = enable;
-		for (Control control : timeSelector.getChildren()) {
-			control.setEnabled(enable);
 		}
 	}
 	

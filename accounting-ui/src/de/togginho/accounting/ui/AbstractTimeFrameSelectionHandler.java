@@ -15,15 +15,19 @@
  */
 package de.togginho.accounting.ui;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Group;
 
 import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
@@ -35,6 +39,7 @@ import de.togginho.accounting.util.TimeFrameType;
  */
 public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccountingHandler {
 	private TimeFrame currentTimeFrame;
+	private TimeFrame previousTimeFrame;
 	private DateTime from;
 	private DateTime to;
 	
@@ -43,49 +48,154 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 * @param parent
 	 * @return
 	 */
-	protected Composite buildTimeFrameSelectionComposite(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-		WidgetHelper.grabHorizontal(composite);
+	protected Composite buildTimeFrameSelectionComposite(Composite parent, boolean enabledByDefault) {
+		// SHADOW_ETCHED_IN, SHADOW_ETCHED_OUT, SHADOW_IN, SHADOW_OUT, SHADOW_NONE 
+		Group group = new Group(parent, SWT.SHADOW_NONE);
+		group.setText("Time Frame");
+		group.setLayout(new GridLayout(4, false));
+		WidgetHelper.grabBoth(group);
+		WidgetHelper.grabHorizontal(group);
 		
-		buildButtonForTimeFrame(composite, TimeFrameType.CURRENT_MONTH);
-		buildButtonForTimeFrame(composite, TimeFrameType.LAST_MONTH);
-		buildButtonForTimeFrame(composite, TimeFrameType.CURRENT_YEAR);
-		buildButtonForTimeFrame(composite, TimeFrameType.LAST_YEAR);
+		final Button useTime = new Button(group, SWT.CHECK);
+		GridDataFactory.fillDefaults().span(4, 1).applyTo(useTime);
+		useTime.setText("Constrict to time frame:");
+		useTime.setSelection(enabledByDefault);
 		
-		final Button custom = new Button(composite, SWT.RADIO);
-		custom.setSelection(currentTimeFrame.getType() == TimeFrameType.CUSTOM);
+		WidgetHelper.createLabel(group, "Month/Quarter:");
+		final Combo months = new Combo(group, SWT.READ_ONLY);
+		months.setEnabled(enabledByDefault);
+		Calendar cal = Calendar.getInstance();
+		for (int i = 0;i <= Calendar.DECEMBER; i++) {
+			cal.set(Calendar.MONTH, i);
+			months.add(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+		}
+		months.add("Whole Year");
 		
-		Composite dates = new Composite(composite, SWT.NONE);
-		dates.setLayout(new RowLayout());
+		WidgetHelper.createLabel(group, "Year:");		
+		final Combo years = new Combo(group, SWT.READ_ONLY);
+		years.setEnabled(enabledByDefault);
+		WidgetHelper.grabHorizontal(years);
+		for (int i = 2006;i <= cal.get(Calendar.YEAR); i++) {
+			years.add(Integer.toString(i));
+		}
+		years.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				currentTimeFrame.setYear(Integer.valueOf(years.getItems()[years.getSelectionIndex()]), false);
+				currentTimeFrameChanged();
+			}
+		});
 		
-		WidgetHelper.createLabel(dates, Messages.labelFrom);
-		from = new DateTime(dates, SWT.DROP_DOWN);
+		months.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int sel = months.getSelectionIndex();
+				if (sel <= Calendar.DECEMBER) {
+					currentTimeFrame.setMonth(sel, true);
+				} else {
+					if (years.getSelectionIndex() < 0) {
+						years.select(years.getItemCount() - 1);
+					}
+					currentTimeFrame.setYear(Integer.valueOf(years.getItems()[years.getSelectionIndex()]), true);
+				}
+				currentTimeFrameChanged();
+			}
+		});
+		
+		WidgetHelper.createLabel(group, "Presets:");
+		final Combo presets = new Combo(group, SWT.READ_ONLY);
+		presets.setEnabled(enabledByDefault);
+		GridDataFactory.fillDefaults().span(3, 1).applyTo(presets);
+		presets.add("None (Custom Date)");
+		presets.add(TimeFrameType.CURRENT_MONTH.getTranslatedName());
+		presets.add(TimeFrameType.LAST_MONTH.getTranslatedName());
+		presets.add(TimeFrameType.CURRENT_YEAR.getTranslatedName());
+		presets.add(TimeFrameType.LAST_YEAR.getTranslatedName());
+					
+		WidgetHelper.createLabel(group, "Custom/Detailed:");
+		from = new DateTime(group, SWT.DROP_DOWN);
+		from.setEnabled(false);
 		from.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(from));
 				getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
-				custom.setSelection(true);
 			}
 		});
 		
-		WidgetHelper.createLabel(dates, Messages.labelUntil);
-		to = new DateTime(dates, SWT.DROP_DOWN);
+		WidgetHelper.createLabel(group, Messages.labelUntil);
+		to = new DateTime(group, SWT.DROP_DOWN);
+		to.setEnabled(false);
 		to.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				currentTimeFrame.setUntil(WidgetHelper.widgetToDate(to));
 				getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
-				custom.setSelection(true);
+			}
+		});
+		
+		presets.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				switch (presets.getSelectionIndex()) {
+				case 0:
+					from.setEnabled(true);
+					to.setEnabled(true);
+					return; // do nothing
+				case 1:
+					currentTimeFrame = TimeFrame.currentMonth();
+					break;
+				case 2:
+					currentTimeFrame = TimeFrame.lastMonth();
+					break;
+				case 3:
+					currentTimeFrame = TimeFrame.currentYear();
+					break;
+				case 4:
+					currentTimeFrame = TimeFrame.lastYear();
+					break;
+				}
+				System.out.println("DISABLING");
+				from.setEnabled(false);
+				to.setEnabled(false);
+				currentTimeFrameChanged();
 			}
 		});
 		
 		currentTimeFrameChanged();
 		
-		return composite;
-	}
+		if (!enabledByDefault) {
+			previousTimeFrame = currentTimeFrame;
+			currentTimeFrame = null;
+		}
 		
+		useTime.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				months.setEnabled(useTime.getSelection());
+				years.setEnabled(useTime.getSelection());
+				presets.setEnabled(useTime.getSelection());
+				if (useTime.getSelection() && presets.getSelectionIndex() == 0) {
+					to.setEnabled(true);
+					from.setEnabled(true);					
+				} else {
+					to.setEnabled(false);
+					from.setEnabled(false);
+				}
+				
+				if (useTime.getSelection()) {
+					currentTimeFrame = previousTimeFrame;
+				} else {
+					previousTimeFrame = currentTimeFrame;
+					currentTimeFrame = null;
+				}
+			}
+		});
+		
+		return group;
+	}
+	
 	/**
 	 * @return the currentTimeFrame
 	 */
@@ -98,44 +208,6 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 */
 	public void setCurrentTimeFrame(TimeFrame currentTimeFrame) {
 		this.currentTimeFrame = currentTimeFrame;
-	}
-	
-	/**
-	 * 
-	 * @param parent
-	 * @param type
-	 */
-	private void buildButtonForTimeFrame(Composite parent, TimeFrameType type) {
-		final Button button = new Button(parent, SWT.RADIO);
-		button.setText(type.getTranslatedName());
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(button);
-		final TimeFrame timeFrame;
-		switch (type) {
-		case CURRENT_YEAR:
-			timeFrame = TimeFrame.currentYear();
-			break;
-		case LAST_MONTH:
-			timeFrame = TimeFrame.lastMonth();
-			break;
-		case LAST_YEAR:
-			timeFrame = TimeFrame.lastYear();
-			break;
-		default:
-			timeFrame = TimeFrame.currentMonth();
-			break;
-		}
-		
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (button.getSelection()) { // only need to react if the button was actually selected (ignore deselect)
-					currentTimeFrame = timeFrame;
-					currentTimeFrameChanged();					
-				}
-			}
-		});
-		
-		button.setSelection(currentTimeFrame.getType() == type);
 	}
 	
 	/**

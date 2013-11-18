@@ -18,13 +18,13 @@ package de.togginho.accounting.ui.expense;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IViewPart;
 
 import de.togginho.accounting.model.ExpenseType;
@@ -32,6 +32,7 @@ import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
@@ -134,28 +135,15 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 			@Override
 			protected void createMainContents(Composite parent) {
 				Composite composite = new Composite(parent, SWT.NONE);
-				composite.setLayout(new GridLayout(2, false));
+				composite.setLayout(new GridLayout(1, false));
+				WidgetHelper.grabBoth(composite);
 				
-				Composite tf = buildTimeFrameSelectionComposite(composite);
-				final Button all = new Button(tf, SWT.RADIO);
-				all.setText(Messages.ChangeExpensesViewTimeFrameCommand_allExpenses);
-				GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(all);
-				all.addSelectionListener(new SelectionAdapter() {
-					private TimeFrame lastKnown;
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						if (all.getSelection()) {
-							lastKnown = getCurrentTimeFrame();
-							setCurrentTimeFrame(null);
-						} else {
-							setCurrentTimeFrame(lastKnown);
-						}
-					}
-				});
+				buildTimeFrameSelectionComposite(composite, true);
 				
-				Composite typeSelector = new Composite(composite, SWT.NONE);
-				typeSelector.setLayout(new GridLayout(1, false));
-				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).applyTo(typeSelector);
+				Group typeSelector = new Group(composite, SWT.SHADOW_ETCHED_IN);
+				typeSelector.setText("Expense types to show");
+				typeSelector.setLayout(new GridLayout(3, false));
+				WidgetHelper.grabBoth(typeSelector);
 				
 				for (final ExpenseType type : ExpenseType.values()) {
 					final Button b = new Button(typeSelector, SWT.CHECK);

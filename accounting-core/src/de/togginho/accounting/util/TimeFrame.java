@@ -106,10 +106,16 @@ public class TimeFrame {
 	 * 
 	 * @param month
 	 */
-	public void setMonth(int month, boolean adjustDaysAndYear) {
+	public void setMonth(int month, boolean adjustDays) {
 		if (month >= Calendar.JANUARY && month <= Calendar.DECEMBER) {
 			from.set(Calendar.MONTH, month);
 			until.set(Calendar.MONTH, month);
+			
+			if (adjustDays) {
+				from.getTimeInMillis(); // force the calendar to update itself
+				from.set(Calendar.DAY_OF_MONTH, from.getMinimum(Calendar.DAY_OF_MONTH));
+				until.set(Calendar.DAY_OF_MONTH, from.getActualMaximum(Calendar.DAY_OF_MONTH));
+			}
 		}
 	}
 	
@@ -117,11 +123,18 @@ public class TimeFrame {
 	 * 
 	 * @param year
 	 */
-	public void setYear(int year) {
+	public void setYear(int year, boolean adjustDaysAndMonths) {
 		from.set(Calendar.YEAR, year);
 		until.set(Calendar.YEAR, year);
+		
+		if (adjustDaysAndMonths) {
+			from.set(Calendar.DAY_OF_MONTH, 1);
+			from.set(Calendar.MONTH, Calendar.JANUARY);
+			until.set(Calendar.DAY_OF_MONTH, 31);
+			until.set(Calendar.MONTH, Calendar.DECEMBER);
+		}
 	}
-	
+		
 	/**
      * Returns whether the supplied date is within this timeframe.
      * 
