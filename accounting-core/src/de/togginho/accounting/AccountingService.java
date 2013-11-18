@@ -31,6 +31,7 @@ import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.ModelMetaInformation;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
@@ -415,4 +416,10 @@ public interface AccountingService {
 	 * @return the imported expenses
 	 */
 	ExpenseImportResult importExpenses(String sourceFile, ExpenseImportParams params);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	ModelMetaInformation getModelMetaInformation();	
 }

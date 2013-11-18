@@ -67,10 +67,12 @@ import de.togginho.accounting.model.IncomeStatement;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.model.InvoicePosition;
 import de.togginho.accounting.model.InvoiceState;
+import de.togginho.accounting.model.ModelMetaInformation;
 import de.togginho.accounting.model.PaymentTerms;
 import de.togginho.accounting.model.Revenue;
 import de.togginho.accounting.model.User;
 import de.togginho.accounting.model.internal.InvoiceSequencer;
+import de.togginho.accounting.model.internal.ModelMetaInformationImpl;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
 
@@ -96,6 +98,8 @@ public class AccountingServiceImpl implements AccountingService {
 	private Db4oService db4oService;
 	private ObjectContainer objectContainer;
 
+	private ModelMetaInformationImpl modelMetaInformation;
+	
 	/**
 	 * Creates a new instance of this service implementation.
 	 * 
@@ -150,6 +154,33 @@ public class AccountingServiceImpl implements AccountingService {
 			}
 		}
 
+		LOG.info("Building model meta information..."); //$NON-NLS-1$
+		this.modelMetaInformation = new ModelMetaInformationImpl();
+		
+		Set<Expense> expenses = getExpensesAsSet(null);
+		LOG.debug("Searching for oldest expense, total found: " + expenses.size()); //$NON-NLS-1$
+		modelMetaInformation.setNumberOfExpenses(expenses.size());
+		Calendar oldestExpense = Calendar.getInstance();
+		for (Expense expense : expenses) {
+			if (expense.getPaymentDate() != null && oldestExpense.getTime().after(expense.getPaymentDate())) {
+				oldestExpense.setTime(expense.getPaymentDate());
+			}
+		}
+		LOG.debug("Oldest known expense is from: " + FormatUtil.formatDate(oldestExpense.getTime())); //$NON-NLS-1$
+		modelMetaInformation.setOldestExpense(oldestExpense);
+		
+		Set<Invoice> invoices = findInvoices();
+		LOG.debug("Searching for oldest invoice, total found: " + invoices.size()); //$NON-NLS-1$
+		modelMetaInformation.setNumberOfInvoices(invoices.size());
+		Calendar oldestInvoice = Calendar.getInstance();
+		for (Invoice invoice : invoices) {
+			if (invoice.getInvoiceDate() != null && oldestInvoice.getTime().after(invoice.getInvoiceDate())) {
+				oldestInvoice.setTime(invoice.getInvoiceDate());
+			}
+		}
+		LOG.debug("Oldest invoice is from: " + FormatUtil.formatDate(oldestInvoice.getTime())); //$NON-NLS-1$
+		modelMetaInformation.setOldestInvoice(oldestInvoice);
+		
 		LOG.info("Service is now initialised"); //$NON-NLS-1$
 		// set this service to initialised - only after all necessary processing
 		// finished successfully
@@ -372,7 +403,7 @@ public class AccountingServiceImpl implements AccountingService {
 			throw new AccountingException("Busy!");
 		}
 	}
-	
+		
 	/**
 	 * 
 	 */
@@ -491,6 +522,13 @@ public class AccountingServiceImpl implements AccountingService {
 		doStoreEntity(invoice);
 
 		BUSINESS_LOG.info("Saved invoice: " + invoice.getNumber()); //$NON-NLS-1$
+		
+		// update model meta info if necessary
+		if (invoice.getInvoiceDate() != null && 
+				modelMetaInformation.getOldestKnownInvoiceDate().getTime().after(invoice.getInvoiceDate())) {
+			modelMetaInformation.getOldestKnownInvoiceDate().setTime(invoice.getInvoiceDate());
+		}
+		
 		
 		return invoice;
 	}
@@ -834,6 +872,7 @@ public class AccountingServiceImpl implements AccountingService {
     public Expense saveExpense(Expense expense) {
     	doStoreEntity(expense);
     	BUSINESS_LOG.info(String.format("Saved expense [%s]", expense.getDescription())); //$NON-NLS-1$
+    	checkAndUpdateMetaInfo(expense);
 	    return expense;
     }
         
@@ -846,10 +885,22 @@ public class AccountingServiceImpl implements AccountingService {
     	doStoreEntities(expenses);
     	for (Expense expense : expenses) {
     		BUSINESS_LOG.info(String.format("Saved expense [%s]", expense.getDescription())); //$NON-NLS-1$
+    		checkAndUpdateMetaInfo(expense);
     	}
 	    return expenses;
     }
 
+    /**
+     * 
+     * @param expense
+     */
+    private void checkAndUpdateMetaInfo(Expense expense) {
+    	if (expense.getPaymentDate() != null && 
+    			modelMetaInformation.getOldestKnownExpenseDate().getTime().after(expense.getPaymentDate())) {
+    		modelMetaInformation.getOldestKnownExpenseDate().setTime(expense.getPaymentDate());
+    	}
+    }
+    
 	/**
      * {@inheritDoc}.
      * @see AccountingService#findExpenses(TimeFrame, ExpenseType...)
@@ -1038,6 +1089,16 @@ public class AccountingServiceImpl implements AccountingService {
 	    return importer.parse();
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     * @see de.togginho.accounting.AccountingService#getModelMetaInformation()
+     */
+    @Override
+    public ModelMetaInformation getModelMetaInformation() {
+    	return modelMetaInformation;
+    }
+    
 	/**
 	 * 
 	 * @param entity

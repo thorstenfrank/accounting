@@ -88,6 +88,8 @@ public class Messages extends NLS {
 	public static String TimeFrameType_currentYear;
 	public static String TimeFrameType_lastYear;
 	public static String TimeFrameType_custom;
+	public static String TimeFrameType_month;
+	public static String TimeFrameType_wholeYear;
 	
 	public static String DateFormatPattern_DMY;
 	public static String DateFormatPattern_MDY;

@@ -15,6 +15,8 @@
  */
 package de.togginho.accounting.ui.expense;
 
+import java.util.Calendar;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -30,6 +32,7 @@ import org.eclipse.ui.IViewPart;
 import de.togginho.accounting.model.ExpenseType;
 import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
@@ -141,7 +144,7 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 				buildTimeFrameSelectionComposite(composite, true);
 				
 				Group typeSelector = new Group(composite, SWT.SHADOW_ETCHED_IN);
-				typeSelector.setText("Expense types to show");
+				typeSelector.setText(Messages.ChangeExpensesViewTimeFrameCommand_types);
 				typeSelector.setLayout(new GridLayout(3, false));
 				WidgetHelper.grabBoth(typeSelector);
 				
@@ -174,6 +177,15 @@ public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelecti
 	@Override
 	protected Logger getLogger() {
 		return LOG;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler#getStartDateForYearSelector()
+	 */
+	@Override
+	protected Calendar getStartDateForYearSelector() {
+		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownExpenseDate();
 	}
 
 }

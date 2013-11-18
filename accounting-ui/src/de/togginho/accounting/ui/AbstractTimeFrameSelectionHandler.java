@@ -15,7 +15,9 @@
  */
 package de.togginho.accounting.ui;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -38,10 +40,28 @@ import de.togginho.accounting.util.TimeFrameType;
  *
  */
 public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccountingHandler {
+	
+	/**
+	 * 
+	 */
+	private static final int INDEX_WHOLE_YEAR = Calendar.DECEMBER + 1;
+	
+	private static final int PRESET_INDEX_CUSTOM = 0;
+	private static final int PRESET_INDEX_CM = 1;
+	private static final int PRESET_INDEX_LM = 2;
+	private static final int PRESET_INDEX_CY = 3;
+	private static final int PRESET_INDEX_LY = 4;
+	
 	private TimeFrame currentTimeFrame;
-	private TimeFrame previousTimeFrame;
+	private boolean timeFrameActive;
+	
 	private DateTime from;
 	private DateTime to;
+	private Combo months;
+	private Combo years;
+	private Combo presets;
+	
+	private List<Integer> yearIndexMap;
 	
 	/**
 	 * 
@@ -49,77 +69,72 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 * @return
 	 */
 	protected Composite buildTimeFrameSelectionComposite(Composite parent, boolean enabledByDefault) {
+		timeFrameActive = enabledByDefault;
+		
 		// SHADOW_ETCHED_IN, SHADOW_ETCHED_OUT, SHADOW_IN, SHADOW_OUT, SHADOW_NONE 
 		Group group = new Group(parent, SWT.SHADOW_NONE);
-		group.setText("Time Frame");
+		group.setText(Messages.labelTimeFrame);
 		group.setLayout(new GridLayout(4, false));
 		WidgetHelper.grabBoth(group);
 		WidgetHelper.grabHorizontal(group);
 		
+		// USE TIME TOGGLE
 		final Button useTime = new Button(group, SWT.CHECK);
 		GridDataFactory.fillDefaults().span(4, 1).applyTo(useTime);
-		useTime.setText("Constrict to time frame:");
+		useTime.setText(Messages.AbstractTimeFrameSelectionHandler_useTimeFrame);
 		useTime.setSelection(enabledByDefault);
+		useTime.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				timeFrameActive = useTime.getSelection();
+				handleUseTimeSelection();
+			}
+		});
 		
-		WidgetHelper.createLabel(group, "Month/Quarter:");
-		final Combo months = new Combo(group, SWT.READ_ONLY);
+		// MONTH COMBO
+		WidgetHelper.createLabel(group, Messages.labelMonth);
+		months = new Combo(group, SWT.READ_ONLY);
 		months.setEnabled(enabledByDefault);
 		Calendar cal = Calendar.getInstance();
 		for (int i = 0;i <= Calendar.DECEMBER; i++) {
 			cal.set(Calendar.MONTH, i);
 			months.add(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
 		}
-		months.add("Whole Year");
+		months.add(TimeFrameType.WHOLE_YEAR.getTranslatedName());
+		createMonthsSelectionListener();
 		
-		WidgetHelper.createLabel(group, "Year:");		
-		final Combo years = new Combo(group, SWT.READ_ONLY);
+		// YEAR COMBO
+		WidgetHelper.createLabel(group, Messages.labelYear);		
+		years = new Combo(group, SWT.READ_ONLY);
 		years.setEnabled(enabledByDefault);
 		WidgetHelper.grabHorizontal(years);
-		for (int i = 2006;i <= cal.get(Calendar.YEAR); i++) {
+		yearIndexMap = new ArrayList<Integer>();
+		for (int i = getStartDateForYearSelector().get(Calendar.YEAR); i <= cal.get(Calendar.YEAR); i++) {
 			years.add(Integer.toString(i));
+			yearIndexMap.add(i);
 		}
-		years.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				currentTimeFrame.setYear(Integer.valueOf(years.getItems()[years.getSelectionIndex()]), false);
-				currentTimeFrameChanged();
-			}
-		});
+		createYearsSelectionListener();
 		
-		months.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int sel = months.getSelectionIndex();
-				if (sel <= Calendar.DECEMBER) {
-					currentTimeFrame.setMonth(sel, true);
-				} else {
-					if (years.getSelectionIndex() < 0) {
-						years.select(years.getItemCount() - 1);
-					}
-					currentTimeFrame.setYear(Integer.valueOf(years.getItems()[years.getSelectionIndex()]), true);
-				}
-				currentTimeFrameChanged();
-			}
-		});
-		
-		WidgetHelper.createLabel(group, "Presets:");
-		final Combo presets = new Combo(group, SWT.READ_ONLY);
+		// PRESETS
+		WidgetHelper.createLabel(group, Messages.labelPresets);
+		presets = new Combo(group, SWT.READ_ONLY);
 		presets.setEnabled(enabledByDefault);
 		GridDataFactory.fillDefaults().span(3, 1).applyTo(presets);
-		presets.add("None (Custom Date)");
-		presets.add(TimeFrameType.CURRENT_MONTH.getTranslatedName());
-		presets.add(TimeFrameType.LAST_MONTH.getTranslatedName());
-		presets.add(TimeFrameType.CURRENT_YEAR.getTranslatedName());
-		presets.add(TimeFrameType.LAST_YEAR.getTranslatedName());
-					
-		WidgetHelper.createLabel(group, "Custom/Detailed:");
+		presets.add(Messages.labelPresetsNone, PRESET_INDEX_CUSTOM);
+		presets.add(TimeFrameType.CURRENT_MONTH.getTranslatedName(), PRESET_INDEX_CM);
+		presets.add(TimeFrameType.LAST_MONTH.getTranslatedName(), PRESET_INDEX_LM);
+		presets.add(TimeFrameType.CURRENT_YEAR.getTranslatedName(), PRESET_INDEX_CY);
+		presets.add(TimeFrameType.LAST_YEAR.getTranslatedName(), PRESET_INDEX_LY);
+		createPresetsSelectionListener();
+		
+		// CUSTOM DATE SELECTION
+		WidgetHelper.createLabel(group, Messages.labelCustom);
 		from = new DateTime(group, SWT.DROP_DOWN);
 		from.setEnabled(false);
 		from.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				currentTimeFrame.setFrom(WidgetHelper.widgetToDate(from));
-				getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
 			}
 		});
 		
@@ -130,83 +145,31 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				currentTimeFrame.setUntil(WidgetHelper.widgetToDate(to));
-				getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
-			}
-		});
-		
-		presets.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				switch (presets.getSelectionIndex()) {
-				case 0:
-					from.setEnabled(true);
-					to.setEnabled(true);
-					return; // do nothing
-				case 1:
-					currentTimeFrame = TimeFrame.currentMonth();
-					break;
-				case 2:
-					currentTimeFrame = TimeFrame.lastMonth();
-					break;
-				case 3:
-					currentTimeFrame = TimeFrame.currentYear();
-					break;
-				case 4:
-					currentTimeFrame = TimeFrame.lastYear();
-					break;
-				}
-				System.out.println("DISABLING");
-				from.setEnabled(false);
-				to.setEnabled(false);
-				currentTimeFrameChanged();
 			}
 		});
 		
 		currentTimeFrameChanged();
 		
-		if (!enabledByDefault) {
-			previousTimeFrame = currentTimeFrame;
-			currentTimeFrame = null;
-		}
-		
-		useTime.addSelectionListener(new SelectionAdapter() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				months.setEnabled(useTime.getSelection());
-				years.setEnabled(useTime.getSelection());
-				presets.setEnabled(useTime.getSelection());
-				if (useTime.getSelection() && presets.getSelectionIndex() == 0) {
-					to.setEnabled(true);
-					from.setEnabled(true);					
-				} else {
-					to.setEnabled(false);
-					from.setEnabled(false);
-				}
-				
-				if (useTime.getSelection()) {
-					currentTimeFrame = previousTimeFrame;
-				} else {
-					previousTimeFrame = currentTimeFrame;
-					currentTimeFrame = null;
-				}
-			}
-		});
-		
 		return group;
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	protected abstract Calendar getStartDateForYearSelector();
+	
+	/**
 	 * @return the currentTimeFrame
 	 */
-	public TimeFrame getCurrentTimeFrame() {
-		return currentTimeFrame;
+	protected TimeFrame getCurrentTimeFrame() {
+		return timeFrameActive ? currentTimeFrame : null;
 	}
 
 	/**
 	 * @param currentTimeFrame the currentTimeFrame to set
 	 */
-	public void setCurrentTimeFrame(TimeFrame currentTimeFrame) {
+	protected void setCurrentTimeFrame(TimeFrame currentTimeFrame) {
 		this.currentTimeFrame = currentTimeFrame;
 	}
 	
@@ -217,5 +180,129 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
 		WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), to);
 		getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
+		
+		updateComboSelections();
+	}
+	
+	/**
+	 * 
+	 */
+	private void updateComboSelections() {
+		int monthIndex = -1;
+		int yearIndex = -1;
+		int presetIndex = -1;
+		
+		yearIndex = yearIndexMap.indexOf(currentTimeFrame.getFromYear());
+		monthIndex = currentTimeFrame.getFromMonth();
+
+		switch (currentTimeFrame.getType()) {
+		case CURRENT_MONTH:
+			presetIndex = PRESET_INDEX_CM;
+			break;
+		case LAST_MONTH:
+			presetIndex = PRESET_INDEX_LM;
+			break;
+		case CURRENT_YEAR:
+			monthIndex = months.getItemCount() - 1;
+			presetIndex = PRESET_INDEX_CY;
+			break;
+		case LAST_YEAR:
+			monthIndex = months.getItemCount() - 1;
+			presetIndex = PRESET_INDEX_LY;
+			break;
+		case WHOLE_YEAR:
+			monthIndex = months.getItemCount() - 1;
+			break;
+		default:
+			monthIndex = -1;
+			yearIndex = -1;
+			presetIndex = 0;
+		}
+		
+		months.select(monthIndex);
+		years.select(yearIndex);
+		presets.select(presetIndex);
+	}
+	
+	/**
+	 * 
+	 */
+	private void handleUseTimeSelection() {
+		months.setEnabled(timeFrameActive);
+		years.setEnabled(timeFrameActive);
+		presets.setEnabled(timeFrameActive);
+		if (timeFrameActive && presets.getSelectionIndex() == PRESET_INDEX_CUSTOM) {
+			to.setEnabled(true);
+			from.setEnabled(true);					
+		} else {
+			to.setEnabled(false);
+			from.setEnabled(false);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void createPresetsSelectionListener() {
+		presets.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				switch (presets.getSelectionIndex()) {
+				case PRESET_INDEX_CUSTOM:
+					from.setEnabled(true);
+					to.setEnabled(true);
+					return; // do nothing
+				case PRESET_INDEX_CM:
+					currentTimeFrame = TimeFrame.currentMonth();
+					break;
+				case PRESET_INDEX_LM:
+					currentTimeFrame = TimeFrame.lastMonth();
+					break;
+				case PRESET_INDEX_CY:
+					currentTimeFrame = TimeFrame.currentYear();
+					break;
+				case PRESET_INDEX_LY:
+					currentTimeFrame = TimeFrame.lastYear();
+					break;
+				}
+				from.setEnabled(false);
+				to.setEnabled(false);
+				currentTimeFrameChanged();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	private void createYearsSelectionListener() {
+		years.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), false);
+				currentTimeFrameChanged();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	private void createMonthsSelectionListener() {
+		months.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int sel = months.getSelectionIndex();
+				if (sel <= Calendar.DECEMBER) {
+					currentTimeFrame.setMonth(sel, true);
+				} else {
+					if (years.getSelectionIndex() < 0) {
+						years.select(INDEX_WHOLE_YEAR);
+					}
+					currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), true);
+				}
+				currentTimeFrameChanged();
+			}
+		});
 	}
 }

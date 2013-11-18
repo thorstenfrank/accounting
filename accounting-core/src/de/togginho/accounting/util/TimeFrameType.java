@@ -27,7 +27,9 @@ public enum TimeFrameType {
 	CURRENT_MONTH(Messages.TimeFrameType_currentMonth),
 	CURRENT_YEAR(Messages.TimeFrameType_currentYear),
 	LAST_MONTH(Messages.TimeFrameType_lastMonth),
-	LAST_YEAR(Messages.TimeFrameType_lastYear);
+	LAST_YEAR(Messages.TimeFrameType_lastYear),
+	SINGLE_MONTH(Messages.TimeFrameType_month),
+	WHOLE_YEAR(Messages.TimeFrameType_wholeYear);
 	
 	private String translated;
 

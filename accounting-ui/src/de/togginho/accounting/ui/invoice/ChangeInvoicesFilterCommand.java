@@ -16,6 +16,7 @@
 package de.togginho.accounting.ui.invoice;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import org.eclipse.ui.IViewPart;
 import de.togginho.accounting.model.InvoiceState;
 import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler;
+import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
@@ -66,10 +68,14 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 		
 		stateSelection = invoiceView.getInvoiceStateFilter();
 		
+		final boolean timeSelectorEnabled;
+		
 		if (invoiceView.getTimeFrameFilter() != null) {
 			setCurrentTimeFrame(invoiceView.getTimeFrameFilter());
+			timeSelectorEnabled = true;
 		} else {
 			setCurrentTimeFrame(TimeFrame.currentYear());
+			timeSelectorEnabled = false;
 		}
 		
 		AbstractModalDialog dialog = new AbstractModalDialog(
@@ -84,7 +90,7 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 				WidgetHelper.grabBoth(composite);
 				
 				Group typeSelectors = new Group(composite, SWT.SHADOW_NONE);
-				typeSelectors.setText("Types to show");
+				typeSelectors.setText(Messages.ChangeInvoicesFilterCommand_states);
 				typeSelectors.setLayout(new GridLayout(3, false));
 				WidgetHelper.grabBoth(typeSelectors);
 				
@@ -116,7 +122,7 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
         			stateButtons.add(b);
         		}
         		
-        		buildTimeFrameSelectionComposite(composite, false);
+        		buildTimeFrameSelectionComposite(composite, timeSelectorEnabled);
 			}
 		};
 		
@@ -143,6 +149,15 @@ public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandl
 	@Override
 	protected Logger getLogger() {
 		return LOG;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.AbstractTimeFrameSelectionHandler#getStartDateForYearSelector()
+	 */
+	@Override
+	protected Calendar getStartDateForYearSelector() {
+		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownInvoiceDate();
 	}
 
 }

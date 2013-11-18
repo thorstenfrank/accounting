@@ -31,6 +31,8 @@ public class Messages extends NLS {
 	public static String AbstractInvoiceHandler_errorNoInvoiceInCurrentEditor;
 	public static String AbstractInvoiceHandler_errorNoInvoiceInSelection;
 
+	public static String AbstractTimeFrameSelectionHandler_useTimeFrame;
+	
 	public static String AccountingSplashHandler_errorUserNotFoundInDbFile;
 	public static String AccountingSplashHandler_setupDialogCancelledMsg;
 	public static String AccountingSplashHandler_welcomeDialogTitle;
@@ -50,10 +52,11 @@ public class Messages extends NLS {
 
 	public static String ChangeExpensesViewTimeFrameCommand_message;
 	public static String ChangeExpensesViewTimeFrameCommand_title;
-	public static String ChangeExpensesViewTimeFrameCommand_allExpenses;
+	public static String ChangeExpensesViewTimeFrameCommand_types;
 	
 	public static String ChangeInvoicesFilterCommand_message;
 	public static String ChangeInvoicesFilterCommand_title;
+	public static String ChangeInvoicesFilterCommand_states;
 
 	public static String ChooseExportTargetDialog_labelPdfFiles;
 	public static String ChooseExportTargetDialog_message;
@@ -272,6 +275,7 @@ public class Messages extends NLS {
 	public static String labelClientDetails;
 	public static String labelClientName;
 	public static String labelClientNumber;
+	public static String labelCustom;
 	public static String labelDate;
 	public static String labelDepreciationMethod;
 	public static String labelDepreciationPeriodInYears;
@@ -288,6 +292,7 @@ public class Messages extends NLS {
 	public static String labelInvoiceDueDate;
 	public static String labelInvoiceNo;
 	public static String labelMobile;
+	public static String labelMonth;
 	public static String labelName;
 	public static String labelNet;
 	public static String labelPaymentTerms;
@@ -295,6 +300,8 @@ public class Messages extends NLS {
 	public static String labelPaymentTarget;
 	public static String labelPhone;
 	public static String labelPostalCode;
+	public static String labelPresets;
+	public static String labelPresetsNone;
 	public static String labelPricePerUnit;
 	public static String labelQuantity;
 	public static String labelRevenue;
