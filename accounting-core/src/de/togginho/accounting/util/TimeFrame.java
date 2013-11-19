@@ -175,7 +175,9 @@ public class TimeFrame {
 			break;
 		case LAST_MONTH:
 		case CURRENT_MONTH:
+		case SINGLE_MONTH:
 			type = TimeFrameType.SINGLE_MONTH;
+			break;
 		default:
 			type = TimeFrameType.CUSTOM;
 		}
