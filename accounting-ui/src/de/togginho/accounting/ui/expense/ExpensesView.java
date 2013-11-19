@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 
-import de.togginho.accounting.Constants;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.ExpenseCollection;
 import de.togginho.accounting.model.ExpenseType;
@@ -41,9 +40,7 @@ import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.ModelChangeListener;
-import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
-import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -192,12 +189,8 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 		StringBuilder title = new StringBuilder();
 		if (timeFrame == null) {
 			title.append(Messages.ExpensesView_allExpenses);
-		} else if (timeFrame.getType() == TimeFrameType.CUSTOM) {
-			title.append(FormatUtil.formatDate(timeFrame.getFrom()));
-			title.append(Constants.HYPHEN);
-			title.append(FormatUtil.formatDate(timeFrame.getUntil()));
 		} else {
-			title.append(timeFrame.getType().getTranslatedName());
+			title.append(currentTimeFrame.toLocalizedString());
 		}
 		
 		setPartName(Messages.bind(Messages.ExpensesView_title, title.toString()));

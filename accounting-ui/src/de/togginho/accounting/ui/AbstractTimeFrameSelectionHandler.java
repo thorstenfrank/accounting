@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 
 import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.TimeFrame;
@@ -46,12 +47,6 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 */
 	private static final int INDEX_WHOLE_YEAR = Calendar.DECEMBER + 1;
 	
-	private static final int PRESET_INDEX_CUSTOM = 0;
-	private static final int PRESET_INDEX_CM = 1;
-	private static final int PRESET_INDEX_LM = 2;
-	private static final int PRESET_INDEX_CY = 3;
-	private static final int PRESET_INDEX_LY = 4;
-	
 	private TimeFrame currentTimeFrame;
 	private boolean timeFrameActive = true;
 	
@@ -59,9 +54,8 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	private DateTime to;
 	private Combo months;
 	private Combo years;
-	private Combo presets;
-	
 	private List<Integer> yearIndexMap;
+	private List<Button> typeButtons;
 	
 	/**
 	 * 
@@ -115,22 +109,18 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		}
 		createYearsSelectionListener();
 		
-		// PRESETS
-		WidgetHelper.createLabel(group, Messages.labelPresets);
-		presets = new Combo(group, SWT.READ_ONLY);
-		presets.setEnabled(enabledByDefault);
-		GridDataFactory.fillDefaults().span(3, 1).applyTo(presets);
-		presets.add(Messages.labelPresetsNone, PRESET_INDEX_CUSTOM);
-		presets.add(TimeFrameType.CURRENT_MONTH.getTranslatedName(), PRESET_INDEX_CM);
-		presets.add(TimeFrameType.LAST_MONTH.getTranslatedName(), PRESET_INDEX_LM);
-		presets.add(TimeFrameType.CURRENT_YEAR.getTranslatedName(), PRESET_INDEX_CY);
-		presets.add(TimeFrameType.LAST_YEAR.getTranslatedName(), PRESET_INDEX_LY);
-		createPresetsSelectionListener();
+		GridDataFactory gdf = GridDataFactory.fillDefaults().span(4, 1).grab(true, false);
+		
+		Composite customComp = new Composite(group, SWT.NONE);
+		customComp.setLayout(new GridLayout(4, false));
+		gdf.applyTo(customComp);
 		
 		// CUSTOM DATE SELECTION
-		WidgetHelper.createLabel(group, Messages.labelCustom);
-		from = new DateTime(group, SWT.DROP_DOWN);
-		from.setEnabled(false);
+		Label customLabel = WidgetHelper.createLabel(customComp, Messages.labelCustom);
+		gdf.applyTo(customLabel);
+		
+		WidgetHelper.createLabel(customComp, Messages.labelFrom);
+		from = new DateTime(customComp, SWT.DROP_DOWN);
 		from.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -138,9 +128,8 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 			}
 		});
 		
-		WidgetHelper.createLabel(group, Messages.labelUntil);
-		to = new DateTime(group, SWT.DROP_DOWN);
-		to.setEnabled(false);
+		WidgetHelper.createLabel(customComp, Messages.labelUntil);
+		to = new DateTime(customComp, SWT.DROP_DOWN);
 		to.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -148,9 +137,52 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 			}
 		});
 		
+		// PRESETS
+		Composite presetsCombo = new Composite(group, SWT.NONE);
+		presetsCombo.setLayout(new GridLayout(4, true));
+		gdf.applyTo(presetsCombo);
+		Label presetsLabel = WidgetHelper.createLabel(presetsCombo, Messages.labelPresets);
+		gdf.applyTo(presetsLabel);
+		typeButtons = new ArrayList<Button>();
+		buildTimeFrameTypeButton(TimeFrameType.CURRENT_MONTH, presetsCombo);
+		buildTimeFrameTypeButton(TimeFrameType.LAST_MONTH, presetsCombo);
+		buildTimeFrameTypeButton(TimeFrameType.CURRENT_YEAR, presetsCombo);
+		buildTimeFrameTypeButton(TimeFrameType.LAST_YEAR, presetsCombo);
+		
 		currentTimeFrameChanged();
 		
 		return group;
+	}
+	
+	private Button buildTimeFrameTypeButton(TimeFrameType type, Composite parent) {
+		final Button b = new Button(parent, SWT.PUSH);
+		WidgetHelper.grabHorizontal(b);
+		typeButtons.add(b);
+		b.setText(type.getTranslatedName());
+		final TimeFrame timeFrame;
+		switch (type) {
+		case CURRENT_YEAR:
+			timeFrame = TimeFrame.currentYear();
+			break;
+		case LAST_MONTH:
+			timeFrame = TimeFrame.lastMonth();
+			break;
+		case LAST_YEAR:
+			timeFrame = TimeFrame.lastYear();
+			break;
+		default:
+			timeFrame = TimeFrame.currentMonth();
+			break;
+		}
+		
+		b.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				currentTimeFrame = timeFrame;
+				currentTimeFrameChanged();
+			}
+		});
+		return b;
 	}
 	
 	/**
@@ -188,40 +220,27 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 * 
 	 */
 	private void updateComboSelections() {
+		getLogger().debug("Current time frame type is now: " + currentTimeFrame.getType().name());
 		int monthIndex = -1;
 		int yearIndex = -1;
-		int presetIndex = -1;
 		
 		yearIndex = yearIndexMap.indexOf(currentTimeFrame.getFromYear());
 		monthIndex = currentTimeFrame.getFromMonth();
 
 		switch (currentTimeFrame.getType()) {
-		case CURRENT_MONTH:
-			presetIndex = PRESET_INDEX_CM;
-			break;
-		case LAST_MONTH:
-			presetIndex = PRESET_INDEX_LM;
-			break;
 		case CURRENT_YEAR:
-			monthIndex = months.getItemCount() - 1;
-			presetIndex = PRESET_INDEX_CY;
-			break;
 		case LAST_YEAR:
-			monthIndex = months.getItemCount() - 1;
-			presetIndex = PRESET_INDEX_LY;
-			break;
 		case WHOLE_YEAR:
-			monthIndex = months.getItemCount() - 1;
+			monthIndex = INDEX_WHOLE_YEAR;
 			break;
-		default:
+		case CUSTOM:
 			monthIndex = -1;
 			yearIndex = -1;
-			presetIndex = 0;
+			break;
 		}
 		
 		months.select(monthIndex);
 		years.select(yearIndex);
-		presets.select(presetIndex);
 	}
 	
 	/**
@@ -230,48 +249,13 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	private void handleUseTimeSelection() {
 		months.setEnabled(timeFrameActive);
 		years.setEnabled(timeFrameActive);
-		presets.setEnabled(timeFrameActive);
-		if (timeFrameActive && presets.getSelectionIndex() == PRESET_INDEX_CUSTOM) {
-			to.setEnabled(true);
-			from.setEnabled(true);					
-		} else {
-			to.setEnabled(false);
-			from.setEnabled(false);
+		from.setEnabled(timeFrameActive);
+		to.setEnabled(timeFrameActive);
+		for (Button b : typeButtons) {
+			b.setEnabled(timeFrameActive);
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	private void createPresetsSelectionListener() {
-		presets.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				switch (presets.getSelectionIndex()) {
-				case PRESET_INDEX_CUSTOM:
-					from.setEnabled(true);
-					to.setEnabled(true);
-					return; // do nothing
-				case PRESET_INDEX_CM:
-					currentTimeFrame = TimeFrame.currentMonth();
-					break;
-				case PRESET_INDEX_LM:
-					currentTimeFrame = TimeFrame.lastMonth();
-					break;
-				case PRESET_INDEX_CY:
-					currentTimeFrame = TimeFrame.currentYear();
-					break;
-				case PRESET_INDEX_LY:
-					currentTimeFrame = TimeFrame.lastYear();
-					break;
-				}
-				from.setEnabled(false);
-				to.setEnabled(false);
-				currentTimeFrameChanged();
-			}
-		});
-	}
-
 	/**
 	 * 
 	 */
@@ -280,6 +264,9 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), false);
+				if (months.getSelectionIndex() < 0) {
+					months.select(INDEX_WHOLE_YEAR);
+				}
 				currentTimeFrameChanged();
 			}
 		});
@@ -292,12 +279,11 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		months.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				int sel = months.getSelectionIndex();
-				if (sel <= Calendar.DECEMBER) {
-					currentTimeFrame.setMonth(sel, true);
+				if (months.getSelectionIndex() <= Calendar.DECEMBER) {
+					currentTimeFrame.setMonth(months.getSelectionIndex());
 				} else {
 					if (years.getSelectionIndex() < 0) {
-						years.select(INDEX_WHOLE_YEAR);
+						years.select(years.getItemCount() - 1);
 					}
 					currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), true);
 				}

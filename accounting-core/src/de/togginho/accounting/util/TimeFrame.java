@@ -17,6 +17,7 @@ package de.togginho.accounting.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import de.togginho.accounting.Constants;
 
@@ -140,22 +141,33 @@ public class TimeFrame {
 	}
 
 	/**
+	 * Sets the month of both from and until dates to the specified one. The other parts of the two dates are adjusted
+	 * to reflect being the first and last day of the new month respectively. The year value of the two dates are left
+	 * untouched. 
+	 * <p>The type of this time frame is then changed to {@link TimeFrameType#SINGLE_MONTH}, unless the previous type 
+	 * was {@link TimeFrameType#CUSTOM}, in which case it remains that way.</p>
 	 * 
-	 * @param month
+	 * @param month the month to set this time frame to - illegal values (less than {@link Calendar#JANUARY} ore more 
+	 * 				than {@link Calendar#DECEMBER} are ignored.
+	 * 
+	 * @see TimeFrameType
+	 * @see Calendar#MONTH
+	 * @see Calendar#JANUARY
+	 * @see Calendar#DECEMBER
 	 */
-	public void setMonth(int month, boolean adjustDays) {
+	public void setMonth(int month) {
 		if (month >= Calendar.JANUARY && month <= Calendar.DECEMBER) {
 			from.set(Calendar.MONTH, month);
 			until.set(Calendar.MONTH, month);
 			
-			this.type = TimeFrameType.CUSTOM;
-			
-			if (adjustDays) {
-				from.getTimeInMillis(); // force the calendar to update itself
-				from.set(Calendar.DAY_OF_MONTH, from.getMinimum(Calendar.DAY_OF_MONTH));
-				until.set(Calendar.DAY_OF_MONTH, from.getActualMaximum(Calendar.DAY_OF_MONTH));
-				this.type = TimeFrameType.SINGLE_MONTH;
+			if (type != TimeFrameType.CUSTOM) {
+				type = TimeFrameType.SINGLE_MONTH;
 			}
+			
+			from.getTimeInMillis(); // force the calendar to update itself
+			until.getTimeInMillis(); // force the calendar to update itself
+			from.set(Calendar.DAY_OF_MONTH, from.getMinimum(Calendar.DAY_OF_MONTH));
+			until.set(Calendar.DAY_OF_MONTH, from.getActualMaximum(Calendar.DAY_OF_MONTH));
 		}
 	}
 	
@@ -219,6 +231,34 @@ public class TimeFrame {
     	sb.append(Constants.BLANK_STRING).append(Constants.HYPHEN).append(Constants.BLANK_STRING);
     	sb.append(FormatUtil.formatDate(until.getTime()));
         return sb.toString();
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String toLocalizedString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	switch (type) {
+		case CUSTOM:
+			sb.append(FormatUtil.formatDate(getFrom()));
+			sb.append(Constants.HYPHEN);
+			sb.append(FormatUtil.formatDate(getUntil()));
+			break;
+		case SINGLE_MONTH:
+			from.getTimeInMillis(); // force the calendar to update the actual time
+			sb.append(from.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+			sb.append(Constants.BLANK_STRING);
+		case WHOLE_YEAR:
+			sb.append(from.get(Calendar.YEAR));
+			break;
+		default:
+			sb.append(type.getTranslatedName());
+			break;
+		}
+    	
+    	return sb.toString();
     }
     
 	/**
