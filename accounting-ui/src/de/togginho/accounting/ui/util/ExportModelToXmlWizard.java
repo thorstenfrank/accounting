@@ -19,6 +19,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -90,6 +91,11 @@ public class ExportModelToXmlWizard extends Wizard implements IExportWizard {
 	        		
 	        	}
 	        });
+	        
+	        MessageDialog.openInformation(
+	        		getShell(), 
+	        		Messages.ExportModelToXmlWizard_finishedTitle, 
+	        		Messages.bind(Messages.ExportModelToXmlWizard_finishedMsg, targetFileName));
 	        
 	        return true;
         } catch (AccountingException e) {

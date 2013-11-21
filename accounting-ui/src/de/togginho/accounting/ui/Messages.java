@@ -116,6 +116,8 @@ public class Messages extends NLS {
 	public static String ExportModelToXmlWizard_progressMessage;
 	public static String ExportModelToXmlWizard_targetFile;
 	public static String ExportModelToXmlWizard_warningTargetFileExists;
+	public static String ExportModelToXmlWizard_finishedTitle;
+	public static String ExportModelToXmlWizard_finishedMsg;
 	
 	public static String FindInvoiceCommand_inputMessage;
 	public static String FindInvoiceCommand_inputTitle;
