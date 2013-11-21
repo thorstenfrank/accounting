@@ -16,6 +16,10 @@
 package de.togginho.accounting.ui.reports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
@@ -26,8 +30,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -35,6 +41,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.model.ModelMetaInformation;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.ui.util.WidgetHelper;
@@ -48,26 +55,25 @@ import de.togginho.accounting.util.TimeFrameType;
  */
 public abstract class AbstractReportDialog extends TrayDialog {
 
-	private DateTime fromDate;
-	private DateTime untilDate;
+	/**
+	 * 
+	 */
+	private static final int INDEX_WHOLE_YEAR = Calendar.DECEMBER + 1;
+	
+	private TimeFrame timeFrame;
+	private Combo months;
+	private Combo years;
+	private List<Integer> yearIndexMap;
+	private List<Button> typeButtons;
 	
 	/**
 	 * 
 	 * @param shell
 	 */
-	public AbstractReportDialog(Shell shell) {
+	public AbstractReportDialog(Shell shell, TimeFrame timeFrame) {
 		super(shell);
 		setHelpAvailable(true);
-	}
-	
-	/**
-	 * Always returns <code>true</code>.
-	 * {@inheritDoc}.
-	 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
-	 */
-	@Override
-	protected boolean isResizable() {
-	    return true;
+		this.timeFrame = timeFrame;
 	}
 	
 	/**
@@ -97,42 +103,139 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		querySection.setClient(sectionClient);
 		sectionClient.setLayout(new GridLayout(5, false));
 		
-		formToolkit.createLabel(sectionClient, Messages.labelFrom);
-		fromDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
-		formToolkit.adapt(fromDate);
-		formToolkit.paintBordersFor(fromDate);
+		// MONTH COMBO
+		buildMonthSelector(sectionClient);
 		
-		formToolkit.createLabel(sectionClient, Messages.labelUntil);
-		untilDate = new DateTime(sectionClient, SWT.BORDER | SWT.DROP_DOWN);
-		formToolkit.adapt(untilDate);
-		formToolkit.paintBordersFor(untilDate);
+		// YEAR COMBO
+		buildYearSelector(sectionClient);
+		
+		// PRESETS
+		createPresetButtons(sectionClient);
 				
-		final Button btnSearch = formToolkit.createButton(sectionClient, Messages.labelSearch, SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(btnSearch);
-		btnSearch.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateModel();
-			}
-		});
-		
-		Composite timeFrameShortcuts = new Composite(sectionClient, SWT.NONE);
-		formToolkit.adapt(timeFrameShortcuts);
-		timeFrameShortcuts.setLayout(new GridLayout(4, false));
-		GridDataFactory.fillDefaults().span(5, 1).applyTo(timeFrameShortcuts);
-		
-		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.CURRENT_YEAR);
-		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.LAST_YEAR);
-		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.CURRENT_MONTH);
-		createTimeFrameRadioButton(timeFrameShortcuts, TimeFrameType.LAST_MONTH);
-		
 		if (needsCustomQueryParameters()) {
 			Composite customParams = new Composite(sectionClient, SWT.NONE);
 			GridDataFactory.fillDefaults().span(5, 1).applyTo(customParams);
 			addCustomQueryParameters(customParams);			
 		}
+
+		updateComboSelections(false);
 		
 		return querySection;		
+	}
+
+	/**
+	 * @param sectionClient
+	 */
+	private void buildMonthSelector(Composite sectionClient) {
+		Calendar cal = Calendar.getInstance();
+		
+		getToolkit().createLabel(sectionClient, Messages.labelMonth);
+		months = new Combo(sectionClient, SWT.READ_ONLY);
+		getToolkit().adapt(months);
+		getToolkit().paintBordersFor(months);
+		for (int i = 0;i <= Calendar.DECEMBER; i++) {
+			cal.set(Calendar.MONTH, i);
+			months.add(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+		}
+		months.add(TimeFrameType.WHOLE_YEAR.getTranslatedName());
+		months.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (months.getSelectionIndex() <= Calendar.DECEMBER) {
+					timeFrame.setMonth(months.getSelectionIndex());
+				} else {
+					if (years.getSelectionIndex() < 0) {
+						years.select(years.getItemCount() - 1);
+					}
+					timeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), true);
+				}
+				updateComboSelections(true);
+			}
+		});
+	}
+
+	/**
+	 * @param parent
+	 */
+	private void buildYearSelector(Composite parent) {
+		final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		getToolkit().createLabel(parent, Messages.labelYear);		
+		years = new Combo(parent, SWT.READ_ONLY);
+		getToolkit().adapt(years);
+		getToolkit().paintBordersFor(years);
+		WidgetHelper.grabHorizontal(years);
+		yearIndexMap = new ArrayList<Integer>();
+		ModelMetaInformation meta = AccountingUI.getAccountingService().getModelMetaInformation();
+		int oldest = meta.getOldestKnownExpenseDate().after(meta.getOldestKnownInvoiceDate()) ? 
+				meta.getOldestKnownInvoiceDate().get(Calendar.YEAR) : 
+					meta.getOldestKnownExpenseDate().get(Calendar.YEAR);
+		for (int i = oldest; i <= currentYear; i++) {
+			years.add(Integer.toString(i));
+			yearIndexMap.add(i);
+		}
+		years.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				timeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), false);
+				if (months.getSelectionIndex() < 0) {
+					months.select(INDEX_WHOLE_YEAR);
+				}
+				updateComboSelections(true);
+			}
+		});
+	}
+	
+	/**
+	 * @param parent
+	 */
+	private void createPresetButtons(Composite parent) {
+		Composite presetsCombo = new Composite(parent, SWT.NONE);
+		presetsCombo.setLayout(new GridLayout(4, true));
+		GridDataFactory.fillDefaults().span(5, 1).grab(true, false).applyTo(presetsCombo);
+		
+		Label presetsLabel = WidgetHelper.createLabel(presetsCombo, Messages.labelPresets);
+		GridDataFactory.fillDefaults().span(4, 1).applyTo(presetsLabel);
+		typeButtons = new ArrayList<Button>();
+		buildTimeFrameTypeButton(TimeFrameType.CURRENT_MONTH, presetsCombo);
+		buildTimeFrameTypeButton(TimeFrameType.LAST_MONTH, presetsCombo);
+		buildTimeFrameTypeButton(TimeFrameType.CURRENT_YEAR, presetsCombo);
+		buildTimeFrameTypeButton(TimeFrameType.LAST_YEAR, presetsCombo);
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param parent
+	 * @return
+	 */
+	private Button buildTimeFrameTypeButton(TimeFrameType type, Composite parent) {
+		final Button b = getToolkit().createButton(parent, type.getTranslatedName(), SWT.PUSH);
+		WidgetHelper.grabHorizontal(b);
+		typeButtons.add(b);
+		final TimeFrame tf;
+		switch (type) {
+		case CURRENT_YEAR:
+			tf = TimeFrame.currentYear();
+			break;
+		case LAST_MONTH:
+			tf = TimeFrame.lastMonth();
+			break;
+		case LAST_YEAR:
+			tf = TimeFrame.lastYear();
+			break;
+		default:
+			tf = TimeFrame.currentMonth();
+			break;
+		}
+		
+		b.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				timeFrame = tf;
+				updateComboSelections(true);
+			}
+		});
+		return b;
 	}
 	
 	/**
@@ -150,80 +253,31 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	protected void addCustomQueryParameters(Composite customParams) {
 		// nothing to do in the default implementation
 	}
-	
-	/**
-	 * 
-	 * @param parent
-	 * @param label
-	 * @param timeFrame
-	 * @param initallySelected
-	 */
-	private void createTimeFrameRadioButton(Composite parent, TimeFrameType timeFrameType) {
-		final TimeFrame timeFrame;
-		boolean selected = timeFrameType.equals(getDefaultTimeFrameType());
 		
-		switch (timeFrameType) {
-		case CURRENT_MONTH:
-			timeFrame = TimeFrame.currentMonth();
-			break;
-		case LAST_MONTH:
-			timeFrame = TimeFrame.lastMonth();
-			break;
-		case CURRENT_YEAR:
-			timeFrame = TimeFrame.currentYear();
-			break;
-		case LAST_YEAR:
-			timeFrame = TimeFrame.lastYear();
-			break;
-		default:
-			timeFrame = TimeFrame.currentMonth();
-			break;
-		}
-		
-		if (selected) {
-			WidgetHelper.dateToWidget(timeFrame.getFrom(), fromDate);
-			WidgetHelper.dateToWidget(timeFrame.getUntil(), untilDate);
-		}
-		
-		final Button button = getToolkit().createButton(parent, timeFrame.getType().getTranslatedName(), SWT.RADIO);
-		button.setSelection(selected);
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (button.getSelection()) {
-					WidgetHelper.dateToWidget(timeFrame.getFrom(), fromDate);
-					WidgetHelper.dateToWidget(timeFrame.getUntil(), untilDate);
-					updateModel(timeFrame);					
-				}
-			}
-		});
-	}
-	
 	/**
 	 * 
 	 * @return
 	 */
 	protected abstract FormToolkit getToolkit();
+
+	/**
+	 * 
+	 */
+	protected abstract void updateModel();
+	
+	/**
+	 * 
+	 */
+	protected abstract void handleExport();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	protected abstract TimeFrameType getDefaultTimeFrameType();
-	
-	/**
-	 * 
-	 */
-	protected void updateModel() {
-		updateModel(new TimeFrame(WidgetHelper.widgetToDate(fromDate), WidgetHelper.widgetToDate(untilDate)));
+	protected TimeFrame getTimeFrame() {
+		return timeFrame;
 	}
-	
-	/**
-	 * 
-	 * @param timeFrame
-	 */
-	protected abstract void updateModel(TimeFrame timeFrame);
-	
+		
 	/**
 	 * Create contents of the button bar.
 	 * @param parent
@@ -248,6 +302,16 @@ public abstract class AbstractReportDialog extends TrayDialog {
 	}
 	
 	/**
+	 * Always returns <code>true</code>.
+	 * {@inheritDoc}.
+	 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
+	 */
+	@Override
+	protected boolean isResizable() {
+	    return true;
+	}
+	
+	/**
 	 * 
 	 */
 	@Override
@@ -266,10 +330,7 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	protected abstract void handleExport();
+
 
 	/**
      * 
@@ -282,4 +343,34 @@ public abstract class AbstractReportDialog extends TrayDialog {
     	}
     	text.setText(FormatUtil.formatCurrency(value));
     }
+    
+	/**
+	 * 
+	 */
+	private void updateComboSelections(boolean updateModel) {
+		int monthIndex = -1;
+		int yearIndex = -1;
+		
+		yearIndex = yearIndexMap.indexOf(timeFrame.getFromYear());
+		monthIndex = timeFrame.getFromMonth();
+
+		switch (timeFrame.getType()) {
+		case CURRENT_YEAR:
+		case LAST_YEAR:
+		case WHOLE_YEAR:
+			monthIndex = INDEX_WHOLE_YEAR;
+			break;
+		case CUSTOM:
+			monthIndex = -1;
+			yearIndex = -1;
+			break;
+		}
+		
+		months.select(monthIndex);
+		years.select(yearIndex);
+		
+		if (updateModel) {
+			updateModel();
+		}
+	}
 }

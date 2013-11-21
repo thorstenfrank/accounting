@@ -53,7 +53,6 @@ import de.togginho.accounting.ui.reports.ReportGenerationHandler;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
-import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * 
@@ -84,7 +83,7 @@ public class RevenueDialog extends AbstractReportDialog {
 	 * @param parentShell
 	 */
 	public RevenueDialog(Shell parentShell) {
-		super(parentShell);
+		super(parentShell, TimeFrame.currentYear());
 	}
 		
 	/**
@@ -211,14 +210,15 @@ public class RevenueDialog extends AbstractReportDialog {
 		
 		return viewerColumn;
 	}
-		
+	
 	/**
+	 * 
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel()
 	 */
 	@Override
-	protected void updateModel(TimeFrame timeFrame) {
-		revenue = AccountingUI.getAccountingService().getRevenue(timeFrame);
+	protected void updateModel() {
+		revenue = AccountingUI.getAccountingService().getRevenue(getTimeFrame());
 		List<InvoiceWrapper> invoices = new ArrayList<InvoiceWrapper>();
 		for (Invoice invoice : revenue.getInvoices()) {
 			invoices.add(new InvoiceWrapper(invoice));
@@ -240,16 +240,7 @@ public class RevenueDialog extends AbstractReportDialog {
 	protected FormToolkit getToolkit() {
 		return formToolkit;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getDefaultTimeFrameType()
-	 */
-	@Override
-	protected TimeFrameType getDefaultTimeFrameType() {
-		return TimeFrameType.CURRENT_YEAR;
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#handleExport()

@@ -52,7 +52,6 @@ import de.togginho.accounting.ui.reports.AbstractReportDialog;
 import de.togginho.accounting.ui.reports.ReportGenerationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
-import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -76,7 +75,7 @@ public class ExpenseDialog extends AbstractReportDialog {
 	 * @param shell
 	 */
 	public ExpenseDialog(Shell shell) {
-		super(shell);
+		super(shell, TimeFrame.currentYear());
 	}
 	
 	/**
@@ -278,26 +277,18 @@ public class ExpenseDialog extends AbstractReportDialog {
 	protected FormToolkit getToolkit() {
 		return formToolkit;
 	}
-
+	
 	/**
+	 * 
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getDefaultTimeFrameType()
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel()
 	 */
 	@Override
-	protected TimeFrameType getDefaultTimeFrameType() {
-		return TimeFrameType.CURRENT_YEAR;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
-	 */
-	@Override
-	protected void updateModel(TimeFrame timeFrame) {
+	protected void updateModel() {
 		if (selectedType == null) {
-			expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame);
+			expenseCollection = AccountingUI.getAccountingService().findExpenses(getTimeFrame());
 		} else {
-			expenseCollection = AccountingUI.getAccountingService().findExpenses(timeFrame, selectedType);
+			expenseCollection = AccountingUI.getAccountingService().findExpenses(getTimeFrame(), selectedType);
 		}
 		
 		List<ExpenseWrapper> wrappers = new ArrayList<ExpenseWrapper>();

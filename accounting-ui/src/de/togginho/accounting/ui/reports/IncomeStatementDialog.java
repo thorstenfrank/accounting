@@ -34,7 +34,6 @@ import de.togginho.accounting.model.Price;
 import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.Messages;
 import de.togginho.accounting.util.TimeFrame;
-import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -70,9 +69,14 @@ public class IncomeStatementDialog extends AbstractReportDialog {
      * @param shell
      */
     protected IncomeStatementDialog(Shell shell) {
-	    super(shell);
+	    super(shell, TimeFrame.lastMonth());
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     protected Control createDialogArea(Composite parent) {
     	getShell().setText(Messages.IncomeStatementDialog_title);
@@ -293,23 +297,15 @@ public class IncomeStatementDialog extends AbstractReportDialog {
 	protected FormToolkit getToolkit() {
 		return formToolkit;
 	}
-
+	
 	/**
+	 * 
 	 * {@inheritDoc}
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getDefaultTimeFrameType()
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel()
 	 */
 	@Override
-	protected TimeFrameType getDefaultTimeFrameType() {
-		return TimeFrameType.LAST_MONTH;
-	}
-
-	/**
-	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
-	 */
-	@Override
-	protected void updateModel(TimeFrame timeFrame) {		
-		incomeStatement = AccountingUI.getAccountingService().getIncomeStatement(timeFrame);
+	protected void updateModel() {		
+		incomeStatement = AccountingUI.getAccountingService().getIncomeStatement(getTimeFrame());
 		
 		Price revenue = incomeStatement.getTotalRevenue();
 		Price totalExpenses = incomeStatement.getTotalExpenses();
