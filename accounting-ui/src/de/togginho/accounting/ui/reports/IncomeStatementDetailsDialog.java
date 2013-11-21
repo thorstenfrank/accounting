@@ -15,14 +15,11 @@
  */
 package de.togginho.accounting.ui.reports;
 
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -48,7 +45,6 @@ import de.togginho.accounting.ui.util.WidgetHelper;
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.FormatUtil;
 import de.togginho.accounting.util.TimeFrame;
-import de.togginho.accounting.util.TimeFrameType;
 
 /**
  * @author thorsten
@@ -75,7 +71,7 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
      * @param shell
      */
     IncomeStatementDetailsDialog(Shell shell) {
-	    super(shell);
+	    super(shell, TimeFrame.lastYear());
     }
 
     /**
@@ -113,27 +109,6 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
     	updateModel();
     	
     	return container;
-    }
-    
-    private void createUniqueQuerySection(Composite parent) {
-    	Section section = toolkit.createSection(parent, Section.TITLE_BAR);
-    	section.setText("Query");
-
-		Composite sectionClient = toolkit.createComposite(section);
-		section.setClient(sectionClient);
-		sectionClient.setLayout(new GridLayout(2, false));
-		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		
-    	toolkit.createLabel(sectionClient, "Month");
-    	Combo combo = new Combo(sectionClient, SWT.DROP_DOWN | SWT.READ_ONLY);
-    	toolkit.adapt(combo);
-    	    	
-    	for (int month = 0; month < 12; month++) {
-    		combo.add(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
-    		cal.add(Calendar.MONTH, 1);
-    	}    	
     }
     
     /**
@@ -278,16 +253,11 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 	protected FormToolkit getToolkit() {
 		return toolkit;
 	}
-
+	
 	/**
-	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#getDefaultTimeFrameType()
+	 * 
+	 * @param revenue
 	 */
-	@Override
-	protected TimeFrameType getDefaultTimeFrameType() {
-		return TimeFrameType.LAST_YEAR;
-	}
-
 	private void updateRevenueTree(Revenue revenue) {
 		revenueTree.removeAll();
 		TreeItem headerItem = new TreeItem(revenueTree, SWT.NONE);
@@ -372,17 +342,24 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 		headerItem.setExpanded(true);
 	}
 	
+	/**
+	 * 
+	 * @param category
+	 * @param expense
+	 * @return
+	 */
 	private boolean isSameCategory(String category, Expense expense) {
 		return ((category == null && expense.getCategory() == null) || category != null && category.equals(expense.getCategory()));
 	}
 	
 	/**
-	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel(de.togginho.accounting.util.TimeFrame)
+	 * 
+	 * {@inheritDoc}
+	 * @see de.togginho.accounting.ui.reports.AbstractReportDialog#updateModel()
 	 */
 	@Override
-	protected void updateModel(TimeFrame timeFrame) {
-		incomeStatement = AccountingUI.getAccountingService().getIncomeStatement(timeFrame);
+	protected void updateModel() {
+		incomeStatement = AccountingUI.getAccountingService().getIncomeStatement(getTimeFrame());
 		updateRevenueTree(incomeStatement.getRevenue());
 		
 		updateExpenseTree(opexTree, incomeStatement.getOperatingExpenses(), incomeStatement.getOperatingExpenseCategories());
@@ -426,7 +403,12 @@ public class IncomeStatementDetailsDialog extends AbstractReportDialog {
 	 *
 	 */
 	private class IncomeStatementGenerationHandler implements ReportGenerationHandler {
-		
+
+		/**
+		 * 
+		 * {@inheritDoc}
+		 * @see de.togginho.accounting.ui.reports.ReportGenerationHandler#getTargetFileNameSuggestion()
+		 */
 		@Override
 		public String getTargetFileNameSuggestion() {
 			return ReportGenerationUtil.appendTimeFrameToFileNameSuggestion(

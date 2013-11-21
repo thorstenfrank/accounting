@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import de.togginho.accounting.model.AnnualDepreciation;
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.model.Invoice;
@@ -36,9 +34,6 @@ import de.togginho.accounting.model.internal.DepreciationCalculatorFactory;
  * @author thorsten frank
  */
 public final class CalculationUtil {
-
-    /** Logging instance. */
-    private static final Logger LOG = Logger.getLogger(CalculationUtil.class);
 
     /**
      * 
@@ -164,7 +159,6 @@ public final class CalculationUtil {
     		return BigDecimal.ZERO;
     	}
     	BigDecimal netPrice = invoicePosition.getQuantity().multiply(invoicePosition.getPricePerUnit());
-    	LOG.debug(String.format("Net price for Invoice Position is [%s]", netPrice.toString()));
     	return netPrice;
     }
     
