@@ -196,6 +196,12 @@ public class ExpensesView extends AbstractTableView implements ModelChangeListen
 			title.append(FormatUtil.formatDate(timeFrame.getFrom()));
 			title.append(Constants.HYPHEN);
 			title.append(FormatUtil.formatDate(timeFrame.getUntil()));
+		} else if (timeFrame.getType() == TimeFrameType.WHOLE_YEAR) {
+			title.append(timeFrame.getFromYear());
+		} else if (timeFrame.getType() == TimeFrameType.SINGLE_MONTH) {
+			title.append(timeFrame.getFromMonthLocalized());
+			title.append(Constants.BLANK_STRING);
+			title.append(timeFrame.getFromYear());
 		} else {
 			title.append(timeFrame.getType().getTranslatedName());
 		}

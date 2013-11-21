@@ -295,9 +295,9 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 				int sel = months.getSelectionIndex();
 				if (sel <= Calendar.DECEMBER) {
 					currentTimeFrame.setMonth(sel, true);
-				} else {
+				} else if (sel == INDEX_WHOLE_YEAR) {
 					if (years.getSelectionIndex() < 0) {
-						years.select(INDEX_WHOLE_YEAR);
+						years.select(years.getItemCount() - 1);
 					}
 					currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), true);
 				}

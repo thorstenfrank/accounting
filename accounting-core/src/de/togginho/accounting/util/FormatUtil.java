@@ -237,7 +237,6 @@ public final class FormatUtil {
      * @return
      */
     public static String formatPercentValue(Locale locale, BigDecimal value) {
-        LOG.debug("Formatting percentage value: "+value.toString()); //$NON-NLS-1$
         return getPercentFormatter(locale).format(value);
     }
 

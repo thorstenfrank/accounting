@@ -17,6 +17,7 @@ package de.togginho.accounting.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import de.togginho.accounting.Constants;
 
@@ -87,6 +88,14 @@ public class TimeFrame {
      * 
      * @return
      */
+    public String getFromMonthLocalized() {
+    	return from.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+    }
+    
+    /**
+     * 
+     * @return
+     */
     public int getFromYear() {
     	return from.get(Calendar.YEAR);
     }
@@ -113,6 +122,14 @@ public class TimeFrame {
      */
     public int getUntilMonth() {
     	return until.get(Calendar.MONTH);
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public String getUntilMonthLocalized() {
+    	return until.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
     }
     
     /**
