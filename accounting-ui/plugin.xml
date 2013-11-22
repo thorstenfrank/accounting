@@ -36,11 +36,11 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/Ledger_32x32.png">
+               value="aboutimage.png">
          </property>
          <property
                name="aboutText"
-               value="Togginho Accounting About Text">
+               value="%aboutTextBla">
          </property>
           <property name="preferenceCustomization" value="plugin_customization.ini"/> 
           <property
