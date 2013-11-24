@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.config.BigMathSupport;
 import com.db4o.config.Configuration;
 import com.db4o.config.ObjectClass;
 import com.db4o.config.ObjectField;
@@ -193,12 +194,15 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	private Configuration createConfiguration() {
 		Configuration config = db4oService.newConfiguration();
-
+		
 		// make sure to use UTF-8
 		config.stringEncoding(StringEncodings.utf8());
-
+		
+		// must ensure support for big decimal
+		config.add(new BigMathSupport());
+		
 		// allow version upgrades...
-		// common.allowVersionUpdates(true);
+		config.allowVersionUpdates(true);
 
 		// config for User object graph cascade
 		ObjectClass userClass = config.objectClass(User.class);
