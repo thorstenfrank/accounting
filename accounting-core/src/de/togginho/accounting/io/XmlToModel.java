@@ -200,7 +200,7 @@ class XmlToModel {
 				expense.setNetAmount(xmlExpense.getNetAmount());
 				expense.setPaymentDate(convertDate(xmlExpense.getPaymentDate()));
 				expense.setTaxRate(findOrCreateTaxRate(xmlExpense.getTaxRate()));
-				
+				expense.setCategory(xmlExpense.getCategory());
 				if (xmlExpense.getDepreciationMethod() != null) {
 					expense.setDepreciationMethod(DepreciationMethod.valueOf(xmlExpense.getDepreciationMethod().name()));
 				}
