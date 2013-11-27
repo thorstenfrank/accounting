@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
@@ -945,7 +946,13 @@ public class AccountingServiceImpl implements AccountingService {
     private Set<Expense> getExpensesAsSet(TimeFrame timeFrame, ExpenseType...types) {
     	Set<Expense> expenses = null;
     	try {
-	        expenses = new HashSet<Expense>(objectContainer.query(new FindExpensesPredicate(timeFrame, types)));
+    		expenses = new TreeSet<Expense>(new Comparator<Expense>() {
+				@Override
+				public int compare(Expense o1, Expense o2) {
+					return o1.getPaymentDate().compareTo(o2.getPaymentDate());
+				}
+			});
+    		expenses.addAll(objectContainer.query(new FindExpensesPredicate(timeFrame, types)));
         } catch (Db4oIOException e) {
         	throwDb4oIoException(e);
         } catch (DatabaseClosedException e) {
