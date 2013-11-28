@@ -37,7 +37,7 @@ import java.math.RoundingMode;
  * @see de.togginho.accounting.util.CalculationUtil#calculatePrice(InvoicePosition)
  * @see de.togginho.accounting.util.CalculationUtil#calculateTotalPrice(Invoice)
  */
-public class Price implements Serializable {
+public class Price implements Comparable<Price>, Serializable {
 
 	/**
      * 
@@ -255,6 +255,15 @@ public class Price implements Serializable {
     	}
     }
     
+	/**
+     * {@inheritDoc}.
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Price o) {
+	    return gross.compareTo(o.gross);
+    }
+
 	/**
 	 * @param listener
 	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)

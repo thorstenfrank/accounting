@@ -17,8 +17,11 @@ package de.togginho.accounting.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import de.togginho.accounting.util.CalculationUtil;
 import de.togginho.accounting.util.TimeFrame;
@@ -244,17 +247,26 @@ public class IncomeStatement implements Serializable {
      * @return
      */
     private Map<String, Price> buildCategoryMap(ExpenseCollection expenses) {
-    	Map<String, Price> map = new HashMap<String, Price>();
+    	final Map<String, Price> temp = new HashMap<String, Price>();
     	
     	for (Expense expense : expenses.getExpenses()) {
-    		if (false == map.containsKey(expense.getCategory())) {
-    			map.put(expense.getCategory(), new Price());
+    		if (false == temp.containsKey(expense.getCategory())) {
+    			temp.put(expense.getCategory(), new Price());
     		}
     		
-    		map.get(expense.getCategory()).add(CalculationUtil.calculatePrice(expense));
+    		temp.get(expense.getCategory()).add(CalculationUtil.calculatePrice(expense));
     	}
     	
-    	return map;    	
+    	SortedMap<String, Price> sorted = new TreeMap<String, Price>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+	            return -1 * (temp.get(o1).compareTo(temp.get(o2)));
+            }
+		});
+    	
+    	sorted.putAll(temp);
+    	
+    	return sorted;    	
     }
     
     /**
