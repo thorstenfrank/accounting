@@ -158,10 +158,11 @@ public class ReportGenerationUtil {
 					throw new AccountingException(Messages.ReportGenerationUtil_errorGeneratingInvoice, e);
 				}
 				
-				showSuccessPopup(shell);
-				
+				// either open the document or show a success message
 				if (dlg.isOpenAfterExport()) {
 					openFileInExternalProgram();
+				} else {
+					showSuccessPopup(shell);
 				}
 				
 				// save any changes to defaults to preferences
