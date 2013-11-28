@@ -156,7 +156,19 @@ public class AccountingServiceImpl implements AccountingService {
 			}
 		}
 
-		LOG.info("Building model meta information..."); //$NON-NLS-1$
+		buildModelMetaInfo();
+		
+		LOG.info("Service is now initialised"); //$NON-NLS-1$
+		// set this service to initialised - only after all necessary processing
+		// finished successfully
+		initialised = true;
+	}
+
+	/**
+     * 
+     */
+    private void buildModelMetaInfo() {
+	    LOG.info("Building model meta information..."); //$NON-NLS-1$
 		this.modelMetaInformation = new ModelMetaInformationImpl();
 		
 		ObjectSet<Expense> expenses = objectContainer.query(Expense.class);
@@ -182,12 +194,7 @@ public class AccountingServiceImpl implements AccountingService {
 		}
 		LOG.debug("Oldest invoice is from: " + FormatUtil.formatDate(oldestInvoice.getTime())); //$NON-NLS-1$
 		modelMetaInformation.setOldestInvoice(oldestInvoice);
-		
-		LOG.info("Service is now initialised"); //$NON-NLS-1$
-		// set this service to initialised - only after all necessary processing
-		// finished successfully
-		initialised = true;
-	}
+    }
 
 	/**
 	 * 
@@ -949,10 +956,28 @@ public class AccountingServiceImpl implements AccountingService {
     		expenses = new TreeSet<Expense>(new Comparator<Expense>() {
 				@Override
 				public int compare(Expense o1, Expense o2) {
-					return o1.getPaymentDate().compareTo(o2.getPaymentDate());
+					int result = o1.getPaymentDate().compareTo(o2.getPaymentDate());
+					if (result == 0) {
+						
+						result = o1.getDescription().compareTo(o2.getDescription());
+						if (result == 0) {
+							LOG.debug(String.format("[%s] and [%s] have equal payment dates and descriptions", o1.getDescription(), o2.getDescription()));
+							if (o1.equals(o2)) {
+								LOG.debug("These two are equal...");
+								result = 0;
+							} else {
+								LOG.debug(">>>>>>> Returning -1");
+								result = -1;
+							}
+						}
+					}
+					return result;
 				}
 			});
-    		expenses.addAll(objectContainer.query(new FindExpensesPredicate(timeFrame, types)));
+    		
+    		ObjectSet<Expense> result = objectContainer.query(new FindExpensesPredicate(timeFrame, types));
+    		
+    		expenses.addAll(result);
         } catch (Db4oIOException e) {
         	throwDb4oIoException(e);
         } catch (DatabaseClosedException e) {
@@ -1085,7 +1110,9 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	objectContainer.commit();
     	
-    	LOG.info("Successfully imported data!");
+    	LOG.info("Successfully imported data, now building meta information");
+    	
+    	buildModelMetaInfo();
     	
     	return context;
     }

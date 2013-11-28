@@ -175,7 +175,8 @@ public class TimeFrame {
 		if (month >= Calendar.JANUARY && month <= Calendar.DECEMBER) {
 			from.set(Calendar.MONTH, month);
 			until.set(Calendar.MONTH, month);
-			
+			setToStartOfDay(from);
+			setToEndOfDay(until);
 			if (type != TimeFrameType.CUSTOM) {
 				type = TimeFrameType.SINGLE_MONTH;
 			}
@@ -183,7 +184,7 @@ public class TimeFrame {
 			from.getTimeInMillis(); // force the calendar to update itself
 			until.getTimeInMillis(); // force the calendar to update itself
 			from.set(Calendar.DAY_OF_MONTH, from.getMinimum(Calendar.DAY_OF_MONTH));
-			until.set(Calendar.DAY_OF_MONTH, from.getActualMaximum(Calendar.DAY_OF_MONTH));
+			until.set(Calendar.DAY_OF_MONTH, until.getActualMaximum(Calendar.DAY_OF_MONTH));
 		}
 	}
 	
