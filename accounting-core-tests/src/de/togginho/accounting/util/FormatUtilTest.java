@@ -103,7 +103,7 @@ public class FormatUtilTest {
 			FormatUtil.parsePercentValue(Locale.GERMANY, "SomeBogusValue/)");
 			fail("Unparseable value should have yielded an exception!");
 		} catch (AccountingException e) {
-			// TODO use unique error codes?
+			// this is what we want
 		}
 	}
 
@@ -139,7 +139,7 @@ public class FormatUtilTest {
 			date = FormatUtil.parseDate(Locale.US, "9/13/10");
 			fail("Unparseable date should have yielded an exception");
 		} catch (AccountingException e) {
-			// TODO use unique error codes?
+			// this is what we want
 		}
 		
 		date = FormatUtil.parseDate(Locale.GERMANY, "13.09.2010");			

@@ -20,8 +20,6 @@ import java.io.Serializable;
 /**
  * Information about a bank account to which payments are made.
  * 
- * TODO add IBAN support
- * 
  * @author thorsten frank
  */
 public class BankAccount implements Serializable {

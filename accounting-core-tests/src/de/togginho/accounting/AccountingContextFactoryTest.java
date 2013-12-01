@@ -42,14 +42,14 @@ public class AccountingContextFactoryTest {
 			AccountingContextFactory.buildContext(null, TEST_DB_FILE_NAME);
 			fail("No username supplied, should have caught exception");
 		} catch (AccountingException e) {
-			// TODO use unique error codes?
+			// this is what we want
 		}
 		
 		try {
 			AccountingContextFactory.buildContext(TEST_USER_NAME, null);
 			fail("No db file name supplied, should have caught exception");
 		} catch (AccountingException e) {
-			// TODO use unique error codes?
+			// this is what we want
 		}
 		
 		try {

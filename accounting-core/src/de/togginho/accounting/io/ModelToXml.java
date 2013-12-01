@@ -307,8 +307,7 @@ class ModelToXml {
 	        xmlCal.setYear(cal.get(Calendar.YEAR));
 	        return xmlCal;
         } catch (DatatypeConfigurationException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
+        	LOG.error("Could not convert date to XML", e); //$NON-NLS-1$
         }
 		
 		return null;

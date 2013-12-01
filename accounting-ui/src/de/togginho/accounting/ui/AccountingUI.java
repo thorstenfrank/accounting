@@ -125,7 +125,6 @@ public class AccountingUI extends AbstractUIPlugin {
 	 * @return
 	 */
 	public static AccountingService getAccountingService() {
-		// TODO cache the proxy instance?
 		final Class<AccountingService> serviceClazz = AccountingService.class;
 		
 		return (AccountingService) Proxy.newProxyInstance(

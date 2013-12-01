@@ -44,6 +44,9 @@ import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.Messages;
 
 /**
+ * Very simple handler that allows users to change the language and locale of the application by writing it to the
+ * OSGI config file under key <pre>osgi.nl</pre>.
+ * 
  * @author thorsten
  *
  */
@@ -63,8 +66,7 @@ public class LanguageSelectionHandler extends AbstractAccountingHandler {
 	private static final String CONFIG_INI = "config.ini"; //$NON-NLS-1$
 	
 	/**
-	 * TODO would be nice if this could be made more flexible, e.g. by reading available messages.props or by
-	 * querying the NLS system...
+	 * 
 	 */
 	private static final String[] SUPPORTED_LANGUAGES = {
 		new Locale("de").getLanguage(), //$NON-NLS-1$

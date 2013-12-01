@@ -308,10 +308,7 @@ public class UserEditor extends AbstractAccountingEditor {
 				}
 			}
 		});
-		
-		// TODO implement remove tax rate
-		//Button remove = toolkit.createButton(buttons, Messages.labelRemove, SWT.PUSH);
-		
+				
 		taxRateSection.setClient(client);
 	}
 	

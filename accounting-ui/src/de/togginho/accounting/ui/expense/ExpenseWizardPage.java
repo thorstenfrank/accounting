@@ -106,7 +106,6 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 	 */
 	@Override
 	public Text createText(Composite parent, int style) {
-		// FIXME this doesn't really fit...
 		return WidgetHelper.createSingleBorderText(parent, null);
 	}
 

@@ -87,9 +87,7 @@ public class SetupWizard extends Wizard {
 				
 		// if the path to the db file doesn't exist, create it
 		File dbFile = new File(dbFileLocation);
-		if (dbFile.exists()) {
-			// TODO the file already exists - maybe do something?
-		} else {
+		if (!dbFile.exists()) {
 			File parent = dbFile.getParentFile();
 			if (!parent.exists()) {
 				parent.mkdirs();

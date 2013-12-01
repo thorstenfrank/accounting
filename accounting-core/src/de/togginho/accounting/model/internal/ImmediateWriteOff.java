@@ -80,7 +80,6 @@ class ImmediateWriteOff implements Depreciation {
 	 */
 	@Override
 	public BigDecimal getMonthlyDepreciationAmount() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

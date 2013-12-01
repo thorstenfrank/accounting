@@ -62,7 +62,6 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 			getLogger().warn("Current selection is empty, cannot run this command!"); //$NON-NLS-1$
 		}
 		
-		// TODO refine this
 		if (invoice == null) {
 			throw new AccountingException(Messages.AbstractInvoiceHandler_errorNoInvoiceInSelection);
 		}
@@ -88,7 +87,6 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 			getLogger().warn("No invoice in active editor - cannot run this command!");  //$NON-NLS-1$
 		}
 		
-		// TODO refine this
 		if (invoice == null) {
 			throw new AccountingException(Messages.AbstractInvoiceHandler_errorNoInvoiceInCurrentEditor);
 		}
