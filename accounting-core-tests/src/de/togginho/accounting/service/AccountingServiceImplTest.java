@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.db4o.ObjectContainer;
+import com.db4o.config.BigMathSupport;
 import com.db4o.config.Configuration;
 import com.db4o.config.ObjectClass;
 import com.db4o.config.ObjectField;
@@ -98,6 +99,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		Configuration configurationMock = createMock(Configuration.class);
 		expect(db4oServiceMock.newConfiguration()).andReturn(configurationMock);
 		configurationMock.stringEncoding(anyObject(UTF8StringEncoding.class));
+		configurationMock.add(anyObject(BigMathSupport.class));
+		configurationMock.allowVersionUpdates(true);
 		
 		ObjectClass userClassMock = createMock(ObjectClass.class);
 		expect(configurationMock.objectClass(User.class)).andReturn(userClassMock);

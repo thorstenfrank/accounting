@@ -303,19 +303,19 @@ public class MultiEditExpensesHandler extends AbstractExpenseHandler {
 			WidgetHelper.createLabel(parent, Messages.labelCategory);
 			final Combo categoryCombo = new Combo(parent, SWT.DROP_DOWN);
 			WidgetHelper.grabHorizontal(categoryCombo);
-			final List<String> allCategories = AccountingUI.getAccountingService().findExpenseCategories();
-			
-			allCategories.add(0, null);
-			
+			final List<String> allCategories = new ArrayList<String>(
+					AccountingUI.getAccountingService().getModelMetaInformation().getExpenseCategories());
 			categoryCombo.add(Constants.HYPHEN);
 			int selected = 0;
-			for (int i = 1; i < allCategories.size(); i++) {
-				String currentCat = allCategories.get(i);
-				categoryCombo.add(currentCat);
-				if (defaultCategory != null && defaultCategory.equals(currentCat)) {
-					selected = i;
+			int counter = 1;
+			for (String cat : allCategories) {
+				categoryCombo.add(cat);
+				if (defaultCategory != null && defaultCategory.equals(cat)) {
+					selected = counter;
 				}
+				counter++;
 			}
+			
 			categoryCombo.select(selected);
 			
 			final Button changeCategory = new Button(parent, SWT.CHECK);

@@ -16,6 +16,7 @@
 package de.togginho.accounting.model.internal;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import de.togginho.accounting.model.ModelMetaInformation;
 
@@ -38,6 +39,7 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 	
 	private Calendar oldestExpense;
 
+	private Set<String> expenseCategories;
 	
 	
 	/**
@@ -99,4 +101,21 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 	public void setOldestExpense(Calendar oldestExpense) {
 		this.oldestExpense = oldestExpense;
 	}
+
+	/**
+	 * 
+	 * {@inheritDoc}.
+	 * @see de.togginho.accounting.model.ModelMetaInformation#getExpenseCategories()
+	 */
+    @Override
+    public Set<String> getExpenseCategories() {
+    	return expenseCategories;
+    }
+
+	/**
+     * @param expenseCategories the expenseCategories to set
+     */
+    public void setExpenseCategories(Set<String> expenseCategories) {
+    	this.expenseCategories = expenseCategories;
+    }
 }

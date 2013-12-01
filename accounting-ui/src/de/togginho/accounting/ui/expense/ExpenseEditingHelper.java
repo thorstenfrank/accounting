@@ -167,7 +167,7 @@ class ExpenseEditingHelper implements IValueChangeListener, ISelectionChangedLis
 		bind(description, expense, Expense.FIELD_DESCRIPTION, false);
 		
 		// CATEGORY
-		expenseCategories = AccountingUI.getAccountingService().findExpenseCategories();
+		expenseCategories = AccountingUI.getAccountingService().getModelMetaInformation().getExpenseCategories();
 		
 		callback.createLabel(parent, Messages.labelCategory);
 		final ComboViewer categoryCombo = new ComboViewer(parent, SWT.DROP_DOWN);

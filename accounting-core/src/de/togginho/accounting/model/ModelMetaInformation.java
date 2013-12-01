@@ -17,6 +17,7 @@ package de.togginho.accounting.model;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Set;
 
 /**
  * @author thorsten
@@ -25,13 +26,29 @@ import java.util.Calendar;
 public interface ModelMetaInformation extends Serializable {
 
 	/**
+	 * Returns the earliest {@link Invoice#getInvoiceDate()} of all invoices in the Database.
 	 * 
-	 * @return
+	 * @return the oldest known invoice date
+	 * 
+	 * @see Invoice#getInvoiceDate()
 	 */
 	Calendar getOldestKnownInvoiceDate();
 
-	/*
+	/**
+	 * Returns the earliest {@link Expense#getPaymentDate()} of all expenses in the Database.
 	 * 
+	 *  @return the oldest known payment date of all expenses
+	 *  
+	 *  @see Expense#getPaymentDate()
 	 */
 	Calendar getOldestKnownExpenseDate();
+
+	/**
+	 * Returns a distinct and alphabetically sorted list of all expense categories stored in the database.
+	 * 
+     * @return a distinct list of all expense categories
+     * 
+     * @see Expense#getCategory()
+     */
+	Set<String> getExpenseCategories();
 }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -456,25 +457,30 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		Expense expense = new Expense();
 		expense.setDescription("Desc1");
+		expense.setPaymentDate(new Date());
 		expense.setCategory(cat2);
 		serviceUnderTest.saveExpense(expense);
 		
 		expense = new Expense();
 		expense.setDescription("Desc2");
 		expense.setCategory(cat2);
+		expense.setPaymentDate(new Date());
 		serviceUnderTest.saveExpense(expense);
 		
 		expense = new Expense();
 		expense.setDescription("Desc3");
 		expense.setCategory(cat1);
+		expense.setPaymentDate(new Date());
 		serviceUnderTest.saveExpense(expense);
 
 		expense = new Expense();
 		expense.setDescription("Desc4");
 		expense.setCategory(null);
+		expense.setPaymentDate(new Date());
 		serviceUnderTest.saveExpense(expense);
 		
-		List<String> categories = serviceUnderTest.findExpenseCategories();
+		List<String> categories = 
+				new ArrayList<String>(serviceUnderTest.getModelMetaInformation().getExpenseCategories());
 		assertNotNull(categories);
 		assertEquals(2, categories.size());
 		// check if sorting was done properly

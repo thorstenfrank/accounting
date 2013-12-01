@@ -175,13 +175,19 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("Searching for oldest expense, total found: " + expenses.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfExpenses(expenses.size());
 		Calendar oldestExpense = Calendar.getInstance();
+		Set<String> expenseCategories = new TreeSet<String>();
 		for (Expense expense : expenses) {
 			if (expense.getPaymentDate() != null && oldestExpense.getTime().after(expense.getPaymentDate())) {
 				oldestExpense.setTime(expense.getPaymentDate());
 			}
+			
+			if (expense.getCategory() != null) {
+				expenseCategories.add(expense.getCategory());
+			}
 		}
 		LOG.debug("Oldest known expense is from: " + FormatUtil.formatDate(oldestExpense.getTime())); //$NON-NLS-1$
 		modelMetaInformation.setOldestExpense(oldestExpense);
+		modelMetaInformation.setExpenseCategories(expenseCategories);
 		
 		ObjectSet<Invoice> invoices = objectContainer.query(Invoice.class);
 		LOG.debug("Searching for oldest invoice, total found: " + invoices.size()); //$NON-NLS-1$
@@ -911,6 +917,10 @@ public class AccountingServiceImpl implements AccountingService {
     			modelMetaInformation.getOldestKnownExpenseDate().getTime().after(expense.getPaymentDate())) {
     		modelMetaInformation.getOldestKnownExpenseDate().setTime(expense.getPaymentDate());
     	}
+    	
+    	if (expense.getCategory() != null) {
+    		modelMetaInformation.getExpenseCategories().add(expense.getCategory());
+    	}
     }
     
 	/**
@@ -923,26 +933,6 @@ public class AccountingServiceImpl implements AccountingService {
     	ec.setTimeFrame(timeFrame);
     	ec.setExpenses(getExpensesAsSet(timeFrame, types));
     	return ec;
-    }
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see AccountingService#findExpenseCategories()
-     */
-    @Override
-    public List<String> findExpenseCategories() {
-    	List<String> categories = new ArrayList<String>();
-    	
-    	for (Expense expense : getExpensesAsSet(null)) {
-    		if (expense.getCategory() != null && !categories.contains(expense.getCategory())) {
-    			categories.add(expense.getCategory());
-    		}
-    	}
-    	
-    	Collections.sort(categories);
-    	
-    	return categories;
     }
     
     /**
