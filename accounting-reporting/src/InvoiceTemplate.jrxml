@@ -34,7 +34,7 @@
 			</textField>
 			<textField>
 				<reportElement style="INVOICE_TX_12" x="0" y="151" width="241" height="16" uuid="5cbfc5f4-5e8c-4527-b05e-58fd091df48e"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.get("client.address.city")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{wrapper}.get("client.address.postalCode") + " " + $P{wrapper}.get("client.address.city")]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
