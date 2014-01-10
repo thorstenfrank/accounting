@@ -19,11 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 
 import de.togginho.accounting.reporting.ReportGenerationMonitor;
 import de.togginho.accounting.reporting.ReportingService;
-import de.togginho.accounting.reporting.xml.generated.AccountingReports;
-import de.togginho.accounting.reporting.xml.generated.Report;
 
 /**
  * @author thorsten
@@ -35,44 +35,41 @@ public class ReportingServiceImpl implements ReportingService {
 	 * 
 	 */
 	private static final Logger LOG = Logger.getLogger(ReportingServiceImpl.class);
-	
-	/**
-	 * 
-	 */
-	private AccountingReports availableReports;
 
-	/**
-     * @param availableReports the availableReports to set
-     */
-    public void setAvailableReports(AccountingReports availableReports) {
-    	this.availableReports = availableReports;
-    }
+	private static final String REPORT_EXTENSION_ID = "de.togginho.accounting.reporting.reports"; //$NON-NLS-1$
 	
+	private Map<String, String> availableReports;
+	private Map<String, IConfigurationElement> internalReportsMap;
+		
+	/**
+     * 
+     */
+    public ReportingServiceImpl() {
+    	LOG.info("Initialising service implementation. Now looking for available reports"); //$NON-NLS-1$
+    	
+    	IConfigurationElement[] elements = 
+    			Platform.getExtensionRegistry().getConfigurationElementsFor(REPORT_EXTENSION_ID);
+    	
+    	LOG.info(String.format("Found %d reports", elements.length)); //$NON-NLS-1$
+    	
+    	availableReports = new HashMap<String, String>(elements.length);
+    	internalReportsMap = new HashMap<String, IConfigurationElement>(elements.length);
+    	
+    	for (IConfigurationElement ce : elements) {
+    		String id = ce.getAttribute("id");
+    		String name = ce.getAttribute("name");
+    		String template = ce.getAttribute("template");
+    		LOG.debug(String.format("Found extension ID [%s], Name: [%s], Template: [%s]", id, name, template));
+    		availableReports.put(id, name);
+    		internalReportsMap.put(id, ce);
+    	}
+    }
+
 	/**
      * @return the availableReports
      */
     public Map<String, String> getAvailableReports() {
-    	Map<String, String> map = new HashMap<String, String>();
-    	
-    	for (Report report : availableReports.getReports().getReport()) {
-			String name = report.getId();
-
-			try {
-	            name = (String) Messages.class.getField(report.getId()).get(new String());
-            } catch (IllegalArgumentException e) {
-            	LOG.error("Error translating report name for " + name, e);
-            } catch (IllegalAccessException e) {
-            	LOG.error("Error translating report name for " + name, e);
-            } catch (NoSuchFieldException e) {
-            	LOG.warn("No proper translation provided for report ID: " + name, e);
-            } catch (SecurityException e) {
-            	LOG.error("Error translating report name for " + name, e);
-            }
-			
-			map.put(report.getId(), name);
-    	}
-    	
-    	return map;
+    	return availableReports;
     }
     
 	/**
@@ -81,22 +78,8 @@ public class ReportingServiceImpl implements ReportingService {
      */
     @Override
     public void generateReport(String reportId, Object model, String fileLocation, ReportGenerationMonitor monitor) {
-	    JasperReportGenerator generator = new JasperReportGenerator(getReportById(reportId), model);
-	    generator.generateReport(fileLocation, monitor);
-    }
-
-    /**
-     * 
-     * @param id
-     * @return
-     */
-    private Report getReportById(String id) {
-    	for (Report report : availableReports.getReports().getReport()) {
-    		if (report.getId().equals(id)) {
-    			return report;
-    		}
-    	}
     	
-    	return null;
+	    JasperReportGenerator generator = new JasperReportGenerator(internalReportsMap.get(reportId).getAttribute("template"), model);
+	    generator.generateReport(fileLocation, monitor);
     }
 }

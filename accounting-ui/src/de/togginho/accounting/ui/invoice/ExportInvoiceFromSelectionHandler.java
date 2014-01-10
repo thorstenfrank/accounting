@@ -78,7 +78,7 @@ public class ExportInvoiceFromSelectionHandler extends AbstractInvoiceHandler im
      */
     @Override
     public String getReportId() {
-	    return "Invoice";
+	    return "de.togginho.accounting.reporting.Invoice";
     }
     
 	/**

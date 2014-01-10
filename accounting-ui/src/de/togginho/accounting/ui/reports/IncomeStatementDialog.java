@@ -374,7 +374,7 @@ public class IncomeStatementDialog extends AbstractReportDialog {
          */
         @Override
         public String getReportId() {
-	        return "CashFlowStatement";
+	        return "de.togginho.accounting.reporting.CashFlowStatement";
         }
 	}
 }

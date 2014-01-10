@@ -62,7 +62,7 @@ class ExpensesReportGenerationHandler implements ReportGenerationHandler {
 	 */
 	@Override
 	public String getReportId() {
-		return "Expenses";
+		return "de.togginho.accounting.reporting.Expenses";
 	}
 
 }

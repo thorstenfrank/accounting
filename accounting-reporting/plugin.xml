@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="de.togginho.accounting.reporting.reports" name="%reportsExtensionName" schema="schema/de.togginho.accounting.reporting.reports.exsd"/>
+   <extension
+         point="de.togginho.accounting.reporting.reports">
+      <report
+            id="de.togginho.accounting.reporting.Invoice"
+            modelClass="de.togginho.accounting.model.Invoice"
+            name="%report.invoice.name"
+            template="reports/InvoiceTemplate.jasper">
+      </report>
+      <report
+            id="de.togginho.accounting.reporting.Letterhead"
+            modelClass="de.togginho.accounting.model.User"
+            name="%report.letterhead.name"
+            template="reports/Letterhead.jasper">
+      </report>
+      <report
+            id="de.togginho.accounting.reporting.CashFlowStatement"
+            modelClass="de.togginho.accounting.model.IncomeStatement"
+            name="%report.cashFlowStatement.name"
+            template="reports/CashFlowStatement.jasper">
+      </report>
+      <report
+            id="de.togginho.accounting.reporting.Revenue"
+            modelClass="de.togginho.accounting.model.Revenue"
+            name="%report.revenue.name"
+            template="reports/RevenueTemplate.jasper">
+      </report>
+      <report
+            id="de.togginho.accounting.reporting.Expenses"
+            modelClass="de.togginho.accounting.model.ExpenseCollection"
+            name="%report.expenses.name"
+            template="reports/ExpensesTemplate.jasper">
+      </report>
+      <report
+            id="de.togginho.accounting.reporting.IncomeStatement"
+            modelClass="de.togginho.accounting.model.IncomeStatement"
+            name="%report.incomeStatement.name"
+            template="reports/IncomeStatementDetailsTemplate.jasper">
+      </report>
+   </extension>
+</plugin>

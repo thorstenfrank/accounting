@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
+	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
 	<queryString language="xPath">
 		<![CDATA[]]>
 	</queryString>

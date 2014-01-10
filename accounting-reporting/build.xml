@@ -25,7 +25,7 @@ limitations under the License.
 	<description>Compiles Jasper reports</description>
     
     <property name="reporting" location="${basedir}" />
-    <property name="reports" location="${reporting}/src" />
+    <property name="reports" location="${reporting}/reports" />
     <property name="core" location="${reporting}/../accounting-core" />
 	
     <!--
@@ -33,6 +33,7 @@ limitations under the License.
     -->
     <path id="classpath">
         <pathelement location="${reporting}/bin"/>
+    	<pathelement location="${reports}"/>
         <pathelement location="${core}/bin"/>
         <fileset dir="${reporting}/lib">
             <include name="**/*.jar" />

@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<template><![CDATA["AccountingStyleSheet.jrtx"]]></template>
+	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
 	<parameter name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
 	<title>
 		<band height="55" splitType="Stretch">

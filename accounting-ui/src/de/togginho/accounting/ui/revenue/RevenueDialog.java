@@ -333,7 +333,7 @@ public class RevenueDialog extends AbstractReportDialog {
          */
         @Override
         public String getReportId() {
-	        return "Revenue";
+	        return "de.togginho.accounting.reporting.Revenue";
         }
 	}
 }

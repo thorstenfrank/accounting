@@ -72,6 +72,6 @@ public class LetterheadExportHandler extends AbstractAccountingHandler implement
      */
     @Override
     public String getReportId() {
-	    return "Letterhead";
+	    return "de.togginho.accounting.reporting.Letterhead";
     }
 }

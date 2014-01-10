@@ -21,18 +21,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import de.togginho.accounting.AccountingException;
-import de.togginho.accounting.reporting.ReportGenerationMonitor;
-import de.togginho.accounting.reporting.xml.generated.Report;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+
+import org.apache.log4j.Logger;
+
+import de.togginho.accounting.AccountingException;
+import de.togginho.accounting.reporting.ReportGenerationMonitor;
 
 /**
  * @author thorsten
@@ -42,7 +41,7 @@ public class JasperReportGenerator implements JRDataSource {
 
 	private static final Logger LOG = Logger.getLogger(JasperReportGenerator.class);
 	
-	private Report report;
+	private String template;
 	
 	private ModelWrapper wrapper;
 	
@@ -54,8 +53,8 @@ public class JasperReportGenerator implements JRDataSource {
 	 * 
 	 * @param report
 	 */
-	JasperReportGenerator(Report report, Object model) {
-		this.report = report;
+	JasperReportGenerator(String template, Object model) {
+		this.template = template;
 		wrapper = new ModelWrapper(model);
 	}
 	
@@ -75,9 +74,9 @@ public class JasperReportGenerator implements JRDataSource {
 		monitor.loadingTemplate();
 		InputStream in = getTemplateAsStream();
 		if (in == null) {
-			LOG.error(String.format("Could not load template: [%s]", report.getTemplate())); //$NON-NLS-1$
+			LOG.error(String.format("Could not load template: [%s]", template)); //$NON-NLS-1$
 			throw new AccountingException(
-					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, report.getTemplate()));
+					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, template));
 		}
 		
 		monitor.addingReportParameters();		
@@ -94,7 +93,7 @@ public class JasperReportGenerator implements JRDataSource {
         	LOG.error("Error filling report", e); //$NON-NLS-1$
         	closeInputStream(in);
         	throw new AccountingException(
-        			Messages.bind(Messages.JasperReportGenerator_errorFillingReport, report.getTemplate()), e);
+        			Messages.bind(Messages.JasperReportGenerator_errorFillingReport, template), e);
         }
 		
 		try {
@@ -111,7 +110,7 @@ public class JasperReportGenerator implements JRDataSource {
 			LOG.error("Error occured during report generation", e);
 			closeInputStream(in);
 			throw new AccountingException(Messages.bind(
-					Messages.JasperReportGenerator_errorCreatingReport, report.getTemplate()), e);
+					Messages.JasperReportGenerator_errorCreatingReport, template), e);
 		}
 		
 		monitor.exportFinished();
@@ -126,18 +125,18 @@ public class JasperReportGenerator implements JRDataSource {
 		ClassLoader loader = this.getClass().getClassLoader();		
 		LOG.debug(String.format("Using ClassLoader [%s]", loader.toString()));
 		
-		LOG.debug(String.format("Now attempting to load template [%s]", report.getTemplate()));
+		LOG.debug(String.format("Now attempting to load template [%s]", template));
 		
-		final URL url = loader.getResource(report.getTemplate());
+		final URL url = loader.getResource(template);
 		if (url != null) {
 			LOG.debug(String.format("Found template at URL [%s]", url.toString()));
 		} else {
-			LOG.error("Template URL not found: " + report.getTemplate());
+			LOG.error("Template URL not found: " + template);
 			throw new AccountingException(
-					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, report.getTemplate()));
+					Messages.bind(Messages.JasperReportGenerator_errorTemplateNotFound, template));
 		}
 		
-		return loader.getResourceAsStream(report.getTemplate());
+		return loader.getResourceAsStream(template);
 	}
 		
 	/**

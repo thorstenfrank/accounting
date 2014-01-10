@@ -15,22 +15,13 @@
  */
 package de.togginho.accounting.reporting;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Hashtable;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import de.togginho.accounting.reporting.internal.ReportingServiceImpl;
-import de.togginho.accounting.reporting.xml.generated.AccountingReports;
 
 /**
  * Bundle Activator for the reporting plugin/bundle.
@@ -70,13 +61,6 @@ public class ReportingPlugin implements BundleActivator {
 		
 		ReportingServiceImpl service = new ReportingServiceImpl();
 		
-		try {
-	        service.setAvailableReports(readConfig());
-        } catch (Exception e) {
-        	LOG.error("Error reading XML report configuration", e); //$NON-NLS-1$
-        	throw e;
-        }
-		
 		LOG.info("Registering service implementation"); //$NON-NLS-1$
 		
 		context.registerService(
@@ -85,30 +69,6 @@ public class ReportingPlugin implements BundleActivator {
 				new Hashtable<String, String>());
 		
 		LOG.info("Reporting Plugin startup complete"); //$NON-NLS-1$
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-    private AccountingReports readConfig() throws IOException, JAXBException {
-		URL url = getContext().getBundle().getEntry("/config/reporting_config.xml");
-		LOG.debug("Looking for URL: " + url.toString());
-		InputStream inputStream = url.openStream();
-		LOG.debug("Opened input stream, now creating JAXB context"); //$NON-NLS-1$
-		
-		try {
-			Unmarshaller unmarshaller = JAXBContext.newInstance("de.togginho.accounting.reporting.xml.generated").createUnmarshaller();
-			LOG.debug("Unmarshalling configuration from XML"); //$NON-NLS-1$
-			
-			JAXBElement<AccountingReports> result = (JAXBElement<AccountingReports>) unmarshaller.unmarshal(inputStream);
-			LOG.debug("Done reading XML config");//$NON-NLS-1$
-			return result.getValue();			
-		} finally {
-			inputStream.close();
-		}
-
 	}
 	
 	/**
