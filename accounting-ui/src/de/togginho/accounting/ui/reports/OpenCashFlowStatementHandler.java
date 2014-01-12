@@ -25,19 +25,21 @@ import de.togginho.accounting.ui.AbstractAccountingHandler;
  * @author thorsten
  *
  */
-public class OpenIncomeStatementDetailsHandler extends AbstractAccountingHandler {
+public class OpenCashFlowStatementHandler extends AbstractAccountingHandler {
 
-	private static final Logger LOG = Logger.getLogger(OpenIncomeStatementDetailsHandler.class);
+	/**
+	 * 
+	 */
+	private static final Logger LOG = Logger.getLogger(OpenCashFlowStatementHandler.class);
 	
 	/**
 	 * {@inheritDoc}.
-	 * @see AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		IncomeStatementDetailsDialog dlg = new IncomeStatementDetailsDialog(getShell(event));
+		CashFlowStatementDialog dlg = new CashFlowStatementDialog(getShell(event));
 		dlg.open();
-//		ReportGenerationUtil.executeReportGeneration(new IncomeStatementGenerationHandler(), getShell(event));
 	}
 
 	/**
@@ -48,4 +50,5 @@ public class OpenIncomeStatementDetailsHandler extends AbstractAccountingHandler
 	protected Logger getLogger() {
 		return LOG;
 	}
+
 }

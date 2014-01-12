@@ -143,17 +143,18 @@ public class Messages extends NLS {
 	public static String ImportFromXmlWizard_xmlFileLabel;
 	public static String ImportFromXmlWizard_xmlFileSelectText;
 	
-	public static String IncomeStatementDialog_grossProfit;
-	public static String IncomeStatementDialog_inputTax;
-	public static String IncomeStatementDialog_operatingExpenses;
-	public static String IncomeStatementDialog_outputTax;
-	public static String IncomeStatementDialog_Result;
-	public static String IncomeStatementDialog_sum;
+	public static String CashFlowStatementDialog_grossProfit;
+	public static String CashFlowStatementDialog_inputTax;
+	public static String CashFlowStatementDialog_operatingExpenses;
+	public static String CashFlowStatementDialog_outputTax;
+	public static String CashFlowStatementDialog_Result;
+	public static String CashFlowStatementDialog_sum;
+	public static String CashFlowStatementDialog_title;
+	public static String CashFlowStatementDialog_totalExpenses;
+	public static String CashFlowStatementDialog_fileNameSuggestion;
+	
 	public static String IncomeStatementDialog_title;
-	public static String IncomeStatementDialog_totalExpenses;
 	public static String IncomeStatementDialog_fileNameSuggestion;
-	public static String IncomeStatementDetailsDialog_title;
-	public static String IncomeStatementDetailsDialog_fileNameSuggestion;
 	
 	public static String InvoiceEditor_details;
 	public static String InvoiceEditor_header;

@@ -52,7 +52,7 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 		{Messages.RevenueDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_DIALOG},
 		{Messages.RevenueByYearDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_BY_YEAR_DIALOG},
 		{Messages.labelExpenses, Messages.iconsExpenses, IDs.CMD_OPEN_EXPENSES_DIALOG},
-		{Messages.IncomeStatementDetailsDialog_title, Messages.iconsIncomeStatementDetails, IDs.CMD_OPEN_INCOME_STATEMENT_DETAILS}
+		{Messages.IncomeStatementDialog_title, Messages.iconsIncomeStatementDetails, IDs.CMD_OPEN_INCOME_STATEMENT_DETAILS}
 	};
 	
 	/**

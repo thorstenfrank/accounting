@@ -333,7 +333,7 @@
                   icon="icons/report.png"
                   label="%command.reports.name">
                <command
-                     commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+                     commandId="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
                      icon="icons/layout_content.png"
                      style="push">
                </command>
@@ -348,7 +348,7 @@
                      style="pulldown">
                </command>
                <command
-                     commandId="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
+                     commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
                      icon="icons/report_user.png"
                      style="pulldown">
                </command>
@@ -385,7 +385,7 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="accounting-ui-rcp.toolbar1">
+               id="accounting.main.toolbar.1">
             <command
                   commandId="de.togginho.accounting.ui.user.OpenUserEditor"
                   icon="icons/user_suit.png"
@@ -420,10 +420,10 @@
             </command>
          </toolbar>
          <separator
-               name="main.toolbar.separator1">
+               name="accounting.main.toolbar.separator1">
          </separator>
          <toolbar
-               id="accounting-ui-rcp.toolbar2">
+               id="accounting.main.toolbar.2">
             <command
                   commandId="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
                   icon="icons/page_add.png"
@@ -441,10 +441,10 @@
             </command>
          </toolbar>
          <separator
-               name="accounting-ui.separator1">
+               name="accounting.main.toolbar.separator2">
          </separator>
          <toolbar
-               id="accounting-ui.toolbar1">
+               id="accounting.main.toolbar.3">
             <command
                   commandId="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
                   icon="icons/page_find.png"
@@ -697,7 +697,7 @@
             allPopups="false"
             locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
          <command
-               commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+               commandId="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
                icon="icons/layout_content.png"
                style="push">
          </command>
@@ -717,7 +717,7 @@
                style="pulldown">
          </command>
          <command
-               commandId="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
+               commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
                icon="icons/report_user.png"
                style="pulldown">
          </command>
@@ -914,14 +914,14 @@
             name="%command.reports.name">
       </command>
       <command
+            defaultHandler="de.togginho.accounting.ui.reports.OpenCashFlowStatementHandler"
+            id="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
+            name="%command.reports.cashFlow.name">
+      </command>
+      <command
             defaultHandler="de.togginho.accounting.ui.reports.OpenIncomeStatementHandler"
             id="de.togginho.accounting.reports.OpenIncomeStatementDialog"
             name="%command.reports.incomeStatement.name">
-      </command>
-      <command
-            defaultHandler="de.togginho.accounting.ui.reports.OpenIncomeStatementDetailsHandler"
-            id="de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"
-            name="%command.reports.incomeStatementDetails.name">
       </command>
       <command
             defaultHandler="de.togginho.accounting.ui.util.LanguageSelectionHandler"
