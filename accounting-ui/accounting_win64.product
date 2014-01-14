@@ -27,10 +27,15 @@
    <launcher name="accounting">
       <solaris/>
       <win useIco="false">
-         <bmp/>
+         <bmp
+            winSmallHigh="/accounting-ui/icons/Ledger_16x16_32.bmp"
+            winSmallLow="/accounting-ui/icons/Ledger_16x16_8.bmp"
+            winMediumHigh="/accounting-ui/icons/Ledger_32x32_32.bmp"
+            winMediumLow="/accounting-ui/icons/Ledger_32x32_8.bmp"
+            winLargeHigh="/accounting-ui/icons/Ledger_48x48x32.bmp"
+            winLargeLow="/accounting-ui/icons/Ledger_48x48x8.bmp"/>
       </win>
    </launcher>
-
 
    <vm>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
