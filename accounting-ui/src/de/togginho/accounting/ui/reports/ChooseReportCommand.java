@@ -16,8 +16,11 @@
 package de.togginho.accounting.ui.reports;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,15 +28,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.IHandlerService;
 
 import de.togginho.accounting.ui.AbstractAccountingHandler;
 import de.togginho.accounting.ui.AbstractModalDialog;
 import de.togginho.accounting.ui.AccountingUI;
-import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
+import de.togginho.accounting.ui.reports.DynamicReportUtil.DynamicReportHandler;
 import de.togginho.accounting.ui.util.WidgetHelper;
 
 /**
@@ -47,18 +47,12 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 	 */
 	private static final Logger LOG = Logger.getLogger(ChooseReportCommand.class);
 	
-	private static final String[][] REPORT_CONFIG = {
-		{Messages.IncomeStatementDialog_title, Messages.iconsIncomeStatement, IDs.CMD_OPEN_INCOME_STATEMENT},
-		{Messages.RevenueDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_DIALOG},
-		{Messages.RevenueByYearDialog_title, Messages.iconsRevenue, IDs.CMD_OPEN_REVENUE_BY_YEAR_DIALOG},
-		{Messages.labelExpenses, Messages.iconsExpenses, IDs.CMD_OPEN_EXPENSES_DIALOG},
-		{Messages.IncomeStatementDialog_title, Messages.iconsIncomeStatementDetails, IDs.CMD_OPEN_INCOME_STATEMENT_DETAILS}
-	};
+	private Composite mainComposite;
 	
 	/**
-	 * The dialog opening command to run - default is the revenue dialog.
+	 * The dialog opening command to run.
 	 */
-	private String commandIdToRun = IDs.CMD_OPEN_REVENUE_DIALOG;
+	private Command commandToRun = null;
 	
 	/**
 	 * {@inheritDoc}
@@ -66,7 +60,7 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		
+				
 		AbstractModalDialog dialog = new AbstractModalDialog(
 				getShell(event), 
 				Messages.ChooseReportCommand_title, 
@@ -75,50 +69,58 @@ public class ChooseReportCommand extends AbstractAccountingHandler {
 			
 			@Override
 			protected void createMainContents(Composite parent) {
-				Composite composite = new Composite(parent, SWT.NONE);
-				composite.setLayout(new GridLayout(2, false));
-				WidgetHelper.grabHorizontal(composite);
-        		
-				for(int x = 0; x < REPORT_CONFIG.length; x++) {
-        			createDialogSelectorButton(composite, REPORT_CONFIG[x][0], REPORT_CONFIG[x][1], REPORT_CONFIG[x][2]);
-        		}
+				mainComposite = new Composite(parent, SWT.NONE);
+				mainComposite.setLayout(new GridLayout(2, false));
+				WidgetHelper.grabHorizontal(mainComposite);
+				
+				DynamicReportUtil.parseReportHandlers(new DynamicReportHandler() {
+					
+					@Override
+					public void handleDynamicReport(IConfigurationElement configElement, final Command command, int index) {
+						final Button button = new Button(mainComposite, SWT.RADIO);
+						String imgDesc = configElement.getAttribute(DynamicReportUtil.ICON);
+						if (imgDesc != null) {
+							button.setImage(AccountingUI.getImageDescriptor(imgDesc).createImage());
+						}
+						String name = configElement.getAttribute(DynamicReportUtil.LABEL);
+						if (name == null) {
+							try {
+					            name = command.getName();
+				            } catch (NotDefinedException e) {
+				            	LOG.warn("Error retrieving name from command", e); //$NON-NLS-1$
+				            	name = command.getId();
+				            }
+						}
+						button.setText(name);
+						GridDataFactory.fillDefaults().span(2, 1).grab(true, true).indent(5, 0).applyTo(button);
+						button.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								if (button.getSelection()) {
+									commandToRun = command;
+								}
+							}
+						});
+						
+						if (index == 0) {
+							button.setSelection(true);
+							commandToRun = command;
+						}
+					}
+				});
 			}
 		};
 		
-		if (dialog.show()) {
-			LOG.debug("Opening dialog: " + commandIdToRun); //$NON-NLS-1$
-			IHandlerService handlerService = 
-					(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+		if (dialog.show() && commandToRun != null) {
+			LOG.debug("Running selected command: " + commandToRun.getId()); //$NON-NLS-1$
 			try {
-				handlerService.executeCommand(commandIdToRun, new Event());
-			} catch (Exception e) {
-				LOG.error("Error opening command " + commandIdToRun, e); //$NON-NLS-1$
-			}
+                commandToRun.executeWithChecks(event);
+            } catch (Exception e) {
+            	LOG.error(e);
+            }
 		} else {
-			LOG.debug("Command was cancelled by user"); //$NON-NLS-1$
+			LOG.debug("Report selection was cancelled by user"); //$NON-NLS-1$
 		}
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 * @param title
-	 * @param imgDesc
-	 * @param commandToRun
-	 */
-	private void createDialogSelectorButton(Composite parent, String title, String imgDesc, final String commandToRun) {
-		final Button button = new Button(parent, SWT.RADIO);
-		button.setImage(AccountingUI.getImageDescriptor(imgDesc).createImage());
-		button.setText(title);
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).indent(5, 0).applyTo(button);
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (button.getSelection()) {
-					commandIdToRun = commandToRun;
-				}
-			}
-		});
 	}
 	
 	/**

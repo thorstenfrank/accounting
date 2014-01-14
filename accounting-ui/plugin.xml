@@ -333,31 +333,10 @@
             <menu
                   icon="icons/report.png"
                   label="%command.reports.name">
-               <command
-                     commandId="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
-                     icon="icons/layout_content.png"
-                     style="push">
-               </command>
-               <command
-                     commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
-                     icon="icons/money_add.png"
-                     style="push">
-               </command>
-               <command
-                     commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
-                     icon="icons/money_delete.png"
-                     style="pulldown">
-               </command>
-               <command
-                     commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
-                     icon="icons/report_user.png"
-                     style="pulldown">
-               </command>
-               <command
-                     commandId="de.togginho.accounting.ui.reports.LetterheadExport"
-                     icon="icons/page_white_text.png"
-                     style="push">
-               </command>
+               <dynamic
+                     class="de.togginho.accounting.ui.reports.DynamicReportMenu"
+                     id="de.togginho.accounting.ui.reports.dynamicMenu2">
+               </dynamic>
             </menu>
             <separator
                   name="viewMenuSep3"
@@ -697,36 +676,10 @@
       <menuContribution
             allPopups="false"
             locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
-         <command
-               commandId="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
-               icon="icons/layout_content.png"
-               style="push">
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
-               icon="icons/money_add.png"
-               style="pulldown">
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.revenue.RevenueByYearCommand"
-               icon="icons/money_add.png"
-               style="pulldown">
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
-               icon="icons/money_delete.png"
-               style="pulldown">
-         </command>
-         <command
-               commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
-               icon="icons/report_user.png"
-               style="pulldown">
-         </command>
-         <command
-               commandId="de.togginho.accounting.ui.reports.LetterheadExport"
-               icon="icons/page_white_text.png"
-               style="push">
-         </command>
+         <dynamic
+               class="de.togginho.accounting.ui.reports.DynamicReportMenu"
+               id="de.togginho.accounting.ui.reports.dynamicMenu1">
+         </dynamic>
       </menuContribution>
    </extension>
    <extension
@@ -1351,5 +1304,37 @@
             name="Invoice context"
             parentId="org.eclipse.ui.contexts.window">
       </context>
+   </extension>
+   <extension
+         point="de.togginho.accounting.ui.reportHandlers">
+      <reportHandler
+            commandId="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
+            icon="icons/layout_content.png"
+            reportId="de.togginho.accounting.reporting.CashFlowStatement">
+      </reportHandler>
+      <reportHandler
+            commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+            icon="icons/money_add.png"
+            reportId="de.togginho.accounting.reporting.Revenue">
+      </reportHandler>
+      <reportHandler
+            commandId="de.togginho.accounting.ui.revenue.RevenueByYearCommand"
+            icon="icons/money_add.png">
+      </reportHandler>
+      <reportHandler
+            commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
+            icon="icons/money_delete.png"
+            reportId="de.togginho.accounting.reporting.Expenses">
+      </reportHandler>
+      <reportHandler
+            commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+            icon="icons/report_user.png"
+            reportId="de.togginho.accounting.reporting.IncomeStatement">
+      </reportHandler>
+      <reportHandler
+            commandId="de.togginho.accounting.ui.reports.LetterheadExport"
+            icon="icons/page_white_text.png"
+            reportId="de.togginho.accounting.reporting.Letterhead">
+      </reportHandler>
    </extension>
 </plugin>

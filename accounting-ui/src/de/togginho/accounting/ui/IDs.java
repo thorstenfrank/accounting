@@ -66,6 +66,12 @@ public interface IDs {
 	public static final String CMD_OPEN_REVENUE_DIALOG = "de.togginho.accounting.ui.revenue.OpenRevenueCommand"; //$NON-NLS-1$
 	public static final String CMD_OPEN_REVENUE_BY_YEAR_DIALOG = "de.togginho.accounting.ui.revenue.RevenueByYearCommand"; //$NON-NLS-1$
 	public static final String CMD_OPEN_EXPENSES_DIALOG = "de.togginho.accounting.ui.expense.OpenExpenseDialog"; //$NON-NLS-1$
+	public static final String CMD_OPEN_CASH_FLOW_STATEMENT = "de.togginho.accounting.reports.OpenCashFlowStatementDialog"; //$NON-NLS-1$
 	public static final String CMD_OPEN_INCOME_STATEMENT = "de.togginho.accounting.reports.OpenIncomeStatementDialog"; //$NON-NLS-1$
-	public static final String CMD_OPEN_INCOME_STATEMENT_DETAILS = "de.togginho.accounting.reports.OpenIncomeStatementDetailsDialog"; //$NON-NLS-1$
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXTENSION POINTS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public static final String EXTENSION_POINT_REPORT_HANDLERS = "de.togginho.accounting.ui.reportHandlers"; //$NON-NLS-1$
 }

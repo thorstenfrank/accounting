@@ -65,7 +65,7 @@
                   If supplied, this is the ID of the report connected with this handler.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="identifier" basedOn="de.togginho.accounting.reporting.reports/@id"/>
+                  <meta.attribute kind="identifier" basedOn="de.togginho.accounting.reporting.reports/report/@id"/>
                </appinfo>
             </annotation>
          </attribute>
