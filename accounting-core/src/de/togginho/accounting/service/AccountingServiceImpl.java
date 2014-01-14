@@ -948,17 +948,9 @@ public class AccountingServiceImpl implements AccountingService {
 				public int compare(Expense o1, Expense o2) {
 					int result = o1.getPaymentDate().compareTo(o2.getPaymentDate());
 					if (result == 0) {
-						
 						result = o1.getDescription().compareTo(o2.getDescription());
 						if (result == 0) {
-							LOG.debug(String.format("[%s] and [%s] have equal payment dates and descriptions", o1.getDescription(), o2.getDescription()));
-							if (o1.equals(o2)) {
-								LOG.debug("These two are equal...");
-								result = 0;
-							} else {
-								LOG.debug(">>>>>>> Returning -1");
-								result = -1;
-							}
+							result = o1.equals(o2) ? 0 : -1;
 						}
 					}
 					return result;
