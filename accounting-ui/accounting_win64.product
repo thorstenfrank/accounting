@@ -32,8 +32,8 @@
             winSmallLow="/accounting-ui/icons/Ledger_16x16_8.bmp"
             winMediumHigh="/accounting-ui/icons/Ledger_32x32_32.bmp"
             winMediumLow="/accounting-ui/icons/Ledger_32x32_8.bmp"
-            winLargeHigh="/accounting-ui/icons/Ledger_48x48x32.bmp"
-            winLargeLow="/accounting-ui/icons/Ledger_48x48x8.bmp"/>
+            winLargeHigh="/accounting-ui/icons/Ledger_48x48_32.bmp"
+            winLargeLow="/accounting-ui/icons/Ledger_48x48_8.bmp"/>
       </win>
    </launcher>
 
