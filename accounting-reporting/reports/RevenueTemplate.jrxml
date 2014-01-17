@@ -83,7 +83,7 @@
 			<subreport>
 				<reportElement x="0" y="0" width="762" height="20" uuid="bbf265a6-a19a-455a-a412-929243d74c98"/>
 				<dataSourceExpression><![CDATA[$P{wrapper}.getAsDataSource("invoices")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["RevenueDetailsSubreport.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/reports/RevenueDetailsSubreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

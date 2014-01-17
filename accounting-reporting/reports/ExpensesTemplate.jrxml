@@ -91,7 +91,7 @@
 			<subreport>
 				<reportElement x="0" y="0" width="802" height="20" uuid="aa170f25-53ea-4aef-b4de-ed501e1b764a"/>
 				<dataSourceExpression><![CDATA[$P{wrapper}.getAsDataSource("expenses")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["ExpenseDetailsSubreport.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/reports/ExpenseDetailsSubreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

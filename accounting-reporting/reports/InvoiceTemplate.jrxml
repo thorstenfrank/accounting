@@ -107,7 +107,7 @@
 			<subreport>
 				<reportElement positionType="Float" x="0" y="0" width="459" height="30" isPrintWhenDetailOverflows="true" uuid="af0e1555-b0f0-40fc-aeed-62a77ce463c4"/>
 				<dataSourceExpression><![CDATA[$P{wrapper}.getAsDataSource("invoicePositions")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["InvoicePositionTemplate.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/reports/InvoicePositionTemplate.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="111">

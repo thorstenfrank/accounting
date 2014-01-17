@@ -96,7 +96,7 @@
 			<subreport>
 				<reportElement x="0" y="21" width="459" height="20" isRemoveLineWhenBlank="true" uuid="595abc0c-6e9f-4029-9200-fccc6717672b"/>
 				<dataSourceExpression><![CDATA[$P{wrapper}.getAsDataSource("operatingExpenseCategories")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["IncomeStatementDetailsSubreport.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/reports/IncomeStatementDetailsSubreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="23" splitType="Stretch">
