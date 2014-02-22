@@ -4,9 +4,9 @@
 <product name="%product.name" uid="de.togginho.accounting" id="de.togginho.accounting.ui.product" application="de.togginho.accounting.ui.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="icons/Ledger_32x32.png"/>
+      <image path="aboutimage.png"/>
       <text>
-         Togginho Accounting About Text
+         %aboutTextBla
       </text>
    </aboutInfo>
 
