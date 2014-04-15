@@ -19,14 +19,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRAbstractExporter;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRField;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 
 import org.apache.log4j.Logger;
 
@@ -86,6 +90,12 @@ public class JasperReportGenerator implements JRDataSource {
 		params.put("wrapper", wrapper);
 		
 		monitor.fillingReport();
+		
+//		JasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
+//		JRPropertiesUtil jrPropertiesUtil = JRPropertiesUtil.getInstance(jrContext);
+//		
+//		jrPropertiesUtil.setProperty("net.sf.jasperreports.awt.ignore.missing.font", Boolean.FALSE.toString());
+		
 		JasperPrint print = null;
         try {
 	        print = JasperFillManager.fillReport(in, params, this);
@@ -100,11 +110,12 @@ public class JasperReportGenerator implements JRDataSource {
 			monitor.exportingReport();
 			LOG.debug(String.format("Exporting report to file [%s]", fileName));
 //			JRPdfExporter exporter = new JRPdfExporter();
-//			exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-//			exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, fileName);
+			JRAbstractExporter exporter = getExporter(fileName);
+			exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+			exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, fileName);
 //			exporter.setParameter(JRExporterParameter.PROGRESS_MONITOR, new AccountingScriptlet());
-//			exporter.exportReport();
-			JasperExportManager.exportReportToPdfFile(print, fileName);
+			exporter.exportReport();
+//			JasperExportManager.exportReportToPdfFile(print, fileName);
 			
 		} catch (JRException e) {
 			LOG.error("Error occured during report generation", e);
@@ -115,6 +126,25 @@ public class JasperReportGenerator implements JRDataSource {
 		
 		monitor.exportFinished();
 		LOG.info("Report generation finished successfully");
+	}
+	
+	/**
+	 * 
+	 * @param targetFileName
+	 * @return
+	 */
+	private JRAbstractExporter getExporter(String targetFileName) {
+		
+		String suffix = targetFileName.substring(targetFileName.lastIndexOf(".")).toLowerCase(Locale.ENGLISH);
+		LOG.debug("Filename suffix is: " + suffix);
+		
+		if (suffix.equals(".pdf")) {
+			return new JRPdfExporter();
+		} else if (suffix.equals(".doc") || suffix.equals(".docx")) {
+			return new JRDocxExporter();
+		}
+		
+		return new JRPdfExporter();
 	}
 	
 	/**
