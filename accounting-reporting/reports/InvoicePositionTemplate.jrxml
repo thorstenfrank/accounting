@@ -14,73 +14,53 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band splitType="Stretch">
-			<printWhenExpression><![CDATA[$V{REPORT_COUNT} <= 10]]></printWhenExpression>
-		</band>
-	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band splitType="Stretch"/>
-	</columnHeader>
 	<detail>
-		<band height="30" splitType="Stretch">
-			<elementGroup>
-                <textField isStretchWithOverflow="true">
-                    <reportElement style="INVOICE_TX_10" positionType="Float" x="0" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="e35fe70b-4849-40fa-88f2-743a69803448"/>
-                    <textElement textAlignment="Left">
-                        <font size="9"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{wrapper}.get("quantity")]]></textFieldExpression>
-                </textField>
-                <textField isStretchWithOverflow="true" pattern="">
-                    <reportElement style="INVOICE_TX_10" positionType="Float" x="55" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="544778a5-54ad-430f-b847-517b65846714"/>
-                    <textElement>
-                        <font size="9"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{wrapper}.get("unit")]]></textFieldExpression>
-                </textField>
-                <textField isStretchWithOverflow="true">
-                    <reportElement style="INVOICE_TX_10" positionType="Float" x="110" y="0" width="149" height="30" isPrintWhenDetailOverflows="true" uuid="46548676-8c7c-48c3-b184-55d9a1de8ff4"/>
-                    <textElement>
-                        <font size="9"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{wrapper}.get("description")]]></textFieldExpression>
-                </textField>
-                <textField isStretchWithOverflow="true" pattern="">
-                    <reportElement style="INVOICE_TX_10" positionType="Float" x="259" y="0" width="75" height="30" isPrintWhenDetailOverflows="true" uuid="4faf3250-3765-4199-acc7-53ff4dc7afe1"/>
-                    <textElement textAlignment="Right">
-                        <font size="9"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("pricePerUnit")]]></textFieldExpression>
-                </textField>
+		<band height="15" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="459" height="15" uuid="5e5947b7-c009-4847-98d3-3d5ba6bbb567"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="0" y="0" width="55" height="15" isPrintWhenDetailOverflows="true" uuid="e35fe70b-4849-40fa-88f2-743a69803448"/>
+					<textElement textAlignment="Left">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{wrapper}.get("quantity")]]></textFieldExpression>
+				</textField>
 				<textField isStretchWithOverflow="true" pattern="">
-					<reportElement style="INVOICE_TX_10" positionType="Float" x="334" y="0" width="75" height="30" isPrintWhenDetailOverflows="true" uuid="7eb92815-60c8-4af2-88d9-89b3a124eae1"/>
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="55" y="0" width="55" height="15" isPrintWhenDetailOverflows="true" uuid="544778a5-54ad-430f-b847-517b65846714"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{wrapper}.get("unit")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="110" y="0" width="149" height="15" isPrintWhenDetailOverflows="true" uuid="46548676-8c7c-48c3-b184-55d9a1de8ff4"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{wrapper}.get("description")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="259" y="0" width="75" height="15" isPrintWhenDetailOverflows="true" uuid="4faf3250-3765-4199-acc7-53ff4dc7afe1"/>
+					<textElement textAlignment="Right">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("pricePerUnit")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="334" y="0" width="75" height="15" isPrintWhenDetailOverflows="true" uuid="7eb92815-60c8-4af2-88d9-89b3a124eae1"/>
 					<textElement textAlignment="Right">
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.net")]]></textFieldExpression>
 				</textField>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-                <reportElement style="INVOICE_TX_10" positionType="Float" x="409" y="0" width="50" height="30" isPrintWhenDetailOverflows="true" uuid="0b5b8f0d-a1e2-4eb1-8c4a-0c44cf26846d"/>
-                <textElement textAlignment="Center">
-                    <font size="9"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{wrapper}.get("taxRate", "-")]]></textFieldExpression>
-            </textField>
-			</elementGroup>
-
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="INVOICE_TX_10" positionType="Float" x="409" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="0b5b8f0d-a1e2-4eb1-8c4a-0c44cf26846d"/>
+					<textElement textAlignment="Center">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{wrapper}.get("taxRate", "-")]]></textFieldExpression>
+				</textField>
+			</frame>
 		</band>
 	</detail>
-	<columnFooter>
-		<band splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band splitType="Stretch"/>
-	</summary>
 </jasperReport>
