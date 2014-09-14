@@ -356,14 +356,6 @@
                   visible="true">
             </separator>
             <command
-                  commandId="de.togginho.accounting.ui.UpdateApp"
-                  style="push">
-            </command>
-            <separator
-                  name="helpMenuSep2"
-                  visible="true">
-            </separator>
-            <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   label="%menu.help.about.label"
                   style="push">
@@ -905,11 +897,6 @@
             defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
             id="de.togginho.accounting.ui.expenseView.menu.pulldown"
             name="de.togginho.accounting.ui.expenseView.menu.pulldown">
-      </command>
-      <command
-            defaultHandler="de.togginho.accounting.ui.setup.UpdateHandler"
-            id="de.togginho.accounting.ui.UpdateApp"
-            name="Update">
       </command>
    </extension>
    <extension
