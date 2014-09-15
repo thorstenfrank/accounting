@@ -30,6 +30,9 @@ import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXmlExporter;
+import net.sf.jasperreports.engine.export.JsonExporter;
+import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 
 import org.apache.log4j.Logger;
@@ -109,14 +112,10 @@ public class JasperReportGenerator implements JRDataSource {
 		try {
 			monitor.exportingReport();
 			LOG.debug(String.format("Exporting report to file [%s]", fileName));
-//			JRPdfExporter exporter = new JRPdfExporter();
 			JRAbstractExporter exporter = getExporter(fileName);
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 			exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, fileName);
-//			exporter.setParameter(JRExporterParameter.PROGRESS_MONITOR, new AccountingScriptlet());
 			exporter.exportReport();
-//			JasperExportManager.exportReportToPdfFile(print, fileName);
-			
 		} catch (JRException e) {
 			LOG.error("Error occured during report generation", e);
 			closeInputStream(in);
@@ -142,6 +141,12 @@ public class JasperReportGenerator implements JRDataSource {
 			return new JRPdfExporter();
 		} else if (suffix.equals(".doc") || suffix.equals(".docx")) {
 			return new JRDocxExporter();
+		} else if (suffix.equals(".json")) {
+			return new JsonExporter();
+		} else if (suffix.equals(".xml")) {
+			return new JRXmlExporter();
+		} else if (suffix.equals(".odt")) {
+			return new JROdtExporter();
 		}
 		
 		return new JRPdfExporter();
