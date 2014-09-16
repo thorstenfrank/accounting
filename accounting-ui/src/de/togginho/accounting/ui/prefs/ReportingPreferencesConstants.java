@@ -23,5 +23,7 @@ public interface ReportingPreferencesConstants {
 
 	public static final String LAST_SAVE_DIR = "reporting.last.savedir"; //$NON-NLS-1$
 	
+	public static final String PREFERRED_FILE_TYPE = "reporting.preferred.file.type"; //$NON-NLS-1$
+	
 	public static final String OPEN_AFTER_EXPORT = "reporting.open.after.export"; //$NON-NLS-1$
 }

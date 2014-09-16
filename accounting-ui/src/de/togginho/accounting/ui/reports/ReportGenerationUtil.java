@@ -132,6 +132,7 @@ public class ReportGenerationUtil {
 	    IEclipsePreferences prefs = AccountingPreferences.getAccountingPreferences();
 	    StringBuilder sb = new StringBuilder();
 		String dir = prefs.get(ReportingPreferencesConstants.LAST_SAVE_DIR, System.getProperty("user.home")); //$NON-NLS-1$
+		String fileType = prefs.get(ReportingPreferencesConstants.PREFERRED_FILE_TYPE, ".pdf"); //$NON-NLS-1$
 		
 		if (dir != null && dir.isEmpty() == false) {
 			sb.append(dir);
@@ -140,7 +141,7 @@ public class ReportGenerationUtil {
 			}
 		}
 		sb.append(handler.getTargetFileNameSuggestion());
-		sb.append(".pdf");
+		sb.append(fileType);
 		
 		boolean openAfterExport = prefs.getBoolean(ReportingPreferencesConstants.OPEN_AFTER_EXPORT, false);
 		
@@ -150,17 +151,17 @@ public class ReportGenerationUtil {
 	    	targetFileName = dlg.getTargetFile();
 	    	if (targetFileName != null && confirmOverwrite(shell, targetFileName)) {
 				try {
-					LOG.info("Starting PDF generation to file " + targetFileName); //$NON-NLS-1$
+					LOG.info("Starting document generation to file " + targetFileName); //$NON-NLS-1$
 					ReportProgressMonitor generation = new ReportProgressMonitor();
 					new ProgressMonitorDialog(shell).run(true, false, generation);
 				} catch (Exception e) {
-					LOG.error("Error creating PDF", e); //$NON-NLS-1$
+					LOG.error("Error creating document", e); //$NON-NLS-1$
 					throw new AccountingException(Messages.ReportGenerationUtil_errorGeneratingInvoice, e);
 				}
 				
 				// either open the document or show a success message
-				if (dlg.isOpenAfterExport()) {
-					openFileInExternalProgram();
+				if (dlg.isOpenAfterExport() && openFileInExternalProgram()) {
+					LOG.debug("Export of document and opening in external program finished successfully"); //$NON-NLS-1$
 				} else {
 					showSuccessPopup(shell);
 				}
@@ -172,7 +173,14 @@ public class ReportGenerationUtil {
 				
 				File actualFile = new File(targetFileName);
 				if (dir.equals(actualFile.getParent()) == false) {
+					LOG.info("Save directory changed to " + actualFile.getParent()); //$NON-NLS-1$
 					prefs.put(ReportingPreferencesConstants.LAST_SAVE_DIR, actualFile.getParent());
+				}
+				
+				String fileTypeAfter = getTargetFileExtension(true);
+				if (fileType.equals(fileTypeAfter) == false) {
+					LOG.info("Preferred file type extension changed to " + fileTypeAfter); //$NON-NLS-1$
+					prefs.put(ReportingPreferencesConstants.PREFERRED_FILE_TYPE, fileTypeAfter);
 				}
 				
 				try {
@@ -182,7 +190,7 @@ public class ReportGenerationUtil {
 				}
 	    	}
 	    } else {
-	    	LOG.info("PDF export was cancelled"); //$NON-NLS-1$
+	    	LOG.info("Document export was cancelled"); //$NON-NLS-1$
 	    }
 	}
 	
@@ -216,13 +224,30 @@ public class ReportGenerationUtil {
 	/**
 	 * 
 	 */
-	private void openFileInExternalProgram() {
+	private boolean openFileInExternalProgram() {
 		try {
-			Program p = Program.findProgram("pdf");
-			p.execute(targetFileName);
+			final String type = getTargetFileExtension(false);
+			Program p = Program.findProgram(type);
+			if (p == null) {
+				LOG.warn("No program found for file type " + type);
+				return false;
+			} else {
+				p.execute(targetFileName);
+				return true;
+			}
 		} catch (Exception e) {
 			LOG.error(String.format("Could not open file [%s] in external program", targetFileName)); //$NON-NLS-1$
+			return false;
 		}
+	}
+
+	/**
+	 * 
+	 * @param includeDot
+	 * @return
+	 */
+	private String getTargetFileExtension(boolean includeDot) {
+		return targetFileName.substring(includeDot ? targetFileName.lastIndexOf(".") : targetFileName.lastIndexOf(".") + 1);
 	}
 	
 	/**
