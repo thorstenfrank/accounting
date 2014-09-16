@@ -3,6 +3,9 @@
 
 <jasperTemplate>
 	<style name="INVOICE_TX_08" markup="styled" fontSize="8" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
+	<style name="INVOICE_POS_09" markup="styled" fontSize="9" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true">
+		<box topPadding="2" bottomPadding="2"/>
+	</style>
 	<style name="INVOICE_TX_10" markup="styled" fontSize="10" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" pdfFontName="/reports/fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
 	<style name="INVOICE_TX_12" markup="styled" fontSize="12" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
