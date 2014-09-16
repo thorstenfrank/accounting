@@ -31,7 +31,6 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
-import net.sf.jasperreports.engine.export.JsonExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 
@@ -47,6 +46,17 @@ import de.togginho.accounting.reporting.ReportGenerationMonitor;
 public class JasperReportGenerator implements JRDataSource {
 
 	private static final Logger LOG = Logger.getLogger(JasperReportGenerator.class);
+	
+	private static final Map<String, JRAbstractExporter> EXPORTER_MAP = new HashMap<String, JRAbstractExporter>();
+	
+	static {
+		EXPORTER_MAP.put("pdf", new JRPdfExporter());
+		final JRDocxExporter docxExporter = new JRDocxExporter();
+		EXPORTER_MAP.put("doc", docxExporter);
+		EXPORTER_MAP.put("docx", docxExporter);
+		EXPORTER_MAP.put("odt", new JROdtExporter());
+		EXPORTER_MAP.put("xml", new JRXmlExporter());
+	}
 	
 	private String template;
 	
@@ -134,22 +144,16 @@ public class JasperReportGenerator implements JRDataSource {
 	 */
 	private JRAbstractExporter getExporter(String targetFileName) {
 		
-		String suffix = targetFileName.substring(targetFileName.lastIndexOf(".")).toLowerCase(Locale.ENGLISH);
-		LOG.debug("Filename suffix is: " + suffix);
+		String suffix = targetFileName.substring(targetFileName.lastIndexOf(".") + 1).toLowerCase(Locale.ENGLISH);
+		LOG.debug("Looking up exporter for type " + suffix);
 		
-		if (suffix.equals(".pdf")) {
+		final JRAbstractExporter exporter = EXPORTER_MAP.get(suffix);
+		if (exporter == null) {
+			LOG.warn("No exporter found, will use default - PDF");
 			return new JRPdfExporter();
-		} else if (suffix.equals(".doc") || suffix.equals(".docx")) {
-			return new JRDocxExporter();
-		} else if (suffix.equals(".json")) {
-			return new JsonExporter();
-		} else if (suffix.equals(".xml")) {
-			return new JRXmlExporter();
-		} else if (suffix.equals(".odt")) {
-			return new JROdtExporter();
 		}
 		
-		return new JRPdfExporter();
+		return exporter;
 	}
 	
 	/**
