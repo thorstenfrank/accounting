@@ -37,7 +37,16 @@ import de.togginho.accounting.ui.util.WidgetHelper;
  *
  */
 public class ChooseExportTargetDialog extends AbstractModalDialog {
-		
+	
+	private static final String[] EXPORT_EXTENSIONS = {"*.pdf", "*.doc;*.docx", "*.odt", "*.xml"};
+	
+	private static final String[] EXPORT_FORMAT_DESC = {
+		"Adobe PDF (" + EXPORT_EXTENSIONS[0] + ")",
+		"MS Word (" + EXPORT_EXTENSIONS[1] + ")",
+		"Open Document Format (" + EXPORT_EXTENSIONS[2] + ")",
+		"XML (" + EXPORT_EXTENSIONS[3] + ")"
+	};
+	
 	private String targetFile;
 	
 	private boolean openAfterExport;
@@ -92,8 +101,8 @@ public class ChooseExportTargetDialog extends AbstractModalDialog {
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog fd = new FileDialog(getParentShell(), SWT.SAVE);
 				fd.setFileName(filePath.getText());
-				fd.setFilterExtensions(new String[]{"*.pdf"}); //$NON-NLS-1$
-				fd.setFilterNames(new String[]{Messages.ChooseExportTargetDialog_labelPdfFiles});
+				fd.setFilterExtensions(EXPORT_EXTENSIONS); //$NON-NLS-1$
+				fd.setFilterNames(EXPORT_FORMAT_DESC);
 				
 				String selected = fd.open();
 				if (selected != null) {

@@ -294,6 +294,16 @@ public class ModelWrapper {
     
     /**
      * 
+     * @param property
+     * @return
+     */
+    public ModelWrapper getWrapped(String property) {
+    	Object target = getRaw(property);
+    	return target != null ? new ModelWrapper(target) : null;
+    }
+    
+    /**
+     * 
      * @param object
      * @param property
      * @return

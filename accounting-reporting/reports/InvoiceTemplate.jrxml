@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InvoiceTemplate" pageWidth="595" pageHeight="841" columnWidth="459" leftMargin="68" rightMargin="68" topMargin="22" bottomMargin="22" uuid="796f7472-1dcf-4486-9df1-f169608d3012">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
 	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
 	<parameter name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
 	<background>
@@ -14,8 +11,11 @@
 				<reportElement x="0" y="0" width="459" height="245" isPrintWhenDetailOverflows="true" uuid="826bb6e7-1953-4f2f-9191-c88dd2041a1b"/>
 				<subreport>
 					<reportElement x="0" y="0" width="459" height="245" isPrintWhenDetailOverflows="true" uuid="0c1e9698-c0ea-472a-94ee-a39d987c7ad1"/>
-					<subreportParameter name="wrapper">
-						<subreportParameterExpression><![CDATA[$P{wrapper}]]></subreportParameterExpression>
+					<subreportParameter name="company">
+						<subreportParameterExpression><![CDATA[$P{wrapper}.getWrapped("user")]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="client">
+						<subreportParameterExpression><![CDATA[$P{wrapper}.getWrapped("client")]]></subreportParameterExpression>
 					</subreportParameter>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/reports/CompanyHeader.jasper"]]></subreportExpression>
@@ -48,43 +48,46 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="38" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="0" width="459" height="1" uuid="7b838375-ecae-4b4e-a129-a21b63a0d585"/>
-			</line>
-			<textField pattern="">
-				<reportElement style="INVOICE_TX_10B" x="0" y="5" width="55" height="30" uuid="9b6ce810-f32a-41b0-bf6b-75cfb0217a25"/>
-				<textElement textAlignment="Left" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionQuantity")]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_10B" x="55" y="5" width="55" height="30" uuid="bf52ea38-51cc-4f3e-9120-6b68bd8f9ddc"/>
-				<textElement textAlignment="Left" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionUnit")]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_10B" x="110" y="5" width="149" height="30" uuid="2df0f9a7-597d-4d72-871d-a3933a7eb46a"/>
-				<textElement textAlignment="Left" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionDescription")]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_10B" x="259" y="5" width="75" height="30" uuid="af5173be-4930-47d6-9b61-e13e461c91e4"/>
-				<textElement textAlignment="Right" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionPricePerUnit")]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_10B" x="334" y="5" width="75" height="30" uuid="9f2ca92e-e938-45ca-a018-d8b4746e5712"/>
-				<textElement textAlignment="Right" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionTotalPrice")]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="INVOICE_TX_10B" x="409" y="5" width="50" height="30" uuid="4bca98c3-e18e-4c46-8fe7-4426c39cd087"/>
-				<textElement textAlignment="Center" verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionTax")]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="0" y="35" width="459" height="1" uuid="8dd0e31a-0343-401d-90aa-666184c0b724"/>
-			</line>
+		<band height="40" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="459" height="40" uuid="4e46db30-317b-4414-ae21-b0f3b4954dd8"/>
+				<line>
+					<reportElement x="0" y="0" width="459" height="1" uuid="7b838375-ecae-4b4e-a129-a21b63a0d585"/>
+				</line>
+				<textField>
+					<reportElement style="INVOICE_TX_10B" x="0" y="5" width="40" height="30" uuid="9b6ce810-f32a-41b0-bf6b-75cfb0217a25"/>
+					<textElement textAlignment="Left" verticalAlignment="Top"/>
+					<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionQuantity")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="INVOICE_TX_10B" x="40" y="5" width="55" height="30" uuid="bf52ea38-51cc-4f3e-9120-6b68bd8f9ddc"/>
+					<textElement textAlignment="Left" verticalAlignment="Top"/>
+					<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionUnit")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="INVOICE_TX_10B" x="95" y="5" width="164" height="30" uuid="2df0f9a7-597d-4d72-871d-a3933a7eb46a"/>
+					<textElement textAlignment="Left" verticalAlignment="Top"/>
+					<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionDescription")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="INVOICE_TX_10B" x="259" y="5" width="75" height="30" uuid="af5173be-4930-47d6-9b61-e13e461c91e4"/>
+					<textElement textAlignment="Right" verticalAlignment="Top"/>
+					<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionPricePerUnit")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="INVOICE_TX_10B" x="334" y="5" width="75" height="30" uuid="9f2ca92e-e938-45ca-a018-d8b4746e5712"/>
+					<textElement textAlignment="Right" verticalAlignment="Top"/>
+					<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionTotalPrice")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="INVOICE_TX_10B" x="409" y="5" width="50" height="30" uuid="4bca98c3-e18e-4c46-8fe7-4426c39cd087"/>
+					<textElement textAlignment="Center" verticalAlignment="Top"/>
+					<textFieldExpression><![CDATA[$P{wrapper}.getMessage("invoicePositionTax")]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="38" width="459" height="1" uuid="8dd0e31a-0343-401d-90aa-666184c0b724"/>
+				</line>
+			</frame>
 		</band>
 	</columnHeader>
 	<detail>
@@ -142,8 +145,8 @@
 				<reportElement x="0" y="0" width="459" height="104" uuid="f0fb903e-8c74-491b-8d56-bb0f0d111e69"/>
 				<subreport>
 					<reportElement x="0" y="0" width="459" height="104" uuid="4d88105a-a272-4085-9120-48b513e9c60f"/>
-					<subreportParameter name="wrapper">
-						<subreportParameterExpression><![CDATA[$P{wrapper}]]></subreportParameterExpression>
+					<subreportParameter name="company">
+						<subreportParameterExpression><![CDATA[$P{wrapper}.getWrapped("user")]]></subreportParameterExpression>
 					</subreportParameter>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/reports/CompanyFooter.jasper"]]></subreportExpression>
@@ -151,7 +154,4 @@
 			</frame>
 		</band>
 	</pageFooter>
-	<summary>
-		<band splitType="Stretch"/>
-	</summary>
 </jasperReport>

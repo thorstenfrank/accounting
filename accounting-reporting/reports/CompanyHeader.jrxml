@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CompanyHeader" pageWidth="455" pageHeight="245" columnWidth="455" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="59c71111-018f-49ba-8df1-efce0a7c2296">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
 	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
-	<parameter name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
+	<parameter name="company" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
+	<parameter name="client" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -15,33 +13,33 @@
 				<textField>
 					<reportElement style="INVOICE_TX_12" isPrintRepeatedValues="false" x="0" y="0" width="175" height="16" isPrintWhenDetailOverflows="true" uuid="30b80a56-e3bc-44e6-9b7f-85178318ab48"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$P{wrapper}.get("user.name")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{company}.get("name")]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="0" y="18" width="175" height="227" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="64c4aaf1-a27f-420e-8455-8a0b20d3ac9c"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$P{wrapper}.get("user.description")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{company}.get("description")]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
 				<reportElement x="0" y="100" width="245" height="70" isPrintWhenDetailOverflows="true" uuid="8bce3f17-4b4c-49e2-8bd0-3f1ec85ebddb">
-					<printWhenExpression><![CDATA[$P{wrapper}.get("client") != null]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{client} != null]]></printWhenExpression>
 				</reportElement>
 				<textField>
 					<reportElement style="INVOICE_TX_08" x="0" y="0" width="245" height="11" isPrintWhenDetailOverflows="true" uuid="384ea088-5dfb-4017-a9a1-ec6da073c89c"/>
-					<textFieldExpression><![CDATA[$P{wrapper}.get("user.name") + " | " + $P{wrapper}.get("user.address.street") + " | " + $P{wrapper}.get("user.address.postalCode") +" " + $P{wrapper}.get("user.address.city")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{company}.get("name") + " | " + $P{company}.get("address.street") + " | " + $P{company}.get("address.postalCode") +" " + $P{company}.get("address.city")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="INVOICE_TX_12" x="0" y="17" width="245" height="16" isPrintWhenDetailOverflows="true" uuid="6fb95b3b-b019-4171-9b92-5901345f5fde"/>
-					<textFieldExpression><![CDATA[$P{wrapper}.get("client.name")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{client}.get("name")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="INVOICE_TX_12" x="0" y="35" width="245" height="16" isPrintWhenDetailOverflows="true" uuid="13b463bf-be3c-40d2-9813-112c21e2327a"/>
-					<textFieldExpression><![CDATA[$P{wrapper}.get("client.address.street")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{client}.get("address.street")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="INVOICE_TX_12" x="0" y="54" width="245" height="16" isPrintWhenDetailOverflows="true" uuid="df961f60-6acb-429d-9a3b-24318af72196"/>
-					<textFieldExpression><![CDATA[$P{wrapper}.get("client.address.postalCode") + " " + $P{wrapper}.get("client.address.city")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{client}.get("address.postalCode") + " " + $P{client}.get("address.city")]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
