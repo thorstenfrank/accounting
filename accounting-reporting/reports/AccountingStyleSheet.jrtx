@@ -2,18 +2,33 @@
 <!DOCTYPE jasperTemplate PUBLIC "-//JasperReports//DTD Template//EN" "http://jasperreports.sourceforge.net/dtds/jaspertemplate.dtd">
 
 <jasperTemplate>
-	<style name="INVOICE_TX_08" markup="styled" fontSize="8" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_POS_09" markup="styled" fontSize="9" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true">
-		<box topPadding="2" bottomPadding="2"/>
+	
+	<!-- standard styles -->
+	<style name="STD_08" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" />
+	<style name="STD_10" markup="styled" fontSize="10" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="STD_12" markup="styled" fontSize="12" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="STD_12B" markup="styled" fontSize="12" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	
+	<!-- special style for invoice positions -->
+	<style name="INVOICE_POS_09" markup="styled" fontSize="9" fontName="Titillium" isPdfEmbedded="true">
+		<box topPadding="5"/>
 	</style>
-	<style name="INVOICE_TX_10" markup="styled" fontSize="10" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" pdfFontName="/reports/fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_TX_12" markup="styled" fontSize="12" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_TX_12B" markup="styled" fontSize="12" isBold="true" pdfFontName="/reports/fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_TX_14" markup="styled" fontSize="14" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_TX_14B" markup="styled" fontSize="14" isBold="true" pdfFontName="/reports/fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
-	<style name="INVOICE_TX_18B" markup="styled" fontSize="18" isBold="true" pdfFontName="/reports/fonts/TitilliumText25L001.otf" isPdfEmbedded="true"/>
-	<style name="TEXT_BOX_10" markup="styled" fontSize="10" pdfFontName="/reports/fonts/TitilliumText25L003.otf" isPdfEmbedded="true">
+	
+	<!-- footer style - vertically aligned in the middle --> 
+	<style name="FOOTER_08" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" vAlign="Middle" />
+	
+	<!-- legacy styles - deprecated and will be replaced soon -->
+	<style name="INVOICE_TX_08" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" vAlign="Middle" />
+	<style name="INVOICE_TX_10" markup="styled" fontSize="10" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_12" markup="styled" fontSize="12" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_12B" markup="styled" fontSize="12" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_14" markup="styled" fontSize="14" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_14B" markup="styled" fontSize="14" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="INVOICE_TX_18B" markup="styled" fontSize="18" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	
+	<!-- test style with box -->
+	<style name="TEXT_BOX_10" markup="styled" fontSize="10" fontName="Titillium" isPdfEmbedded="true">
 		<box>
 			<pen lineWidth="0.1"/>
 			<topPen lineWidth="0.1"/>
