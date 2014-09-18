@@ -13,7 +13,9 @@ import net.sf.jasperreports.extensions.ExtensionsRegistry;
 import net.sf.jasperreports.extensions.ExtensionsRegistryFactory;
 
 /**
- * @author tfrank1
+ * Font factory for all accounting documents generated via Jasperreports. 
+ * 
+ * @author thorsten frank
  *
  */
 public class AccountingFontFactory implements ExtensionsRegistry, ExtensionsRegistryFactory {

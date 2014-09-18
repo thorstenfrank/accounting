@@ -12,7 +12,10 @@ import net.sf.jasperreports.engine.fonts.SimpleFontFace;
 import org.apache.log4j.Logger;
 
 /**
- * @author tfrank1
+ * {@link SimpleFontFace} can't deal with pathnames in an RCP application, so this simple subclass takes care of
+ * locating the font path and creating the {@link Font} itself. 
+ * 
+ * @author thorsten frank
  *
  */
 public class AccountingFont extends SimpleFontFace {
