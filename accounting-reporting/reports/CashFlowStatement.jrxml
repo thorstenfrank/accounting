@@ -8,17 +8,17 @@
 	<title>
 		<band height="55" splitType="Stretch">
 			<textField>
-				<reportElement uuid="ef3c179c-4291-4afa-a123-7d4a359192f0" style="INVOICE_TX_18B" x="0" y="0" width="300" height="32"/>
+				<reportElement uuid="ef3c179c-4291-4afa-a123-7d4a359192f0" style="TITLE" x="0" y="0" width="300" height="32"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("CashFlowStatement_title")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c8508bbd-eeb6-478e-90d8-7a00fad192e2" style="INVOICE_TX_10" x="0" y="32" width="100" height="20"/>
+				<reportElement uuid="c8508bbd-eeb6-478e-90d8-7a00fad192e2" style="STD_10" x="0" y="32" width="100" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.bindAsDate("from", "timeFrame.from")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c8508bbd-eeb6-478e-90d8-7a00fad192e2" style="INVOICE_TX_10" x="100" y="32" width="100" height="20"/>
+				<reportElement uuid="c8508bbd-eeb6-478e-90d8-7a00fad192e2" style="STD_10" x="100" y="32" width="100" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.bindAsDate("until", "timeFrame.until")]]></textFieldExpression>
 			</textField>
@@ -33,7 +33,7 @@
 				<reportElement uuid="650a4bf0-41b5-4e50-89ab-7a9430b26387" x="0" y="0" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="92a666e5-b5b0-4a7b-8219-644a3c9ab325" style="INVOICE_TX_14B" x="0" y="0" width="459" height="20"/>
+				<reportElement uuid="92a666e5-b5b0-4a7b-8219-644a3c9ab325" style="CF_SECTION_HEADER" x="0" y="0" width="459" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("revenueTitle")]]></textFieldExpression>
 			</textField>
@@ -41,32 +41,32 @@
 				<reportElement uuid="a5d44b1a-59c1-4caf-966d-540168a81734" x="0" y="19" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="c8508bbd-eeb6-478e-90d8-7a00fad192e2" style="INVOICE_TX_12" x="0" y="25" width="50" height="20"/>
+				<reportElement uuid="c8508bbd-eeb6-478e-90d8-7a00fad192e2" style="STD_12" x="0" y="25" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="89298149-8152-47ae-84be-4ef44bc197b4" style="INVOICE_TX_12" x="55" y="25" width="75" height="20"/>
+				<reportElement uuid="89298149-8152-47ae-84be-4ef44bc197b4" style="STD_12" x="55" y="25" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("revenue.revenueNet")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d2c231c7-c4f3-4d41-a880-8d0b44ae5caa" style="INVOICE_TX_12" x="0" y="45" width="50" height="20"/>
+				<reportElement uuid="d2c231c7-c4f3-4d41-a880-8d0b44ae5caa" style="STD_12" x="0" y="45" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_gross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6096822e-a757-43d5-926b-1dda4a5bb868" style="INVOICE_TX_12" x="55" y="45" width="75" height="20"/>
+				<reportElement uuid="6096822e-a757-43d5-926b-1dda4a5bb868" style="STD_12" x="55" y="45" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("revenue.revenueGross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="4919ef3b-79e9-4e5e-93aa-789247b5f16c" style="INVOICE_TX_12" x="0" y="65" width="50" height="20"/>
+				<reportElement uuid="4919ef3b-79e9-4e5e-93aa-789247b5f16c" style="STD_12" x="0" y="65" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="cc291e2d-824e-4701-aa57-cf94c4fde19c" style="INVOICE_TX_12" x="55" y="65" width="75" height="20"/>
+				<reportElement uuid="cc291e2d-824e-4701-aa57-cf94c4fde19c" style="STD_12" x="55" y="65" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("revenue.revenueTax")]]></textFieldExpression>
 			</textField>
@@ -74,7 +74,7 @@
 				<reportElement uuid="32ad5ede-906c-4801-a251-3307003e25aa" x="0" y="90" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="b17fd87b-0fb9-437b-afc8-c0db821a7167" style="INVOICE_TX_14B" x="0" y="90" width="459" height="20"/>
+				<reportElement uuid="b17fd87b-0fb9-437b-afc8-c0db821a7167" style="CF_SECTION_HEADER" x="0" y="90" width="459" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_expenses")]]></textFieldExpression>
 			</textField>
@@ -82,72 +82,72 @@
 				<reportElement uuid="afe55b3c-8ecd-426e-a8e8-aaa4e15f9df2" x="0" y="110" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="e53848f5-a745-407b-b58a-3c8830d830e8" style="INVOICE_TX_12B" x="10" y="115" width="150" height="20"/>
+				<reportElement uuid="e53848f5-a745-407b-b58a-3c8830d830e8" style="STD_12B" x="10" y="115" width="150" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("operatingExpenses")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b7237b87-87b3-4150-84c4-b19e244c9968" style="INVOICE_TX_12" x="10" y="135" width="50" height="20"/>
+				<reportElement uuid="b7237b87-87b3-4150-84c4-b19e244c9968" style="STD_12" x="10" y="135" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9190817e-cb2d-4225-865e-df6fbd81e145" style="INVOICE_TX_12" x="60" y="135" width="100" height="20"/>
+				<reportElement uuid="9190817e-cb2d-4225-865e-df6fbd81e145" style="STD_12" x="60" y="135" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("operatingExpenses.totalCost.net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f5d413b4-45e1-444e-a37e-9f9806c1b2b6" style="INVOICE_TX_12" x="10" y="155" width="50" height="20"/>
+				<reportElement uuid="f5d413b4-45e1-444e-a37e-9f9806c1b2b6" style="STD_12" x="10" y="155" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_gross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="74469ff8-dfe2-4dbd-af1f-4a8072c0ca90" style="INVOICE_TX_12" x="60" y="155" width="100" height="20"/>
+				<reportElement uuid="74469ff8-dfe2-4dbd-af1f-4a8072c0ca90" style="STD_12" x="60" y="155" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("operatingExpenses.totalCost.gross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d8da52cd-6d3e-42cf-9a22-f325bb267c90" style="INVOICE_TX_12" x="10" y="175" width="50" height="20"/>
+				<reportElement uuid="d8da52cd-6d3e-42cf-9a22-f325bb267c90" style="STD_12" x="10" y="175" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="3968c479-8411-4e7d-9cf2-35540fbdb360" style="INVOICE_TX_12" x="60" y="175" width="100" height="20"/>
+				<reportElement uuid="3968c479-8411-4e7d-9cf2-35540fbdb360" style="STD_12" x="60" y="175" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("operatingExpenses.totalCost.tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a12fdab8-be4f-4223-8aa9-2ee7e732c6d8" style="INVOICE_TX_12B" x="240" y="115" width="150" height="20"/>
+				<reportElement uuid="a12fdab8-be4f-4223-8aa9-2ee7e732c6d8" style="STD_12B" x="240" y="115" width="150" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_totalExpenses")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="46b45475-73c4-4678-81a5-a7aee3269636" style="INVOICE_TX_12" x="240" y="135" width="50" height="20"/>
+				<reportElement uuid="46b45475-73c4-4678-81a5-a7aee3269636" style="STD_12" x="240" y="135" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="399d01ea-cf1c-49c6-9623-9870c8e062b4" style="INVOICE_TX_12" x="290" y="135" width="100" height="20"/>
+				<reportElement uuid="399d01ea-cf1c-49c6-9623-9870c8e062b4" style="STD_12" x="290" y="135" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("totalExpenses.net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8ac71158-f819-46a9-ac3e-e48b42d44c34" style="INVOICE_TX_12" x="240" y="155" width="50" height="20"/>
+				<reportElement uuid="8ac71158-f819-46a9-ac3e-e48b42d44c34" style="STD_12" x="240" y="155" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_gross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b103d068-f81f-499e-ba1f-6574bf57c881" style="INVOICE_TX_12" x="290" y="155" width="100" height="20"/>
+				<reportElement uuid="b103d068-f81f-499e-ba1f-6574bf57c881" style="STD_12" x="290" y="155" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("totalExpenses.gross")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="fa0114b2-7989-469f-971c-dd9ca9b8544d" style="INVOICE_TX_12" x="240" y="175" width="50" height="20"/>
+				<reportElement uuid="fa0114b2-7989-469f-971c-dd9ca9b8544d" style="STD_12" x="240" y="175" width="50" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="59b8fe57-6046-4e5c-91f5-5b3c99b9872a" style="INVOICE_TX_12" x="290" y="175" width="100" height="20"/>
+				<reportElement uuid="59b8fe57-6046-4e5c-91f5-5b3c99b9872a" style="STD_12" x="290" y="175" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("totalExpenses.tax")]]></textFieldExpression>
 			</textField>
@@ -155,7 +155,7 @@
 				<reportElement uuid="4f001b84-9a9f-4cc2-a29e-84461e7e8929" x="0" y="200" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="16c8aae1-0e0a-4c69-a791-764a0f00e7f9" style="INVOICE_TX_14B" x="0" y="200" width="459" height="20"/>
+				<reportElement uuid="16c8aae1-0e0a-4c69-a791-764a0f00e7f9" style="CF_SECTION_HEADER" x="0" y="200" width="459" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("taxes")]]></textFieldExpression>
 			</textField>
@@ -163,32 +163,32 @@
 				<reportElement uuid="df4d79d5-b998-4cd2-80f4-1ee0ca6c0a5d" x="0" y="220" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="4d9af29d-3d69-4544-8c94-1dd1a97a2149" style="INVOICE_TX_12" x="0" y="225" width="100" height="20"/>
+				<reportElement uuid="4d9af29d-3d69-4544-8c94-1dd1a97a2149" style="STD_12" x="0" y="225" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_outputTax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="1cbf0b93-10e4-4d14-8c97-6b88b1d9838c" style="INVOICE_TX_12" x="105" y="225" width="75" height="20"/>
+				<reportElement uuid="1cbf0b93-10e4-4d14-8c97-6b88b1d9838c" style="STD_12" x="105" y="225" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("revenue.revenueTax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8cc9aa02-41f8-4328-929f-6a48e6f39b61" style="INVOICE_TX_12" x="0" y="245" width="100" height="20"/>
+				<reportElement uuid="8cc9aa02-41f8-4328-929f-6a48e6f39b61" style="STD_12" x="0" y="245" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_inputTax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="de696466-308f-4e6a-a5bd-d6a5de65325a" style="INVOICE_TX_12" x="105" y="245" width="75" height="20"/>
+				<reportElement uuid="de696466-308f-4e6a-a5bd-d6a5de65325a" style="STD_12" x="105" y="245" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("totalExpenses.tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="433e7bf9-51a5-4fb1-8f8a-8bda255c82b3" style="INVOICE_TX_12" x="0" y="265" width="100" height="20"/>
+				<reportElement uuid="433e7bf9-51a5-4fb1-8f8a-8bda255c82b3" style="STD_12" x="0" y="265" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("IncomeStatement_taxSum")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b98d7fda-196f-415e-9ed4-60b8504abac9" style="INVOICE_TX_12" x="105" y="265" width="75" height="20"/>
+				<reportElement uuid="b98d7fda-196f-415e-9ed4-60b8504abac9" style="STD_12" x="105" y="265" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("taxSum")]]></textFieldExpression>
 			</textField>
@@ -196,7 +196,7 @@
 				<reportElement uuid="89fec85b-f29d-4b02-a16d-fa7c36f927fd" x="0" y="290" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="7c02e3ed-bb5a-428f-b31c-8f3be3c289f1" style="INVOICE_TX_14B" x="0" y="290" width="459" height="20"/>
+				<reportElement uuid="7c02e3ed-bb5a-428f-b31c-8f3be3c289f1" style="CF_SECTION_HEADER" x="0" y="290" width="459" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("result")]]></textFieldExpression>
 			</textField>
@@ -204,12 +204,12 @@
 				<reportElement uuid="a2085834-aabb-429f-9a6f-b0ae6e368a8a" x="0" y="310" width="459" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="96484215-07fe-43bb-885e-715e61bad581" style="INVOICE_TX_12B" x="0" y="321" width="100" height="20"/>
+				<reportElement uuid="96484215-07fe-43bb-885e-715e61bad581" style="STD_12B" x="0" y="321" width="100" height="20"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("operatingProfitTitle")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="ad684a21-6bce-42e0-8313-9621f00de8d5" style="INVOICE_TX_12B" x="105" y="321" width="75" height="20"/>
+				<reportElement uuid="ad684a21-6bce-42e0-8313-9621f00de8d5" style="STD_12B" x="105" y="321" width="75" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.formatAsCurrency("grossProfit.net")]]></textFieldExpression>
 			</textField>

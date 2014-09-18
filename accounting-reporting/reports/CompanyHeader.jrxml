@@ -16,7 +16,7 @@
 					<textFieldExpression><![CDATA[$P{company}.get("name")]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement style="INVOICE_TX_10" isPrintRepeatedValues="false" x="0" y="18" width="175" height="227" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="64c4aaf1-a27f-420e-8455-8a0b20d3ac9c"/>
+					<reportElement style="STD_10" isPrintRepeatedValues="false" x="0" y="18" width="175" height="227" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="64c4aaf1-a27f-420e-8455-8a0b20d3ac9c"/>
 					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{company}.get("description")]]></textFieldExpression>
 				</textField>

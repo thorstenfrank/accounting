@@ -8,35 +8,35 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="0" y="0" width="100" height="20" uuid="69bf6528-5029-4cc5-9785-02ff8c9c34ea"/>
+				<reportElement style="STD_10" x="0" y="0" width="100" height="15" uuid="69bf6528-5029-4cc5-9785-02ff8c9c34ea"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.get("number")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="100" y="0" width="100" height="20" uuid="f09fc7ef-8edb-4266-93ea-bab48d32a864"/>
+				<reportElement style="STD_10" x="100" y="0" width="100" height="15" uuid="f09fc7ef-8edb-4266-93ea-bab48d32a864"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.formatAsDate("invoiceDate")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="200" y="0" width="100" height="20" uuid="d2f38614-f267-4579-8e85-9ff2097acd3e"/>
+				<reportElement style="STD_10" x="200" y="0" width="100" height="15" uuid="d2f38614-f267-4579-8e85-9ff2097acd3e"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.formatAsDate("paymentDate")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="300" y="0" width="160" height="20" uuid="e6b159fb-3aa4-4a83-81c9-def586966368"/>
+				<reportElement style="STD_10" x="300" y="0" width="160" height="15" uuid="e6b159fb-3aa4-4a83-81c9-def586966368"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.get("client.name")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="460" y="0" width="100" height="20" uuid="7fc7278d-b05e-4c22-a648-b1be4d5ffe73"/>
+				<reportElement style="STD_10" x="460" y="0" width="100" height="15" uuid="7fc7278d-b05e-4c22-a648-b1be4d5ffe73"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.net")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="560" y="0" width="100" height="20" uuid="6f8d6f1f-b59c-410f-a5d8-a3b26020a5a9"/>
+				<reportElement style="STD_10" x="560" y="0" width="100" height="15" uuid="6f8d6f1f-b59c-410f-a5d8-a3b26020a5a9"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.tax")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="INVOICE_TX_10" x="660" y="0" width="100" height="20" uuid="ed6403fd-f65e-44d8-973d-b914470fc8f3"/>
+				<reportElement style="STD_10" x="660" y="0" width="100" height="15" uuid="ed6403fd-f65e-44d8-973d-b914470fc8f3"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{wrapper}.formatAsCurrency("CALCULATED_TOTAL.gross")]]></textFieldExpression>
 			</textField>
