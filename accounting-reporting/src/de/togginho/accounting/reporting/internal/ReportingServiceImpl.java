@@ -82,4 +82,39 @@ public class ReportingServiceImpl implements ReportingService {
 	    JasperReportGenerator generator = new JasperReportGenerator(internalReportsMap.get(reportId).getAttribute("template"), model);
 	    generator.generateReport(fileLocation, monitor);
     }
+
+	/**
+	 * @see ReportingService#generateReport(String, Object, String)
+	 */
+	@Override
+	public void generateReport(String reportId, Object model, String fileLocation) {
+		generateReport(reportId, model, fileLocation, new ReportGenerationMonitor() {
+			
+			@Override
+			public void startingReportGeneration() {
+			}
+			
+			@Override
+			public void loadingTemplate() {
+			}
+			
+			@Override
+			public void fillingReport() {
+			}
+			
+			@Override
+			public void exportingReport() {
+			}
+			
+			@Override
+			public void exportFinished() {
+			}
+			
+			@Override
+			public void addingReportParameters() {
+			}
+		});
+	}
+    
+    
 }
