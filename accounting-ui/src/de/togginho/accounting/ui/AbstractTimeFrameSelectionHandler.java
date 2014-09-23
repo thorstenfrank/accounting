@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2013,2014 thorsten frank (thorsten.frank@gmx.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,7 +37,9 @@ import de.togginho.accounting.util.TimeFrame;
 import de.togginho.accounting.util.TimeFrameType;
 
 /**
- * @author thorsten
+ * Abstract base class for command handlers that offer timeframe-based selection dialogs.
+ * 
+ * @author Thorsten Frank - thorsten.frank@tfsw.de
  *
  */
 public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccountingHandler {
@@ -49,7 +51,6 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	
 	private TimeFrame currentTimeFrame;
 	private boolean timeFrameActive = true;
-	
 	private DateTime from;
 	private DateTime to;
 	private Combo months;
@@ -59,6 +60,26 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	
 	/**
 	 * 
+	 * @return
+	 */
+	protected abstract Calendar getStartDateForYearSelector();
+	
+	/**
+	 * @return the currentTimeFrame
+	 */
+	protected TimeFrame getCurrentTimeFrame() {
+		return timeFrameActive ? currentTimeFrame : null;
+	}
+
+	/**
+	 * @param currentTimeFrame the currentTimeFrame to set
+	 */
+	protected void setCurrentTimeFrame(TimeFrame currentTimeFrame) {
+		this.currentTimeFrame = currentTimeFrame;
+	}
+	
+	/**
+	 *  
 	 * @param parent
 	 * @return
 	 */
@@ -154,6 +175,12 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		return group;
 	}
 	
+	/**
+	 * 
+	 * @param type
+	 * @param parent
+	 * @return
+	 */
 	private Button buildTimeFrameTypeButton(TimeFrameType type, Composite parent) {
 		final Button b = new Button(parent, SWT.PUSH);
 		WidgetHelper.grabHorizontal(b);
@@ -185,25 +212,7 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		return b;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	protected abstract Calendar getStartDateForYearSelector();
-	
-	/**
-	 * @return the currentTimeFrame
-	 */
-	protected TimeFrame getCurrentTimeFrame() {
-		return timeFrameActive ? currentTimeFrame : null;
-	}
 
-	/**
-	 * @param currentTimeFrame the currentTimeFrame to set
-	 */
-	protected void setCurrentTimeFrame(TimeFrame currentTimeFrame) {
-		this.currentTimeFrame = currentTimeFrame;
-	}
 	
 	/**
 	 * 

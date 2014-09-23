@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2011, 2014 thorsten frank (thorsten.frank@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -28,14 +31,60 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import de.togginho.accounting.AccountingException;
+
 /**
- * @author thorsten
+ * Base implementation for all command handlers within the accounting application.
+ * 
+ * <p>
+ * Apart from wrapping the actual handler execution into a try-catch block, this class offers basic convenience access
+ * to often-used resources, such as getting the display shell.   
+ * </p>
+ * 
+ * @author Thorsten Frank
  *
  */
 public abstract class AbstractAccountingHandler extends AbstractHandler {
 
 	/**
-	 * {@inheritDoc}.
+	 * All handler execution logic goes here - {@link #execute(ExecutionEvent)} wraps a call to this method into
+	 * administrative and overhead such as error handling, so implementations can concentrate on their actual task.
+	 * 
+	 * <p>
+	 * This method should not be called directly!
+	 * </p>
+	 * 
+	 * @param event	An event containing all the information about the current state of the application
+	 * 
+	 * @throws ExecutionException if an exception occurs during execution. 
+	 * 
+	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 */
+	protected abstract void doExecute(ExecutionEvent event) throws ExecutionException;
+	
+	/**
+	 * All centralized logging statements will be made to the {@link Logger} returned by this method.
+	 * 
+	 * <p>
+	 * For log traceability reasons, implementations are encouraged to provide their own instinctive logging 
+	 * instance instead of using a general one.
+	 * </p>
+	 * 
+	 * @return	the {@link Logger} for this handler implementation
+	 */
+	protected abstract Logger getLogger();
+	
+	/**
+	 * Basic handler execution - subclasses should <b>not</b> override this method, but place all logic inside their 
+	 * {@link #doExecute(ExecutionEvent)} implementation.
+	 * 
+	 * <p>
+	 * This method will call {@link #doExecute(ExecutionEvent)} and display any exception in an error 
+	 * {@link MessageBox}.
+	 * </p>
+	 * 
+	 * @return	always <code>null</code>, as per definition in {@link IHandler#execute(ExecutionEvent)}
+	 * 
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
@@ -53,18 +102,15 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 		
 		return null;
 	}
-
-	/**
-	 * 
-	 * @param event
-	 * @throws ExecutionException
-	 */
-	protected abstract void doExecute(ExecutionEvent event) throws ExecutionException;
 	
 	/**
+	 * Returns the active {@link Shell}. 
 	 * 
-	 * @param event
-	 * @return
+	 * @param event	the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
+	 * 
+	 * @return	the current {@link Shell}
+	 * 
+	 * @see HandlerUtil#getActiveShell(ExecutionEvent)
 	 */
 	protected Shell getShell(ExecutionEvent event) {
 		Shell shell = HandlerUtil.getActiveShell(event);
@@ -75,9 +121,14 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 	}
 	
 	/**
+	 * Returns the active workbench window's page.
 	 * 
-	 * @param event
-	 * @return
+	 * @param event	the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
+	 * 
+	 * @return	the current active workbench window/page
+	 * 
+	 * @see HandlerUtil#getActiveWorkbenchWindow(ExecutionEvent)
+	 * @see IWorkbenchWindow#getActivePage()
 	 */
 	protected IWorkbenchPage getActivePage(ExecutionEvent event) {
 		IWorkbenchPage page = null;
@@ -94,14 +145,11 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 	}
 	
 	/**
+	 * Returns the selection provider of the currently active page.
 	 * 
-	 * @return
-	 */
-	protected abstract Logger getLogger();
-
-	/**
-	 * @param event
-	 * @return
+	 * @param event the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
+	 * 
+	 * @return	the current selection provider
 	 */
 	protected ISelectionProvider getSelectionProvider(ExecutionEvent event) {
 		return getActivePage(event).getActivePart().getSite().getSelectionProvider();
@@ -110,19 +158,58 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 	/**
 	 * 
 	 * @param event
-	 * @param message
-	 * @param title
-	 * @param includeCancelButton
+	 * @param targetClass
 	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> T getCurrentSelection(ExecutionEvent event, Class<T> targetClass) {
+		ISelectionProvider selectionProvider = getSelectionProvider(event);
+		
+		if (selectionProvider == null) {
+			getLogger().error("Selection Provider is NULL! Target class is " + targetClass.getName()); //$NON-NLS-1$
+			throw new AccountingException(Messages.AbstractAccountingHandler_errorGettingSelection);
+		}
+		
+		ISelection selection = selectionProvider.getSelection();
+		if (selection.isEmpty()) {
+			getLogger().error("Selection is empty! Target class is " + targetClass.getName()); //$NON-NLS-1$
+			throw new AccountingException(Messages.AbstractAccountingHandler_errorGettingSelection);
+		}
+
+		
+		Object element = ((IStructuredSelection) selection).getFirstElement();
+		
+		if (targetClass.isAssignableFrom(element.getClass())) {
+			return (T) element;
+		}
+		
+		getLogger().error(String.format("Current selection is of type [%s] and canont be cast to target class [%s]", //$NON-NLS-1$ 
+				element.getClass().getName(), targetClass.getName()));
+		throw new AccountingException(Messages.AbstractAccountingHandler_errorGettingSelection);
+	}
+		
+		
+	
+	/**
+	 * Displays a warning message, i.e. a simple modal dialog with a message and a warning icon.
+	 * 
+	 * @param event	the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
+	 * @param message the (localized) text to be displayed by the dialog
+	 * @param title the (localized) title string of the dialog
+	 * @param includeCancelButton whether or not to include a localized <code>Cancel</code> button for the dialog 
+	 * 		  instead of just an <code>OK</code> one
+	 * 
+	 * @return <code>true</code> if {@link MessageBox#open()} returns {@link SWT#OK}, <code>false</code> otherwise
 	 */
 	protected boolean showWarningMessage(
 			ExecutionEvent event, final String message, final String title, boolean includeCancelButton) {
-		int style = SWT.ICON_WARNING | SWT.OK;
+		
+		int style = SWT.ICON_WARNING | SWT.OK;		
 		if (includeCancelButton) {
 			style = style | SWT.CANCEL;
 		}
-		MessageBox msgBox = new MessageBox(
-				getShell(event), style);
+		
+		MessageBox msgBox = new MessageBox(getShell(event), style);
 		msgBox.setMessage(message);
 		msgBox.setText(title);
 		

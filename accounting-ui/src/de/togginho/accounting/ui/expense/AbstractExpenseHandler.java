@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2012, 2014 thorsten frank (thorsten.frank@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,58 +16,52 @@
 package de.togginho.accounting.ui.expense;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 
 import de.togginho.accounting.model.Expense;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
 
 /**
- * @author thorsten
+ * Abstract base class for command handlers dealing with {@link Expense} entitites.
+ * Mainly provides easy access to expense selection and opening the creation/edit wizard.
+ * 
+ * @author Thorsten Frank - thorsten.frank@tfsw.de
  *
  */
 abstract class AbstractExpenseHandler extends AbstractAccountingHandler {
 
 	/**
+	 * Extracts and returns the {@link Expense} that is the current selection of the active selection provider.
+	 * Mostly, that will be the expense for which a command was fired, through either a double-click or context menu
+	 * selection in the {@link ExpensesView}.
 	 * 
-	 * @param event
-	 * @return
+	 * @param event	the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
+	 * 
+	 * @return	the currently selected {@link Expense}, or <code>null</code> if this handler was called without such a 
+	 * 			selection
 	 */
 	protected Expense getExpenseFromSelection(ExecutionEvent event) {
-		Expense expense = null;
-		
-		ISelectionProvider selectionProvider = getSelectionProvider(event);
-		if (selectionProvider != null && !selectionProvider.getSelection().isEmpty()) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-						
-			if (structuredSelection.getFirstElement() instanceof ExpenseWrapper) {
-				expense = ((ExpenseWrapper) structuredSelection.getFirstElement()).getExpense();
-			} else {
-				getLogger().warn("Current selection is not of type Expense");
-			}
-		} 
-		else { 
-			getLogger().warn("Current selection is empty, cannot run this command!"); //$NON-NLS-1$ 
-		}
-		
-		return expense;
+		return ((ExpenseWrapper)getCurrentSelection(event, ExpenseWrapper.class)).getExpense();
 	}
 
 	/**
+	 * Opens an {@link ExpenseWizard} without an existing {@link Expense} to edit.
 	 * 
-	 * @param event
+	 * @param event the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
 	 */
 	protected void openExpenseWizard(ExecutionEvent event) {
+		getLogger().debug("Opening NEW expense wizard");
 		openExpenseWizard(event, new ExpenseWizard());
 	}
 	
 	/**
-	 * @param event
-	 * @param expense
+	 * Opens the {@link ExpenseWizard} with the supplied {@link Expense} for editing.
+	 * 
+	 * @param event the {@link ExecutionEvent} provided through {@link #doExecute(ExecutionEvent)}
+	 * @param expense the {@link Expense} to edit
 	 */
 	protected void openExpenseWizard(ExecutionEvent event, Expense expense) {
+		getLogger().debug("Opening EDIT expense wizard for " + expense.toString());
 		openExpenseWizard(event, new ExpenseWizard(expense));
 	}
 	
@@ -77,9 +71,7 @@ abstract class AbstractExpenseHandler extends AbstractAccountingHandler {
 	 * @param wizard
 	 */
 	private void openExpenseWizard(ExecutionEvent event, ExpenseWizard wizard) {
-		getLogger().debug("Opening expense editor");
-		Shell shell = getShell(event);
-		WizardDialog dialog = new WizardDialog(shell, wizard);
+		WizardDialog dialog = new WizardDialog(getShell(event), wizard);
 		
 		int returnCode = dialog.open();
 		

@@ -25,11 +25,12 @@ public class Messages extends NLS {
 	
 	private static final String BUNDLE_NAME = "de.togginho.accounting.ui.messages"; //$NON-NLS-1$
 	
+	public static String AbstractAccountingHandler_errorGettingSelection;
+	
 	public static String AbstractClientHandler_message;
 	public static String AbstractClientHandler_text;
 	
 	public static String AbstractInvoiceHandler_errorNoInvoiceInCurrentEditor;
-	public static String AbstractInvoiceHandler_errorNoInvoiceInSelection;
 
 	public static String AbstractTimeFrameSelectionHandler_useTimeFrame;
 	
