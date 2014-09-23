@@ -15,6 +15,7 @@
  */
 package de.togginho.accounting.ui;
 
+import org.apache.log4j.Logger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -26,27 +27,57 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AccountingApplication implements IApplication {
 
-	/* (non-Javadoc)
+	private static final Logger LOG = Logger.getLogger(AccountingApplication.class);
+	
+	/**
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
+		LOG.debug("Starting Accounting Application");
 		Display display = PlatformUI.createDisplay();
 		try {
-			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-			if (returnCode == PlatformUI.RETURN_RESTART)
-				return IApplication.EXIT_RESTART;
-			else
-				return IApplication.EXIT_OK;
+			return handlePlatformReturnCode(PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor()));
 		} finally {
 			display.dispose();
 		}
-		
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * 
+	 * @param returnCode
+	 * @return
+	 */
+	private Integer handlePlatformReturnCode(int returnCode) {
+		String returnString = null;
+		Integer exitValue = IApplication.EXIT_OK;
+		switch (returnCode) {
+			case PlatformUI.RETURN_OK:
+				returnString = "RETURN_OK";
+				break;
+			case PlatformUI.RETURN_RESTART:
+				returnString = "RETURN_RESTART";
+				exitValue = IApplication.EXIT_RESTART;
+				break;
+			case PlatformUI.RETURN_UNSTARTABLE:
+				returnString = "RETURN_UNSTARTABLE";
+				break;
+			case PlatformUI.RETURN_EMERGENCY_CLOSE:
+				returnString = "RETURN_EMERGENCY_CLOSE";
+				break;
+		}
+		
+		LOG.debug("ReturnCode from PlatformUI.createAndRunWorkbench() was " + returnString);
+		
+		return exitValue;
+		
+	}
+	
+	/**
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
 	public void stop() {
+		LOG.debug("Stopping Accounting Application...");
+		
 		if (!PlatformUI.isWorkbenchRunning())
 			return;
 		final IWorkbench workbench = PlatformUI.getWorkbench();
