@@ -26,10 +26,10 @@ import de.togginho.accounting.ui.AbstractAccountingHandler;
  * @author thorsten
  *
  */
-public class NewClientCommand extends AbstractAccountingHandler {
+public class NewClientHandler extends AbstractAccountingHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(NewClientCommand.class);
+	private static final Logger LOG = Logger.getLogger(NewClientHandler.class);
 	
 	/**
      * {@inheritDoc}.

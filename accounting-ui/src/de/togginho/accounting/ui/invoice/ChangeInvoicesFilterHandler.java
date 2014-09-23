@@ -45,9 +45,9 @@ import de.togginho.accounting.util.TimeFrame;
  * @author thorsten
  *
  */
-public class ChangeInvoicesFilterCommand extends AbstractTimeFrameSelectionHandler {
+public class ChangeInvoicesFilterHandler extends AbstractTimeFrameSelectionHandler {
 
-	private static final Logger LOG = Logger.getLogger(ChangeInvoicesFilterCommand.class);
+	private static final Logger LOG = Logger.getLogger(ChangeInvoicesFilterHandler.class);
 	
 	private Set<InvoiceState> stateSelection;
 	

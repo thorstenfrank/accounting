@@ -46,12 +46,12 @@ import de.togginho.accounting.util.TimeFrameType;
  * @author thorsten
  *
  */
-public class ChangeExpensesViewTimeFrameCommand extends AbstractTimeFrameSelectionHandler {
+public class ChangeExpensesViewFilterHandler extends AbstractTimeFrameSelectionHandler {
 
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewTimeFrameCommand.class);
+	private static final Logger LOG = Logger.getLogger(ChangeExpensesViewFilterHandler.class);
 	
 	/**
 	 * 

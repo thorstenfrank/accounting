@@ -40,12 +40,12 @@ import de.togginho.accounting.ui.util.WidgetHelper;
  * @author thorsten
  *
  */
-public class ChooseReportCommand extends AbstractAccountingHandler {
+public class ChooseReportHandler extends AbstractAccountingHandler {
 
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ChooseReportCommand.class);
+	private static final Logger LOG = Logger.getLogger(ChooseReportHandler.class);
 	
 	private Composite mainComposite;
 	

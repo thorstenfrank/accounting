@@ -35,10 +35,10 @@ import de.togginho.accounting.ui.Messages;
  * 
  * @author tfrank1
  */
-public class DeleteClientCommand extends AbstractClientHandler {
+public class DeleteClientHandler extends AbstractClientHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(DeleteClientCommand.class);
+	private static final Logger LOG = Logger.getLogger(DeleteClientHandler.class);
 	
 	/**
 	 * 
