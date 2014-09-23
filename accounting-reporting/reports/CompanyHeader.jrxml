@@ -37,8 +37,8 @@
 					<reportElement style="STD_12" x="0" y="35" width="245" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="6558d86e-2408-4881-a621-7c5b715f8c38"/>
 					<textFieldExpression><![CDATA[$P{client}.get("address.recipientDetail")]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement style="STD_12" x="0" y="51" width="245" height="16" isPrintWhenDetailOverflows="true" uuid="13b463bf-be3c-40d2-9813-112c21e2327a"/>
+				<textField isBlankWhenNull="true">
+					<reportElement style="STD_12" x="0" y="51" width="245" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="13b463bf-be3c-40d2-9813-112c21e2327a"/>
 					<textFieldExpression><![CDATA[$P{client}.get("address.street")]]></textFieldExpression>
 				</textField>
 				<textField>
