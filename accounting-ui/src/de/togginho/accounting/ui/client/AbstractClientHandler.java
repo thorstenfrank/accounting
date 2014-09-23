@@ -21,10 +21,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 
 import de.togginho.accounting.model.Client;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
@@ -42,27 +38,25 @@ import de.togginho.accounting.ui.Messages;
 abstract class AbstractClientHandler extends AbstractAccountingHandler {
 	
 	/**
-	 * {@inheritDoc}.
-	 * @see de.togginho.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+	 * Extracts the {@link Client} for which this handler/command was fired and then calls 
+	 * {@link #handleClient(Client, ExecutionEvent)}.
+	 * 
+	 * @see AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)
+	 * 
+	 * @see #handleClient(Client, ExecutionEvent)
 	 */
 	@SuppressWarnings("unchecked")
     @Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
-	    IWorkbenchPage activePage = getActivePage(event);
-	    
-	    IWorkbenchPart part = activePage.getActivePart();
-	    
-	    ISelectionProvider selectionProvider = part.getSite().getSelectionProvider();
+	    ISelectionProvider selectionProvider = getSelectionProvider(event);
 	    
 		if (selectionProvider != null) {
 			if (selectionProvider.getSelection().isEmpty()) {
 				getLogger().warn("No active selection, cannot run command"); //$NON-NLS-1$
-				MessageBox msgBox = new MessageBox(getShell(event), SWT.ICON_WARNING | SWT.OK);
-				msgBox.setMessage(Messages.AbstractClientHandler_message);
-				msgBox.setText(Messages.AbstractClientHandler_text);
-				msgBox.open();
+				showWarningMessage(event, Messages.AbstractClientHandler_message, Messages.AbstractClientHandler_text, false);
 			} else if (selectionProvider.getSelection() instanceof IStructuredSelection) {
 				IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+				
 				for (Iterator<Object> iter = structuredSelection.iterator(); iter.hasNext(); ){
 					Object selected = iter.next();
 					if (selected instanceof Client) {						

@@ -17,14 +17,11 @@ package de.togginho.accounting.ui.invoice;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 
 import de.togginho.accounting.AccountingException;
 import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
-import de.togginho.accounting.ui.AccountingUI;
 import de.togginho.accounting.ui.IDs;
 import de.togginho.accounting.ui.Messages;
 
@@ -41,32 +38,14 @@ import de.togginho.accounting.ui.Messages;
 abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 	
 	/**
+	 * Returns the current selection using the active workbench selection provider.
 	 * 
 	 * @param event
 	 * @return
+	 * @throws AccountingException if no {@link Invoice} is selected
 	 */
 	protected Invoice getInvoiceFromSelection(ExecutionEvent event) {
-		ISelectionProvider selectionProvider = getSelectionProvider(event);
-		
-		Invoice invoice = null;
-		if (selectionProvider != null && !selectionProvider.getSelection().isEmpty()) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-						
-			if (structuredSelection.getFirstElement() instanceof Invoice) {
-				invoice = (Invoice) structuredSelection.getFirstElement();			
-			} else {
-				getLogger().warn("Current selection is not of type Ivoice: "  //$NON-NLS-1$
-						+ structuredSelection.getFirstElement().getClass());
-			}
-		} else {
-			getLogger().warn("Current selection is empty, cannot run this command!"); //$NON-NLS-1$
-		}
-		
-		if (invoice == null) {
-			throw new AccountingException(Messages.AbstractInvoiceHandler_errorNoInvoiceInSelection);
-		}
-		
-		return invoice;
+		return getCurrentSelection(event, Invoice.class);
 	}
     
 	/**
@@ -92,64 +71,5 @@ abstract class AbstractInvoiceHandler extends AbstractAccountingHandler {
 		}
 		
 		return invoice;
-	}
-	
-	/**
-	 * 
-	 * @param invoice
-	 * @param event
-	 */
-	protected void deleteInvoice(Invoice invoice, ExecutionEvent event) {
-		if (showWarningMessage(
-				event, 
-				Messages.bind(Messages.DeleteInvoiceCommand_confirmMessage, invoice.getNumber()), 
-				Messages.DeleteInvoiceCommand_confirmText,
-				true)) {
-			getLogger().info("Deleting invoice " + invoice.getNumber()); //$NON-NLS-1$
-			
-			// do the actual work
-			AccountingUI.getAccountingService().deleteInvoice(invoice);
-			
-			// close any open editors for the deleted invoice
-			removeOpenEditorForInvoice(invoice, event);
-		} else {
-			getLogger().info("Delete was cancelled by user"); //$NON-NLS-1$
-		}
-	}
-	
-	/**
-	 * 
-	 * @param invoice
-	 * @param event
-	 */
-	protected void cancelInvoice(Invoice invoice, ExecutionEvent event) {
-		if (showWarningMessage(
-				event, 
-				Messages.bind(Messages.CancelInvoiceCommand_confirmMessage, invoice.getNumber()), 
-				Messages.CancelInvoiceCommand_confirmText,
-				false)) {
-			getLogger().info("Cancelling invoice " + invoice.getNumber()); //$NON-NLS-1$
-			// do the actual work
-			AccountingUI.getAccountingService().cancelInvoice(invoice);
-		} else {
-			getLogger().info("CancelInvoice was cancelled by user"); //$NON-NLS-1$
-		}
-	}
-	
-	/**
-	 * 
-	 * @param toBeDeleted
-	 * @param event
-	 */
-	private void removeOpenEditorForInvoice(Invoice toBeDeleted, ExecutionEvent event) {
-		getLogger().debug("Checking for open editors for invoice " + toBeDeleted.getNumber()); //$NON-NLS-1$
-		IWorkbenchPage page = getActivePage(event);
-		
-		for (IEditorReference editorRef : page.findEditors(null, IDs.EDIT_INVOIDCE_ID, IWorkbenchPage.MATCH_ID)) {
-			if (editorRef.getName().equals(toBeDeleted.getNumber())) {
-				getLogger().debug("Closing editor for deleted invoice: " + editorRef.getName()); //$NON-NLS-1$
-				page.closeEditor(editorRef.getEditor(false), false);
-			}
-		}		
 	}
 }

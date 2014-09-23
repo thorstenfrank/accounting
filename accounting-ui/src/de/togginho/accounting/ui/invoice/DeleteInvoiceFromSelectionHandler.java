@@ -18,8 +18,13 @@ package de.togginho.accounting.ui.invoice;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 
 import de.togginho.accounting.model.Invoice;
+import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.ui.IDs;
+import de.togginho.accounting.ui.Messages;
 
 /**
  * Deletes the invoice currently being the active selection. This handler should be active when the {@link InvoiceView}
@@ -41,9 +46,41 @@ public class DeleteInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 	 */
 	@Override
     protected void doExecute(ExecutionEvent event) throws ExecutionException {
-	    deleteInvoice(getInvoiceFromSelection(event), event);
+		Invoice invoice = getInvoiceFromSelection(event);
+		if (showWarningMessage(
+				event, 
+				Messages.bind(Messages.DeleteInvoiceCommand_confirmMessage, invoice.getNumber()), 
+				Messages.DeleteInvoiceCommand_confirmText,
+				true)) {
+			getLogger().info("Deleting invoice " + invoice.getNumber()); //$NON-NLS-1$
+			
+			// do the actual work
+			AccountingUI.getAccountingService().deleteInvoice(invoice);
+			
+			// close any open editors for the deleted invoice
+			closeOpenEditorForInvoice(invoice, event);
+		} else {
+			getLogger().info(String.format("Deleting invoice [%s] was cancelled by user", invoice.getNumber())); //$NON-NLS-1$
+		}
     }
+	
+	/**
+	 * 
+	 * @param invoice
+	 * @param event
+	 */
+	private void closeOpenEditorForInvoice(Invoice invoice, ExecutionEvent event) {
+		getLogger().debug("Checking for open editors for invoice " + invoice.getNumber()); //$NON-NLS-1$
+		IWorkbenchPage page = getActivePage(event);
 		
+		for (IEditorReference editorRef : page.findEditors(null, IDs.EDIT_INVOIDCE_ID, IWorkbenchPage.MATCH_ID)) {
+			if (editorRef.getName().equals(invoice.getNumber())) {
+				getLogger().debug("Closing editor for deleted invoice: " + editorRef.getName()); //$NON-NLS-1$
+				page.closeEditor(editorRef.getEditor(false), false);
+			}
+		}		
+	}
+	
 	/**
 	 * 
 	 * {@inheritDoc}.

@@ -19,7 +19,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import de.togginho.accounting.model.Invoice;
 import de.togginho.accounting.ui.AbstractAccountingHandler;
+import de.togginho.accounting.ui.AccountingUI;
+import de.togginho.accounting.ui.Messages;
 
 /**
  * Cancels the currently selected invoice.
@@ -39,7 +42,18 @@ public class CancelInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 	 */
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
-		cancelInvoice(getInvoiceFromSelection(event), event);
+		Invoice invoice = getInvoiceFromSelection(event);
+		if (showWarningMessage(
+				event, 
+				Messages.bind(Messages.CancelInvoiceCommand_confirmMessage, invoice.getNumber()), 
+				Messages.CancelInvoiceCommand_confirmText,
+				false)) {
+			getLogger().info("Cancelling invoice " + invoice.getNumber()); //$NON-NLS-1$
+			// do the actual work
+			AccountingUI.getAccountingService().cancelInvoice(invoice);
+		} else {
+			getLogger().info("CancelInvoice was cancelled by user"); //$NON-NLS-1$
+		};
 	}
 	
 	/**
