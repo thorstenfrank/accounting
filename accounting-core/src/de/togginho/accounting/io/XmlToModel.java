@@ -316,6 +316,7 @@ class XmlToModel {
 	 */
 	private Address convertAddress(XmlAddress xmlAddress) {
 		Address address = new Address();
+		address.setRecipientDetail(xmlAddress.getRecipientDetail());
 		address.setCity(xmlAddress.getCity());
 		address.setEmail(xmlAddress.getEmail());
 		address.setFaxNumber(xmlAddress.getFax());

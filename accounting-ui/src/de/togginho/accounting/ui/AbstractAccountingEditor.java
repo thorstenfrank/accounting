@@ -299,6 +299,8 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 		Composite addressSectionClient = getToolkit().createComposite(addressSection);
 		addressSectionClient.setLayout(new GridLayout(2, false));
 		
+		toolkit.createLabel(addressSectionClient, Messages.labelRecipientDetail);
+		createText(addressSectionClient, address.getRecipientDetail(), address, Address.FIELD_RECIPIENT_DETAIL);
 		toolkit.createLabel(addressSectionClient, Messages.labelStreet);
 		createText(addressSectionClient, address.getStreet(), address, Address.FIELD_STREET);
 		toolkit.createLabel(addressSectionClient, Messages.labelPostalCode);

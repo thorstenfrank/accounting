@@ -154,6 +154,7 @@ class XmlTestBase extends BaseTestFixture {
 			assertEquals(address.getMobileNumber(), xmlAddress.getMobile());
 			assertEquals(address.getPhoneNumber(), xmlAddress.getPhone());
 			assertEquals(address.getPostalCode(), xmlAddress.getPostalCode());
+			assertEquals(address.getRecipientDetail(), xmlAddress.getRecipientDetail());
 			assertEquals(address.getStreet(), xmlAddress.getStreet());
 		}
 	}

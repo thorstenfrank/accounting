@@ -307,6 +307,7 @@ public class Messages extends NLS {
 	public static String labelPresetsNone;
 	public static String labelPricePerUnit;
 	public static String labelQuantity;
+	public static String labelRecipientDetail;
 	public static String labelRevenue;
 	public static String labelRevenueRelevant;
 	public static String labelScrapValue;

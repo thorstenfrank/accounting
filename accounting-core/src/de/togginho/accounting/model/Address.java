@@ -32,6 +32,7 @@ public class Address implements Serializable {
 	 */
 	private static final long serialVersionUID = -2089684022714034270L;
 
+	public static final String FIELD_RECIPIENT_DETAIL = "recipientDetail";
 	public static final String FIELD_STREET = "street";
 	public static final String FIELD_POSTAL_CODE = "postalCode";
 	public static final String FIELD_CITY = "city";
@@ -40,6 +41,7 @@ public class Address implements Serializable {
 	public static final String FIELD_FAX_NUMBER = "faxNumber";
 	public static final String FIELD_EMAIL = "email";
 	
+	private String recipientDetail;
 	private String street;
 	private String postalCode;
 	private String city;
@@ -47,7 +49,21 @@ public class Address implements Serializable {
 	private String mobileNumber;
 	private String faxNumber;
 	private String email;
-	
+	    
+	/**
+     * @return the recipientDetail
+     */
+    public String getRecipientDetail() {
+    	return recipientDetail;
+    }
+
+	/**
+     * @param recipientDetail the recipientDetail to set
+     */
+    public void setRecipientDetail(String recipientDetail) {
+    	this.recipientDetail = recipientDetail;
+    }
+
 	/**
 	 * 
 	 * @return street address including house or apt. number

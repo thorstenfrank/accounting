@@ -183,6 +183,9 @@ class ModelToXml {
 	private XmlAddress convertAddress(Address address) {
 		if (LOG.isDebugEnabled()) {
 			StringBuilder sb = new StringBuilder("Converting address "); //$NON-NLS-1$
+			if (address.getRecipientDetail() != null) {
+				sb.append(address.getRecipientDetail()).append(" | ");
+			}
 			sb.append(address.getStreet());
 			sb.append(" | "); //$NON-NLS-1$
 			sb.append(address.getPostalCode());
@@ -192,6 +195,7 @@ class ModelToXml {
 		}
 		
 		XmlAddress xmlAddress = new XmlAddress();
+		xmlAddress.setRecipientDetail(address.getRecipientDetail());
 		xmlAddress.setCity(address.getCity());
 		xmlAddress.setEmail(address.getEmail());
 		xmlAddress.setFax(address.getFaxNumber());
