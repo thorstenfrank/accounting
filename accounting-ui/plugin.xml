@@ -585,7 +585,7 @@
          <command
                commandId="de.togginho.accounting.ui.expenseView.menu.pulldown"
                icon="icons/table_gear.png"
-               label="%command.changeExpensesViewTimeFrame.name"
+               label="%command.changeExpensesViewFilter.name"
                style="pulldown">
          </command>
       </menuContribution>
@@ -593,7 +593,7 @@
             allPopups="false"
             locationURI="menu:de.togginho.accounting.ui.expenseView.menu.pulldown">
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.currentMonth"
                style="push">
             <parameter
@@ -602,7 +602,7 @@
             </parameter>
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.lastMonth"
                style="push">
             <parameter
@@ -611,7 +611,7 @@
             </parameter>
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.currentYear"
                style="push">
             <parameter
@@ -620,7 +620,7 @@
             </parameter>
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.lastYear"
                style="push">
             <parameter
@@ -716,12 +716,12 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="de.togginho.accounting.ui.user.OpenUserEditorCommand"
+            defaultHandler="de.togginho.accounting.ui.user.OpenUserEditorHandler"
             id="de.togginho.accounting.ui.user.OpenUserEditor"
             name="%command.editUser.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.client.NewClientCommand"
+            defaultHandler="de.togginho.accounting.ui.client.NewClientHandler"
             id="de.togginho.accounting.ui.client.NewClientCommand"
             name="%command.newClient.name">
       </command>
@@ -784,7 +784,7 @@
       </command>
       <command
             categoryId="de.togginho.accounting.ui.invoice"
-            defaultHandler="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+            defaultHandler="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterHandler"
             id="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
             name="%command.change.invoice.filter">
       </command>
@@ -842,9 +842,9 @@
       </command>
       <command
       		categoryId="de.togginho.accounting.ui.expense"
-      		defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
-      		id="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
-      		name="%command.changeExpensesViewTimeFrame.name">
+      		defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterHandler"
+      		id="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
+      		name="%command.changeExpensesViewFilter.name">
          <commandParameter
                id="timeFrame"
                name="timeFrame"
@@ -852,7 +852,7 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportCommand"
+            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportHandler"
             id="de.togginho.accounting.reporting.menu.pulldown"
             name="de.togginho.accounting.reporting.menu.pulldown">
       </command>
@@ -863,7 +863,7 @@
             name="%command.openExpenseDialog.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportCommand"
+            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportHandler"
             id="de.togginho.accounting.reports.ChooseReportCommand"
             name="%command.reports.name">
       </command>
@@ -894,7 +894,7 @@
             name="%command.expenses.report">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"
+            defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterHandler"
             id="de.togginho.accounting.ui.expenseView.menu.pulldown"
             name="de.togginho.accounting.ui.expenseView.menu.pulldown">
       </command>
@@ -1046,7 +1046,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="de.togginho.accounting.ui.client.EditClientCommand"
+            class="de.togginho.accounting.ui.client.EditClientHandler"
             commandId="de.togginho.accounting.ui.client.EditClientCommand">
          <enabledWhen>
             <reference
@@ -1055,7 +1055,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.client.DeleteClientCommand"
+            class="de.togginho.accounting.ui.client.DeleteClientHandler"
             commandId="de.togginho.accounting.ui.client.DeleteClientCommand">
          <enabledWhen>
             <reference

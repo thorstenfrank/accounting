@@ -30,9 +30,9 @@ import de.togginho.accounting.ui.IDs;
  * @author tfrank1
  *
  */
-public class OpenUserEditorCommand extends AbstractAccountingHandler {
+public class OpenUserEditorHandler extends AbstractAccountingHandler {
 
-	private static final Logger LOG = Logger.getLogger(OpenUserEditorCommand.class);
+	private static final Logger LOG = Logger.getLogger(OpenUserEditorHandler.class);
 	
 	private static final String ERROR_MSG = "Error opening user editor"; //$NON-NLS-1$
 	

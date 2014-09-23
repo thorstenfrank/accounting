@@ -28,10 +28,10 @@ import de.togginho.accounting.ui.Messages;
  * @author thorsten
  *
  */
-public class EditClientCommand extends AbstractClientHandler {
+public class EditClientHandler extends AbstractClientHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(EditClientCommand.class);
+	private static final Logger LOG = Logger.getLogger(EditClientHandler.class);
 	
 	/**
 	 * 
