@@ -172,33 +172,44 @@ public class AccountingServiceImpl implements AccountingService {
 		this.modelMetaInformation = new ModelMetaInformationImpl();
 		
 		ObjectSet<Expense> expenses = objectContainer.query(Expense.class);
-		LOG.debug("Searching for oldest expense, total found: " + expenses.size()); //$NON-NLS-1$
+		LOG.debug("Traversing all known expenses, total found: " + expenses.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfExpenses(expenses.size());
-		Calendar oldestExpense = Calendar.getInstance();
+		
+		LOG.debug("Looking for oldest expense and all expense categories"); //$NON-NLS-1$
+		
+		Date oldestExpenseDate = new Date();
 		Set<String> expenseCategories = new TreeSet<String>();
 		for (Expense expense : expenses) {
-			if (expense.getPaymentDate() != null && oldestExpense.getTime().after(expense.getPaymentDate())) {
-				oldestExpense.setTime(expense.getPaymentDate());
+			if (expense.getPaymentDate() != null && oldestExpenseDate.after(expense.getPaymentDate())) {
+				oldestExpenseDate = expense.getPaymentDate();
 			}
 			
-			if (expense.getCategory() != null) {
+			if (expense.getCategory() != null && !expenseCategories.contains(expense.getCategory())) {
+				LOG.debug("Adding category to known list: " + expense.getCategory()); //$NON-NLS-1$
 				expenseCategories.add(expense.getCategory());
 			}
 		}
-		LOG.debug("Oldest known expense is from: " + FormatUtil.formatDate(oldestExpense.getTime())); //$NON-NLS-1$
-		modelMetaInformation.setOldestExpense(oldestExpense);
+
+		LOG.debug("Number of categories found: " + expenseCategories.size()); //$NON-NLS-1$
 		modelMetaInformation.setExpenseCategories(expenseCategories);
+		
+		LOG.debug("Oldest known expense is from: " + FormatUtil.formatDate(oldestExpenseDate)); //$NON-NLS-1$
+		Calendar oldestExpense = Calendar.getInstance();
+		oldestExpense.setTime(oldestExpenseDate);
+		modelMetaInformation.setOldestExpense(oldestExpense);
 		
 		ObjectSet<Invoice> invoices = objectContainer.query(Invoice.class);
 		LOG.debug("Searching for oldest invoice, total found: " + invoices.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfInvoices(invoices.size());
-		Calendar oldestInvoice = Calendar.getInstance();
+		Date oldestInvoiceDate = new Date();
 		for (Invoice invoice : invoices) {
-			if (invoice.getInvoiceDate() != null && oldestInvoice.getTime().after(invoice.getInvoiceDate())) {
-				oldestInvoice.setTime(invoice.getInvoiceDate());
+			if (invoice.getInvoiceDate() != null && oldestInvoiceDate.after(invoice.getInvoiceDate())) {
+				oldestInvoiceDate = invoice.getInvoiceDate();
 			}
 		}
-		LOG.debug("Oldest invoice is from: " + FormatUtil.formatDate(oldestInvoice.getTime())); //$NON-NLS-1$
+		LOG.debug("Oldest invoice is from: " + FormatUtil.formatDate(oldestInvoiceDate)); //$NON-NLS-1$
+		Calendar oldestInvoice = Calendar.getInstance();
+		oldestInvoice.setTime(oldestInvoiceDate);
 		modelMetaInformation.setOldestInvoice(oldestInvoice);
     }
 
@@ -372,6 +383,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 * {@inheritDoc}
 	 * @see de.togginho.accounting.AccountingService#getNextInvoiceNumber()
 	 */
+	@Override
 	public String getNextInvoiceNumber() {		
 		Calendar cal = Calendar.getInstance();
 		final int currentYear = cal.get(Calendar.YEAR);
@@ -387,7 +399,7 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		try {
 			doStoreEntity(sequencer);
-			BUSINESS_LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
+			LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
 			// FIXME this is hardcoded and should be configurable...
 			return String.format("RE%d-%02d", currentYear, sequencer.getCurrentSequenceNumber());
 		} finally {
@@ -448,12 +460,11 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 	
 	/**
-	 * Creates a new but unsaved invoice.
+	 * {@inheritDoc}
 	 * 
-	 * @param invoiceNumber
-	 * @param client
-	 * @return
+	 * @see AccountingService#createNewInvoice(String, Client)
 	 */
+	@Override
 	public Invoice createNewInvoice(String invoiceNumber, Client client) {
 		LOG.debug(String.format("Creating new invoice [%s]", invoiceNumber)); //$NON-NLS-1$
 		
