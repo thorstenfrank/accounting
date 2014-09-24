@@ -16,11 +16,14 @@
 package de.togginho.accounting.ui;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.handlers.IHandlerService;
+
+import de.togginho.accounting.ui.user.UserEditorInput;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
@@ -84,13 +87,18 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * 
 	 */
 	private void openUserEditor() {
-		try {
-			IHandlerService handlerService = 
-					(IHandlerService) getWorkbenchConfigurer().getWorkbench().getService(IHandlerService.class);
-			
-			handlerService.executeCommand(IDs.CMD_OPEN_USER_EDITOR, null);
-		} catch (Exception e) {
-			LOG.error("Couldn't open user editor", e); //$NON-NLS-1$
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+							new UserEditorInput(
+									AccountingUI.getAccountingService().getCurrentUser()),
+									IDs.EDIT_USER_ID);
+				} catch (Exception e) {
+					LOG.error("Couldn't open user editor", e); //$NON-NLS-1$
+				}
+			}
+		});
 	}
 }

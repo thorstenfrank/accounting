@@ -27,7 +27,7 @@ import de.togginho.accounting.ui.Messages;
  * @author tfrank1
  *
  */
-class UserEditorInput implements IEditorInput {
+public class UserEditorInput implements IEditorInput {
 
 	/**
 	 * 
@@ -38,7 +38,7 @@ class UserEditorInput implements IEditorInput {
 	 * 
 	 * @param user
 	 */
-	protected UserEditorInput(User user) {
+	public UserEditorInput(User user) {
 		if (user == null) {
 			this.user = new User();
 		} else {
