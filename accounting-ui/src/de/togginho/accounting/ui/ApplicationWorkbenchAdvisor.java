@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 thorsten frank (thorsten.frank@gmx.de).
+ *  Copyright 2011,2014 thorsten frank (thorsten.frank@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 package de.togginho.accounting.ui;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
@@ -61,19 +60,37 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		LOG.debug("postStartup()"); //$NON-NLS-1$
 		if (AccountingUI.getDefault().isFirstRun()) {
 			LOG.info("First run of application, opening user editor"); //$NON-NLS-1$
-			try {
-				// now open the user editor to start off the application
-				ICommandService commandService = 
-					(ICommandService) getWorkbenchConfigurer().getWorkbench().getService(ICommandService.class);
-				
-				commandService.getCommand(IDs.CMD_OPEN_USER_EDITOR).executeWithChecks(new ExecutionEvent());
 
-				// make sure the workbench state is saved when the application closes
-				getWorkbenchConfigurer().setSaveAndRestore(true);
-			} catch (Exception e) {
-				LOG.error("Couldn't open user editor...", e); //$NON-NLS-1$
-				// do nothing else...
-			}
+			// make sure the workbench state is saved when the application closes
+			enableSaveAndRestore();
+				
+			// now open the user editor to start off the application
+			openUserEditor();
 		}
-	}	
+	}
+	
+	/**
+	 * 
+	 */
+	private void enableSaveAndRestore() {
+		try {
+			getWorkbenchConfigurer().setSaveAndRestore(true);
+		} catch (Exception e) {
+			LOG.error("Could not enable save and restore", e); //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void openUserEditor() {
+		try {
+			IHandlerService handlerService = 
+					(IHandlerService) getWorkbenchConfigurer().getWorkbench().getService(IHandlerService.class);
+			
+			handlerService.executeCommand(IDs.CMD_OPEN_USER_EDITOR, null);
+		} catch (Exception e) {
+			LOG.error("Couldn't open user editor", e); //$NON-NLS-1$
+		}
+	}
 }
