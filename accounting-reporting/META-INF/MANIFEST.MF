@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: accounting-reporting
-Bundle-SymbolicName: de.togginho.accounting.reporting;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: de.togginho.accounting.reporting.ReportingPlugin
-Bundle-Vendor: Thorsten Frank
+Bundle-SymbolicName: de.tfsw.accounting.reporting;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: de.tfsw.accounting.reporting.ReportingPlugin
+Bundle-Vendor: tfsw.de
 Require-Bundle: org.eclipse.core.runtime,
- de.togginho.accounting.core;bundle-version="1.0.0"
+ de.tfsw.accounting.core;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
@@ -15,4 +15,4 @@ Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
  lib/jasperreports-5.5.0.jar,
  lib/servlet-api-2.4.jar,
  .
-Export-Package: de.togginho.accounting.reporting
+Export-Package: de.tfsw.accounting.reporting

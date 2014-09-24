@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: accounting-core
-Bundle-SymbolicName: de.togginho.accounting.core;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: de.togginho.accounting.AccountingCore
-Bundle-Vendor: Thorsten Frank
-Export-Package: de.togginho.accounting,
- de.togginho.accounting.model,
- de.togginho.accounting.util,
+Bundle-SymbolicName: de.tfsw.accounting.core;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: de.tfsw.accounting.AccountingCore
+Bundle-Vendor: tfsw.de
+Export-Package: de.tfsw.accounting,
+ de.tfsw.accounting.model,
+ de.tfsw.accounting.util,
  org.apache.commons.beanutils,
  org.apache.commons.beanutils.converters,
  org.apache.commons.beanutils.expression,

@@ -13,7 +13,7 @@
          point="org.eclipse.help.contexts">
       <contexts
             file="help_contexts.xml"
-            plugin="de.togginho.accounting.ui">
+            plugin="de.tfsw.accounting.ui">
       </contexts>
    </extension>
 

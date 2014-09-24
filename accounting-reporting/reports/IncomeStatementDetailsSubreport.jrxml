@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de). 
+	Licensed under the Apache License, Version 2.0 (the "License"); 
+	you may not use this file  except in compliance with the License. You may obtain a copy of the License at 
+		http://www.apache.org/licenses/LICENSE-2.0 
+	
+	Unless required by applicable law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+	See the License for the specific language governing permissions and limitations under the License. 
+-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IncomeStatementDetailsSubreport" pageWidth="459" pageHeight="200" columnWidth="459" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="76a20b9a-cd5a-4a18-97b8-c2606c31eb59">
 	<property name="ireport.callouts" value="##Mon Aug 23 13:32:06 CEST 2010"/>
 	<property name="ireport.zoom" value="1.0"/>
@@ -8,7 +17,7 @@
 	<queryString language="xPath">
 		<![CDATA[]]>
 	</queryString>
-    <field name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper">
+    <field name="wrapper" class="de.tfsw.accounting.reporting.internal.ModelWrapper">
         <fieldDescription><![CDATA[]]></fieldDescription>
     </field>
 	<background>

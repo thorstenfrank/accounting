@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de). 
+	Licensed under the Apache License, Version 2.0 (the "License"); 
+	you may not use this file  except in compliance with the License. You may obtain a copy of the License at 
+		http://www.apache.org/licenses/LICENSE-2.0 
+	
+	Unless required by applicable law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+	See the License for the specific language governing permissions and limitations under the License. 
+-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Expenses" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="762" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="d879a14b-8649-4d00-9ba2-4737c03f34fa">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
-	<parameter name="wrapper" class="de.togginho.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
+	<parameter name="wrapper" class="de.tfsw.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -20,7 +29,7 @@
 				<reportElement style="TITLE" x="0" y="0" width="300" height="32" uuid="5d8a36c8-d9c2-41a9-8624-8db89dbab2f4">
 					<printWhenExpression><![CDATA[((java.util.Set)$P{wrapper}.getRaw("includedTypes")).size() == 1]]></printWhenExpression>
 				</reportElement>
-				<textFieldExpression><![CDATA[((de.togginho.accounting.model.ExpenseType)((java.util.Set)$P{wrapper}.getRaw("includedTypes")).iterator().next()).getTranslatedString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((de.tfsw.accounting.model.ExpenseType)((java.util.Set)$P{wrapper}.getRaw("includedTypes")).iterator().next()).getTranslatedString()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="STD_10" x="0" y="37" width="100" height="20" uuid="698d58cb-c96f-4e92-9576-97b460e98182"/>
@@ -101,7 +110,7 @@
 				<reportElement x="0" y="0" width="762" height="1" uuid="ae5b046e-5504-4983-94ec-3dc19b1cff71"/>
 			</line>
 			<textField>
-				<reportElement style="STD_12B" x="325" y="5" width="100" height="20" uuid="751c3233-3d08-4167-8611-ffd45e9e1817"/>
+				<reportElement style="STD_12B" x="315" y="5" width="100" height="20" uuid="751c3233-3d08-4167-8611-ffd45e9e1817"/>
 				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("sumTitle")]]></textFieldExpression>
 			</textField>
 			<textField>

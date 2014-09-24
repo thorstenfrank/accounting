@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="de.togginho.accounting.ui.reportHandlers" name="Report Handlers" schema="schema/de.togginho.accounting.ui.reportHandlers.exsd"/>
+   <extension-point id="de.tfsw.accounting.ui.reportHandlers" name="Report Handlers" schema="schema/de.tfsw.accounting.ui.reportHandlers.exsd"/>
 
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="de.togginho.accounting.ui.AccountingApplication">
+               class="de.tfsw.accounting.ui.AccountingApplication">
          </run>
       </application>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="de.togginho.accounting.ui.AccountingPerspective"
+            class="de.tfsw.accounting.ui.AccountingPerspective"
             icon="icons/money.png"
-            id="de.togginho.accounting.ui.perspective"
+            id="de.tfsw.accounting.ui.perspective"
             name="%perspective.accounting.name">
       </perspective>
    </extension>
@@ -25,7 +25,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="de.togginho.accounting.ui.application"
+            application="de.tfsw.accounting.ui.application"
             name="%product.name">
          <property
                name="windowImages"
@@ -70,7 +70,7 @@
                      style="push">
                   <parameter
                         name="newWizardId"
-                        value="de.togginho.accounting.ui.wizard.NewClientWizard">
+                        value="de.tfsw.accounting.ui.wizard.NewClientWizard">
                   </parameter>
                </command>
                <command
@@ -79,7 +79,7 @@
                      style="push">
                   <parameter
                         name="newWizardId"
-                        value="de.togginho.accounting.ui.wizard.NewInvoiceWizard">
+                        value="de.tfsw.accounting.ui.wizard.NewInvoiceWizard">
                   </parameter>
                </command>
                <command
@@ -88,7 +88,7 @@
                      style="push">
                   <parameter
                         name="newWizardId"
-                        value="de.togginho.accounting.ui.wizard.NewExpenseWizard">
+                        value="de.tfsw.accounting.ui.wizard.NewExpenseWizard">
                   </parameter>
                </command>
                <separator
@@ -129,7 +129,7 @@
                   visible="true">
             </separator>
             <command
-                  commandId="de.togginho.accounting.ui.util.LanguageSelection"
+                  commandId="de.tfsw.accounting.ui.util.LanguageSelection"
                   style="push">
             </command>
             <separator
@@ -146,7 +146,7 @@
                label="%menu.edit.label"
                mnemonic="%menu.edit.mnemonic">
             <command
-                  commandId="de.togginho.accounting.ui.invoice.EditInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.EditInvoiceCommand"
                   icon="icons/page_edit.png"
                   style="push">
                <visibleWhen>
@@ -156,7 +156,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.invoice.CopyInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.CopyInvoiceCommand"
                   icon="icons/page_copy.png"
                   style="push">
                <visibleWhen>
@@ -166,7 +166,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.SendInvoiceCommand"
                   icon="icons/page_go.png"
                   style="push">
                <visibleWhen>
@@ -176,7 +176,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
                   icon="icons/money.png"
                   style="push">
                <visibleWhen>
@@ -186,7 +186,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.CancelInvoiceCommand"
                   icon="icons/cancel.png"
                   style="push">
                <visibleWhen>
@@ -196,7 +196,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.DeleteInvoiceCommand"
                   icon="icons/page_delete.png"
                   style="push">
                <visibleWhen>
@@ -210,7 +210,7 @@
                   visible="true">
             </separator>
             <command
-                  commandId="de.togginho.accounting.ui.client.EditClientCommand"
+                  commandId="de.tfsw.accounting.ui.client.EditClientCommand"
                   icon="icons/group_edit.png"
                   style="push">
                <visibleWhen>
@@ -220,7 +220,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.client.DeleteClientCommand"
+                  commandId="de.tfsw.accounting.ui.client.DeleteClientCommand"
                   icon="icons/group_delete.png"
                   style="push">
                <visibleWhen>
@@ -234,7 +234,7 @@
                   visible="true">
             </separator>
             <command
-                  commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+                  commandId="de.tfsw.accounting.ui.expense.EditExpenseCommand"
                   icon="icons/tag_blue_edit.png"
                   style="push">
                <visibleWhen>
@@ -244,7 +244,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.expense.MultiEditExpenseCommand"
+                  commandId="de.tfsw.accounting.ui.expense.MultiEditExpenseCommand"
                   icon="icons/tag_blue_edit.png"
                   style="push">
                <visibleWhen>
@@ -254,7 +254,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand"
+                  commandId="de.tfsw.accounting.ui.expense.CopyExpenseCommand"
                   icon="icons/page_copy.png"
                   style="push">
                <visibleWhen>
@@ -264,7 +264,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+                  commandId="de.tfsw.accounting.ui.expense.DeleteExpenseCommand"
                   icon="icons/tag_blue_delete.png"
                   style="push">
                <visibleWhen>
@@ -288,7 +288,7 @@
                label="%menu.window.label"
                mnemonic="%menu.window.mnemonic">
             <command
-                  commandId="de.togginho.accounting.ui.user.OpenUserEditor"
+                  commandId="de.tfsw.accounting.ui.user.OpenUserEditor"
                   icon="icons/user_suit.png"
                   style="push">
             </command>
@@ -303,7 +303,7 @@
                   style="push">
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
-                     value="de.togginho.accounting.ui.client.ClientView">
+                     value="de.tfsw.accounting.ui.client.ClientView">
                </parameter>
             </command>
             <command
@@ -313,7 +313,7 @@
                   style="push">
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
-                     value="de.togginho.accounting.ui.invoice.InvoiceView">
+                     value="de.tfsw.accounting.ui.invoice.InvoiceView">
                </parameter>
             </command>
             <command
@@ -323,7 +323,7 @@
                   style="push">
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
-                     value="de.togginho.accounting.ui.expense.ExpensesView">
+                     value="de.tfsw.accounting.ui.expense.ExpensesView">
                </parameter>
             </command>
             <separator
@@ -334,8 +334,8 @@
                   icon="icons/report.png"
                   label="%command.reports.name">
                <dynamic
-                     class="de.togginho.accounting.ui.reports.DynamicReportMenu"
-                     id="de.togginho.accounting.ui.reports.dynamicMenu2">
+                     class="de.tfsw.accounting.ui.reports.DynamicReportMenu"
+                     id="de.tfsw.accounting.ui.reports.dynamicMenu2">
                </dynamic>
             </menu>
             <separator
@@ -367,7 +367,7 @@
          <toolbar
                id="accounting.main.toolbar.1">
             <command
-                  commandId="de.togginho.accounting.ui.user.OpenUserEditor"
+                  commandId="de.tfsw.accounting.ui.user.OpenUserEditor"
                   icon="icons/user_suit.png"
                   label="%command.editUser.label"
                   style="push">
@@ -379,7 +379,7 @@
                   style="push">
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
-                     value="de.togginho.accounting.ui.client.ClientView">
+                     value="de.tfsw.accounting.ui.client.ClientView">
                </parameter>
             </command>
             <command
@@ -389,11 +389,11 @@
                   style="push">
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
-                     value="de.togginho.accounting.ui.invoice.InvoiceView">
+                     value="de.tfsw.accounting.ui.invoice.InvoiceView">
                </parameter>
             </command>
             <command
-                  commandId="de.togginho.accounting.reporting.menu.pulldown"
+                  commandId="de.tfsw.accounting.reporting.menu.pulldown"
                   icon="icons/report.png"
                   label="%command.reports.name"
                   style="pulldown">
@@ -405,17 +405,17 @@
          <toolbar
                id="accounting.main.toolbar.2">
             <command
-                  commandId="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.NewInvoiceCommand"
                   icon="icons/page_add.png"
                   style="push">
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.client.NewClientCommand"
+                  commandId="de.tfsw.accounting.ui.client.NewClientCommand"
                   icon="icons/group_add.png"
                   style="push">
             </command>
             <command
-                  commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
+                  commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
                   icon="icons/tag_blue_add.png"
                   style="push">
             </command>
@@ -426,32 +426,32 @@
          <toolbar
                id="accounting.main.toolbar.3">
             <command
-                  commandId="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
+                  commandId="de.tfsw.accounting.ui.invoice.FindInvoiceCommand"
                   icon="icons/page_find.png"
                   style="push">
             </command>
          </toolbar>
       </menuContribution>
       <menuContribution
-            locationURI="menu:de.togginho.accounting.ui.client.ClientView">
+            locationURI="menu:de.tfsw.accounting.ui.client.ClientView">
          <command
-               commandId="de.togginho.accounting.ui.client.NewClientCommand"
+               commandId="de.tfsw.accounting.ui.client.NewClientCommand"
                icon="icons/group_add.png"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:de.togginho.accounting.ui.client.ClientView">
+            locationURI="toolbar:de.tfsw.accounting.ui.client.ClientView">
          <command
-               commandId="de.togginho.accounting.ui.client.NewClientCommand"
+               commandId="de.tfsw.accounting.ui.client.NewClientCommand"
                icon="icons/group_add.png"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:de.togginho.accounting.ui.client.ClientView">
+            locationURI="popup:de.tfsw.accounting.ui.client.ClientView">
          <command
-               commandId="de.togginho.accounting.ui.client.NewClientCommand"
+               commandId="de.tfsw.accounting.ui.client.NewClientCommand"
                icon="icons/group_add.png"
                style="push">
          </command>
@@ -460,42 +460,42 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.client.EditClientCommand"
+               commandId="de.tfsw.accounting.ui.client.EditClientCommand"
                icon="icons/group_edit.png"
                label="%command.editClient.label"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.client.DeleteClientCommand"
+               commandId="de.tfsw.accounting.ui.client.DeleteClientCommand"
                icon="icons/group_delete.png"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="menu:de.togginho.accounting.ui.invoice.InvoiceView">
+            locationURI="menu:de.tfsw.accounting.ui.invoice.InvoiceView">
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:de.togginho.accounting.ui.invoice.InvoiceView">
+            locationURI="toolbar:de.tfsw.accounting.ui.invoice.InvoiceView">
          <command
-               commandId="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.NewInvoiceCommand"
                icon="icons/page_add.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+               commandId="de.tfsw.accounting.ui.invoice.ChangeInvoicesFilterCommand"
                icon="icons/table_gear.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.FindInvoiceCommand"
                icon="icons/page_find.png"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:de.togginho.accounting.ui.invoice.InvoiceView">
+            locationURI="popup:de.tfsw.accounting.ui.invoice.InvoiceView">
          <command
-               commandId="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.NewInvoiceCommand"
                icon="icons/page_add.png"
                style="push">
          </command>
@@ -504,12 +504,12 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.invoice.EditInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.EditInvoiceCommand"
                icon="icons/page_edit.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.CopyInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.CopyInvoiceCommand"
                icon="icons/page_copy.png"
                style="push">
          </command>
@@ -518,17 +518,17 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.ExportInvoiceCommand"
                icon="icons/page_white_acrobat.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.SendInvoiceCommand"
                icon="icons/page_go.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
+               commandId="de.tfsw.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
                icon="icons/money.png"
                style="push">
          </command>
@@ -537,30 +537,30 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.CancelInvoiceCommand"
                icon="icons/cancel.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.DeleteInvoiceCommand"
                icon="icons/page_delete.png"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:de.togginho.accounting.ui.invoice.InvoiceEditor">
+            locationURI="toolbar:de.tfsw.accounting.ui.invoice.InvoiceEditor">
          <command
-               commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.ExportInvoiceCommand"
                icon="icons/page_white_acrobat.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+               commandId="de.tfsw.accounting.ui.invoice.SendInvoiceCommand"
                icon="icons/page_go.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
+               commandId="de.tfsw.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
                icon="icons/money.png"
                style="push">
          </command>
@@ -571,19 +571,19 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:de.togginho.accounting.ui.expense.ExpensesView">
+            locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpensesView">
          <command
-               commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
+               commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
                icon="icons/tag_blue_add.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ExportExpensesReport"
+               commandId="de.tfsw.accounting.ui.expense.ExportExpensesReport"
                icon="icons/page_white_acrobat.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expenseView.menu.pulldown"
+               commandId="de.tfsw.accounting.ui.expenseView.menu.pulldown"
                icon="icons/table_gear.png"
                label="%command.changeExpensesViewFilter.name"
                style="pulldown">
@@ -591,9 +591,9 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="menu:de.togginho.accounting.ui.expenseView.menu.pulldown">
+            locationURI="menu:de.tfsw.accounting.ui.expenseView.menu.pulldown">
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
+               commandId="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.currentMonth"
                style="push">
             <parameter
@@ -602,7 +602,7 @@
             </parameter>
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
+               commandId="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.lastMonth"
                style="push">
             <parameter
@@ -611,7 +611,7 @@
             </parameter>
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
+               commandId="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.currentYear"
                style="push">
             <parameter
@@ -620,7 +620,7 @@
             </parameter>
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
+               commandId="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterCommand"
                label="%command.changeTimeFrame.lastYear"
                style="push">
             <parameter
@@ -630,9 +630,9 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:de.togginho.accounting.ui.expense.ExpensesView">
+            locationURI="popup:de.tfsw.accounting.ui.expense.ExpensesView">
          <command
-               commandId="de.togginho.accounting.ui.expense.NewExpenseCommand"
+               commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
                icon="icons/tag_blue_add.png"
                style="push">
          </command>
@@ -641,17 +641,17 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.expense.EditExpenseCommand"
+               commandId="de.tfsw.accounting.ui.expense.EditExpenseCommand"
                icon="icons/tag_blue_edit.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.MultiEditExpenseCommand"
+               commandId="de.tfsw.accounting.ui.expense.MultiEditExpenseCommand"
                icon="icons/tag_blue_edit.png"
                style="push">
          </command>
          <command
-               commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand"
+               commandId="de.tfsw.accounting.ui.expense.CopyExpenseCommand"
                icon="icons/page_copy.png"
                style="push">
          </command>
@@ -660,13 +660,13 @@
                visible="true">
          </separator>
          <command
-               commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+               commandId="de.tfsw.accounting.ui.expense.DeleteExpenseCommand"
                icon="icons/tag_blue_delete.png"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:de.togginho.accounting.ui.expense.ExpenseEditor">
+            locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpenseEditor">
          <command
                commandId="org.eclipse.ui.file.save"
                label="%command.save.label"
@@ -675,175 +675,175 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="menu:de.togginho.accounting.reporting.menu.pulldown">
+            locationURI="menu:de.tfsw.accounting.reporting.menu.pulldown">
          <dynamic
-               class="de.togginho.accounting.ui.reports.DynamicReportMenu"
-               id="de.togginho.accounting.ui.reports.dynamicMenu1">
+               class="de.tfsw.accounting.ui.reports.DynamicReportMenu"
+               id="de.tfsw.accounting.ui.reports.dynamicMenu1">
          </dynamic>
       </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="de.togginho.accounting.ui.user.UserEditor"
+            class="de.tfsw.accounting.ui.user.UserEditor"
             default="false"
             icon="icons/user_edit.png"
-            id="de.togginho.accounting.ui.user.UserEditor"
+            id="de.tfsw.accounting.ui.user.UserEditor"
             name="%editor.user.name">
       </editor>
       <editor
-            class="de.togginho.accounting.ui.client.ClientEditor"
+            class="de.tfsw.accounting.ui.client.ClientEditor"
             default="false"
             icon="icons/group_edit.png"
-            id="de.togginho.accounting.ui.client.ClientEditor"
+            id="de.tfsw.accounting.ui.client.ClientEditor"
             name="%editor.client.name">
       </editor>
       <editor
-            class="de.togginho.accounting.ui.invoice.InvoiceEditor"
+            class="de.tfsw.accounting.ui.invoice.InvoiceEditor"
             default="false"
             icon="icons/page_edit.png"
-            id="de.togginho.accounting.ui.invoice.InvoiceEditor"
+            id="de.tfsw.accounting.ui.invoice.InvoiceEditor"
             name="%editor.invoice.name">
       </editor>
       <editor
-            class="de.togginho.accounting.ui.expense.ExpenseEditor"
+            class="de.tfsw.accounting.ui.expense.ExpenseEditor"
             default="false"
             icon="icons/tag_blue_edit.png"
-            id="de.togginho.accounting.ui.expense.ExpenseEditor"
+            id="de.tfsw.accounting.ui.expense.ExpenseEditor"
             name="Expense">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="de.togginho.accounting.ui.user.OpenUserEditorHandler"
-            id="de.togginho.accounting.ui.user.OpenUserEditor"
+            defaultHandler="de.tfsw.accounting.ui.user.OpenUserEditorHandler"
+            id="de.tfsw.accounting.ui.user.OpenUserEditor"
             name="%command.editUser.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.client.NewClientHandler"
-            id="de.togginho.accounting.ui.client.NewClientCommand"
+            defaultHandler="de.tfsw.accounting.ui.client.NewClientHandler"
+            id="de.tfsw.accounting.ui.client.NewClientCommand"
             name="%command.newClient.name">
       </command>
       <category
-            id="de.togginho.accounting.ui.client"
+            id="de.tfsw.accounting.ui.client"
             name="%commandCategory.client.name">
       </category>
       <command
-            id="de.togginho.accounting.ui.client.EditClientCommand"
+            id="de.tfsw.accounting.ui.client.EditClientCommand"
             name="%command.editClient.name">
       </command>
       <command
-            id="de.togginho.accounting.ui.client.DeleteClientCommand"
+            id="de.tfsw.accounting.ui.client.DeleteClientCommand"
             name="%command.deleteClient.name">
       </command>
       <category
-            id="de.togginho.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice"
             name="%commandCategory.invoice.name">
       </category>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            defaultHandler="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
-            id="de.togginho.accounting.ui.invoice.NewInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            defaultHandler="de.tfsw.accounting.ui.invoice.NewInvoiceCommand"
+            id="de.tfsw.accounting.ui.invoice.NewInvoiceCommand"
             name="%command.newInvoice.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.EditInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.EditInvoiceCommand"
             name="%command.invoice.edit">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.DeleteInvoiceCommand"
             name="%command.invoice.delete.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.ExportInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.ExportInvoiceCommand"
             name="%command.invoice.toPdf.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.SendInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.SendInvoiceCommand"
             name="%command.invoice.send.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.CopyInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.CopyInvoiceCommand"
             name="%command.invoice.copy.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.MarkInvoiceAsPaidCommand"
             name="%command.invoice.markAsPaid.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            id="de.togginho.accounting.ui.invoice.CancelInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice.CancelInvoiceCommand"
             name="%command.invoice.cancel.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            defaultHandler="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterHandler"
-            id="de.togginho.accounting.ui.invoice.ChangeInvoicesFilterCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            defaultHandler="de.tfsw.accounting.ui.invoice.ChangeInvoicesFilterHandler"
+            id="de.tfsw.accounting.ui.invoice.ChangeInvoicesFilterCommand"
             name="%command.change.invoice.filter">
       </command>
       <category
-            id="de.togginho.accounting.ui.revenue"
+            id="de.tfsw.accounting.ui.revenue"
             name="%commandCategory.revenue.name">
       </category>
       <command
-            categoryId="de.togginho.accounting.ui.revenue"
-            defaultHandler="de.togginho.accounting.ui.revenue.OpenRevenueHandler"
-            id="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+            categoryId="de.tfsw.accounting.ui.revenue"
+            defaultHandler="de.tfsw.accounting.ui.revenue.OpenRevenueHandler"
+            id="de.tfsw.accounting.ui.revenue.OpenRevenueCommand"
             name="%command.revenue.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.revenue"
-            defaultHandler="de.togginho.accounting.ui.revenue.RevenueByYearHandler"
-            id="de.togginho.accounting.ui.revenue.RevenueByYearCommand"
+            categoryId="de.tfsw.accounting.ui.revenue"
+            defaultHandler="de.tfsw.accounting.ui.revenue.RevenueByYearHandler"
+            id="de.tfsw.accounting.ui.revenue.RevenueByYearCommand"
             name="%command.revenueByYear.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.invoice"
-            defaultHandler="de.togginho.accounting.ui.invoice.FindInvoiceHandler"
-            id="de.togginho.accounting.ui.invoice.FindInvoiceCommand"
+            categoryId="de.tfsw.accounting.ui.invoice"
+            defaultHandler="de.tfsw.accounting.ui.invoice.FindInvoiceHandler"
+            id="de.tfsw.accounting.ui.invoice.FindInvoiceCommand"
             name="%command.find.invoice.label">
       </command>
       <category
-            id="de.togginho.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense"
             name="%commandCategory.expense.name">
       </category>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            defaultHandler="de.togginho.accounting.ui.expense.NewExpenseHandler"
-            id="de.togginho.accounting.ui.expense.NewExpenseCommand"
+            categoryId="de.tfsw.accounting.ui.expense"
+            defaultHandler="de.tfsw.accounting.ui.expense.NewExpenseHandler"
+            id="de.tfsw.accounting.ui.expense.NewExpenseCommand"
             name="%command.newExpense.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            id="de.togginho.accounting.ui.expense.EditExpenseCommand"
+            categoryId="de.tfsw.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense.EditExpenseCommand"
             name="%command.editExpense.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            id="de.togginho.accounting.ui.expense.MultiEditExpenseCommand"
+            categoryId="de.tfsw.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense.MultiEditExpenseCommand"
             name="%command.editMultipleExpenses.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            id="de.togginho.accounting.ui.expense.CopyExpenseCommand"
+            categoryId="de.tfsw.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense.CopyExpenseCommand"
             name="%command.copyExpense.name">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            id="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
+            categoryId="de.tfsw.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense.DeleteExpenseCommand"
             name="%command.deleteExpense.name">
       </command>
       <command
-      		categoryId="de.togginho.accounting.ui.expense"
-      		defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterHandler"
-      		id="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterCommand"
+      		categoryId="de.tfsw.accounting.ui.expense"
+      		defaultHandler="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterHandler"
+      		id="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterCommand"
       		name="%command.changeExpensesViewFilter.name">
          <commandParameter
                id="timeFrame"
@@ -852,73 +852,73 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportHandler"
-            id="de.togginho.accounting.reporting.menu.pulldown"
-            name="de.togginho.accounting.reporting.menu.pulldown">
+            defaultHandler="de.tfsw.accounting.ui.reports.ChooseReportHandler"
+            id="de.tfsw.accounting.reporting.menu.pulldown"
+            name="de.tfsw.accounting.reporting.menu.pulldown">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            defaultHandler="de.togginho.accounting.ui.expense.OpenExpenseDialogHandler"
-            id="de.togginho.accounting.ui.expense.OpenExpenseDialog"
+            categoryId="de.tfsw.accounting.ui.expense"
+            defaultHandler="de.tfsw.accounting.ui.expense.OpenExpenseDialogHandler"
+            id="de.tfsw.accounting.ui.expense.OpenExpenseDialog"
             name="%command.openExpenseDialog.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.ChooseReportHandler"
-            id="de.togginho.accounting.reports.ChooseReportCommand"
+            defaultHandler="de.tfsw.accounting.ui.reports.ChooseReportHandler"
+            id="de.tfsw.accounting.reports.ChooseReportCommand"
             name="%command.reports.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.OpenCashFlowStatementHandler"
-            id="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
+            defaultHandler="de.tfsw.accounting.ui.reports.OpenCashFlowStatementHandler"
+            id="de.tfsw.accounting.reports.OpenCashFlowStatementDialog"
             name="%command.reports.cashFlow.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.OpenIncomeStatementHandler"
-            id="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+            defaultHandler="de.tfsw.accounting.ui.reports.OpenIncomeStatementHandler"
+            id="de.tfsw.accounting.reports.OpenIncomeStatementDialog"
             name="%command.reports.incomeStatement.name">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.util.LanguageSelectionHandler"
-            id="de.togginho.accounting.ui.util.LanguageSelection"
+            defaultHandler="de.tfsw.accounting.ui.util.LanguageSelectionHandler"
+            id="de.tfsw.accounting.ui.util.LanguageSelection"
             name="%command.switch.language">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.reports.LetterheadExportHandler"
-            id="de.togginho.accounting.ui.reports.LetterheadExport"
+            defaultHandler="de.tfsw.accounting.ui.reports.LetterheadExportHandler"
+            id="de.tfsw.accounting.ui.reports.LetterheadExport"
             name="%command.reports.letterhead">
       </command>
       <command
-            categoryId="de.togginho.accounting.ui.expense"
-            defaultHandler="de.togginho.accounting.ui.expense.ExportExpensesReportHandler"
-            id="de.togginho.accounting.ui.expense.ExportExpensesReport"
+            categoryId="de.tfsw.accounting.ui.expense"
+            defaultHandler="de.tfsw.accounting.ui.expense.ExportExpensesReportHandler"
+            id="de.tfsw.accounting.ui.expense.ExportExpensesReport"
             name="%command.expenses.report">
       </command>
       <command
-            defaultHandler="de.togginho.accounting.ui.expense.ChangeExpensesViewFilterHandler"
-            id="de.togginho.accounting.ui.expenseView.menu.pulldown"
-            name="de.togginho.accounting.ui.expenseView.menu.pulldown">
+            defaultHandler="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterHandler"
+            id="de.tfsw.accounting.ui.expenseView.menu.pulldown"
+            name="de.tfsw.accounting.ui.expenseView.menu.pulldown">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="de.togginho.accounting.ui.client.ClientsView"
+            class="de.tfsw.accounting.ui.client.ClientsView"
             icon="icons/group.png"
-            id="de.togginho.accounting.ui.client.ClientView"
+            id="de.tfsw.accounting.ui.client.ClientView"
             name="%view.clients"
             restorable="true">
       </view>
       <view
-            class="de.togginho.accounting.ui.invoice.InvoiceView"
+            class="de.tfsw.accounting.ui.invoice.InvoiceView"
             icon="icons/page.png"
-            id="de.togginho.accounting.ui.invoice.InvoiceView"
+            id="de.tfsw.accounting.ui.invoice.InvoiceView"
             name="%view.invoices"
             restorable="true">
       </view>
       <view
-            class="de.togginho.accounting.ui.expense.ExpensesView"
+            class="de.tfsw.accounting.ui.expense.ExpensesView"
             icon="icons/tag_blue.png"
-            id="de.togginho.accounting.ui.expense.ExpensesView"
+            id="de.tfsw.accounting.ui.expense.ExpensesView"
             name="%view.expenses"
             restorable="true">
       </view>
@@ -926,36 +926,36 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="de.togginho.accounting.ui.wizard"
-            class="de.togginho.accounting.ui.client.NewClientWizard"
+            category="de.tfsw.accounting.ui.wizard"
+            class="de.tfsw.accounting.ui.client.NewClientWizard"
             icon="icons/group_add.png"
-            id="de.togginho.accounting.ui.wizard.NewClientWizard"
+            id="de.tfsw.accounting.ui.wizard.NewClientWizard"
             name="%new.client.wizard.label">
       </wizard>
       <wizard
-            category="de.togginho.accounting.ui.wizard"
-            class="de.togginho.accounting.ui.invoice.NewInvoiceWizard"
+            category="de.tfsw.accounting.ui.wizard"
+            class="de.tfsw.accounting.ui.invoice.NewInvoiceWizard"
             icon="icons/page_add.png"
-            id="de.togginho.accounting.ui.wizard.NewInvoiceWizard"
+            id="de.tfsw.accounting.ui.wizard.NewInvoiceWizard"
             name="%new.invoice.wizard.label">
       </wizard>
       <wizard
-            category="de.togginho.accounting.ui.wizard"
-            class="de.togginho.accounting.ui.expense.ExpenseWizard"
+            category="de.tfsw.accounting.ui.wizard"
+            class="de.tfsw.accounting.ui.expense.ExpenseWizard"
             icon="icons/tag_blue_add.png"
-            id="de.togginho.accounting.ui.wizard.NewExpenseWizard"
+            id="de.tfsw.accounting.ui.wizard.NewExpenseWizard"
             name="%new.expense.wizard.label">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.splashHandlers">
       <splashHandler
-            class="de.togginho.accounting.ui.AccountingSplashHandler"
-            id="de.togginho.accounting.ui.splashHandler">
+            class="de.tfsw.accounting.ui.AccountingSplashHandler"
+            id="de.tfsw.accounting.ui.splashHandler">
       </splashHandler>
       <splashHandlerProductBinding
-            productId="de.togginho.accounting.ui.product"
-            splashId="de.togginho.accounting.ui.splashHandler">
+            productId="de.tfsw.accounting.ui.product"
+            splashId="de.tfsw.accounting.ui.splashHandler">
       </splashHandlerProductBinding>
    </extension>
       <extension
@@ -964,17 +964,17 @@
             id="selectionIsInvoice">
             <and>
                 <with variable="activePartId">
-                    <equals value="de.togginho.accounting.ui.invoice.InvoiceView" />
+                    <equals value="de.tfsw.accounting.ui.invoice.InvoiceView" />
                 </with>
                 <iterate ifEmpty="false">
-                    <instanceof value="de.togginho.accounting.model.Invoice" />
+                    <instanceof value="de.tfsw.accounting.model.Invoice" />
                 </iterate>
             </and>
       </definition>
       <definition
             id="invoiceIsActiveEditor">
             <with variable="activePartId">
-                <equals value="de.togginho.accounting.ui.invoice.InvoiceEditor" />
+                <equals value="de.tfsw.accounting.ui.invoice.InvoiceEditor" />
             </with>
       </definition>
       <definition
@@ -982,7 +982,7 @@
          <iterate
                ifEmpty="false">
             <instanceof
-                  value="de.togginho.accounting.model.Client">
+                  value="de.tfsw.accounting.model.Client">
             </instanceof>
          </iterate>
       </definition>
@@ -992,7 +992,7 @@
                 <iterate
                     ifEmpty="false">
                     <instanceof
-                        value="de.togginho.accounting.ui.expense.ExpenseWrapper">
+                        value="de.tfsw.accounting.ui.expense.ExpenseWrapper">
                     </instanceof>
                 </iterate>
                 <count
@@ -1006,7 +1006,7 @@
                 <iterate
                     ifEmpty="false">
                     <instanceof
-                        value="de.togginho.accounting.ui.expense.ExpenseWrapper">
+                        value="de.tfsw.accounting.ui.expense.ExpenseWrapper">
                     </instanceof>
                 </iterate>
                 <count
@@ -1020,7 +1020,7 @@
             <with
                   variable="activePartId">
                <equals
-                     value="de.togginho.accounting.ui.client.ClientView">
+                     value="de.tfsw.accounting.ui.client.ClientView">
                </equals>
             </with>
          </or>
@@ -1029,16 +1029,16 @@
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="de.togginho.accounting.ui.invoice.InvoicePropertyTester"
-            id="de.togginho.accounting.ui.invoice.invoicePropertyTester"
-            namespace="de.togginho.accounting.ui.invoice"
+            class="de.tfsw.accounting.ui.invoice.InvoicePropertyTester"
+            id="de.tfsw.accounting.ui.invoice.invoicePropertyTester"
+            namespace="de.tfsw.accounting.ui.invoice"
             properties="canBeDeleted, canBeCancelled, canBePaid, canBeExported, canBeSent"
-            type="de.togginho.accounting.model.Invoice">
+            type="de.tfsw.accounting.model.Invoice">
       </propertyTester>
       <propertyTester
-            class="de.togginho.accounting.ui.invoice.InvoicePropertyTester"
-            id="de.togginho.accounting.ui.invoice.invoiceEditorPropertyTester"
-            namespace="de.togginho.accounting.ui.invoiceEditor"
+            class="de.tfsw.accounting.ui.invoice.InvoicePropertyTester"
+            id="de.tfsw.accounting.ui.invoice.invoiceEditorPropertyTester"
+            namespace="de.tfsw.accounting.ui.invoiceEditor"
             properties="canBeDeleted, canBeCancelled, canBePaid, canBeExported, canBeSent"
             type="org.eclipse.ui.IEditorInput">
       </propertyTester>
@@ -1046,8 +1046,8 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="de.togginho.accounting.ui.client.EditClientHandler"
-            commandId="de.togginho.accounting.ui.client.EditClientCommand">
+            class="de.tfsw.accounting.ui.client.EditClientHandler"
+            commandId="de.tfsw.accounting.ui.client.EditClientCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsClient">
@@ -1055,8 +1055,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.client.DeleteClientHandler"
-            commandId="de.togginho.accounting.ui.client.DeleteClientCommand">
+            class="de.tfsw.accounting.ui.client.DeleteClientHandler"
+            commandId="de.tfsw.accounting.ui.client.DeleteClientCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsClient">
@@ -1064,8 +1064,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.DeleteInvoiceFromSelectionHandler"
-            commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.DeleteInvoiceFromSelectionHandler"
+            commandId="de.tfsw.accounting.ui.invoice.DeleteInvoiceCommand">
          <activeWhen>
             <reference
                   definitionId="selectionIsInvoice">
@@ -1074,14 +1074,14 @@
          <enabledWhen>
             <with variable="selection">
               <iterate ifEmpty="false">
-                 <test property="de.togginho.accounting.ui.invoice.canBeDeleted" />
+                 <test property="de.tfsw.accounting.ui.invoice.canBeDeleted" />
               </iterate>
            </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.PayInvoiceFromSelectionHandler"
-            commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
+            class="de.tfsw.accounting.ui.invoice.PayInvoiceFromSelectionHandler"
+            commandId="de.tfsw.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
          <activeWhen>
             <reference
                   definitionId="selectionIsInvoice">
@@ -1090,14 +1090,14 @@
          <enabledWhen>
             <with variable="selection">
               <iterate ifEmpty="false">
-                 <test property="de.togginho.accounting.ui.invoice.canBePaid" />
+                 <test property="de.tfsw.accounting.ui.invoice.canBePaid" />
               </iterate>
            </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.PayInvoiceFromEditorHandler"
-            commandId="de.togginho.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
+            class="de.tfsw.accounting.ui.invoice.PayInvoiceFromEditorHandler"
+            commandId="de.tfsw.accounting.ui.invoice.MarkInvoiceAsPaidCommand">
          <activeWhen>
             <reference
                   definitionId="invoiceIsActiveEditor">
@@ -1105,26 +1105,26 @@
          </activeWhen>
          <enabledWhen>
             <with variable="activeEditorInput">
-               <test property="de.togginho.accounting.ui.invoiceEditor.canBePaid" />
+               <test property="de.tfsw.accounting.ui.invoiceEditor.canBePaid" />
             </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.ExportInvoiceFromSelectionHandler"
-            commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.ExportInvoiceFromSelectionHandler"
+            commandId="de.tfsw.accounting.ui.invoice.ExportInvoiceCommand">
          <activeWhen>
             <reference definitionId="selectionIsInvoice" />
          </activeWhen>
          <enabledWhen>
               <iterate
                     ifEmpty="false">
-                 <test property="de.togginho.accounting.ui.invoice.canBeExported" />
+                 <test property="de.tfsw.accounting.ui.invoice.canBeExported" />
               </iterate>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.ExportInvoiceFromEditorHandler"
-            commandId="de.togginho.accounting.ui.invoice.ExportInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.ExportInvoiceFromEditorHandler"
+            commandId="de.tfsw.accounting.ui.invoice.ExportInvoiceCommand">
          <activeWhen>
             <reference
                   definitionId="invoiceIsActiveEditor">
@@ -1132,13 +1132,13 @@
          </activeWhen>
          <enabledWhen>
             <with variable="activeEditorInput">
-               <test property="de.togginho.accounting.ui.invoiceEditor.canBeExported" />
+               <test property="de.tfsw.accounting.ui.invoiceEditor.canBeExported" />
             </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.EditInvoiceHandler"
-            commandId="de.togginho.accounting.ui.invoice.EditInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.EditInvoiceHandler"
+            commandId="de.tfsw.accounting.ui.invoice.EditInvoiceCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsInvoice">
@@ -1146,22 +1146,22 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.SendInvoiceFromSelectionHandler"
-            commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.SendInvoiceFromSelectionHandler"
+            commandId="de.tfsw.accounting.ui.invoice.SendInvoiceCommand">
          <activeWhen>
             <reference definitionId="selectionIsInvoice" />
          </activeWhen>
          <enabledWhen>
             <with variable="selection">
               <iterate ifEmpty="false">
-                 <test property="de.togginho.accounting.ui.invoice.canBeSent" />
+                 <test property="de.tfsw.accounting.ui.invoice.canBeSent" />
               </iterate>
            </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.SendInvoiceFromEditorHandler"
-            commandId="de.togginho.accounting.ui.invoice.SendInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.SendInvoiceFromEditorHandler"
+            commandId="de.tfsw.accounting.ui.invoice.SendInvoiceCommand">
          <activeWhen>
             <reference definitionId="invoiceIsActiveEditor" />
          </activeWhen>
@@ -1169,14 +1169,14 @@
             <with
                   variable="activeEditorInput">
                <test
-                     property="de.togginho.accounting.ui.invoiceEditor.canBeSent">
+                     property="de.tfsw.accounting.ui.invoiceEditor.canBeSent">
                </test>
             </with>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.CopyInvoiceFromSelectionHandler"
-            commandId="de.togginho.accounting.ui.invoice.CopyInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.CopyInvoiceFromSelectionHandler"
+            commandId="de.tfsw.accounting.ui.invoice.CopyInvoiceCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsInvoice">
@@ -1184,22 +1184,22 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.invoice.CancelInvoiceFromSelectionHandler"
-            commandId="de.togginho.accounting.ui.invoice.CancelInvoiceCommand">
+            class="de.tfsw.accounting.ui.invoice.CancelInvoiceFromSelectionHandler"
+            commandId="de.tfsw.accounting.ui.invoice.CancelInvoiceCommand">
          <activeWhen>
             <reference definitionId="selectionIsInvoice" />
          </activeWhen>
          <enabledWhen>
            <iterate>
               <test
-                    property="de.togginho.accounting.ui.invoice.canBeCancelled">
+                    property="de.tfsw.accounting.ui.invoice.canBeCancelled">
               </test>
            </iterate>
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.expense.EditExpenseHandler"
-            commandId="de.togginho.accounting.ui.expense.EditExpenseCommand">
+            class="de.tfsw.accounting.ui.expense.EditExpenseHandler"
+            commandId="de.tfsw.accounting.ui.expense.EditExpenseCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsSingleExpense">
@@ -1207,8 +1207,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.expense.CopyExpenseHandler"
-            commandId="de.togginho.accounting.ui.expense.CopyExpenseCommand">
+            class="de.tfsw.accounting.ui.expense.CopyExpenseHandler"
+            commandId="de.tfsw.accounting.ui.expense.CopyExpenseCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsSingleExpense">
@@ -1216,8 +1216,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.expense.DeleteExpenseHandler"
-            commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand">
+            class="de.tfsw.accounting.ui.expense.DeleteExpenseHandler"
+            commandId="de.tfsw.accounting.ui.expense.DeleteExpenseCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsSingleExpense">
@@ -1225,8 +1225,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="de.togginho.accounting.ui.expense.MultiEditExpensesHandler"
-            commandId="de.togginho.accounting.ui.expense.MultiEditExpenseCommand">
+            class="de.tfsw.accounting.ui.expense.MultiEditExpensesHandler"
+            commandId="de.tfsw.accounting.ui.expense.MultiEditExpenseCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsMultipleExpenses">
@@ -1237,52 +1237,52 @@
    <extension
          point="org.eclipse.ui.importWizards">
       <wizard
-            class="de.togginho.accounting.ui.expense.ImportExpensesFromCsvWizard"
+            class="de.tfsw.accounting.ui.expense.ImportExpensesFromCsvWizard"
             icon="icons/tag_blue_add.png"
-            id="de.togginho.accounting.expense.ImportExpensesFromCsvWizard"
+            id="de.tfsw.accounting.expense.ImportExpensesFromCsvWizard"
             name="%import.expenses.wizard">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
-            class="de.togginho.accounting.ui.util.ExportModelToXmlWizard"
+            class="de.tfsw.accounting.ui.util.ExportModelToXmlWizard"
             icon="icons/database_go.png"
-            id="de.togginho.accounting.ui.util.ExportModelToXmlWizard"
+            id="de.tfsw.accounting.ui.util.ExportModelToXmlWizard"
             name="%export.model.wizard">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="de.togginho.accounting.ui.prefs.AccountingPreferencesPage"
-            id="de.togginho.accounting.ui.AccountingPreferences"
+            class="de.tfsw.accounting.ui.prefs.AccountingPreferencesPage"
+            id="de.tfsw.accounting.ui.AccountingPreferences"
             name="%preferences.accounting">
       </page>
       <page
-            category="de.togginho.accounting.ui.AccountingPreferences"
-            class="de.togginho.accounting.ui.prefs.ReportingPreferencesPage"
-            id="de.togginho.accounting.ui.ReportingPreferences"
+            category="de.tfsw.accounting.ui.AccountingPreferences"
+            class="de.tfsw.accounting.ui.prefs.ReportingPreferencesPage"
+            id="de.tfsw.accounting.ui.ReportingPreferences"
             name="%preferences.reporting">
       </page>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="de.togginho.accounting.ui.expense.DeleteExpenseCommand"
-            contextId="de.togginho.accounting.ui.expense"
+            commandId="de.tfsw.accounting.ui.expense.DeleteExpenseCommand"
+            contextId="de.tfsw.accounting.ui.expense"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="DELETE">
       </key>
       <key
-            commandId="de.togginho.accounting.ui.client.DeleteClientCommand"
-            contextId="de.togginho.accounting.ui.client"
+            commandId="de.tfsw.accounting.ui.client.DeleteClientCommand"
+            contextId="de.tfsw.accounting.ui.client"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="DELETE">
       </key>
       <key
-            commandId="de.togginho.accounting.ui.invoice.DeleteInvoiceCommand"
-            contextId="de.togginho.accounting.ui.invoice"
+            commandId="de.tfsw.accounting.ui.invoice.DeleteInvoiceCommand"
+            contextId="de.tfsw.accounting.ui.invoice"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="DELETE">
       </key>
@@ -1290,51 +1290,51 @@
    <extension
          point="org.eclipse.ui.contexts">
       <context
-            id="de.togginho.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense"
             name="Expense Context"
             parentId="org.eclipse.ui.contexts.window">
       </context>
       <context
-            id="de.togginho.accounting.ui.client"
+            id="de.tfsw.accounting.ui.client"
             name="Client context"
             parentId="org.eclipse.ui.contexts.window">
       </context>
       <context
-            id="de.togginho.accounting.ui.invoice"
+            id="de.tfsw.accounting.ui.invoice"
             name="Invoice context"
             parentId="org.eclipse.ui.contexts.window">
       </context>
    </extension>
    <extension
-         point="de.togginho.accounting.ui.reportHandlers">
+         point="de.tfsw.accounting.ui.reportHandlers">
       <reportHandler
-            commandId="de.togginho.accounting.reports.OpenCashFlowStatementDialog"
+            commandId="de.tfsw.accounting.reports.OpenCashFlowStatementDialog"
             icon="icons/layout_content.png"
-            reportId="de.togginho.accounting.reporting.CashFlowStatement">
+            reportId="de.tfsw.accounting.reporting.CashFlowStatement">
       </reportHandler>
       <reportHandler
-            commandId="de.togginho.accounting.ui.revenue.OpenRevenueCommand"
+            commandId="de.tfsw.accounting.ui.revenue.OpenRevenueCommand"
             icon="icons/money_add.png"
-            reportId="de.togginho.accounting.reporting.Revenue">
+            reportId="de.tfsw.accounting.reporting.Revenue">
       </reportHandler>
       <reportHandler
-            commandId="de.togginho.accounting.ui.revenue.RevenueByYearCommand"
+            commandId="de.tfsw.accounting.ui.revenue.RevenueByYearCommand"
             icon="icons/money_add.png">
       </reportHandler>
       <reportHandler
-            commandId="de.togginho.accounting.ui.expense.OpenExpenseDialog"
+            commandId="de.tfsw.accounting.ui.expense.OpenExpenseDialog"
             icon="icons/money_delete.png"
-            reportId="de.togginho.accounting.reporting.Expenses">
+            reportId="de.tfsw.accounting.reporting.Expenses">
       </reportHandler>
       <reportHandler
-            commandId="de.togginho.accounting.reports.OpenIncomeStatementDialog"
+            commandId="de.tfsw.accounting.reports.OpenIncomeStatementDialog"
             icon="icons/report_user.png"
-            reportId="de.togginho.accounting.reporting.IncomeStatement">
+            reportId="de.tfsw.accounting.reporting.IncomeStatement">
       </reportHandler>
       <reportHandler
-            commandId="de.togginho.accounting.ui.reports.LetterheadExport"
+            commandId="de.tfsw.accounting.ui.reports.LetterheadExport"
             icon="icons/page_white_text.png"
-            reportId="de.togginho.accounting.reporting.Letterhead">
+            reportId="de.tfsw.accounting.reporting.Letterhead">
       </reportHandler>
    </extension>
 </plugin>
