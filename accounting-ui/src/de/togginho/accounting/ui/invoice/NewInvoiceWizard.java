@@ -94,8 +94,8 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	        		invoiceNumberPage.getInvoiceNumber(), invoiceNumberPage.getSelectedClient());
         } catch (AccountingException e) {
         	MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
-        	msgBox.setMessage(Messages.labelError);
-        	msgBox.setText(e.getMessage());
+        	msgBox.setMessage(e.getLocalizedMessage());
+        	msgBox.setText(Messages.labelError);
 			msgBox.open();
 			return false;
         }
