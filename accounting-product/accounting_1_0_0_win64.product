@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="%product.name" uid="de.togginho.accounting" id="de.togginho.accounting.ui.product" application="de.togginho.accounting.ui.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
+<product name="%product.name" uid="de.togginho.accounting" id="de.togginho.accounting.ui.product" application="de.togginho.accounting.ui.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="icons/Ledger_32x32.png"/>
+      <image path="aboutimage.png"/>
       <text>
-         Togginho Accounting About Text
+         %aboutTextBla
       </text>
    </aboutInfo>
 
@@ -20,11 +20,20 @@
    <windowImages i16="icons/Ledger_16x16.png" i32="icons/Ledger_32x32.png"/>
 
    <splash
-      location="de.togginho.accounting.ui" />
+      location="de.togginho.accounting.ui"
+      startupProgressRect="0,280,465,15"
+      startupMessageRect="7,10,440,20"
+      startupForegroundColor="000000" />
    <launcher name="accounting">
       <solaris/>
       <win useIco="false">
-         <bmp/>
+         <bmp
+            winSmallHigh="/accounting-ui/icons/Ledger_16x16_32.bmp"
+            winSmallLow="/accounting-ui/icons/Ledger_16x16_8.bmp"
+            winMediumHigh="/accounting-ui/icons/Ledger_32x32_32.bmp"
+            winMediumLow="/accounting-ui/icons/Ledger_32x32_8.bmp"
+            winLargeHigh="/accounting-ui/icons/Ledger_48x48_32.bmp"
+            winLargeLow="/accounting-ui/icons/Ledger_48x48_8.bmp"/>
       </win>
    </launcher>
 
@@ -257,7 +266,7 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.workbench"/>
