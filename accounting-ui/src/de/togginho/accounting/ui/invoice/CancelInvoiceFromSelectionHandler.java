@@ -47,7 +47,7 @@ public class CancelInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 				event, 
 				Messages.bind(Messages.CancelInvoiceCommand_confirmMessage, invoice.getNumber()), 
 				Messages.CancelInvoiceCommand_confirmText,
-				false)) {
+				true)) {
 			getLogger().info("Cancelling invoice " + invoice.getNumber()); //$NON-NLS-1$
 			// do the actual work
 			AccountingUI.getAccountingService().cancelInvoice(invoice);
