@@ -16,6 +16,7 @@
 package de.tfsw.accounting;
 
 import java.util.Hashtable;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
@@ -52,6 +53,10 @@ public class AccountingCore implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.info("START CORE: " + bundleContext.getBundle().getSymbolicName()); //$NON-NLS-1$
+		
+		// for debug purposes...
+		dumpEnvironment();
+		
 		AccountingCore.context = bundleContext;
 		
 		ServiceReference<Db4oService> reference = context.getServiceReference(Db4oService.class);
@@ -82,6 +87,18 @@ public class AccountingCore implements BundleActivator {
 		AccountingCore.context = null;
 	}
 
+	/**
+	 * Simple blurts out all system properties.
+	 */
+	private void dumpEnvironment() {
+		StringBuilder sb = new StringBuilder("System Properties:\n");
+		Properties sysProps = System.getProperties();
+		for (Object key : sysProps.keySet()) {
+			sb.append(key).append("=").append(sysProps.get(key)).append("\n");
+		}
+		LOG.debug(sb.toString());
+	}
+	
 	/**
 	 * 
 	 * @return

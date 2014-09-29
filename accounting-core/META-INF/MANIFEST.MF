@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: accounting-core
 Bundle-SymbolicName: de.tfsw.accounting.core;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: de.tfsw.accounting.AccountingCore
 Bundle-Vendor: tfsw.de
 Export-Package: de.tfsw.accounting,
@@ -18,7 +18,7 @@ Export-Package: de.tfsw.accounting,
  org.apache.log4j
 Require-Bundle: org.eclipse.core.runtime,
  db4o_osgi;bundle-version="8.0.249"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/log4j-1.2.13.jar,
  lib/commons-beanutils-1.8.3.jar,

@@ -150,6 +150,8 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	@Test
 	public void testSaveAndDeleteInvoice() {
 		
+		int sizeBefore = serviceUnderTest.findInvoices().size();
+		
 		Invoice invoice = serviceUnderTest.saveInvoice(
 				serviceUnderTest.createNewInvoice(serviceUnderTest.getNextInvoiceNumber(), getTestClient()));
 		assertEquals(InvoiceState.CREATED, invoice.getState());
@@ -161,6 +163,8 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		serviceUnderTest.deleteInvoice(saved);
 		
 		assertNull(serviceUnderTest.getInvoice(invoice.getNumber()));
+		
+		assertEquals(sizeBefore, serviceUnderTest.findInvoices().size());
 	}
 	
 	/**
@@ -363,7 +367,10 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		String  invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
 		int sequence = new Integer(invoiceNumber.substring(7));
 		
-		serviceUnderTest.saveInvoice(serviceUnderTest.createNewInvoice(invoiceNumber, getTestClient()));
+		Invoice new1 = serviceUnderTest.createNewInvoice(invoiceNumber, getTestClient());
+		serviceUnderTest.saveInvoice(new1);
+		serviceUnderTest.deleteInvoice(new1);
+		
 		
 		invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
 		sequence = sequence + 1; 
@@ -374,10 +381,14 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		newInvoiceNumber.append(invoiceNumber.substring(0, 7));
 		newInvoiceNumber.append(sequence);
 		
-		serviceUnderTest.saveInvoice(serviceUnderTest.createNewInvoice(newInvoiceNumber.toString(), getTestClient()));
+		Invoice new2 = serviceUnderTest.createNewInvoice(newInvoiceNumber.toString(), getTestClient());
+		serviceUnderTest.saveInvoice(new2);
 		
 		invoiceNumber = serviceUnderTest.getNextInvoiceNumber();
 		sequence++;
+		
+		serviceUnderTest.deleteInvoice(new2);
+		
 		assertEquals(new Integer(sequence), new Integer(invoiceNumber.substring(7)));
 	}
 	
