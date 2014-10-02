@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2012, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,15 +21,18 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author thorsten
- *
+ * An expenditure of any kind.
+ * 
+ * @author Thorsten Frank
+ * @since  1.0
+ * @see    ExpenseType
  */
-public class Expense implements Serializable {
+public class Expense extends AbstractBaseEntity {
 
 	/**
-     * 
-     */
-    private static final long serialVersionUID = -5195455587226426017L;
+	 * Serial Version UID.
+	 */
+	private static final long serialVersionUID = 2L;
 
     public static final String FIELD_ID = "id";
     public static final String FIELD_DESCRIPTION = "description";
@@ -213,10 +216,11 @@ public class Expense implements Serializable {
 	}
 
 	/**
+	 * FIXME this is pretty fuckin' ugly, letting clients set the schedule manually...
+	 * 
 	 * @param depreciationSchedule the depreciationSchedule to set
 	 */
-	public void setDepreciationSchedule(
-			List<AnnualDepreciation> depreciationSchedule) {
+	public void setDepreciationSchedule(List<AnnualDepreciation> depreciationSchedule) {
 		this.depreciationSchedule = depreciationSchedule;
 	}
 

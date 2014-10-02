@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import de.tfsw.accounting.util.FormatUtil;
 
 /**
- * Tax rates are applicable for {@link InvoicePosition} instances and control the amount of tax added to the net price.
+ * Tax rates are applicable to any monetary amount.
  * 
- * @author thorsten
+ * @author Thorsten Frank
+ * @since  1.0
  *
  */
-public class TaxRate implements Serializable {
+public class TaxRate extends AbstractBaseEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7052175932091519923L;
+	private static final long serialVersionUID = 2L;
 
 	public static final String FIELD_SHORT_NAME = "shortName";
 	public static final String FIELD_LONG_NAME = "longName";

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,26 +23,28 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
- * A container for a price including tax, which applies to both an {@link InvoicePosition} and an entire {@link Invoice}.
- * 
- * <p> Each {@link Price} instance can hold net, gross and tax amounts that make up a single price. 
- * {@link #getTax()} may be <code>null</code> if the invoice position or invoice is not tax applicable, in which
- * case net and gross price will be equal.</p> 
+ * A non-persistent container to hold complete price data, i.e. net, gross and tax amounts that make up a single price. 
+ * {@link #getTax()} may be <code>null</code> if no tax is applicable, in which case net and gross price will be equal.
  * 
  * <p>This class is not meant to be used directly by clients, but should rather be obtained using the calculation
  * utility {@link de.tfsw.accounting.util.CalculationUtil}.</p>
  * 
- * @author thorsten
- *
- * @see de.tfsw.accounting.util.CalculationUtil#calculatePrice(InvoicePosition)
- * @see de.tfsw.accounting.util.CalculationUtil#calculateTotalPrice(Invoice)
+ * <p>
+ * Support for {@link PropertyChangeListener}s is provided.
+ * </p>
+ * 
+ * @author Thorsten Frank
+ * @see    de.tfsw.accounting.util.CalculationUtil#calculatePrice(InvoicePosition)
+ * @see    de.tfsw.accounting.util.CalculationUtil#calculateTotalPrice(Invoice)
+ * @see    PropertyChangeListener
+ * @since  1.0
  */
 public class Price implements Comparable<Price>, Serializable {
 
 	/**
      * 
      */
-    private static final long serialVersionUID = -58766435614756711L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * FIELDS
@@ -62,6 +64,8 @@ public class Price implements Comparable<Price>, Serializable {
 	
 	/**
      * Creates a new price with no values.
+     * 
+     * <p>This constructor is the equivalent of <code>new Price(BigDecimal.ZERO, null, BigDecimal.ZERO);</code></p>
      */
     public Price() {
     	this (BigDecimal.ZERO, null, BigDecimal.ZERO);
@@ -130,8 +134,9 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Adds the supplied amount to this price's net value.
      * 
-     * @param net
+     * @param net the addition to {@link #getNet()}
      */
     public void addToNet(BigDecimal net) {
     	if (net == null) {
@@ -146,8 +151,9 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Adds the supplied amount to this price's tax value.
      * 
-     * @param tax
+     * @param tax the addition to {@link #getTax()}
      */
     public void addToTax(BigDecimal tax) {
     	if (tax == null) {
@@ -162,8 +168,9 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Adds the supplied amount to this price's gross value.
      * 
-     * @param gross
+     * @param gross the addition to {@link #getGross()}
      */
     public void addToGross(BigDecimal gross) {
     	if (gross == null) {
@@ -177,8 +184,15 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Adds the supplied price to this one. To be more specific, all three values of this price are adjusted such that
+     * <code>this.value = this.value.add(price.value)</code>, where <code>value</code> is one of <code>net</code>,
+     * <code>gross</code> or <code>tax</code>.
      * 
-     * @param price
+     * @param price	the price to add to this one
+     * 
+     * @see	  #addToNet(BigDecimal)
+     * @see	  #addToGross(BigDecimal)
+     * @see	  #addToTax(BigDecimal)
      */
     public void add(Price price) {
     	if (price == null) {
@@ -190,8 +204,13 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Subtracts the supplied price from this one. To be more specific, all three values of this price are adjusted 
+     * such that <code>this.value = this.value.subtract(price.value)</code> where <code>value</code> is one of 
+     * <code>net</code>, <code>gross</code> or <code>tax</code>.
      * 
-     * @param price
+     * <p>This method does not prohibit negative values.</p>
+     *  
+     * @param price	the price to subtract from this one
      */
     public void subtract(Price price) {
     	if (price == null) {
@@ -221,16 +240,38 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Calculates the gross value of this price from a pre-existing net value using the supplied {@link TaxRate}.
      * 
-     * @param taxRate may be <code>null</code>
+     * <p>Calculation logic is as follows:
+     * <ol>
+     * 	<li>
+     * 		if the supplied {@link TaxRate} (or {@link TaxRate#getRate()}) is <code>null</code>, this Price's gross is 
+     * 		set to current net value
+     *	</li>
+     * 	<li>
+     * 		if {@link #getNet()} is <code>null</code>, both the net and gross values are set to {@link BigDecimal#ZERO}
+     * 		and the tax value is set to <code>null</code>
+     * 	</li>
+     * 	<li>
+     * 		if neither this Price's net value nor the supplied tax rate is <code>null</code>, the tax value is 
+     * 		calculated as <pre>{@link #getNet()} * {@link TaxRate#getRate()}</pre> and the gross value as 
+     * 		<pre>{@link #getNet()} + {@link #getTax()}</pre>
+     *	</li>
+     * </ol>
+     * </p>
+     * 
+     * @param taxRate the tax rate to apply to this price, may be <code>null</code>
      */
     public void calculateGrossFromNet(TaxRate taxRate) {
     	if (taxRate == null || taxRate.getRate() == null) {
     		setTax(null);
     		setGross(net);
-    	} else if (net == null) {
+    	} 
+    	
+    	if (net == null) {
     		setNet(BigDecimal.ZERO);
-    		setGross(net);
+    		setGross(BigDecimal.ZERO);
+    		setTax(null);
     	} else {
     		setTax(net.multiply(taxRate.getRate()));
     		setGross(net.add(tax));
@@ -238,16 +279,46 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
     /**
+     * Calculates the net value of this price from a pre-existing gross value and the supplied {@link TaxRate}.
      * 
-     * @param taxRate may be <code>null</code>
+     * <p>Calculation logic is as follows:
+     * <ol>
+     * 	<li>
+     * 		if the supplied {@link TaxRate} (or {@link TaxRate#getRate()}) is <code>null</code>, this Price's net is 
+     * 		set to pre-existing gross value 		
+     * 	</li>
+     * 	<li>
+     * 		if {@link #getGross} is <code>null</code>, both the net and gross values are set to {@link BigDecimal#ZERO}
+     * 		and the tax value is set to <code>null</code> 
+     * 	</li>
+     * 	<li>
+     * 		if neither this Price's gross value nor the supplied tax rate is <code>null</code>, the <b>net</b> value is
+     * 		calculated as <pre>{@link #getGross} / (1 + {@link TaxRate#getRate()})</pre> and the tax amount as
+     * 		<pre>{@link #getGross} - {@link #getNet()}</pre>
+     *	</li>
+     * </ol>
+     * </p>
+     * 
+     * <p>Note that the division used during calculation of the net value uses a math context with a precision of 34
+     * and {@link RoundingMode#HALF_UP}, after which a scale of 2 is applied (with the same rounding mode).</p>
+     * 
+     * @param taxRate the tax rate to apply to this price, may be <code>null</code>
+     * 
+     * @see RoundingMode#HALF_UP
+     * @see MathContext
+     * @see BigDecimal#setScale(int, RoundingMode)
+     * @see BigDecimal#divide(BigDecimal, MathContext)
      */
     public void calculateNetFromGross(TaxRate taxRate) {
     	if (taxRate == null || taxRate.getRate() == null) {
     		setTax(null);
     		setNet(gross);
-    	} else if (gross == null) {
+    	} 
+    	
+    	if (gross == null) {
+    		setNet(BigDecimal.ZERO);
     		setGross(BigDecimal.ZERO);
-    		setNet(gross);
+    		setTax(null);
     	} else {
     		// Net = Gross / (1 + taxRate)
     		setNet(gross.divide(BigDecimal.ONE.add(taxRate.getRate()), MATH_CONTEXT).setScale(SCALE, MATH_CONTEXT.getRoundingMode()));
@@ -256,8 +327,10 @@ public class Price implements Comparable<Price>, Serializable {
     }
     
 	/**
-     * {@inheritDoc}.
+     * Compares this Price's gross value to the supplied one's.
+     * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * @see java.math.BigDecimal#compareTo(BigDecimal)
      */
     @Override
     public int compareTo(Price o) {

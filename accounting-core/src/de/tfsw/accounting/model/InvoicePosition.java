@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2010, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,20 +15,22 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * An individual service or product being sold and billed via an {@link Invoice} .
  * 
- * @author thorsten frank
+ * @author Thorsten Frank
+ * @see    Invoice#getInvoicePositions()
+ * @see    Invoice#setInvoicePositions(java.util.List)
+ * @since  1.0
  */
-public class InvoicePosition implements Serializable {
+public class InvoicePosition extends AbstractBaseEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4248955076367607485L;
+	private static final long serialVersionUID = 2L;
 	
 	public static final String FIELD_QUANTITY = "quantity";
 	public static final String FIELD_UNIT = "unit";

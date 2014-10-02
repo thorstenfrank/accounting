@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2010, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,14 +23,15 @@ import java.util.Set;
  * 
  * <p>This is the main entity of the accounting application.</p>
  * 
- * @author thorsten frank
+ * @author Thorsten Frank
+ * @since  1.0
  */
-public class User implements Serializable {
+public class User extends AbstractBaseEntity {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5026076582008704143L;
+	private static final long serialVersionUID = 2L;
 		
 	public static final String FIELD_NAME = "name";
 	public static final String FIELD_DESCRIPTION = "description";

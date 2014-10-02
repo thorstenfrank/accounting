@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2010, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,25 +15,25 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 
 /**
  * Information about a bank account to which payments are made.
  * 
- * @author thorsten frank
+ * @author Thorsten Frank
+ * @since  1.0
  */
-public class BankAccount implements Serializable {
+public class BankAccount extends AbstractBaseEntity {
 
 	/**
-	 * 
+	 * Serial Version UID.
 	 */
-	private static final long serialVersionUID = -3257354435998389747L;
+	private static final long serialVersionUID = 2L;
 
-	public static final String FIELD_ACCOUNT_NUMBER = "accountNumber";
-	public static final String FIELD_BANK_CODE = "bankCode";
 	public static final String FIELD_BANK_NAME = "bankName";
-	public static final String FIELD_BIC = "bic";
+	public static final String FIELD_BANK_CODE = "bankCode";
+	public static final String FIELD_ACCOUNT_NUMBER = "accountNumber";
 	public static final String FIELD_IBAN = "iban";
+	public static final String FIELD_BIC = "bic";
 	
 	private String bankName;
 	private String bankCode;

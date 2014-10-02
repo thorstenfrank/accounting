@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import de.tfsw.accounting.Messages;
  * <p>The state of an invoice is never set directly, but rather computed through a series of rules regarding its
  * various dates, such as the creation date, sent date, due date, cancelled date, and so on.</p>
  * 
- * @author thorsten
- * @see Invoice#getState()
+ * @author Thorsten Frank
+ * @see    Invoice#getState()
  */
 public enum InvoiceState implements Serializable {
 
