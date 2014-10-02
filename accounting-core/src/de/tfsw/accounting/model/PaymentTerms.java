@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,20 +15,24 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 
 /**
  * Payment terms describe when and how an {@link Invoice} is to be paid by the {@link Client} to which is is issued.
  * 
- * @author thorsten
+ * TODO discounts
+ * 
+ * @author Thorsten Frank
+ * @see    Invoice#getPaymentTerms()
+ * @see    PaymentType
+ * @since  1.0
  *
  */
-public class PaymentTerms implements Serializable, Cloneable {
+public class PaymentTerms extends AbstractBaseEntity implements Cloneable {
 
 	/**
      * Serial Version UID.
      */
-    private static final long serialVersionUID = 8912815234249967592L;
+    private static final long serialVersionUID = 2L;
     
     /** Default Values. */
     private static final PaymentType DEFAULT_TYPE = PaymentType.TRADE_CREDIT;

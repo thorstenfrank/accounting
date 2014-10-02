@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2010, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,16 +18,18 @@ package de.tfsw.accounting.model;
 import java.io.Serializable;
 
 /**
- * One of the clients / customers of a {@link User}.
+ * A client is the orderer and recipient of services and/or products and 
+ * ultimately billed for them through an {@link Invoice}.
  * 
- * @author thorsten frank
+ * @author Thorsten Frank
+ * @since  1.0
  */
 public class Client implements Serializable {
 
 	/**
-	 * 
+	 * Serial Version UID.
 	 */
-	private static final long serialVersionUID = 6108633451701651981L;
+	private static final long serialVersionUID = 2L;
 	
 	public static final String FIELD_NAME = "name";
 	public static final String FIELD_CLIENT_NUMBER = "clientNumber";
@@ -101,14 +103,19 @@ public class Client implements Serializable {
 	}
 	
 	/**
-     * @return the defaultPaymentTerms
+	 * The default payment terms are used as templates when creating new invoices for a client.
+	 * 
+     * @return the default payment terms for this client
      */
     public PaymentTerms getDefaultPaymentTerms() {
     	return defaultPaymentTerms;
     }
 
 	/**
-     * @param defaultPaymentTerms the defaultPaymentTerms to set
+	 * Sets the default payment terms for this client. 
+	 * Defaults are used as templates when creating new invoices for a client.
+	 * 
+     * @param defaultPaymentTerms the default payment terms for this client
      */
     public void setDefaultPaymentTerms(PaymentTerms defaultPaymentTerms) {
     	this.defaultPaymentTerms = defaultPaymentTerms;
@@ -147,6 +154,8 @@ public class Client implements Serializable {
 
 	/**
 	 * Returns {@link #getName()}.
+	 * 
+	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {

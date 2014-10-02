@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2012, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,21 +15,25 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * The depreciation expense of a single year, usually as part of a depreciation / amortization schedule.
  * 
- * @author thorsten
- *
+ * <p>
+ * Instances of this class represent a single year's depreciation, and are independent of the actual method that was
+ * used to calculate its values.
+ * </p>
+ * 
+ * @author Thorsten Frank
+ * @since  1.1
  */
-public class AnnualDepreciation implements Serializable {
+public class AnnualDepreciation extends AbstractBaseEntity {
 
 	/**
-	 * 
+	 * Serial Version UID.
 	 */
-	private static final long serialVersionUID = 3456661660912928780L;
+	private static final long serialVersionUID = 2L;
 
 	private int year;
 	
@@ -42,18 +46,20 @@ public class AnnualDepreciation implements Serializable {
 	private BigDecimal accumulatedDepreciation;
 	
 	/**
-	 * 
+	 * Creates a new, empty annual depreciation instance.
 	 */
 	public AnnualDepreciation() {
 		super();
 	}
 	
 	/**
-	 * @param year
-	 * @param beginningOfYearBookValue
-	 * @param endOfYearBookValue
-	 * @param depreciationAmount
-	 * @param accumulatedDepreciation
+	 * Creates a new annual depreciation instance.
+	 * 
+	 * @param year						the 4-digit year (e.g. 2011, 1988) for which this instance holds values
+	 * @param beginningOfYearBookValue	beginning-of-year value
+	 * @param endOfYearBookValue		end-of-year value, usually <code>beginning - depreciation amount</code>
+	 * @param depreciationAmount		the amount depreciated during this year
+	 * @param accumulatedDepreciation	the total depreciated amount at the beginning of the year
 	 */
 	public AnnualDepreciation(
 			int year, 
@@ -72,14 +78,14 @@ public class AnnualDepreciation implements Serializable {
 
 
 	/**
-	 * @return the year
+	 * @return the 4-digit year, e.g. 2011, 1988
 	 */
 	public int getYear() {
 		return year;
 	}
 
 	/**
-	 * @param year the year to set
+	 * @param year 4-digit year, e.g. 2011, 1988
 	 */
 	public void setYear(int year) {
 		this.year = year;
@@ -141,6 +147,10 @@ public class AnnualDepreciation implements Serializable {
 		this.accumulatedDepreciation = accumulatedDepreciation;
 	}
 	
+	/**
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

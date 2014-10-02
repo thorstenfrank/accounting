@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2010, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 
 /**
  * Basic representation of a contact's address.
@@ -23,14 +22,15 @@ import java.io.Serializable;
  * Currently only supports a single phone number.
  * 
  * @author thorsten frank
- * @since 1.0
+ * @since  1.0
  */
-public class Address implements Serializable {
+public class Address extends AbstractBaseEntity {
 
 	/**
+	 * Serial Version UID.
 	 * 
 	 */
-	private static final long serialVersionUID = -2089684022714034270L;
+	private static final long serialVersionUID = 2L;
 
 	public static final String FIELD_RECIPIENT_DETAIL = "recipientDetail";
 	public static final String FIELD_STREET = "street";

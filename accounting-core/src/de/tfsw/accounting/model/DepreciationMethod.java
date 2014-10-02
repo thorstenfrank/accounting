@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2012, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
-
 import de.tfsw.accounting.Messages;
 
 /**
- * @author thorsten
- *
+ * Calculation method for depreciation/amortization.
+ * 
+ * @author Thorsten Frank
+ * @since  1.0
+ * @see	   AnnualDepreciation
+ * @see	   Expense#setDepreciationMethod(DepreciationMethod)
  */
-public enum DepreciationMethod implements Serializable {
+public enum DepreciationMethod {
 	
 	/**
 	 * Straightline depreciation/amortisation.
