@@ -22,6 +22,8 @@ package de.tfsw.accounting.ui;
  * Recipients may register and unregister using {@link AccountingUI#addModelChangeListener(ModelChangeListener)} and
  * {@link AccountingUI#removeModelChangeListener(ModelChangeListener)}.
  * 
+ * FIXME this belongs in the core package, and listeners should be registered to the service, not the UI
+ * 
  * @author thorsten
  *
  */

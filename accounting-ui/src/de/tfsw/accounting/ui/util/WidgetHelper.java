@@ -15,6 +15,7 @@
  */
 package de.tfsw.accounting.ui.util;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -97,7 +98,8 @@ public class WidgetHelper {
 	 * All fields except for the day, month and year are nullified.
 	 * 
 	 * @param dateTime source
-	 * @return the {@link Date} that 
+	 * @return the {@link Date} that represents the date as contained in the supplied widget
+	 * @deprecated	use {@link #widgetToLocalDate(DateTime)} instead
 	 */
 	public static Date widgetToDate(DateTime dateTime) {
 		Calendar cal = Calendar.getInstance();
@@ -114,10 +116,21 @@ public class WidgetHelper {
 	}
 	
 	/**
+	 * Applies the date currently represented by the supplied widget to a new {@link LocalDate}.
+	 * 
+	 * @param dateTime	source
+	 * @return the {@link LocalDate} that represents the date as contained in the supplied widget
+	 */
+	public static LocalDate widgetToLocalDate(DateTime dateTime) {
+		return LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay());
+	}
+	
+	/**
 	 * Applies the day, month and year of the supplied {@link Date} to the supplied {@link DateTime} widget.
 	 * 
 	 * @param date		source
 	 * @param dateTime  target
+	 * @deprecated use {@link #dateToWidget(LocalDate, DateTime)} instead
 	 */
 	public static void dateToWidget(Date date, DateTime dateTime) {
 		Calendar cal = Calendar.getInstance();
@@ -130,9 +143,20 @@ public class WidgetHelper {
 	 * 
 	 * @param cal		source
 	 * @param dateTime  target
+	 * @deprecated use {@link #dateToWidget(LocalDate, DateTime)} instead
 	 */
 	public static void dateToWidget(Calendar cal, DateTime dateTime) {
 		dateTime.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+	}
+	
+	/**
+	 * Applies the day, month and year of the supplied {@link LocalDate} to the supplied {@link DateTime} widget.
+	 * 
+	 * @param date		source
+	 * @param dateTime	target
+	 */
+	public static void dateToWidget(LocalDate date, DateTime dateTime) {
+		dateTime.setDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
 	}
 	
 	/**

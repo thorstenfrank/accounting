@@ -59,6 +59,7 @@ import de.tfsw.accounting.io.AccountingXmlImportExport;
 import de.tfsw.accounting.io.ExpenseImporter;
 import de.tfsw.accounting.io.XmlModelDTO;
 import de.tfsw.accounting.model.AnnualDepreciation;
+import de.tfsw.accounting.model.CVEntry;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
@@ -1130,6 +1131,40 @@ public class AccountingServiceImpl implements AccountingService {
     	return modelMetaInformation;
     }
     
+	/**
+	 * @see de.tfsw.accounting.AccountingService#getCvEntries()
+	 */
+	@Override
+	public List<CVEntry> getCvEntries() {
+		List<CVEntry> cvEntries = new ArrayList<CVEntry>();
+		try {
+			cvEntries.addAll(objectContainer.query(CVEntry.class));
+		} catch (Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		}
+		
+		return cvEntries;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.AccountingService#saveCvEntry(de.tfsw.accounting.model.CVEntry)
+	 */
+	@Override
+	public CVEntry saveCvEntry(CVEntry cvEntry) {
+		doStoreEntity(cvEntry);
+		return cvEntry;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.AccountingService#deleteCvEntry(de.tfsw.accounting.model.CVEntry)
+	 */
+	@Override
+	public void deleteCvEntry(CVEntry cvEntry) {
+		doDeleteEntity(cvEntry);
+	}
+
 	/**
 	 * 
 	 * @param entity

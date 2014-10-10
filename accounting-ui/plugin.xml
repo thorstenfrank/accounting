@@ -292,6 +292,11 @@
                   icon="icons/user_suit.png"
                   style="push">
             </command>
+            <command
+                  commandId="de.tfsw.accounting.ui.user.OpenCvEditor"
+                  icon="icons/user_suit.png"
+                  style="push">
+            </command>
             <separator
                   name="viewMenuSep1"
                   visible="true">
@@ -712,6 +717,12 @@
             id="de.tfsw.accounting.ui.expense.ExpenseEditor"
             name="Expense">
       </editor>
+      <editor
+            class="de.tfsw.accounting.ui.user.CVEditor"
+            default="false"
+            id="de.togginho.accounting.ui.user.CvEditor"
+            name="CV Editor Name">
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -897,6 +908,11 @@
             defaultHandler="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterHandler"
             id="de.tfsw.accounting.ui.expenseView.menu.pulldown"
             name="de.tfsw.accounting.ui.expenseView.menu.pulldown">
+      </command>
+      <command
+            defaultHandler="de.tfsw.accounting.ui.user.OpenCvEditorHandler"
+            id="de.tfsw.accounting.ui.user.OpenCvEditor"
+            name="Open CV Editor">
       </command>
    </extension>
    <extension

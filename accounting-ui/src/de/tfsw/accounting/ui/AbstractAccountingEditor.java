@@ -18,6 +18,7 @@ package de.tfsw.accounting.ui;
 import java.util.EventObject;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.PojoObservables;
@@ -251,12 +252,12 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	 * @param modelObject
 	 * @param propertyName
 	 */
-	protected void createBindings(Text text, Object modelObject, String propertyName) {
-		IObservableValue widgetObservable = SWTObservables.observeText(text, SWT.Modify);
-		IObservableValue pojoObservable = PojoObservables.observeValue(modelObject, propertyName);
-		bindingContext.bindValue(widgetObservable, pojoObservable);
+	protected Binding createBindings(Text text, Object modelObject, String propertyName) {
 		text.addFocusListener(this);
 		text.addKeyListener(this);
+		IObservableValue widgetObservable = SWTObservables.observeText(text, SWT.Modify);
+		IObservableValue pojoObservable = PojoObservables.observeValue(modelObject, propertyName);
+		return bindingContext.bindValue(widgetObservable, pojoObservable);
 	}
 	
 	/**
