@@ -27,7 +27,7 @@ import java.util.List;
  * @since  1.0
  * @see    ExpenseType
  */
-public class Expense implements Serializable {
+public class Expense extends AbstractBaseEntity {
 
 	/**
 	 * Serial Version UID.

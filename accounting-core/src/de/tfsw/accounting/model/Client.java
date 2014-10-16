@@ -15,7 +15,6 @@
  */
 package de.tfsw.accounting.model;
 
-import java.io.Serializable;
 
 /**
  * A client is the orderer and recipient of services and/or products and 
@@ -24,7 +23,7 @@ import java.io.Serializable;
  * @author Thorsten Frank
  * @since  1.0
  */
-public class Client implements Serializable {
+public class Client extends AbstractBaseEntity {
 
 	/**
 	 * Serial Version UID.
