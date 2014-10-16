@@ -292,11 +292,6 @@
                   icon="icons/user_suit.png"
                   style="push">
             </command>
-            <command
-                  commandId="de.tfsw.accounting.ui.user.OpenCvEditor"
-                  icon="icons/user_suit.png"
-                  style="push">
-            </command>
             <separator
                   name="viewMenuSep1"
                   visible="true">
@@ -576,6 +571,14 @@
          </command>
       </menuContribution>
       <menuContribution
+            locationURI="toolbar:de.tfsw.accounting.ui.user.UserEditor">
+         <command
+               commandId="org.eclipse.ui.file.save"
+               label="%command.save.label"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
             locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpensesView">
          <command
                commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
@@ -690,7 +693,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="de.tfsw.accounting.ui.user.UserEditor"
+            class="de.tfsw.accounting.ui.user.MultiPageUserEditor"
             default="false"
             icon="icons/user_edit.png"
             id="de.tfsw.accounting.ui.user.UserEditor"
@@ -716,12 +719,6 @@
             icon="icons/tag_blue_edit.png"
             id="de.tfsw.accounting.ui.expense.ExpenseEditor"
             name="Expense">
-      </editor>
-      <editor
-            class="de.tfsw.accounting.ui.user.CVEditor"
-            default="false"
-            id="de.togginho.accounting.ui.user.CvEditor"
-            name="CV Editor Name">
       </editor>
    </extension>
    <extension
@@ -908,11 +905,6 @@
             defaultHandler="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterHandler"
             id="de.tfsw.accounting.ui.expenseView.menu.pulldown"
             name="de.tfsw.accounting.ui.expenseView.menu.pulldown">
-      </command>
-      <command
-            defaultHandler="de.tfsw.accounting.ui.user.OpenCvEditorHandler"
-            id="de.tfsw.accounting.ui.user.OpenCvEditor"
-            name="Open CV Editor">
       </command>
    </extension>
    <extension

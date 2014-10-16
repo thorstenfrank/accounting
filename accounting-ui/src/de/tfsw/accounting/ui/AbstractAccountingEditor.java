@@ -118,7 +118,7 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	public void focusGained(FocusEvent e) {
 		if (e.getSource() instanceof Text) {
 			focusedElementContents = ((Text) e.getSource()).getText();
-			LOG.debug("Focused element value: " + focusedElementContents); //$NON-NLS-1$
+			// LOG.debug("Focused element value: " + focusedElementContents); //$NON-NLS-1$
 		}
 	}
 
@@ -137,20 +137,22 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	 * @param e
 	 */
 	private void updateFocusedElementContents(EventObject e) {
+		if (isDirty) {
+			return; // no need to do anything here...
+		}
+		
 		if (e.getSource() instanceof Text) {
 			final String contents = ((Text) e.getSource()).getText();
 			if (!contents.equals(focusedElementContents)) {
-				LOG.debug(String.format(
-						"Value changed from [%s] to [%s], editor is now dirty", focusedElementContents, contents)); //$NON-NLS-1$
-				// only have to do this once... 
-				if (!isDirty) {
-					setIsDirty(true);
-				}
+				setIsDirty(true);
 			}
+		} else {
+			LOG.debug("updating focused element contents from source: " + e.getSource().toString()); //$NON-NLS-1$
 		}
 	}
 		
 	/**
+	 * Disposes of the toolkit provided by {@link #getToolkit()}.
 	 * 
 	 * {@inheritDoc}
 	 * @see org.eclipse.ui.part.WorkbenchPart#dispose()
@@ -185,10 +187,12 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	/**
 	 * {@inheritDoc}
 	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+	 * 
+	 * @throws UnsupportedOperationException always
 	 */
 	@Override
 	public void doSaveAs() {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException(Messages.AbstractAccountingEdior_errorSavesAsNotSupported);
 	}
 
 	/**
@@ -329,5 +333,29 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 		msgBox.setMessage(e.getLocalizedMessage());
 		msgBox.setText(Messages.labelError);
 		msgBox.open();
+	}
+	
+	/**
+	 * Displays a warning message, i.e. a simple modal dialog with a message and a warning icon.
+	 * 
+	 * @param message the (localized) text to be displayed by the dialog
+	 * @param title the (localized) title string of the dialog
+	 * @param includeCancelButton whether or not to include a localized <code>Cancel</code> button for the dialog 
+	 * 		  instead of just an <code>OK</code> one
+	 * 
+	 * @return <code>true</code> if {@link MessageBox#open()} returns {@link SWT#OK}, <code>false</code> otherwise
+	 */
+	protected boolean showWarningMessage(final String message, final String title, boolean includeCancelButton) {
+		
+		int style = SWT.ICON_WARNING | SWT.OK;		
+		if (includeCancelButton) {
+			style = style | SWT.CANCEL;
+		}
+		
+		MessageBox msgBox = new MessageBox(getSite().getShell(), style);
+		msgBox.setMessage(message);
+		msgBox.setText(title);
+		
+		return (msgBox.open() == SWT.OK);
 	}
 }

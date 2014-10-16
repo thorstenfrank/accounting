@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReferenceSubreport" pageWidth="459" pageHeight="250" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4d4c558a-245a-4e07-93d7-6360f0e66400">
+	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
+	<field name="wrapper" class="de.tfsw.accounting.reporting.internal.ModelWrapper">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="250" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="459" height="200" uuid="18e77502-4128-4ca9-990c-7ad79186e8b9" />
+				<textField>
+					<reportElement style="STD_10B" x="0" y="0" width="100" height="20" uuid="75f8889e-f509-41e2-84f0-8342b911b6d1"/>
+					<textFieldExpression><![CDATA[$F{wrapper}.getMessage("timeFrame")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10B" x="100" y="0" width="359" height="15" uuid="e3cbb0c7-6ef9-4cf5-866c-74bee9a4a5c8" />
+					<textFieldExpression><![CDATA["10/2014 - 11/2014"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="0" y="20" width="100" height="15" uuid="9d24540d-1395-45ae-bcb6-1511e229fee2" />
+					<textFieldExpression><![CDATA[$F{wrapper}.getMessage("Reference_Customer")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="100" y="20" width="359" height="20" uuid="ab42d4c8-2f16-4ac8-9ad6-d0fd4c9c0fa6"/>
+					<textFieldExpression><![CDATA["MeinKunde"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="0" y="35" width="100" height="15" uuid="08268cd0-9abd-4e4e-ba91-05012ebfceb2" />
+					<textFieldExpression><![CDATA[$F{wrapper}.getMessage("Reference_Project")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="100" y="35" width="359" height="15" uuid="e195d579-3cda-4a73-88a6-651e3c9445c6" />
+					<textFieldExpression><![CDATA["MeinProjekt"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="0" y="50" width="100" height="15" uuid="f5492fed-87e1-43eb-a2ad-4a8b79e68daf" />
+					<textFieldExpression><![CDATA[$F{wrapper}.getMessage("Reference_Tasks")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="100" y="50" width="359" height="15" uuid="cb5d3820-9927-4c5b-a189-654e1e43e7ea" />
+					<textFieldExpression><![CDATA["MeineAufgabe"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="0" y="65" width="100" height="15" uuid="7236708f-e6b3-4270-ad80-7c1696d2f5b5" />
+					<textFieldExpression><![CDATA[$F{wrapper}.getMessage("Reference_Description")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="STD_10" x="100" y="65" width="359" height="135" uuid="8949d31d-3380-4279-ad86-843dd1df316c" />
+					<textFieldExpression><![CDATA["DieBeschreibung"]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

@@ -54,6 +54,8 @@ public class WidgetHelper {
 	
 	private static final GridDataFactory GRAB_BOTH = GridDataFactory.fillDefaults().grab(true, true);
 	
+	private static final int DATE_TIME_MONTH_OFFSET = 1;
+	
 	/**
 	 * Private since this is only a utility class.
 	 */
@@ -122,7 +124,7 @@ public class WidgetHelper {
 	 * @return the {@link LocalDate} that represents the date as contained in the supplied widget
 	 */
 	public static LocalDate widgetToLocalDate(DateTime dateTime) {
-		return LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay());
+		return LocalDate.of(dateTime.getYear(), dateTime.getMonth() + DATE_TIME_MONTH_OFFSET, dateTime.getDay());
 	}
 	
 	/**
@@ -156,7 +158,7 @@ public class WidgetHelper {
 	 * @param dateTime	target
 	 */
 	public static void dateToWidget(LocalDate date, DateTime dateTime) {
-		dateTime.setDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+		dateTime.setDate(date.getYear(), date.getMonthValue() - DATE_TIME_MONTH_OFFSET, date.getDayOfMonth());
 	}
 	
 	/**

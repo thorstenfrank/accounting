@@ -58,9 +58,11 @@ import de.tfsw.accounting.Messages;
 import de.tfsw.accounting.io.AccountingXmlImportExport;
 import de.tfsw.accounting.io.ExpenseImporter;
 import de.tfsw.accounting.io.XmlModelDTO;
+import de.tfsw.accounting.model.AbstractBaseEntity;
 import de.tfsw.accounting.model.AnnualDepreciation;
 import de.tfsw.accounting.model.CVEntry;
 import de.tfsw.accounting.model.Client;
+import de.tfsw.accounting.model.CurriculumVitae;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
 import de.tfsw.accounting.model.ExpenseImportParams;
@@ -1132,39 +1134,32 @@ public class AccountingServiceImpl implements AccountingService {
     }
     
 	/**
-	 * @see de.tfsw.accounting.AccountingService#getCvEntries()
+	 * @see de.tfsw.accounting.AccountingService#saveCurriculumVitae(de.tfsw.accounting.model.CurriculumVitae)
 	 */
 	@Override
-	public List<CVEntry> getCvEntries() {
-		List<CVEntry> cvEntries = new ArrayList<CVEntry>();
-		try {
-			cvEntries.addAll(objectContainer.query(CVEntry.class));
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
+	public CurriculumVitae saveCurriculumVitae(CurriculumVitae cv) {
+		doDeleteEntities(objectContainer.query(CVEntry.class), false);
+		doStoreEntities(cv.getReferences());
+		return cv;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.AccountingService#getCurriculumVitae()
+	 */
+	@Override
+	public CurriculumVitae getCurriculumVitae() {
+		CurriculumVitae cv = null;
+		
+		ObjectSet<CurriculumVitae> cvSet = objectContainer.query(CurriculumVitae.class);
+		if (cvSet.size() == 1) {
+			cv = cvSet.get(0);
+		} else { 
+			LOG.error("Cannot uniquely identify CV, size of found elements is: " + cvSet.size());
 		}
 		
-		return cvEntries;
+		return cv;
 	}
-
-	/**
-	 * @see de.tfsw.accounting.AccountingService#saveCvEntry(de.tfsw.accounting.model.CVEntry)
-	 */
-	@Override
-	public CVEntry saveCvEntry(CVEntry cvEntry) {
-		doStoreEntity(cvEntry);
-		return cvEntry;
-	}
-
-	/**
-	 * @see de.tfsw.accounting.AccountingService#deleteCvEntry(de.tfsw.accounting.model.CVEntry)
-	 */
-	@Override
-	public void deleteCvEntry(CVEntry cvEntry) {
-		doDeleteEntity(cvEntry);
-	}
-
+	
 	/**
 	 * 
 	 * @param entity
@@ -1200,7 +1195,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 * 
 	 * @param entities
 	 */
-	private void doStoreEntities(Collection<? extends Object> entities) {
+	private void doStoreEntities(Collection<? extends AbstractBaseEntity> entities) {
 		try {
 			for (Object entity : entities) {
 				if (entity != null) {
@@ -1222,9 +1217,6 @@ public class AccountingServiceImpl implements AccountingService {
 			}
 			throw new AccountingException("Unknown exception: " + e.toString(), e);
 		}
-		
-
-		
 	}
 	
 	/**
@@ -1252,6 +1244,37 @@ public class AccountingServiceImpl implements AccountingService {
 			LOG.error("Error while deleting entity: " + entity, e); //$NON-NLS-1$
 			objectContainer.rollback();			
 			throw e;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param entities
+	 */
+	private void doDeleteEntities(Collection<? extends AbstractBaseEntity> entities, boolean commit) {
+		try {
+			for (Object entity : entities) {
+				if (entity != null) {
+					objectContainer.delete(entity);
+				}
+			}
+			
+			if (commit) {
+				objectContainer.commit();
+			}
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		} catch (DatabaseReadOnlyException e) {
+			throwDbReadOnlyException(e);
+		} catch(Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (Db4oException e) {
+			LOG.error("Error while trying to store multiple entities", e); //$NON-NLS-1$
+			objectContainer.rollback();
+			if (e instanceof UniqueFieldValueConstraintViolationException) {
+				throw e;
+			}
+			throw new AccountingException("Unknown exception: " + e.toString(), e);
 		}
 	}
 	
