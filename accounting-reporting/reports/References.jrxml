@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="References" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e7647ceb-843d-405c-9f2d-8a8eb8037bbe">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="References" pageWidth="595" pageHeight="842" columnWidth="459" leftMargin="68" rightMargin="68" topMargin="22" bottomMargin="22" uuid="e7647ceb-843d-405c-9f2d-8a8eb8037bbe">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<template><![CDATA["/reports/AccountingStyleSheet.jrtx"]]></template>
 	<parameter name="wrapper" class="de.tfsw.accounting.reporting.internal.ModelWrapper" isForPrompting="false"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="79" splitType="Stretch"/>
-	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="300" height="30" uuid="c9f54123-d036-4c89-9998-1fd7e7eab252"/>
+				<textFieldExpression><![CDATA[$P{wrapper}.getMessage("References_Title")]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="61" splitType="Stretch"/>
-	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="250" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="459" height="250" isPrintWhenDetailOverflows="true" uuid="a3e91ee9-01fe-4712-b4ed-b03ea44e4be3"/>
+				<dataSourceExpression><![CDATA[$P{wrapper}.getAsDataSource("references")]]></dataSourceExpression>
+				<subreportExpression><![CDATA["/reports/ReferenceSubreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

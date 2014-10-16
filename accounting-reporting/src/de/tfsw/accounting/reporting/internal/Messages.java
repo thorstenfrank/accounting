@@ -70,6 +70,8 @@ public class Messages extends NLS {
 	public static String Reference_Tasks;
 	public static String Reference_Description;
 	
+	public static String References_Title;
+	
 	public static String RevenueReportGenerator_clientTitle;
 	public static String RevenueReportGenerator_invoiceDate;
 	public static String RevenueReportGenerator_invoiceNumberTitle;
