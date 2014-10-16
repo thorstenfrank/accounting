@@ -16,6 +16,7 @@
 package de.tfsw.accounting.ui.user;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -387,6 +388,14 @@ class CVEditor extends AbstractAccountingEditor implements ModelChangeListener {
 		
 		// read entries from the service
 		cv = AccountingUI.getAccountingService().getCurriculumVitae();
+		
+		if (cv == null) {
+			cv = new CurriculumVitae();
+		}
+		
+		if (cv.getReferences() == null) {
+			cv.setReferences(new ArrayList<CVEntry>());
+		}
 		
 		// read all entries from persistence and add all entries to the UI list		
 		for (CVEntry entry : cv.getReferences()) {
