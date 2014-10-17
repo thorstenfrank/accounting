@@ -69,6 +69,7 @@ public class Messages extends NLS {
 	public static String Reference_Project;
 	public static String Reference_Tasks;
 	public static String Reference_Description;
+	public static String Reference_Since;
 	
 	public static String References_Title;
 	

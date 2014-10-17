@@ -256,6 +256,10 @@ public class AccountingServiceImpl implements AccountingService {
 		invoiceClass.objectField(Invoice.FIELD_NUMBER).indexed(true);
 		config.add(new UniqueFieldValueConstraint(Invoice.class, Invoice.FIELD_NUMBER));
 
+		ObjectClass cvClass = config.objectClass(CurriculumVitae.class);
+		cvClass.cascadeOnUpdate(true);
+		cvClass.cascadeOnDelete(true);
+		
 		return config;
 	}
 
@@ -1138,8 +1142,8 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public CurriculumVitae saveCurriculumVitae(CurriculumVitae cv) {
-		doDeleteEntities(objectContainer.query(CVEntry.class), false);
-		doStoreEntities(cv.getReferences());
+		LOG.debug("Saving Curriculum Vitae with number of entries: " + (cv.getReferences() != null ? cv.getReferences().size() : "NULL"));
+		doStoreEntity(cv);
 		return cv;
 	}
 
@@ -1151,13 +1155,34 @@ public class AccountingServiceImpl implements AccountingService {
 		CurriculumVitae cv = null;
 		
 		ObjectSet<CurriculumVitae> cvSet = objectContainer.query(CurriculumVitae.class);
+		
 		if (cvSet.size() == 1) {
 			cv = cvSet.get(0);
+			cleanupCvEntries(cv);
+//			doDeleteEntities(cv.getReferences(), true);
+//			doDeleteEntity(cv);
+//			return null;
 		} else { 
 			LOG.error("Cannot uniquely identify CV, size of found elements is: " + cvSet.size());
 		}
 		
 		return cv;
+	}
+	
+	/**
+	 * 
+	 * @param cv
+	 */
+	private void cleanupCvEntries(CurriculumVitae cv) {
+		Collection<CVEntry> known = cv.getReferences() != null ? cv.getReferences() : new ArrayList<CVEntry>();
+		for (CVEntry entry : objectContainer.query(CVEntry.class)) {
+			if (known.contains(entry)) {
+				LOG.debug("CleanupCVEntries - KNOWN: " + entry.getTitle());
+			} else {
+				LOG.debug("CleanupCVEntries - ORPHAN: " + entry.getTitle());
+				doDeleteEntity(entry);
+			}
+		}
 	}
 	
 	/**

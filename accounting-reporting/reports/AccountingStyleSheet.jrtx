@@ -1,24 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de). 
+	Licensed under the Apache License, Version 2.0 (the "License"); 
+	you may not use this file  except in compliance with the License. You may obtain a copy of the License at 
+		http://www.apache.org/licenses/LICENSE-2.0 
+	
+	Unless required by applicable law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+	See the License for the specific language governing permissions and limitations under the License. 
+-->
 <!DOCTYPE jasperTemplate PUBLIC "-//JasperReports//DTD Template//EN" "http://jasperreports.sourceforge.net/dtds/jaspertemplate.dtd">
 
 <jasperTemplate>
-	<style name="STD_08" markup="styled" fontName="Titillium" fontSize="8" isPdfEmbedded="true"/>
-	<style name="STD_10" markup="styled" fontName="Titillium" fontSize="10" isPdfEmbedded="true"/>
-	<style name="STD_10B" markup="styled" fontName="Titillium" fontSize="10" isBold="true" isPdfEmbedded="true"/>
-	<style name="STD_12" markup="styled" fontName="Titillium" fontSize="12" isPdfEmbedded="true"/>
-	<style name="STD_12B" markup="styled" fontName="Titillium" fontSize="12" isBold="true" isPdfEmbedded="true"/>
-	<style name="PRICE_SUM_12B" hAlign="Right" markup="styled" fontName="Titillium" fontSize="12" isBold="true" isPdfEmbedded="true"/>
-	<style name="TITLE" markup="styled" fontName="Titillium" fontSize="18" isBold="true" isPdfEmbedded="true"/>
-	<style name="PAGE_NUMBER" vAlign="Middle" markup="styled" fontName="Titillium" fontSize="8" isPdfEmbedded="true"/>
-	<style name="INVOICE_POS_HEADER" vAlign="Top" markup="styled" fontName="Titillium" fontSize="10" isBold="true" isPdfEmbedded="true"/>
-	<style name="INVOICE_POS_09" markup="styled" fontName="Titillium" fontSize="9" isPdfEmbedded="true">
+	
+	<!-- standard styles -->
+	<style name="STD_08" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" />
+	<style name="STD_10" markup="styled" fontSize="10" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="STD_10B" markup="styled" fontSize="10" fontName="Titillium" isBold="true" isPdfEmbedded="true"/>
+	<style name="STD_12" markup="styled" fontSize="12" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="STD_12B" markup="styled" fontSize="12" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="PRICE_SUM_12B" markup="styled" fontSize="12" isBold="true" fontName="Titillium" isPdfEmbedded="true" hAlign="Right"/>
+	<style name="TITLE" markup="styled" fontSize="18" isBold="true" fontName="Titillium" isPdfEmbedded="true"/>
+	<style name="PAGE_NUMBER" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" vAlign="Middle" />
+	
+	<!-- special style for invoice positions -->
+	<style name="INVOICE_POS_HEADER" markup="styled" fontSize="10" isBold="true" fontName="Titillium" isPdfEmbedded="true" vAlign="Top" />
+	<style name="INVOICE_POS_09" markup="styled" fontSize="9" fontName="Titillium" isPdfEmbedded="true">
 		<box topPadding="5"/>
 	</style>
-	<style name="CF_SECTION_HEADER" vAlign="Middle" markup="styled" fontName="Titillium" fontSize="14" isBold="true" isPdfEmbedded="true"/>
-	<style name="FOOTER_08" vAlign="Middle" markup="styled" fontName="Titillium" fontSize="8" isPdfEmbedded="true"/>
+	
+	<!--s style for CashFlowStatement report -->
+	<style name="CF_SECTION_HEADER" markup="styled" fontSize="14" isBold="true" fontName="Titillium" isPdfEmbedded="true" vAlign="Middle" />
+	
+	<!-- footer style - vertically aligned in the middle --> 
+	<style name="FOOTER_08" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" vAlign="Middle" />
+	
+	<!-- CV styles -->
 	<style name="CV_TITLE" markup="styled" fontName="Titillium" fontSize="16" isBold="true" isPdfEmbedded="true"/>
-	<style name="CV_TIMEFRAME" markup="styled" fontName="Titillium" fontSize="11" isBold="true" isPdfEmbedded="true"/>
-	<style name="TEXT_BOX_10" markup="styled" fontName="Titillium" fontSize="10" isPdfEmbedded="true">
+	<style name="CV_TIMEFRAME" markup="styled" fontName="Titillium" fontSize="11" isBold="true" isPdfEmbedded="true" />
+	<style name="CV_TEXT" markup="styled" fontName="Titillium" fontSize="10" isBold="false" isPdfEmbedded="true" />
+	
+	<!-- legacy styles - deprecated and will be replaced soon -->
+	<!--style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" fontName="Titillium" isPdfEmbedded="true"/-->
+	<!--style name="INVOICE_TX_12" markup="styled" fontSize="12" fontName="Titillium" isPdfEmbedded="true"/-->
+	<!--style name="INVOICE_TX_12B" markup="styled" fontSize="12" isBold="true" fontName="Titillium" isPdfEmbedded="true"/-->
+	<!--style name="INVOICE_TX_14" markup="styled" fontSize="14" fontName="Titillium" isPdfEmbedded="true"/-->
+	
+	<!-- test style with box -->
+	<style name="TEXT_BOX_10" markup="styled" fontSize="10" fontName="Titillium" isPdfEmbedded="true">
 		<box>
 			<pen lineWidth="0.1"/>
 			<topPen lineWidth="0.1"/>

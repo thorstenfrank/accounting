@@ -210,7 +210,43 @@ class CVEditor extends AbstractAccountingEditor implements ModelChangeListener {
 			}
 		});
 		
+		final Button up = toolkit.createButton(buttons, Messages.labelUp, SWT.PUSH);
+		up.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				changeEntryPosition(-1);
+			}
+		});
+
+		final Button down = toolkit.createButton(buttons, Messages.labelDown, SWT.PUSH);
+		down.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				changeEntryPosition(1);
+			}
+		});
+		
 		section.setClient(client);
+	}
+	
+	/**
+	 * 
+	 * @param howMuch
+	 */
+	private void changeEntryPosition(int howMuch) {
+		int index = cvEntriesList.getSelectionIndex();
+		if (index < 0 || cv.getReferences() == null || cv.getReferences().size() < 2) {
+			return;
+		}
+		int newIndex = index + howMuch;
+		if (newIndex >= 0 && newIndex < cv.getReferences().size()) {
+			CVEntry entry = cv.getReferences().remove(index);
+			cvEntriesList.remove(index);
+			cvEntriesList.add(entry.getTitle(), newIndex);
+			cvEntriesList.setSelection(newIndex);
+			updateDetailsSection(newIndex);
+			setIsDirty(true);
+		}
 	}
 	
 	/**
