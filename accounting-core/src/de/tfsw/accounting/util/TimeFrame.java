@@ -174,17 +174,20 @@ public class TimeFrame {
 	public void setMonth(int month) {
 		if (month >= Calendar.JANUARY && month <= Calendar.DECEMBER) {
 			from.set(Calendar.MONTH, month);
-			until.set(Calendar.MONTH, month);
+			from.set(Calendar.DAY_OF_MONTH, ONE); // this is safe, first day of every month is 1 
 			setToStartOfDay(from);
+			from.getTimeInMillis(); // force the calendar to update itself
+			
+			// BUGFIX: the order of setters called must be like this - otherwise, there is a problem when
+			// the previous day value is 31 and the new month has less actual days
+			until.set(Calendar.DAY_OF_MONTH, from.getActualMaximum(Calendar.DAY_OF_MONTH));
+			until.set(Calendar.MONTH, month);
 			setToEndOfDay(until);
+			until.getTimeInMillis(); // force the calendar to update itself
+			
 			if (type != TimeFrameType.CUSTOM) {
 				type = TimeFrameType.SINGLE_MONTH;
 			}
-			
-			from.getTimeInMillis(); // force the calendar to update itself
-			until.getTimeInMillis(); // force the calendar to update itself
-			from.set(Calendar.DAY_OF_MONTH, from.getMinimum(Calendar.DAY_OF_MONTH));
-			until.set(Calendar.DAY_OF_MONTH, until.getActualMaximum(Calendar.DAY_OF_MONTH));
 		}
 	}
 	
@@ -382,5 +385,12 @@ public class TimeFrame {
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		cal.set(Calendar.MILLISECOND, 999);		
+	}
+	
+	public static void main(String[] args) {
+		TimeFrame tf = TimeFrame.currentMonth();
+		tf.setMonth(Calendar.SEPTEMBER);
+		System.out.println(FormatUtil.formatDate(tf.getFrom()));
+		System.out.println(FormatUtil.formatDate(tf.getUntil()));
 	}
 }
