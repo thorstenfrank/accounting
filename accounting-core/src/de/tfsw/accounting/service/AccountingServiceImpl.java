@@ -58,8 +58,11 @@ import de.tfsw.accounting.Messages;
 import de.tfsw.accounting.io.AccountingXmlImportExport;
 import de.tfsw.accounting.io.ExpenseImporter;
 import de.tfsw.accounting.io.XmlModelDTO;
+import de.tfsw.accounting.model.AbstractBaseEntity;
 import de.tfsw.accounting.model.AnnualDepreciation;
+import de.tfsw.accounting.model.CVEntry;
 import de.tfsw.accounting.model.Client;
+import de.tfsw.accounting.model.CurriculumVitae;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
 import de.tfsw.accounting.model.ExpenseImportParams;
@@ -253,6 +256,10 @@ public class AccountingServiceImpl implements AccountingService {
 		invoiceClass.objectField(Invoice.FIELD_NUMBER).indexed(true);
 		config.add(new UniqueFieldValueConstraint(Invoice.class, Invoice.FIELD_NUMBER));
 
+		ObjectClass cvClass = config.objectClass(CurriculumVitae.class);
+		cvClass.cascadeOnUpdate(true);
+		cvClass.cascadeOnDelete(true);
+		
 		return config;
 	}
 
@@ -1131,6 +1138,54 @@ public class AccountingServiceImpl implements AccountingService {
     }
     
 	/**
+	 * @see de.tfsw.accounting.AccountingService#saveCurriculumVitae(de.tfsw.accounting.model.CurriculumVitae)
+	 */
+	@Override
+	public CurriculumVitae saveCurriculumVitae(CurriculumVitae cv) {
+		LOG.debug("Saving Curriculum Vitae with number of entries: " + (cv.getReferences() != null ? cv.getReferences().size() : "NULL"));
+		doStoreEntity(cv);
+		return cv;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.AccountingService#getCurriculumVitae()
+	 */
+	@Override
+	public CurriculumVitae getCurriculumVitae() {
+		CurriculumVitae cv = null;
+		
+		ObjectSet<CurriculumVitae> cvSet = objectContainer.query(CurriculumVitae.class);
+		
+		if (cvSet.size() == 1) {
+			cv = cvSet.get(0);
+			cleanupCvEntries(cv);
+//			doDeleteEntities(cv.getReferences(), true);
+//			doDeleteEntity(cv);
+//			return null;
+		} else { 
+			LOG.error("Cannot uniquely identify CV, size of found elements is: " + cvSet.size());
+		}
+		
+		return cv;
+	}
+	
+	/**
+	 * 
+	 * @param cv
+	 */
+	private void cleanupCvEntries(CurriculumVitae cv) {
+		Collection<CVEntry> known = cv.getReferences() != null ? cv.getReferences() : new ArrayList<CVEntry>();
+		for (CVEntry entry : objectContainer.query(CVEntry.class)) {
+			if (known.contains(entry)) {
+				LOG.debug("CleanupCVEntries - KNOWN: " + entry.getTitle());
+			} else {
+				LOG.debug("CleanupCVEntries - ORPHAN: " + entry.getTitle());
+				doDeleteEntity(entry);
+			}
+		}
+	}
+	
+	/**
 	 * 
 	 * @param entity
 	 * @throws AccountingException
@@ -1165,7 +1220,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 * 
 	 * @param entities
 	 */
-	private void doStoreEntities(Collection<? extends Object> entities) {
+	private void doStoreEntities(Collection<? extends AbstractBaseEntity> entities) {
 		try {
 			for (Object entity : entities) {
 				if (entity != null) {
@@ -1187,9 +1242,6 @@ public class AccountingServiceImpl implements AccountingService {
 			}
 			throw new AccountingException("Unknown exception: " + e.toString(), e);
 		}
-		
-
-		
 	}
 	
 	/**
@@ -1217,6 +1269,37 @@ public class AccountingServiceImpl implements AccountingService {
 			LOG.error("Error while deleting entity: " + entity, e); //$NON-NLS-1$
 			objectContainer.rollback();			
 			throw e;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param entities
+	 */
+	private void doDeleteEntities(Collection<? extends AbstractBaseEntity> entities, boolean commit) {
+		try {
+			for (Object entity : entities) {
+				if (entity != null) {
+					objectContainer.delete(entity);
+				}
+			}
+			
+			if (commit) {
+				objectContainer.commit();
+			}
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		} catch (DatabaseReadOnlyException e) {
+			throwDbReadOnlyException(e);
+		} catch(Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (Db4oException e) {
+			LOG.error("Error while trying to store multiple entities", e); //$NON-NLS-1$
+			objectContainer.rollback();
+			if (e instanceof UniqueFieldValueConstraintViolationException) {
+				throw e;
+			}
+			throw new AccountingException("Unknown exception: " + e.toString(), e);
 		}
 	}
 	

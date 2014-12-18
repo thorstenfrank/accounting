@@ -40,5 +40,11 @@
             name="%report.incomeStatement.name"
             template="reports/IncomeStatementDetailsTemplate.jasper">
       </report>
+      <report
+            id="de.tfsw.accounting.reporting.References"
+            modelClass="de.tfsw.accounting.model.CurriculumVitae"
+            name="%report.references.name"
+            template="reports/References.jasper">
+      </report>
    </extension>
 </plugin>

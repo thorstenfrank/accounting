@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.BaseLabelProvider;
@@ -45,11 +46,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.menus.IMenuService;
+import org.eclipse.ui.menus.MenuUtil;
 
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.Address;
@@ -58,6 +60,7 @@ import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.ui.AbstractAccountingEditor;
 import de.tfsw.accounting.ui.AccountingUI;
+import de.tfsw.accounting.ui.IDs;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 import de.tfsw.accounting.util.FormatUtil;
@@ -66,7 +69,7 @@ import de.tfsw.accounting.util.FormatUtil;
  * @author tfrank1
  *
  */
-public class UserEditor extends AbstractAccountingEditor {
+class UserEditor extends AbstractAccountingEditor {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".UserEditor"; //$NON-NLS-1$
 	
@@ -113,8 +116,11 @@ public class UserEditor extends AbstractAccountingEditor {
 				
 		createTaxRateSection();
 		
-		form.getToolBarManager().add(ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
-		form.getToolBarManager().update(true);
+		// build the toolbar
+		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
+		menuService.populateContributionManager((ToolBarManager) form.getToolBarManager(), MenuUtil.toolbarUri(IDs.EDIT_USER_ID));
+
+		// form.getToolBarManager().update(true);
 		
 		toolkit.decorateFormHeading(form.getForm());
 		

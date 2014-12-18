@@ -22,6 +22,7 @@ import java.util.Set;
 
 import de.tfsw.accounting.model.AnnualDepreciation;
 import de.tfsw.accounting.model.Client;
+import de.tfsw.accounting.model.CurriculumVitae;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
 import de.tfsw.accounting.model.ExpenseImportParams;
@@ -413,5 +414,20 @@ public interface AccountingService {
 	 * 
 	 * @return
 	 */
-	ModelMetaInformation getModelMetaInformation();	
+	ModelMetaInformation getModelMetaInformation();
+	
+	/**
+	 * 
+	 * @param cv
+	 * @return
+	 */
+	@ModelChanging
+	CurriculumVitae saveCurriculumVitae(CurriculumVitae cv);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	CurriculumVitae getCurriculumVitae();
 }
+

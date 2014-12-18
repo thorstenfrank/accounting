@@ -34,6 +34,11 @@
 	<!-- footer style - vertically aligned in the middle --> 
 	<style name="FOOTER_08" markup="styled" fontSize="8" fontName="Titillium" isPdfEmbedded="true" vAlign="Middle" />
 	
+	<!-- CV styles -->
+	<style name="CV_TITLE" markup="styled" fontName="Titillium" fontSize="16" isBold="true" isPdfEmbedded="true"/>
+	<style name="CV_TIMEFRAME" markup="styled" fontName="Titillium" fontSize="11" isBold="true" isPdfEmbedded="true" />
+	<style name="CV_TEXT" markup="styled" fontName="Titillium" fontSize="10" isBold="false" isPdfEmbedded="true" />
+	
 	<!-- legacy styles - deprecated and will be replaced soon -->
 	<!--style name="INVOICE_TX_10B" markup="styled" fontSize="10" isBold="true" fontName="Titillium" isPdfEmbedded="true"/-->
 	<!--style name="INVOICE_TX_12" markup="styled" fontSize="12" fontName="Titillium" isPdfEmbedded="true"/-->
@@ -49,5 +54,5 @@
 			<bottomPen lineWidth="0.1"/>
 			<rightPen lineWidth="0.1"/>
 		</box>
-	</style>	
+	</style>
 </jasperTemplate>

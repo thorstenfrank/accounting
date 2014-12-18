@@ -25,6 +25,8 @@ public class Messages extends NLS {
 	
 	private static final String BUNDLE_NAME = "de.tfsw.accounting.ui.messages"; //$NON-NLS-1$
 	
+	public static String AbstractAccountingEdior_errorSavesAsNotSupported;
+	
 	public static String AbstractAccountingHandler_errorGettingSelection;
 	
 	public static String AbstractClientHandler_message;
@@ -78,6 +80,20 @@ public class Messages extends NLS {
 	public static String CopyInvoiceCommand_errorExistingInvoice;
 	public static String CopyInvoiceCommand_errorOpeningEditor;
 
+	public static String CVEditor_header;
+	public static String CVEditor_entryCustomer;
+	public static String CVEditor_entryDescription;
+	public static String CVEditor_entryTasks;
+	public static String CVEditor_entryTitle;
+	public static String CVEditor_entryListText;
+	public static String CVEditor_entryListDescrition;
+	public static String CVEditor_entryDetailsText;
+	public static String CVEditor_entryDetailsDescription;
+	public static String CVEditor_addEntryDialogTitle;
+	public static String CVEditor_addEntryDialogMessage;
+	public static String CVEditor_addEntryDialogSuggestion;
+	public static String CVEditor_addEntryDialogValidatorMessage;
+	
 	public static String DeleteClientCommand_confirmMessage;
 	public static String DeleteClientCommand_confirmText;
 	
@@ -192,6 +208,9 @@ public class Messages extends NLS {
 	public static String MultiEditExpensesHandler_apply;
 	public static String MultiEditExpensesHandler_errorNoChanges;
 	public static String MultiEditExpensesHandler_errorNoExpensesSelected;
+	
+	public static String MultiPageUserEditor_pageUser;
+	public static String MultiPageUserEditor_pageProfile;
 	
 	public static String NewClientWizard_windowTitle;
 	public static String NewClientWizard_unknownErrorMsg;

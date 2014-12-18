@@ -65,8 +65,15 @@ public class Messages extends NLS {
 	public static String invoiceTotalTax;
 	public static String paymentTermsTRADE_CREDIT;
 		
+	public static String Reference_Customer;
+	public static String Reference_Project;
+	public static String Reference_Tasks;
+	public static String Reference_Description;
+	public static String Reference_Since;
+	
+	public static String References_Title;
+	
 	public static String RevenueReportGenerator_clientTitle;
-
 	public static String RevenueReportGenerator_invoiceDate;
 	public static String RevenueReportGenerator_invoiceNumberTitle;
 	public static String RevenueReportGenerator_paymentDateTitle;
@@ -94,6 +101,7 @@ public class Messages extends NLS {
 	public static String taxRateTitle;
 	public static String taxes;
 	public static String taxTitle;
+	public static String timeFrame;
 	public static String untilTitle;
 
 	public static String from;

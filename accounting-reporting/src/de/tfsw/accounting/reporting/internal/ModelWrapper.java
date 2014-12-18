@@ -17,6 +17,8 @@ package de.tfsw.accounting.reporting.internal;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -203,6 +205,26 @@ public class ModelWrapper {
     }
     
     /**
+     * 
+     * @param property
+     * @param pattern
+     * @return
+     */
+    public String formatAsDate(String property, String pattern) {
+    	try {
+			Object result = get(model, property);
+			
+			if (result != null && result instanceof LocalDate) {
+				return ((LocalDate) result).format(DateTimeFormatter.ofPattern(pattern));
+			}
+		} catch (Exception e) {
+			LOG.error(String.format("Error parsing date from property [%s] with pattern [%s]", property, pattern), e); //$NON-NLS-1$
+		}
+    	
+    	return null;
+    }
+    
+    /**
      * This is a shortcut for calling <code>formatAsCurrency(property, Constants.HYPHEN)}
      * 
      * @param property
@@ -336,3 +358,4 @@ public class ModelWrapper {
     	return result;
     }
 }
+

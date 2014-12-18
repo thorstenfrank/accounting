@@ -571,6 +571,14 @@
          </command>
       </menuContribution>
       <menuContribution
+            locationURI="toolbar:de.tfsw.accounting.ui.user.UserEditor">
+         <command
+               commandId="org.eclipse.ui.file.save"
+               label="%command.save.label"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
             locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpensesView">
          <command
                commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
@@ -685,7 +693,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="de.tfsw.accounting.ui.user.UserEditor"
+            class="de.tfsw.accounting.ui.user.MultiPageUserEditor"
             default="false"
             icon="icons/user_edit.png"
             id="de.tfsw.accounting.ui.user.UserEditor"
@@ -886,6 +894,11 @@
             defaultHandler="de.tfsw.accounting.ui.reports.LetterheadExportHandler"
             id="de.tfsw.accounting.ui.reports.LetterheadExport"
             name="%command.reports.letterhead">
+      </command>
+      <command
+            defaultHandler="de.tfsw.accounting.ui.user.ReferencesExportHandler"
+            id="de.tfsw.accounting.ui.user.ReferencesExport"
+            name="References">
       </command>
       <command
             categoryId="de.tfsw.accounting.ui.expense"
@@ -1335,6 +1348,11 @@
             commandId="de.tfsw.accounting.ui.reports.LetterheadExport"
             icon="icons/page_white_text.png"
             reportId="de.tfsw.accounting.reporting.Letterhead">
+      </reportHandler>
+      <reportHandler
+            commandId="de.tfsw.accounting.ui.user.ReferencesExport"
+            icon="icons/page_white_text.png"
+            reportId="de.tfsw.accounting.reporting.References">
       </reportHandler>
    </extension>
 </plugin>
