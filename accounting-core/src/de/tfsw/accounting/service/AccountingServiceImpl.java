@@ -47,7 +47,6 @@ import com.db4o.ext.Db4oException;
 import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
-import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 
 import de.tfsw.accounting.AccountingContext;
@@ -708,20 +707,14 @@ public class AccountingServiceImpl implements AccountingService {
 	 * 
 	 * @see de.tfsw.accounting.AccountingService#getInvoice(String)
 	 */
-	@SuppressWarnings("serial")
 	@Override
 	public Invoice getInvoice(final String invoiceNumber) {
 		LOG.debug("getInvoice: " + invoiceNumber); //$NON-NLS-1$
 		Invoice invoice = null;
 
 		try {
-			ObjectSet<Invoice> invoiceList = objectContainer.query(new Predicate<Invoice>() {
-				@Override
-				public boolean match(Invoice invoice) {
-					return invoice.getNumber().equals(invoiceNumber);
-				}
-			});
-
+			ObjectSet<Invoice> invoiceList = objectContainer.query(new GetInvoicePredicate(invoiceNumber));
+			
 			if (invoiceList == null || invoiceList.size() < 1) {
 				invoice = null;
 			} else if (invoiceList.size() == 1) {

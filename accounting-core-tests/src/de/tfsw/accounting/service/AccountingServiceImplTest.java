@@ -44,21 +44,18 @@ import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.ext.Db4oIOException;
 import com.db4o.internal.encoding.UTF8StringEncoding;
 import com.db4o.osgi.Db4oService;
-import com.db4o.query.Predicate;
 
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.AccountingService;
 import de.tfsw.accounting.BaseTestFixture;
 import de.tfsw.accounting.model.Client;
+import de.tfsw.accounting.model.CurriculumVitae;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.PaymentTerms;
 import de.tfsw.accounting.model.PaymentType;
 import de.tfsw.accounting.model.User;
-import de.tfsw.accounting.service.AccountingServiceImpl;
-import de.tfsw.accounting.service.FindCurrentUserPredicate;
-import de.tfsw.accounting.service.FindInvoicesPredicate;
 
 /**
  * Tests for {@link AccountingServiceImpl}. This test includes only mocked behavior of the DB4o object container, and
@@ -137,9 +134,14 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		expect(invoiceClassMock.objectField(Invoice.FIELD_NUMBER)).andReturn(invoiceNumberMock);
 		invoiceNumberMock.indexed(true);
 		configurationMock.add(anyObject(UniqueFieldValueConstraint.class)); // TODO check arguments too
-				
+		
+		ObjectClass cvClassMock = createMock(ObjectClass.class);
+		expect(configurationMock.objectClass(CurriculumVitae.class)).andReturn(cvClassMock);
+		cvClassMock.cascadeOnUpdate(true);
+		cvClassMock.cascadeOnDelete(true);
+		
 		initMocks = new Object[]{db4oServiceMock, configurationMock, userClassMock, userNameFieldMock, clientClassMock, 
-				clientNameMock, invoiceClassMock, invoicePositionsMock, invoiceNumberMock};
+				clientNameMock, invoiceClassMock, invoicePositionsMock, invoiceNumberMock, cvClassMock};
 		
 		expect(db4oServiceMock.openFile(configurationMock, TEST_DB_FILE)).andReturn(ocMock);
 		
@@ -476,11 +478,10 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	/**
 	 * Tests {@link AccountingServiceImpl#getInvoice(String)}.
 	 */
-	@SuppressWarnings("unchecked")
     @Test
 	public void testGetInvoiceExceptionHandling() {
-		expect(ocMock.query(anyObject(Predicate.class))).andThrow(new Db4oIOException());
-		expect(ocMock.query(anyObject(Predicate.class))).andThrow(new DatabaseClosedException());
+		expect(ocMock.query(anyObject(GetInvoicePredicate.class))).andThrow(new Db4oIOException());
+		expect(ocMock.query(anyObject(GetInvoicePredicate.class))).andThrow(new DatabaseClosedException());
 		
 		replay(ocMock);
 		
