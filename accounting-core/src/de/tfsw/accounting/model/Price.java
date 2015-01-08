@@ -266,9 +266,7 @@ public class Price implements Comparable<Price>, Serializable {
     	if (taxRate == null || taxRate.getRate() == null) {
     		setTax(null);
     		setGross(net);
-    	} 
-    	
-    	if (net == null) {
+    	} else if (net == null) {
     		setNet(BigDecimal.ZERO);
     		setGross(BigDecimal.ZERO);
     		setTax(null);
@@ -313,9 +311,7 @@ public class Price implements Comparable<Price>, Serializable {
     	if (taxRate == null || taxRate.getRate() == null) {
     		setTax(null);
     		setNet(gross);
-    	} 
-    	
-    	if (gross == null) {
+    	} else if (gross == null) {
     		setNet(BigDecimal.ZERO);
     		setGross(BigDecimal.ZERO);
     		setTax(null);
