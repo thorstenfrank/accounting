@@ -60,6 +60,7 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
+               id="de.tfsw.accounting.ui.main.menu.file"
                label="%menu.file.label"
                mnemonic="%menu.file.mnemonic">
             <menu
@@ -143,6 +144,7 @@
             </command>
          </menu>
          <menu
+               id="de.tfsw.accounting.ui.main.menu.edit"
                label="%menu.edit.label"
                mnemonic="%menu.edit.mnemonic">
             <command
@@ -285,6 +287,7 @@
             </command>
          </menu>
          <menu
+               id="de.tfsw.accounting.ui.main.menu.window"
                label="%menu.window.label"
                mnemonic="%menu.window.mnemonic">
             <command
@@ -344,6 +347,7 @@
             </separator>
          </menu>
          <menu
+               id="de.tfsw.accounting.ui.main.menu.help"
                label="%menu.help.label"
                mnemonic="%menu.help.mnemonic">
             <command
@@ -399,9 +403,6 @@
                   style="pulldown">
             </command>
          </toolbar>
-         <separator
-               name="accounting.main.toolbar.separator1">
-         </separator>
          <toolbar
                id="accounting.main.toolbar.2">
             <command
@@ -420,9 +421,6 @@
                   style="push">
             </command>
          </toolbar>
-         <separator
-               name="accounting.main.toolbar.separator2">
-         </separator>
          <toolbar
                id="accounting.main.toolbar.3">
             <command
