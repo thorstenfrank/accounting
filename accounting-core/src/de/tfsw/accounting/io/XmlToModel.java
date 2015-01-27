@@ -283,6 +283,7 @@ class XmlToModel {
 	    rate.setLongName(xmlRate.getName());
 	    rate.setShortName(xmlRate.getAbbreviation());
 	    rate.setRate(xmlRate.getRate());
+	    rate.setIsVAT(xmlRate.isIsVat());
 	    LOG.debug("Converted tax rate " + rate.toLongString()); //$NON-NLS-1$
 	    return rate;
     }

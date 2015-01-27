@@ -220,6 +220,7 @@ class ModelToXml {
 		xmlTaxRate.setAbbreviation(taxRate.getShortName());
 		xmlTaxRate.setName(taxRate.getLongName());
 		xmlTaxRate.setRate(taxRate.getRate());
+		xmlTaxRate.setIsVat(taxRate.getIsVAT());
 		return xmlTaxRate;
 	}
 	

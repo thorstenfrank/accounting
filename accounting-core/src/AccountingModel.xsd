@@ -67,6 +67,7 @@
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="rate" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
+        <xs:attribute name="isVat" type="xs:boolean" use="required" />
     </xs:complexType>
 
     <xs:simpleType name="xmlPaymentType">
