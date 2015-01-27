@@ -957,6 +957,13 @@
             id="de.tfsw.accounting.ui.wizard.NewExpenseWizard"
             name="%new.expense.wizard.label">
       </wizard>
+      <wizard
+            category="de.tfsw.accounting.ui.wizard"
+            class="de.tfsw.accounting.ui.user.TaxRateWizard"
+            icon="icons/cog_add.png"
+            id="de.tfsw.accounting.ui.wizard.NewTaxRateWizard"
+            name="%new.taxRate.wizard.label">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.splashHandlers">
