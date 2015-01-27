@@ -224,6 +224,7 @@ public class Messages extends NLS {
 	public static String NewTaxRateWizard_abbreviation;
 	public static String NewTaxRateWizard_description;
 	public static String NewTaxRateWizard_errorMessageTitle;
+	public static String NewTaxRateWizard_isVAT;
 	public static String NewTaxRateWizard_pageTitle;
 	public static String NewTaxRateWizard_rate;
 	public static String NewTaxRateWizard_windowTitle;

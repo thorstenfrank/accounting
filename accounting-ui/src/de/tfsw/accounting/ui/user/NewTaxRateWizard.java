@@ -87,6 +87,7 @@ public class NewTaxRateWizard extends Wizard implements IWorkbenchWizard {
 			newTaxRate.setShortName(taxRateWizardPage.getAbbreviation());
 			newTaxRate.setLongName(taxRateWizardPage.getLongName());
 			newTaxRate.setRate(taxRateWizardPage.getRate());
+			newTaxRate.setIsVAT(taxRateWizardPage.isVAT());
 			finished = true;
 		} catch (Exception e) {
 			MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);

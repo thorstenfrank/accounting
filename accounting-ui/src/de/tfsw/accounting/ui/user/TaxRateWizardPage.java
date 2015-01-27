@@ -24,6 +24,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -42,6 +43,7 @@ class TaxRateWizardPage extends WizardPage implements KeyListener, Constants {
 	private Text abbreviation;
 	private Text longName;
 	private Text rate;
+	private Button vat;
 	
 	TaxRateWizardPage() {
 		super("TaxRateWizardPage"); //$NON-NLS-1$
@@ -60,18 +62,16 @@ class TaxRateWizardPage extends WizardPage implements KeyListener, Constants {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(3, false);
 		composite.setLayout(layout);
-		
-		GridDataFactory grabHorizontal = GridDataFactory.fillDefaults().grab(true, false);
-		
+				
 		WidgetHelper.createLabel(composite, Messages.NewTaxRateWizard_abbreviation);
 		abbreviation = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		grabHorizontal.applyTo(abbreviation);
+		WidgetHelper.grabHorizontal(abbreviation);
 		abbreviation.addKeyListener(this);
 		WidgetHelper.createLabel(composite, EMPTY_STRING); // filler widget
 		
 		WidgetHelper.createLabel(composite, Messages.labelName);
 		longName = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		grabHorizontal.applyTo(longName);
+		WidgetHelper.grabHorizontal(longName);
 		longName.addKeyListener(this);
 		WidgetHelper.createLabel(composite, EMPTY_STRING); // filler widget
 		
@@ -81,11 +81,17 @@ class TaxRateWizardPage extends WizardPage implements KeyListener, Constants {
 		rate = new Text(rateComposite, SWT.SINGLE | SWT.BORDER | SWT.RIGHT);
 		rate.addKeyListener(this);
 		WidgetHelper.createLabel(rateComposite, PERCENTAGE_SIGN);
+		WidgetHelper.createLabel(composite, Constants.BLANK_STRING); // spacer label
+		
+		vat = new Button(composite, SWT.CHECK);
+		vat.setText(Messages.NewTaxRateWizard_isVAT);
+		GridDataFactory.fillDefaults().span(3, 1).applyTo(vat);
+		vat.setSelection(true);
 		
 		setControl(composite);
 		setPageComplete(false);
 	}
-
+	
 	/**
 	 * 
 	 * {@inheritDoc}.
@@ -141,5 +147,13 @@ class TaxRateWizardPage extends WizardPage implements KeyListener, Constants {
 	protected BigDecimal getRate() {
 		final String fullString = rate.getText() + PERCENTAGE_SIGN;
 		return FormatUtil.parsePercentValue(fullString);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected boolean isVAT() {
+		return vat.getSelection();
 	}
 }

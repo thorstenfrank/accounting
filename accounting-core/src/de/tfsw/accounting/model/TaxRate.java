@@ -45,7 +45,12 @@ public class TaxRate extends AbstractBaseEntity {
 	
 	/** The actual tax rate. */
 	private BigDecimal rate;
-
+	
+	/** Whether this tax rate is a VAT/GST or similar type of tax.
+	 *  Defaults to <code>true</code>.
+	 */
+	private boolean isVAT = true;
+	
 	/**
 	 * @return the shortName
 	 */
@@ -86,6 +91,20 @@ public class TaxRate extends AbstractBaseEntity {
 	 */
 	public void setRate(BigDecimal rate) {
 		this.rate = rate.stripTrailingZeros();
+	}
+
+	/**
+	 * @return the isVAT
+	 */
+	public boolean getIsVAT() {
+		return isVAT;
+	}
+
+	/**
+	 * @param isVAT the isVAT to set
+	 */
+	public void setIsVAT(boolean isVAT) {
+		this.isVAT = isVAT;
 	}
 
 	/**
