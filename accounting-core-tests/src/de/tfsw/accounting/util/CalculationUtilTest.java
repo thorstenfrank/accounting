@@ -15,12 +15,11 @@
  */
 package de.tfsw.accounting.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.Price;
 import de.tfsw.accounting.model.TaxRate;
-import de.tfsw.accounting.util.CalculationUtil;
 
 /**
  * Tests for {@link CalculationUtil}.
@@ -54,40 +52,72 @@ public class CalculationUtilTest extends BaseTestFixture {
 	private static final BigDecimal REVENUE_GROSS = new BigDecimal("1074.99");
 	
 	private static final TaxRate TEST_VAT = new TaxRate();
+	private static final TaxRate TEST_VAT_2 = new TaxRate();
 	
 	private static final Invoice TEST_INVOICE = new Invoice();
 	
+	private static final Invoice TEST_INVOICE_2 = new Invoice();
+	
+	/**
+	 * 
+	 */
 	@BeforeClass
 	public static void createTestInvoice() {
     	TEST_VAT.setShortName("USt.");
     	TEST_VAT.setLongName("Umsatzsteuer");
     	TEST_VAT.setRate(new BigDecimal("0.19"));
+    	TEST_VAT.setIsVAT(true);
     	
-    	TEST_INVOICE.setNumber("JUnitTestInvoice");
+    	TEST_VAT_2.setShortName("USt.");
+    	TEST_VAT_2.setLongName("Umsatzsteuer");
+    	TEST_VAT_2.setRate(new BigDecimal("0.07"));
+    	TEST_VAT_2.setIsVAT(true);
     	
-        InvoicePosition ip1 = new InvoicePosition();
-        ip1.setQuantity(new BigDecimal("2"));
-        ip1.setPricePerUnit(new BigDecimal("10.5"));
-        ip1.setTaxRate(TEST_VAT);
-        ip1.setRevenueRelevant(true);
+    	buildTestInvoice1();
+        buildTestInvoice2();
+	}
 
-        InvoicePosition ip2 = new InvoicePosition();
-        ip2.setQuantity(new BigDecimal("10.5"));
-        ip2.setPricePerUnit(new BigDecimal("100.00"));
-        ip2.setRevenueRelevant(true);
-
-        InvoicePosition ip3 = new InvoicePosition();
-        ip3.setQuantity(new BigDecimal("1"));
-        ip3.setPricePerUnit(new BigDecimal("100.00"));
-        ip3.setTaxRate(TEST_VAT);
-        ip3.setRevenueRelevant(false);
+	/**
+	 * 
+	 */
+	private static void buildTestInvoice1() {
+		TEST_INVOICE.setNumber("JUnitTestInvoice");
         
         List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
-        positions.add(ip1);
-        positions.add(ip2);
-        positions.add(ip3);
+        positions.add(buildIP("2", "10.5", TEST_VAT, true)); // 21 / 3.99 / 24.99
+        positions.add(buildIP("10.5", "100.00", null, true)); // 1050 / - / 1050
+        positions.add(buildIP("1", "100.00", TEST_VAT, false)); // 100 / 19 / 119
         
         TEST_INVOICE.setInvoicePositions(positions);
+	}
+	
+	/**
+	 * 
+	 */
+	private static void buildTestInvoice2() {
+		TEST_INVOICE_2.setNumber("JUnitTestInvoice2");
+		List<InvoicePosition> positions = new ArrayList<InvoicePosition>();
+		positions.add(buildIP("15", "67.34", TEST_VAT, true)); // 1010.10 / 191.919 / 1202.019
+		positions.add(buildIP("88.5", "123.77", TEST_VAT_2, true)); // 10953.645 / 766.75515 / 11720.40015
+		positions.add(buildIP("2", "77.75", null, true)); // 155.5 / - / 155.5
+		TEST_INVOICE_2.setInvoicePositions(positions);
+	}
+	
+	/**
+	 * 
+	 * @param quantity
+	 * @param price
+	 * @param tax
+	 * @param revenueRelevant
+	 * @return
+	 */
+	private static InvoicePosition buildIP(String quantity, String price, TaxRate tax, boolean revenueRelevant) {
+		InvoicePosition ip = new InvoicePosition();
+		ip.setQuantity(new BigDecimal(quantity));
+		ip.setPricePerUnit(new BigDecimal(price));
+		ip.setTaxRate(tax);
+		ip.setRevenueRelevant(revenueRelevant);
+		return ip;
 	}
 	
     /**
@@ -112,20 +142,6 @@ public class CalculationUtilTest extends BaseTestFixture {
     	assertAreEqual(TOTAL_GROSS, price.getGross());
     	assertAreEqual(TOTAL_NET, price.getNet());
     	assertAreEqual(TOTAL_TAX, price.getTax());
-    }
-    
-    /**
-     * Test method for {@link CalculationUtil#calculateSubTotalsByTaxRate(Invoice)}.
-     */    
-    @Test
-    public void testCalculateSubTotalsByTaxRate() {
-    	final Map<TaxRate, BigDecimal> subtotals = CalculationUtil.calculateSubTotalsByTaxRate(TEST_INVOICE);
-    	assertNotNull(subtotals);
-    	assertEquals(2, subtotals.size());
-    	assertNotNull(subtotals.get(null));
-    	assertAreEqual(NET_TWO, subtotals.get(null));
-    	assertNotNull(subtotals.get(TEST_VAT));
-    	assertAreEqual(new BigDecimal("121"), subtotals.get(TEST_VAT));
     }
     
     /**
@@ -158,5 +174,65 @@ public class CalculationUtilTest extends BaseTestFixture {
     	assertAreEqual(REVENUE_GROSS, price.getGross());
     	assertAreEqual(REVENUE_NET, price.getNet());
     	assertAreEqual(REVENUE_TAX, price.getTax());
+    }
+    
+    /**
+     * Test method for {@link CalculationUtil#calculateRevenueByTaxRate(Invoice)}.
+     */
+    @Test
+    public void testCalculateRevenueByTaxRate() {
+    	Map<TaxRate, Price> rev = CalculationUtil.calculateRevenueByTaxRate(TEST_INVOICE);
+    	assertNotNull(rev);
+    	assertEquals(2, rev.size());
+    	assertTrue(rev.containsKey(null));
+    	assertTrue(rev.containsKey(TEST_VAT));
+    	
+    	Price p = rev.get(null);
+    	assertAreEqual(NET_TWO, p.getNet());
+    	assertNull(p.getTax());
+    	
+    	p = rev.get(TEST_VAT);
+    	assertAreEqual(new BigDecimal("121"), p.getNet());
+    	assertAreEqual(new BigDecimal("22.99"), p.getTax());
+    	
+    	rev = CalculationUtil.calculateRevenueByTaxRate(TEST_INVOICE_2);
+    	assertNotNull(rev);
+    	assertEquals(3, rev.size());
+    	assertTrue(rev.containsKey(null));
+    	assertTrue(rev.containsKey(TEST_VAT));
+    	assertTrue(rev.containsKey(TEST_VAT_2));
+    	
+    	p = rev.get(null);
+    	assertAreEqual(new BigDecimal("155.5"), p.getNet());
+    	assertNull(p.getTax());
+    	
+    	p = rev.get(TEST_VAT);
+    	assertAreEqual(new BigDecimal("1010.1"), p.getNet());
+    	assertAreEqual(new BigDecimal("191.919"), p.getTax());
+    	
+    	p = rev.get(TEST_VAT_2); // 10953.65 / 766.76
+    	assertAreEqual(new BigDecimal("10953.645"), p.getNet());
+    	assertAreEqual(new BigDecimal("766.75515"), p.getTax());
+    }
+    
+    /**
+     * Test method for {@link CalculationUtil#calculateTotalRevenueByTaxRate(java.util.Collection)}.
+     */
+    public void testCalculateTotalRevenueByTaxRate() {
+    	Collection<Invoice> invoices = new ArrayList<Invoice>();
+    	invoices.add(TEST_INVOICE);
+    	invoices.add(TEST_INVOICE_2);
+    	
+    	Map<TaxRate, Price> rev = CalculationUtil.calculateTotalRevenueByTaxRate(invoices);
+    	
+    	assertNotNull(rev);
+    	assertEquals(3, rev.size());
+    	assertTrue(rev.containsKey(null));
+    	assertTrue(rev.containsKey(TEST_VAT));
+    	assertTrue(rev.containsKey(TEST_VAT_2));
+    	
+    	Price p = rev.get(TEST_VAT);
+    	assertAreEqual(new BigDecimal("1131.1"), p.getNet());
+    	assertAreEqual(new BigDecimal("214.909"), p.getTax());
     }
 }
