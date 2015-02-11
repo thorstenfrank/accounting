@@ -36,6 +36,7 @@ public class TaxRate extends AbstractBaseEntity {
 	public static final String FIELD_SHORT_NAME = "shortName";
 	public static final String FIELD_LONG_NAME = "longName";
 	public static final String FIELD_RATE = "rate";
+	public static final String FIELD_IS_VAT = "isVAT";
 	
 	/** Short name for this tax rate. */
 	private String shortName;
@@ -139,15 +140,13 @@ public class TaxRate extends AbstractBaseEntity {
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((longName == null) ? 0 : longName.hashCode());
+		result = prime * result + (isVAT ? 1231 : 1237);
 		result = prime * result + ((rate == null) ? 0 : rate.hashCode());
 		result = prime * result
 				+ ((shortName == null) ? 0 : shortName.hashCode());
@@ -155,36 +154,37 @@ public class TaxRate extends AbstractBaseEntity {
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		TaxRate other = (TaxRate) obj;
-		
 		if (isVAT != other.isVAT) {
 			return false;
 		}
-		if (longName == null && other.longName != null) {
-				return false;
-		} else if (!longName.equals(other.longName))
-			return false;
 		if (rate == null) {
-			if (other.rate != null)
+			if (other.rate != null) {
 				return false;
-		} else if (!rate.equals(other.rate))
+			}
+		} else if (rate.compareTo(other.rate) != 0) {
 			return false;
+		}
 		if (shortName == null) {
-			if (other.shortName != null)
+			if (other.shortName != null) {
 				return false;
-		} else if (!shortName.equals(other.shortName))
+			}
+		} else if (!shortName.equals(other.shortName)) {
 			return false;
+		}
 		return true;
 	}
 }
