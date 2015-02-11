@@ -15,6 +15,9 @@
  */
 package de.tfsw.accounting.util;
 
+import java.time.Instant;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -387,10 +390,25 @@ public class TimeFrame {
 		cal.set(Calendar.MILLISECOND, 999);		
 	}
 	
-	public static void main(String[] args) {
-		TimeFrame tf = TimeFrame.currentMonth();
-		tf.setMonth(Calendar.SEPTEMBER);
-		System.out.println(FormatUtil.formatDate(tf.getFrom()));
-		System.out.println(FormatUtil.formatDate(tf.getUntil()));
+	/**
+	 * 
+	 * @param yearMonth
+	 * @return
+	 */
+	public static TimeFrame of(YearMonth yearMonth) {
+		YearMonth now = YearMonth.now();
+		if (yearMonth.equals(now)) {
+			return currentMonth();
+		}
+		if (yearMonth.getYear() == now.getYear() && yearMonth.getMonthValue() == now.getMonthValue() - 1) {
+			return lastMonth();
+		}
+		
+		Instant from = yearMonth.atDay(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Instant until = yearMonth.atEndOfMonth().atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant();
+		
+		TimeFrame tf =  new TimeFrame(Date.from(from), Date.from(until));
+		tf.type = TimeFrameType.SINGLE_MONTH;
+		return tf;
 	}
 }
