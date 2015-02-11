@@ -37,6 +37,7 @@ public class InvoicePosition extends AbstractBaseEntity {
 	public static final String FIELD_DESCRIPTION = "description";
 	public static final String FIELD_PRICE_PER_UNIT = "pricePerUnit";
 	public static final String FIELD_TAX_RATE = "taxRate";
+	@Deprecated
 	public static final String FIELD_REVENUE_RELEVANT = "revenueRelevant";
 	
 	private BigDecimal quantity;
@@ -44,6 +45,7 @@ public class InvoicePosition extends AbstractBaseEntity {
 	private String description;
 	private BigDecimal pricePerUnit;
 	private TaxRate taxRate;
+	@Deprecated
 	private boolean revenueRelevant = true;
 	
 	/**
@@ -128,6 +130,7 @@ public class InvoicePosition extends AbstractBaseEntity {
 	 * Whether or not this invoice position counts toward revenue. <code>true</code> by default. 
      * @return the revenueRelevant
      */
+	@Deprecated
     public boolean isRevenueRelevant() {
     	return revenueRelevant;
     }
@@ -135,6 +138,7 @@ public class InvoicePosition extends AbstractBaseEntity {
 	/**
      * @param revenueRelevant the revenueRelevant to set
      */
+    @Deprecated
     public void setRevenueRelevant(boolean revenueRelevant) {
     	this.revenueRelevant = revenueRelevant;
     }
