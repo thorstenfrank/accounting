@@ -167,8 +167,11 @@ public class TaxRate extends AbstractBaseEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		TaxRate other = (TaxRate) obj;
-		if (longName == null) {
-			if (other.longName != null)
+		
+		if (isVAT != other.isVAT) {
+			return false;
+		}
+		if (longName == null && other.longName != null) {
 				return false;
 		} else if (!longName.equals(other.longName))
 			return false;
