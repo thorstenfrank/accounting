@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Accounting-ELSTER Integration
+Bundle-SymbolicName: de.tfsw.accounting.elster;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: de.tfsw.accounting.elster.AccountingElsterPlugin
+Bundle-Vendor: tfsw.de
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tfsw.accounting.core;bundle-version="1.2.0",
+ org.eclipse.core.databinding;bundle-version="1.4.2",
+ org.eclipse.jface.databinding,
+ org.eclipse.core.databinding.beans
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
