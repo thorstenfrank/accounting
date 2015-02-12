@@ -127,11 +127,22 @@ class AmountsPage extends AbstractElsterExportWizardPage {
 	protected void initDataBindings() {
 		// don't need proper bindings, just copy values into the textfields
 		ElsterDTO data = getWizard().getAdapter().getData();
-		txtRevenue19.setText(data.getRevenue19());
-		txtRevenue19tax.setText(data.getRevenue19tax());
-		txtRevenue7.setText(data.getRevenue7());
-		txtRevenue7tax.setText(data.getRevenue7tax());
-		txtInputTax.setText(data.getInputTax());
-		txtSum.setText(data.getTaxSum());
+		if (data.getRevenue19() != null) {
+			txtRevenue19.setText(data.getRevenue19().toString());
+			txtRevenue19tax.setText(data.getRevenue19tax().toString());			
+		}
+
+		if (data.getRevenue7() != null) {
+			txtRevenue7.setText(data.getRevenue7().toString());
+			txtRevenue7tax.setText(data.getRevenue7tax().toString());			
+		}
+
+		if (data.getInputTax() != null) {
+			txtInputTax.setText(data.getInputTax().toString());
+		}
+		
+		if (data.getTaxSum() != null) {
+			txtSum.setText(data.getTaxSum().toString());
+		}
 	}
 }

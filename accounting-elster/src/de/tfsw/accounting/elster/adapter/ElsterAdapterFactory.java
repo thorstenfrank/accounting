@@ -15,8 +15,11 @@
  */
 package de.tfsw.accounting.elster.adapter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -25,7 +28,10 @@ import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.elster.AccountingElsterPlugin;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.IncomeStatement;
+import de.tfsw.accounting.model.Price;
+import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.User;
+import de.tfsw.accounting.util.CalculationUtil;
 import de.tfsw.accounting.util.TimeFrame;
 
 /**
@@ -49,6 +55,9 @@ public class ElsterAdapterFactory {
 	 * A pattern representing non-digits.
 	 */
 	private static final String NON_DIGIT = "[^\\d]";
+
+	private static final BigDecimal VAT_19 = new BigDecimal("0.19");
+	private static final BigDecimal VAT_7 = new BigDecimal("0.07");
 	
 	/**
 	 * 
@@ -177,11 +186,56 @@ public class ElsterAdapterFactory {
 	 * @param target
 	 */
 	private static void buildAmounts(IncomeStatement source, ElsterDTO target) {
-		target.setRevenue19("666");
-		target.setRevenue19tax("66");
-		target.setRevenue7("333");
-		target.setRevenue7tax("33");
-		target.setInputTax("111,66");
-		target.setTaxSum("1.969,34");
+		LOG.debug("Building Amounts...");
+		Map<TaxRate, Price> revenueByRate = CalculationUtil.calculateTotalRevenueByTaxRate(source.getRevenue().getInvoices());
+		
+		BigDecimal rev19 = null;
+		BigDecimal rev19tax = null;
+		BigDecimal rev7 = null;
+		BigDecimal rev7tax = null;
+		
+		BigDecimal outputTax = BigDecimal.ZERO;
+		
+		for (TaxRate rate : revenueByRate.keySet()) {
+			if (rate != null) {
+				if (rate.getRate().compareTo(VAT_19) == 0) {
+					LOG.debug("Found USt. 19 %");
+					rev19 = adaptRevenue(revenueByRate.get(rate).getNet());
+					rev19tax = rev19.multiply(rate.getRate());
+					outputTax = outputTax.add(rev19tax);
+				} else if (rate.getRate().compareTo(VAT_7) == 0) {
+					LOG.debug("Found USt. 7%");
+					rev7 = adaptRevenue(revenueByRate.get(rate).getNet());
+					rev7tax = rev7.multiply(rate.getRate());
+					outputTax = outputTax.add(rev7tax);
+				}
+			}
+		}
+		
+		if (rev19 != null) {
+			target.setRevenue19(rev19);
+			target.setRevenue19tax(rev19tax);			
+		}
+
+		if (rev7 != null) {
+			target.setRevenue7(rev7);
+			target.setRevenue7tax(rev7tax);			
+		}
+
+		if (source.getTotalExpenses().getTax() != null) {
+			target.setInputTax(source.getTotalExpenses().getTax());
+			target.setTaxSum(outputTax.subtract(target.getInputTax()));			
+		} else {
+			target.setTaxSum(outputTax);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param orig
+	 * @return
+	 */
+	private static BigDecimal adaptRevenue(BigDecimal orig) {
+		return orig.setScale(0, RoundingMode.DOWN);
 	}
 }

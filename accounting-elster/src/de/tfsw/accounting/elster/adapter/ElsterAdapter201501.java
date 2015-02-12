@@ -67,10 +67,23 @@ public class ElsterAdapter201501 extends AbstractElsterAdapter<UstaAnmeldungsste
 		ustva.setJahr(data.getTimeFrameYear());
 		ustva.setZeitraum(data.getTimeFrameMonth());
 		ustva.setSteuernummer(data.getCompanyTaxNumberGenerated());
-		ustva.setKz81(data.getRevenue19());
-		ustva.setKz86(data.getRevenue7());
-		ustva.setKz66(data.getInputTax());
-		ustva.setKz83(data.getTaxSum());
+		
+		if (data.getRevenue19() != null) {
+			ustva.setKz81(data.getRevenue19().toString());
+		}
+		
+		if (data.getRevenue7() != null) {
+			ustva.setKz86(data.getRevenue7().toString());
+		}
+		
+		if (data.getInputTax() != null) {
+			ustva.setKz66(data.getInputTax().toString());
+		}
+		
+		if (data.getTaxSum() != null) {
+			ustva.setKz83(data.getTaxSum().toString());
+		}
+		
 		steuerfall.setUmsatzsteuervoranmeldung(ustva);
 		
 		return anmeldungssteuern;

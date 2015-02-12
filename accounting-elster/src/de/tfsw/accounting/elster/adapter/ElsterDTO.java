@@ -18,6 +18,7 @@ package de.tfsw.accounting.elster.adapter;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import de.tfsw.accounting.elster.Bundesland;
 
@@ -54,12 +55,12 @@ public class ElsterDTO implements Serializable {
 	private String companyPostCode;
 	private String companyCity;
 	private String companyCountry;
-	private String revenue19;
-	private String revenue19tax;
-	private String revenue7;
-	private String revenue7tax;
-	private String inputTax;
-	private String taxSum;
+	private BigDecimal revenue19;
+	private BigDecimal revenue19tax;
+	private BigDecimal revenue7;
+	private BigDecimal revenue7tax;
+	private BigDecimal inputTax;
+	private BigDecimal taxSum;
 	
 	/**
 	 * @param taxNumberGenerationStrategy
@@ -334,84 +335,84 @@ public class ElsterDTO implements Serializable {
 	/**
 	 * @return the revenue19
 	 */
-	public String getRevenue19() {
+	public BigDecimal getRevenue19() {
 		return revenue19;
 	}
 
 	/**
 	 * @param revenue19 the revenue19 to set
 	 */
-	public void setRevenue19(String revenue19) {
+	public void setRevenue19(BigDecimal revenue19) {
 		this.revenue19 = revenue19;
 	}
 
 	/**
 	 * @return the revenue19tax
 	 */
-	public String getRevenue19tax() {
+	public BigDecimal getRevenue19tax() {
 		return revenue19tax;
 	}
 
 	/**
 	 * @param revenue19tax the revenue19tax to set
 	 */
-	public void setRevenue19tax(String revenue19tax) {
+	public void setRevenue19tax(BigDecimal revenue19tax) {
 		this.revenue19tax = revenue19tax;
 	}
 
 	/**
 	 * @return the revenue7
 	 */
-	public String getRevenue7() {
+	public BigDecimal getRevenue7() {
 		return revenue7;
 	}
 
 	/**
 	 * @param revenue7 the revenue7 to set
 	 */
-	public void setRevenue7(String revenue7) {
+	public void setRevenue7(BigDecimal revenue7) {
 		this.revenue7 = revenue7;
 	}
 
 	/**
 	 * @return the revenue7tax
 	 */
-	public String getRevenue7tax() {
+	public BigDecimal getRevenue7tax() {
 		return revenue7tax;
 	}
 
 	/**
 	 * @param revenue7tax the revenue7tax to set
 	 */
-	public void setRevenue7tax(String revenue7tax) {
+	public void setRevenue7tax(BigDecimal revenue7tax) {
 		this.revenue7tax = revenue7tax;
 	}
 
 	/**
 	 * @return the inputTax
 	 */
-	public String getInputTax() {
+	public BigDecimal getInputTax() {
 		return inputTax;
 	}
 
 	/**
 	 * @param inputTax the inputTax to set
 	 */
-	public void setInputTax(String inputTax) {
+	public void setInputTax(BigDecimal inputTax) {
 		this.inputTax = inputTax;
 	}
 
 	/**
 	 * @return the taxSum
 	 */
-	public String getTaxSum() {
+	public BigDecimal getTaxSum() {
 		return taxSum;
 	}
 
 	/**
 	 * @param taxSum the taxSum to set
 	 */
-	public void setTaxSum(String taxSum) {
+	public void setTaxSum(BigDecimal taxSum) {
 		this.taxSum = taxSum;
 	}
 }
