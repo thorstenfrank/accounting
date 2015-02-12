@@ -42,4 +42,10 @@ public interface ElsterAdapter {
 	 * @param targetFilePath
 	 */
 	void writeDataToXML(String targetFilePath);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	String writeDataToXML();
 }

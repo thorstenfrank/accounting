@@ -40,6 +40,8 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	
 	private ElsterAdapter adapter;
 	
+	private String targetFile;
+	
 	/**
 	 * 
 	 */
@@ -58,6 +60,7 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 		addPage(new CompanyNamePage());
 		addPage(new AddressPage());
 		addPage(new AmountsPage());
+		addPage(new ExportTargetSelectionPage());
 	}
 
 	/**
@@ -73,7 +76,8 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		return false;
+		adapter.writeDataToXML(targetFile);
+		return true;
 	}
 
 	/**
@@ -90,4 +94,13 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	protected void timeFrameChanged(YearMonth yearMonth) {
 		adapter = ElsterAdapterFactory.getAdapter(yearMonth);
 	}
+
+	/**
+	 * @param targetFile the targetFile to set
+	 */
+	protected void setTargetFile(String targetFile) {
+		this.targetFile = targetFile;
+	}
+	
+	
 }

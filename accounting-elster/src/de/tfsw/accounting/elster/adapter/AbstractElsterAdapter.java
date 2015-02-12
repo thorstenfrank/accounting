@@ -16,6 +16,7 @@
 package de.tfsw.accounting.elster.adapter;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +81,24 @@ public abstract class AbstractElsterAdapter<T> implements ElsterAdapter {
 		}
 	}
 	
+	/**
+	 * @see de.tfsw.accounting.elster.adapter.ElsterAdapter#writeDataToXML()
+	 */
+	@Override
+	public String writeDataToXML() {
+		StringWriter sw = new StringWriter();
+		
+		try {
+			T interfaceModel = mapToInterfaceModel();
+			getMarshaller(interfaceModel).marshal(interfaceModel, sw);
+		} catch (JAXBException e) {
+			LOG.error("Error marshalling ELSTER XML", e);
+			sw.write(e.toString());
+		}
+		
+		return sw.toString();
+	}
+
 	/**
 	 * 
 	 * @param timeFrame
