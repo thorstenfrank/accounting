@@ -229,6 +229,7 @@
       <plugin id="db4o_osgi"/>
       <plugin id="de.tfsw.accounting.core"/>
       <plugin id="de.tfsw.accounting.core-tests" fragment="true"/>
+      <plugin id="de.tfsw.accounting.elster"/>
       <plugin id="de.tfsw.accounting.reporting"/>
       <plugin id="de.tfsw.accounting.ui"/>
       <plugin id="javax.annotation"/>
@@ -320,5 +321,13 @@
       <plugin id="org.w3c.dom.svg"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+   </configurations>
 
 </product>
