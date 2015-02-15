@@ -19,6 +19,7 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -54,8 +55,13 @@ public class AccountingCore implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.info("START CORE: " + bundleContext.getBundle().getSymbolicName()); //$NON-NLS-1$
 		
+		LOG.debug("Install Location: " + Platform.getInstallLocation().getURL().toString());
+		LOG.debug("Config Location: " + Platform.getConfigurationLocation().getURL().toString());
+		LOG.debug("Instance Location: " + Platform.getInstanceLocation().getURL().toString() );
+		LOG.debug("User Location: " + Platform.getUserLocation().getURL().toString() );
+		
 		// for debug purposes...
-		dumpEnvironment();
+		//dumpEnvironment();
 		
 		AccountingCore.context = bundleContext;
 		
