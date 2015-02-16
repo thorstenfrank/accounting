@@ -26,7 +26,6 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingService;
-import de.tfsw.accounting.reporting.ReportingService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -44,9 +43,6 @@ public class AccountingUI extends AbstractUIPlugin {
 		
 	/** */
 	private AccountingServiceInvocationHandler accountingServiceProxy;
-	
-	/** */
-	private ServiceTracker<ReportingService, ReportingService> reportingServiceTracker;
 	
 	/** */
 	private boolean firstRun = false;
@@ -69,11 +65,6 @@ public class AccountingUI extends AbstractUIPlugin {
 		
 		accountingServiceProxy = new AccountingServiceInvocationHandler(accountingServiceTracker);
 		
-		reportingServiceTracker = new ServiceTracker<ReportingService, ReportingService>(
-				context, ReportingService.class, null);
-		LOG.debug("Opening service tracker for ReportingService"); //$NON-NLS-1$
-		reportingServiceTracker.open();
-		LOG.debug("Done"); //$NON-NLS-1$
 		LOG.info("AccountingUI startup complete"); //$NON-NLS-1$
 	}
 
@@ -147,13 +138,6 @@ public class AccountingUI extends AbstractUIPlugin {
 	 */
 	public static void removeModelChangeListener(ModelChangeListener listener) {
 		plugin.accountingServiceProxy.removeModelChangeListener(listener);
-	}
-	
-	/**
-	 * @return the reportingService
-	 */
-	public ReportingService getReportingService() {
-		return reportingServiceTracker.getService();
 	}
 
 	/**

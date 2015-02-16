@@ -124,7 +124,7 @@ public class ReportGenerationUtil {
 	 */
 	private void doExecuteReportGeneration(ReportGenerationHandler handler, Shell shell) {
 		this.handler = handler;
-		reportingService = AccountingUI.getDefault().getReportingService();
+		reportingService = ReportingServiceProvider.getReportingServiceProvider().getReportingService();
 	    if (reportingService == null) {
 	    	throw new AccountingException(Messages.ReportGenerationUtil_errorNoReportingService);
 	    }

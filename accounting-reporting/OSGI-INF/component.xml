@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="de.tfsw.accounting.reportingService">
+   <implementation class="de.tfsw.accounting.reporting.internal.ReportingServiceImpl"/>
+   <service>
+      <provide interface="de.tfsw.accounting.reporting.ReportingService"/>
+   </service>
+</scr:component>
