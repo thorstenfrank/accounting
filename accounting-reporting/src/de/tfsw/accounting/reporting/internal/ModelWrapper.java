@@ -69,6 +69,10 @@ public class ModelWrapper {
     protected void setModel(Object model) {
     	this.model = model;
     	
+    	if (model == null) {
+    		return; // don't do anything further...
+    	}
+    	
     	if (model instanceof InvoicePosition) {
     		calculatedTotal = CalculationUtil.calculatePrice((InvoicePosition) model);
     	} else if (model instanceof Invoice) {
@@ -182,7 +186,8 @@ public class ModelWrapper {
         	LOG.error("Error accessing message key " + key, e); //$NON-NLS-1$
         }
     	
-    	return null;
+    	// if there is no message under the supplied key, return the key with notifiers
+    	return "!" + key + "!";
     }
     
     /**
