@@ -230,6 +230,7 @@
       <plugin id="de.tfsw.accounting.core"/>
       <plugin id="de.tfsw.accounting.core-tests" fragment="true"/>
       <plugin id="de.tfsw.accounting.elster"/>
+      <plugin id="de.tfsw.accounting.help"/>
       <plugin id="de.tfsw.accounting.reporting"/>
       <plugin id="de.tfsw.accounting.ui"/>
       <plugin id="javax.annotation"/>
