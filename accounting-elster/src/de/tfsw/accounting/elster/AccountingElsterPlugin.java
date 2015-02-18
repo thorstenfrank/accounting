@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.util.tracker.ServiceTracker;
 
 import de.tfsw.accounting.AccountingService;
 
@@ -37,9 +36,11 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 	
 	/** The shared instance */
 	private static AccountingElsterPlugin plugin;
-
-	/** Service Tracker for the {@link AccountingService}. */
-	private ServiceTracker<AccountingService, AccountingService> accountingServiceTracker;
+	
+	/**
+	 * 
+	 */
+	private AccountingServiceConsumer accountingServiceConsumer;
 	
 	/**
 	 * 
@@ -49,12 +50,6 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 		LOG.info("Starting ELSTER plugin");
 		super.start(context);
 		plugin = this;
-		
-		LOG.debug("Opening service tracker for accounting service...");
-		accountingServiceTracker = 
-				new ServiceTracker<AccountingService, AccountingService>(context, AccountingService.class, null);
-		accountingServiceTracker.open();
-		LOG.debug("Done");
 	}
 
 	/**
@@ -63,11 +58,6 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		LOG.info("Stopping ELSTER plugin");
-		
-		LOG.debug("Closing service tracker");
-		accountingServiceTracker.close();
-		LOG.debug("Done");
-		
 		plugin = null;
 		super.stop(context);
 	}
@@ -94,10 +84,31 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 	
 	/**
 	 * 
+	 * @param accountingService
+	 */
+	protected static void registerAccountingServiceConsumer(AccountingServiceConsumer consumer) {
+		LOG.debug("AccountingServiceConsumer has registered");
+		plugin.accountingServiceConsumer = consumer;
+	}
+	
+	/**
+	 * 
+	 * @param consumer
+	 */
+	protected static void unregisterAccountingServiceConsumer(AccountingServiceConsumer consumer) {
+		if (plugin.accountingServiceConsumer == consumer) {
+			LOG.debug("AccountingServiceConsumer is unregistering...");
+			plugin.accountingServiceConsumer = null;
+		} else {
+			LOG.debug("Unknown AccountingServiceConsumer is unregistering - will ignore");
+		}
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public static AccountingService getAccountingService() {
-		AccountingService as = plugin.accountingServiceTracker.getService();
-		return as;//plugin.accountingServiceTracker.getService();
+		return plugin.accountingServiceConsumer.getAccountingService();
 	}
 }

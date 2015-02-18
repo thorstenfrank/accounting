@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="de.tfsw.accounting.elster.accountingService">
+   <implementation class="de.tfsw.accounting.elster.AccountingServiceConsumer"/>
+   <reference bind="setAccountingService" cardinality="1..1" interface="de.tfsw.accounting.AccountingService" name="AccountingService" policy="static" unbind="unsetAccountingService"/>
+</scr:component>
