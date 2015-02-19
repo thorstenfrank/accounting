@@ -18,7 +18,7 @@
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="icons/Ledger_16x16.png" i32="icons/Ledger_32x32.png"/>
+   <windowImages i16="icons/accounting_16.png" i32="icons/accounting_32.png"/>
 
    <splash
       location="de.tfsw.accounting.ui"
@@ -29,14 +29,16 @@
       <solaris/>
       <win useIco="false">
          <bmp
-            winSmallHigh="/accounting-ui/icons/Ledger_16x16_32.bmp"
-            winSmallLow="/accounting-ui/icons/Ledger_16x16_8.bmp"
-            winMediumHigh="/accounting-ui/icons/Ledger_32x32_32.bmp"
-            winMediumLow="/accounting-ui/icons/Ledger_32x32_8.bmp"
-            winLargeHigh="/accounting-ui/icons/Ledger_48x48_32.bmp"
-            winLargeLow="/accounting-ui/icons/Ledger_48x48_8.bmp"/>
+            winSmallHigh="/accounting-ui/icons/accounting_16_32.bmp"
+            winSmallLow="/accounting-ui/icons/accounting_16_8.bmp"
+            winMediumHigh="/accounting-ui/icons/accounting_32_32.bmp"
+            winMediumLow="/accounting-ui/icons/accounting_32_8.bmp"
+            winLargeHigh="/accounting-ui/icons/accounting_48_32.bmp"
+            winLargeLow="/accounting-ui/icons/accounting_48_8.bmp"
+            winExtraLargeHigh="/accounting-ui/icons/accounting_256_32.bmp"/>
       </win>
    </launcher>
+
 
    <vm>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>

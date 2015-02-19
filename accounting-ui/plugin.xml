@@ -28,10 +28,6 @@
             application="de.tfsw.accounting.ui.application"
             name="%product.name">
          <property
-               name="windowImages"
-               value="icons/Ledger_16x16.png,icons/Ledger_32x32.png">
-         </property>
-         <property
                name="appName"
                value="%product.name">
          </property>
@@ -43,16 +39,26 @@
                name="aboutText"
                value="%aboutTextBla">
          </property>
-          <property name="preferenceCustomization" value="plugin_customization.ini"/> 
-          <property
-                name="startupForegroundColor"
-                value="000000"/>
-          <property
-                name="startupMessageRect"
-                value="7,10,440,20"/>
-          <property
-                name="startupProgressRect"
-                value="0,280,465,15"/>
+         <property
+               name="windowImages"
+               value="icons/accounting_16.png,icons/accounting_32.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,10,440,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="0,280,465,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
       </product>
    </extension>
    <extension
