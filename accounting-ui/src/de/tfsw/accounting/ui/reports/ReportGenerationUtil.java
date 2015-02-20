@@ -34,7 +34,6 @@ import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.reporting.ReportGenerationMonitor;
 import de.tfsw.accounting.reporting.ReportingService;
-import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.prefs.AccountingPreferences;
 import de.tfsw.accounting.ui.prefs.ReportingPreferencesConstants;
