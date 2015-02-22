@@ -18,6 +18,7 @@
 		<module>../accounting-help</module>
 		<module>../accounting-product</module>
 		<module>../accounting-reporting</module>
+		<module>../accounting-test-harness</module>
 		<module>../accounting-ui</module>
 		<module>../db4o_osgi</module>
 	</modules>
