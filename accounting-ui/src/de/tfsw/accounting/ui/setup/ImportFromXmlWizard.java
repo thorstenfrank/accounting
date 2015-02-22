@@ -128,7 +128,7 @@ public class ImportFromXmlWizard extends Wizard {
     			@Override
     			public void widgetSelected(SelectionEvent e) {
     				FileDialog fd = new FileDialog(composite.getShell(), SWT.OPEN);
-    				fd.setFilterExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
+    				fd.setFilterExtensions(new String[]{Constants.XML_FILES});
     				fd.setText(Messages.ImportFromXmlWizard_xmlFileSelectText);
     				fd.setFileName(xmlFileText.getText());
     				String selected = fd.open();

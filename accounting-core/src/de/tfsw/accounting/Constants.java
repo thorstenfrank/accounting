@@ -48,4 +48,10 @@ public interface Constants {
 	
 	/** A semicolon (;). */
 	public static final String SEMICOLON = ";";
+	
+	/*** An asterisk (*). */
+	public static final String ASTERISK = "*";
+	
+	/** XML file shorthand (*.xml). */
+	public static final String XML_FILES = "*.xml";
 }

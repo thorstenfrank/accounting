@@ -37,6 +37,7 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import de.tfsw.accounting.AccountingException;
+import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.Messages;
 
@@ -46,7 +47,7 @@ import de.tfsw.accounting.ui.Messages;
  */
 public class ExportModelToXmlWizard extends Wizard implements IExportWizard {
 
-	private static final String[] VALID_EXTENSIONS = {"*.xml"};
+	private static final String[] VALID_EXTENSIONS = {Constants.XML_FILES};
 	
 	private String targetFileName;
 	private WizardPage page;

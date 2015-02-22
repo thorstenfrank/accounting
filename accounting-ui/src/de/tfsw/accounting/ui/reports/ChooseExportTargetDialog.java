@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.ui.AbstractModalDialog;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.util.WidgetHelper;
@@ -38,7 +39,7 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
  */
 public class ChooseExportTargetDialog extends AbstractModalDialog {
 	
-	private static final String[] EXPORT_EXTENSIONS = {"*.pdf", "*.doc;*.docx", "*.odt", "*.xml"};
+	private static final String[] EXPORT_EXTENSIONS = {"*.pdf", "*.doc;*.docx", "*.odt", Constants.XML_FILES};
 	
 	private static final String[] EXPORT_FORMAT_DESC = {
 		"Adobe PDF (" + EXPORT_EXTENSIONS[0] + ")",

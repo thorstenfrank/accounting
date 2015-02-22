@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="de.tfsw.accounting.ui.reportHandlers" name="Report Handlers" schema="schema/de.tfsw.accounting.ui.reportHandlers.exsd"/>
+   <extension-point id="de.tfsw.accounting.ui.reportHandlers" name="%reportHandlers.extension.point.name" schema="schema/de.tfsw.accounting.ui.reportHandlers.exsd"/>
 
    <extension
          id="application"
@@ -722,7 +722,7 @@
             default="false"
             icon="icons/tag_blue_edit.png"
             id="de.tfsw.accounting.ui.expense.ExpenseEditor"
-            name="Expense">
+            name="%editor.expense.name">
       </editor>
    </extension>
    <extension
@@ -902,7 +902,7 @@
       <command
             defaultHandler="de.tfsw.accounting.ui.user.ReferencesExportHandler"
             id="de.tfsw.accounting.ui.user.ReferencesExport"
-            name="References">
+            name="%command.references.export">
       </command>
       <command
             categoryId="de.tfsw.accounting.ui.expense"
@@ -913,7 +913,7 @@
       <command
             defaultHandler="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterHandler"
             id="de.tfsw.accounting.ui.expenseView.menu.pulldown"
-            name="de.tfsw.accounting.ui.expenseView.menu.pulldown">
+            name="%command.expenseView.menu.pulldown">
       </command>
    </extension>
    <extension
@@ -1315,17 +1315,17 @@
          point="org.eclipse.ui.contexts">
       <context
             id="de.tfsw.accounting.ui.expense"
-            name="Expense Context"
+            name="%context.expense.name"
             parentId="org.eclipse.ui.contexts.window">
       </context>
       <context
             id="de.tfsw.accounting.ui.client"
-            name="Client context"
+            name="%context.client.name"
             parentId="org.eclipse.ui.contexts.window">
       </context>
       <context
             id="de.tfsw.accounting.ui.invoice"
-            name="Invoice context"
+            name="%context.invoice.name"
             parentId="org.eclipse.ui.contexts.window">
       </context>
    </extension>
