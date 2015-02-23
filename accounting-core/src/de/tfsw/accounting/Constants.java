@@ -26,32 +26,35 @@ package de.tfsw.accounting;
 public interface Constants {
 
 	/** An empty string. */
-	public static final String EMPTY_STRING = "";
+	public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 	
 	/** A blank. */
-	public static final String BLANK_STRING = " ";
+	public static final String BLANK_STRING = " "; //$NON-NLS-1$
 	
 	/** A hyphen (-). */
-	public static final String HYPHEN = " - ";
+	public static final String HYPHEN = " - "; //$NON-NLS-1$
 	
 	/** The percentage sign (%). */
-	public static final String PERCENTAGE_SIGN = "%";
+	public static final String PERCENTAGE_SIGN = "%"; //$NON-NLS-1$
 	
 	/** An underscore (_). */
-	public static final String UNDERSCORE = "_";
+	public static final String UNDERSCORE = "_"; //$NON-NLS-1$
 	
 	/** A dot (.). */
-	public static final String DOT = ".";
+	public static final String DOT = "."; //$NON-NLS-1$
 	
 	/** A comma (,). */
-	public static final String COMMA = ",";
+	public static final String COMMA = ","; //$NON-NLS-1$
 	
 	/** A semicolon (;). */
-	public static final String SEMICOLON = ";";
+	public static final String SEMICOLON = ";"; //$NON-NLS-1$
 	
 	/*** An asterisk (*). */
-	public static final String ASTERISK = "*";
+	public static final String ASTERISK = "*"; //$NON-NLS-1$
 	
 	/** XML file shorthand (*.xml). */
-	public static final String XML_FILES = "*.xml";
+	public static final String XML_FILES = "*.xml"; //$NON-NLS-1$
+	
+	/** A zero digit character (0). */
+	public static final String ZERO = "0"; //$NON-NLS-1$
 }
