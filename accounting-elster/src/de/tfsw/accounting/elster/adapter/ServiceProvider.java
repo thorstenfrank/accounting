@@ -15,31 +15,30 @@
  */
 package de.tfsw.accounting.elster.adapter;
 
+import org.eclipse.core.runtime.IExtensionRegistry;
+
+import de.tfsw.accounting.AccountingService;
 
 /**
- * Interface for message adapters to the ELSTER system.
+ * Implementations of this interface provide necessary services for the {@link ElsterAdapterFactory}.
  * 
  * @author Thorsten Frank
  *
- * @since 1.2
+ * @see ElsterAdapterFactory
  */
-public interface ElsterAdapter {
+public interface ServiceProvider {
+
+	/**
+	 * Supplies access to the eclipse extension mechanism.
+	 * 
+	 * @return an {@link IExtensionRegistry} for lookup of defined extensions
+	 */
+	IExtensionRegistry getExtensionRegistry();
 	
 	/**
+	 * Supplies an active instance of the {@link AccountingService}.
 	 * 
-	 * @return
+	 * @return an {@link AccountingService} instance
 	 */
-	ElsterDTO getData();
-	
-	/**
-	 * 
-	 * @param targetFilePath
-	 */
-	void writeDataToXML(String targetFilePath);
-	
-	/**
-	 * 
-	 * @return
-	 */
-	String writeDataToXML();
+	AccountingService getAccountingService();
 }

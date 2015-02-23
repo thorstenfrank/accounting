@@ -23,8 +23,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
+import de.tfsw.accounting.elster.AccountingElsterPlugin;
 import de.tfsw.accounting.elster.adapter.ElsterAdapter;
-import de.tfsw.accounting.elster.adapter.ElsterAdapterFactory;
 
 /**
  * @author Thorsten Frank
@@ -36,19 +36,20 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	/** Logging instance (shared across wizard pages). */
 	protected static final Logger LOG = Logger.getLogger(ElsterExportWizard.class);
 	
-	protected static final String ELSTER_EXPORT_WIZARD_HELP_ID = "de.tfsw.accounting.elster.ElsterExportWizard";
-	
+	/** */
 	private ElsterAdapter adapter;
 	
+	/** */
 	private String targetFile;
-	
+		
 	/**
-	 * 
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public ElsterExportWizard() {
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setHelpAvailable(true);
-		setWindowTitle("ELSTER UStVA Wizard");
-		setNeedsProgressMonitor(true);
+		setWindowTitle(Messages.ElsterExportWizard_Title);
+		setNeedsProgressMonitor(true);		
 	}
 	
 	/**
@@ -62,15 +63,7 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 		addPage(new AmountsPage());
 		addPage(new ExportTargetSelectionPage());
 	}
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-	 */
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		LOG.debug("INIT");
-	}
-
+	
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
@@ -79,7 +72,7 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 		adapter.writeDataToXML(targetFile);
 		return true;
 	}
-
+	
 	/**
 	 * @return the adapter
 	 */
@@ -92,15 +85,13 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	 * @param yearMonth
 	 */
 	protected void timeFrameChanged(YearMonth yearMonth) {
-		adapter = ElsterAdapterFactory.getAdapter(yearMonth);
+		adapter = AccountingElsterPlugin.getDefault().getElsterAdapterFactory().getAdapter(yearMonth);
 	}
-
+	
 	/**
 	 * @param targetFile the targetFile to set
 	 */
 	protected void setTargetFile(String targetFile) {
 		this.targetFile = targetFile;
 	}
-	
-	
 }

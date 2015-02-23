@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.tfsw.accounting.elster.adapter.ElsterAdapterFactory;
+import de.tfsw.accounting.elster.AccountingElsterPlugin;
 
 /**
  * @author Thorsten Frank
@@ -49,7 +49,7 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 	 * @param dataProvider
 	 */
 	TimeFrameSelectionPage() {
-		super(TimeFrameSelectionPage.class.getName(), "Anmeldungszeitraum", "Anmeldungszeitraum auswählen.");
+		super(TimeFrameSelectionPage.class.getName(), Messages.TimeFrameSelectionPage_Title, Messages.TimeFrameSelectionPage_Description);
 	}
 
 	/**
@@ -63,14 +63,14 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 		control.setLayout(new GridLayout(4, false));
 		
 		Label lblYear = new Label(control, SWT.NONE);
-		lblYear.setText("Jahr:");
+		lblYear.setText(Messages.TimeFrameSelectionPage_Year);
 		
 		yearCombo = new Combo(control, SWT.READ_ONLY);
 		yearCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,true, false));
 		yearCombo.addSelectionListener(this);
 		
 		Label lblTimeFrame = new Label(control, SWT.NONE);
-		lblTimeFrame.setText("Anmeldungszeitraum:");
+		lblTimeFrame.setText(Messages.TimeFrameSelectionPage_Period);
 		
 		monthCombo = new Combo(control, SWT.DROP_DOWN | SWT.READ_ONLY);
 		monthCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,true, false));
@@ -79,9 +79,9 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 		// default time frame is last month
 		selectedTimeFrame = YearMonth.now().minusMonths(1);
 		
-		this.availableYears = ElsterAdapterFactory.getAvailableYears();
+		this.availableYears = AccountingElsterPlugin.getDefault().getElsterAdapterFactory().getAvailableYears();
 		for (int i = 0; i < availableYears.length; i++) {
-			yearCombo.add("" + availableYears[i]);
+			yearCombo.add(Integer.toString(availableYears[i]));
 			if (availableYears[i] == selectedTimeFrame.getYear()) {
 				yearCombo.select(i);
 			}
@@ -109,13 +109,21 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 	public void widgetSelected(SelectionEvent e) {
 		try {
 			selectedTimeFrame = YearMonth.of(availableYears[yearCombo.getSelectionIndex()], months[monthCombo.getSelectionIndex()]);
-			LOG.debug("Selected time frame changed to " + selectedTimeFrame.toString());
+			LOG.debug("Selected time frame changed to " + selectedTimeFrame.toString()); //$NON-NLS-1$
 			reportTimeFrameChange();
 		} catch (Exception ex) {
-			LOG.error("Error parsing date", ex);
+			LOG.error("Error parsing date", ex); //$NON-NLS-1$
 		}
 	}
 
+	/**
+	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetDefaultSelected(SelectionEvent e) {
+		// nothing to do here...
+	}
+	
 	/**
 	 * 
 	 */
@@ -123,11 +131,5 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 		getWizard().timeFrameChanged(selectedTimeFrame);
 	}
 	
-	/**
-	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-	 */
-	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		LOG.debug("widgetDefaultSelected");
-	}
+
 }

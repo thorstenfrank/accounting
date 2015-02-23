@@ -34,7 +34,7 @@ public enum Bundesland {
 	MECK_POMM("Mecklenburg-Vorpommern", "4"),
 	NIEDERSACHSEN("Niedersachsen", "23"),
 	NRW("Nordrhein-Westfalen", "5"),
-	RP("Rheinland-Pfalz", "25"),
+	RP("Rheinland-Pfalz", "27"),
 	SAARLAND("Saarland", "1"),
 	SACHSEN("Sachsen", "3"),
 	SACHSEN_ANHALT("Sachsen-Anhalt", "3"),

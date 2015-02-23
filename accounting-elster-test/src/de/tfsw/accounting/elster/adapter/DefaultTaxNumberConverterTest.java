@@ -15,19 +15,19 @@
  */
 package de.tfsw.accounting.elster.adapter;
 
-import de.tfsw.accounting.elster.Bundesland;
-
 /**
  * @author Thorsten Frank
  *
  * @since 1.2
  */
-public interface TaxNumberGenerationStrategy {
+public class DefaultTaxNumberConverterTest extends TaxNumberConverterTest {
 
 	/**
-	 * @param blFA Bundesland des Finanzamts
-	 * @param original
-	 * @return
+	 * @see de.tfsw.accounting.elster.adapter.TaxNumberConverterTest#getConverterToTest()
 	 */
-	String generateTaxNumber(Bundesland blFA, String original);
+	@Override
+	protected TaxNumberConverter getConverterToTest() {
+		return new DefaultTaxNumberConverter();
+	}
+
 }

@@ -16,20 +16,21 @@
 package de.tfsw.accounting.elster;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.tfsw.accounting.AccountingService;
+import de.tfsw.accounting.elster.adapter.ElsterAdapterFactory;
+import de.tfsw.accounting.elster.adapter.ServiceProvider;
 
 /**
- * Plugin activator for the accounting ELSTER plugin.
- * (German revenue service interface).
+ * Plugin activator for the accounting ELSTER plugin (German revenue service interface, specifically the VAT
+ * reporting subsystem).
  */
-public class AccountingElsterPlugin extends AbstractUIPlugin {
-
-	// The plug-in ID
-	public static final String PLUGIN_ID = "de.tfsw.accounting.elster"; //$NON-NLS-1$
+public class AccountingElsterPlugin extends AbstractUIPlugin implements ServiceProvider {
 
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingElsterPlugin.class);
@@ -40,28 +41,13 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 	/**
 	 * 
 	 */
-	private AccountingServiceConsumer accountingServiceConsumer;
+	private ElsterAdapterFactory elsterAdapterFactory;
 	
 	/**
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
-		LOG.info("Starting ELSTER plugin");
-		super.start(context);
-		plugin = this;
-	}
-
-	/**
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		LOG.info("Stopping ELSTER plugin");
-		plugin = null;
-		super.stop(context);
-	}
-
+	private AccountingService accountingService;
+	
 	/**
 	 * Returns the shared instance
 	 *
@@ -69,6 +55,54 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 	 */
 	public static AccountingElsterPlugin getDefault() {
 		return plugin;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		LOG.info("Starting ELSTER plugin"); //$NON-NLS-1$
+		super.start(context);
+		plugin = this;
+		
+		this.elsterAdapterFactory = new ElsterAdapterFactory(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		LOG.info("Stopping ELSTER plugin"); //$NON-NLS-1$
+		plugin = null;
+		super.stop(context);
+	}
+	
+	/**
+	 * @return the elsterAdapterFactory
+	 */
+	public ElsterAdapterFactory getElsterAdapterFactory() {
+		return elsterAdapterFactory;
+	}
+
+	/**
+	 * 
+	 * @see de.tfsw.accounting.elster.adapter.ServiceProvider#getAccountingService()
+	 */
+	@Override
+	public AccountingService getAccountingService() {
+		return accountingService;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.elster.adapter.ServiceProvider#getExtensionRegistry()
+	 */
+	@Override
+	public IExtensionRegistry getExtensionRegistry() {
+		return Platform.getExtensionRegistry();
 	}
 
 	/**
@@ -79,36 +113,36 @@ public class AccountingElsterPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+		return imageDescriptorFromPlugin(IDs.PLUGIN_ID, path);
 	}
 	
 	/**
+	 * Allows the {@link AccountingServiceConsumer} to register an {@link AccountingService} instance received through
+	 * the OSGi declarative services.
 	 * 
-	 * @param accountingService
+	 * @param accountingService the service instance of register
 	 */
-	protected static void registerAccountingServiceConsumer(AccountingServiceConsumer consumer) {
-		LOG.debug("AccountingServiceConsumer has registered");
-		plugin.accountingServiceConsumer = consumer;
+	protected void registerAccountingService(AccountingService accountingService) {
+		LOG.debug("AccountingService has registered"); //$NON-NLS-1$
+		this.accountingService = accountingService;
 	}
 	
 	/**
+	 * Allows the {@link AccountingServiceConsumer} to unregister a previously registered {@link AccountingService}
+	 * instance.
+	 * <p>
+	 * After calling this method with a known instance, {@link #getAccountingService()} will return <code>null</code>
+	 * until a new instance is registered. If the concrete service instance is unkonwn, this method does nothing.
+	 * </p>
 	 * 
-	 * @param consumer
+	 * @param accountingService the service instance to unregister
 	 */
-	protected static void unregisterAccountingServiceConsumer(AccountingServiceConsumer consumer) {
-		if (plugin.accountingServiceConsumer == consumer) {
-			LOG.debug("AccountingServiceConsumer is unregistering...");
-			plugin.accountingServiceConsumer = null;
+	protected void unregisterAccountingService(AccountingService accountingService) {
+		if (this.accountingService == accountingService) {
+			LOG.debug("AccountingService is unregistering..."); //$NON-NLS-1$
+			this.accountingService = null;
 		} else {
-			LOG.debug("Unknown AccountingServiceConsumer is unregistering - will ignore");
+			LOG.debug("Unknown AccountingService is unregistering - will ignore"); //$NON-NLS-1$
 		}
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static AccountingService getAccountingService() {
-		return plugin.accountingServiceConsumer.getAccountingService();
-	}
+	}	
 }

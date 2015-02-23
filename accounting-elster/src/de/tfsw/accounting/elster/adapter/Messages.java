@@ -15,31 +15,25 @@
  */
 package de.tfsw.accounting.elster.adapter;
 
+import org.eclipse.osgi.util.NLS;
 
 /**
- * Interface for message adapters to the ELSTER system.
+ * Message resources for the adapter package.
  * 
  * @author Thorsten Frank
  *
- * @since 1.2
  */
-public interface ElsterAdapter {
+public class Messages extends NLS {
 	
-	/**
-	 * 
-	 * @return
-	 */
-	ElsterDTO getData();
+	private static final String BUNDLE_NAME = "de.tfsw.accounting.elster.adapter.messages"; //$NON-NLS-1$
 	
-	/**
-	 * 
-	 * @param targetFilePath
-	 */
-	void writeDataToXML(String targetFilePath);
+	public static String AbstractElsterAdapter_errorCreatingXML;
 	
-	/**
-	 * 
-	 * @return
-	 */
-	String writeDataToXML();
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+	}
+
+	private Messages() {
+	}
 }

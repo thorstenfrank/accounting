@@ -18,34 +18,36 @@ package de.tfsw.accounting.elster;
 import de.tfsw.accounting.AccountingService;
 
 /**
+ * Simplistic service consumer intended for the OSGi declarative services framework as a recipient of an
+ * {@link AccountingService} instance. Upon receiving said instance, the consumer will register with the 
+ * {@link AccountingElsterPlugin}.
+ * 
+ * <p>Note that instances of this class will <b>not</b> keep a reference to the {@link AccountingService} it receives
+ * through {@link #setAccountingService(AccountingService)}, but instead will simply pass on the service instance to
+ * the plugin.
+ * </p> 
+ *  
  * @author Thorsten Frank
  *
  * @since 1.2
  */
 public class AccountingServiceConsumer {
-
-	private AccountingService accountingService;
-
+	
 	/**
-	 * @return the accountingService
-	 */
-	public AccountingService getAccountingService() {
-		return accountingService;
-	}
-
-	/**
+	 * OSGi declarative services bind method.
+	 * 
 	 * @param accountingService the accountingService to set
 	 */
 	public synchronized void setAccountingService(AccountingService accountingService) {
-		this.accountingService = accountingService;
-		AccountingElsterPlugin.registerAccountingServiceConsumer(this);
+		AccountingElsterPlugin.getDefault().registerAccountingService(accountingService);
 	}
 	
 	/**
+	 * OSGi declarative services unbind method.
+	 * 
 	 * @param accountingService the accountingService to unset
 	 */
 	public synchronized void unsetAccountingService(AccountingService accountingService) {
-		AccountingElsterPlugin.unregisterAccountingServiceConsumer(this);
-		this.accountingService = null;
+		AccountingElsterPlugin.getDefault().unregisterAccountingService(accountingService);
 	}
 }

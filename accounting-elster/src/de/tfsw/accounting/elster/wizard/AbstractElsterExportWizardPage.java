@@ -50,7 +50,7 @@ abstract class AbstractElsterExportWizardPage extends WizardPage {
 	 * @param description
 	 */
 	AbstractElsterExportWizardPage(String pageName, String title, String description) {
-		super(pageName, title, AccountingElsterPlugin.getImageDescriptor("icons/elster_150x90.png"));
+		super(pageName, title, AccountingElsterPlugin.getImageDescriptor(Messages.AbstractElsterExportWizardPage_icon));
 		setDescription(description);
 		setPageComplete(true);
 	}

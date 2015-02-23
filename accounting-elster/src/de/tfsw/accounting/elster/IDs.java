@@ -13,33 +13,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.tfsw.accounting.elster.adapter;
-
+package de.tfsw.accounting.elster;
 
 /**
- * Interface for message adapters to the ELSTER system.
+ * ID constants.
  * 
  * @author Thorsten Frank
  *
  * @since 1.2
  */
-public interface ElsterAdapter {
+public final class IDs {
+
+	/**
+	 * ID of the Elster plugin.
+	 */
+	public static final String PLUGIN_ID = "de.tfsw.accounting.elster"; //$NON-NLS-1$
 	
 	/**
-	 * 
-	 * @return
+	 * ID of the plugin extension for adapter implementations.
 	 */
-	ElsterDTO getData();
+	public static final String ADAPTER_EXTENSION_ID = "de.tfsw.accounting.elster.elsterApdapter"; //$NON-NLS-1$
 	
 	/**
-	 * 
-	 * @param targetFilePath
+	 * Help Context ID of the Elster Export Wizard.
 	 */
-	void writeDataToXML(String targetFilePath);
+	public static final String ELSTER_EXPORT_WIZARD_HELP_ID = "de.tfsw.accounting.elster.ElsterExportWizard"; //$NON-NLS-1$
 	
 	/**
-	 * 
-	 * @return
+	 * No need to instantiate this class.
 	 */
-	String writeDataToXML();
+	private IDs() {
+		// 
+	}
 }

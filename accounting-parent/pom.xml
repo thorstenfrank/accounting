@@ -15,6 +15,7 @@
 		<module>../accounting-core</module>
 		<module>../accounting-core-tests</module>
 		<module>../accounting-elster</module>
+		<module>../accounting-elster-test</module>
 		<module>../accounting-help</module>
 		<module>../accounting-product</module>
 		<module>../accounting-reporting</module>

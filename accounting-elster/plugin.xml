@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="de.tfsw.accounting.elster.elsterApdapter" name="%elsterAdapter.extension.point.name" schema="schema/de.tfsw.accounting.elster.elsterApdapter.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
       <category
             id="de.tfsw.accounting.elster.commandCategory"
-            name="Elster Command Category">
+            name="%ustva.command.category.name">
       </category>
       <command
             categoryId="de.tfsw.accounting.elster.commandCategory"
             id="de.tfsw.accounting.elster.ustvaCommand"
-            name="UStVA">
+            name="%ustva.command.name">
       </command>
    </extension>
    <extension
@@ -27,8 +28,8 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=de.tfsw.accounting.ui.main.menu.window">
          <menu
                id="de.tfsw.accounting.elster.menus.main"
-               label="ELSTER"
-               mnemonic="L">
+               label="%ustva.menu.label"
+               mnemonic="%ustva.menu.mnemonic">
             <command
                   commandId="de.tfsw.accounting.elster.ustvaCommand"
                   icon="icons/transmit_blue.png"

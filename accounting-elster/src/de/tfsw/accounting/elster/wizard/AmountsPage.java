@@ -42,7 +42,7 @@ class AmountsPage extends AbstractElsterExportWizardPage {
 	 * 
 	 */
 	AmountsPage() {
-		super(AmountsPage.class.getName(), "Beträge", "Übersicht der zu übermittelnden Umsatz- und Vorsteuerbeträge.");
+		super(AmountsPage.class.getName(), Messages.AmountsPage_Title, Messages.AmountsPage_Description);
 	}
 
 	/**
@@ -57,31 +57,31 @@ class AmountsPage extends AbstractElsterExportWizardPage {
 		
 		Label lblRevenue = new Label(container, SWT.NONE);
 		lblRevenue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 5, 1));
-		lblRevenue.setText("Steuerpflichtige Umsätze");
+		lblRevenue.setText(Messages.AmountsPage_Revenue);
 		
 		Label lbRevenuel19 = new Label(container, SWT.NONE);
-		lbRevenuel19.setText("zu 19% USt:");
+		lbRevenuel19.setText(Messages.AmountsPage_VAT19);
 		
 		txtRevenue19 = new Text(container, SWT.BORDER | SWT.READ_ONLY | SWT.RIGHT);
 		
 		Label lblKz81 = new Label(container, SWT.NONE);
-		lblKz81.setText("(Kz 81)");
+		lblKz81.setText(Messages.AmountsPage_Kz81);
 		
 		Label lblRevenue19tax = new Label(container, SWT.NONE);
-		lblRevenue19tax.setText("Steuersumme:");
+		lblRevenue19tax.setText(Messages.AmountsPage_TaxSum);
 		
 		txtRevenue19tax = new Text(container, SWT.BORDER | SWT.READ_ONLY | SWT.RIGHT);
 		
 		Label lblRevenue7 = new Label(container, SWT.NONE);
-		lblRevenue7.setText("zu 7% USt:");
+		lblRevenue7.setText(Messages.AmountsPage_VAT7);
 		
 		txtRevenue7 = new Text(container, SWT.BORDER | SWT.READ_ONLY | SWT.RIGHT);
 		
 		Label lblKz86 = new Label(container, SWT.NONE);
-		lblKz86.setText("(Kz 86)");
+		lblKz86.setText(Messages.AmountsPage_Kz86);
 		
 		Label lblRevenue7tax = new Label(container, SWT.NONE);
-		lblRevenue7tax.setText("Steuersumme:");
+		lblRevenue7tax.setText(Messages.AmountsPage_TaxSum);
 		
 		txtRevenue7tax = new Text(container, SWT.BORDER | SWT.READ_ONLY | SWT.RIGHT);
 		
@@ -89,12 +89,12 @@ class AmountsPage extends AbstractElsterExportWizardPage {
 		horiSep1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
 		
 		Label lblInputTax = new Label(container, SWT.NONE);
-		lblInputTax.setText("Vorsteuerbeträge:");
+		lblInputTax.setText(Messages.AmountsPage_InputTax);
 		
 		txtInputTax = new Text(container, SWT.BORDER | SWT.READ_ONLY | SWT.RIGHT);
 		
 		Label lblKz66 = new Label(container, SWT.NONE);
-		lblKz66.setText("(Kz 66)");
+		lblKz66.setText(Messages.AmountsPage_Kz66);
 		
 		// spacer
 		new Label(container, SWT.NONE);
@@ -104,12 +104,12 @@ class AmountsPage extends AbstractElsterExportWizardPage {
 		horiSep2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 5, 1));
 		
 		Label lblSum = new Label(container, SWT.NONE);
-		lblSum.setText("Summe:");
+		lblSum.setText(Messages.AmountsPage_Sum);
 		
 		txtSum = new Text(container, SWT.BORDER | SWT.READ_ONLY | SWT.RIGHT);
 		
 		Label lblKz83 = new Label(container, SWT.NONE);
-		lblKz83.setText("(Kz 83)");
+		lblKz83.setText(Messages.AmountsPage_Kz83);
 	}
 	
 	/**

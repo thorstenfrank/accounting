@@ -46,7 +46,7 @@ class CompanyNamePage extends AbstractElsterExportWizardPage {
 	 * 
 	 */
 	CompanyNamePage() {
-		super(CompanyNamePage.class.getName(), "Basisdaten", "Namen und Steuernummer des Unternehmenes");
+		super(CompanyNamePage.class.getName(), Messages.CompanyNamePage_Title, Messages.CompanyNamePage_Description);
 	}
 	
 	/**
@@ -60,32 +60,32 @@ class CompanyNamePage extends AbstractElsterExportWizardPage {
 		control.setLayout(new GridLayout(2, false));
 		
 		Label lblCompanyName = new Label(control, SWT.NONE);
-		lblCompanyName.setText("Unternehmensname:");
+		lblCompanyName.setText(Messages.CompanyNamePage_CompanyName);
 		companyName = new Text(control, SWT.BORDER);
 		companyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		Label lblFirstName = new Label(control, SWT.NONE);
-		lblFirstName.setText("Vorname:");
+		lblFirstName.setText(Messages.CompanyNamePage_FirstName);
 		firstName = new Text(control, SWT.BORDER);
 		firstName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		Label lblLastName = new Label(control, SWT.NONE);
-		lblLastName.setText("Nachname:");
+		lblLastName.setText(Messages.CompanyNamePage_LastName);
 		lastName = new Text(control, SWT.BORDER);
 		lastName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		Label lblEmail = new Label(control, SWT.NONE);
-		lblEmail.setText("Email:");
+		lblEmail.setText(Messages.CompanyNamePage_Email);
 		email = new Text(control, SWT.BORDER);
 		email.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		Label lblPhone = new Label(control, SWT.NONE);
-		lblPhone.setText("Phone");
+		lblPhone.setText(Messages.CompanyNamePage_Phone);
 		phone = new Text(control, SWT.BORDER);
 		phone.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		Label lblBundesland = new Label(control, SWT.NONE);
-		lblBundesland.setText("Bundesland\ndes Finanzamts (*)");
+		lblBundesland.setText(Messages.CompanyNamePage_State);
 		Combo bundeslandCombo = new Combo(control, SWT.DROP_DOWN | SWT.READ_ONLY);
 		bundeslandCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
@@ -105,12 +105,12 @@ class CompanyNamePage extends AbstractElsterExportWizardPage {
 		});
 		
 		Label lblTaxNo = new Label(control, SWT.NONE);
-		lblTaxNo.setText("Steuernummer (original):");
+		lblTaxNo.setText(Messages.CompanyNamePage_TaxNoOrig);
 		steuerNummerOrig = new Text(control, SWT.BORDER);
 		steuerNummerOrig.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		Label lblTaxNoGen = new Label(control, SWT.NONE);
-		lblTaxNoGen.setText("Steuernummer (maschinell):");
+		lblTaxNoGen.setText(Messages.CompanyNamePage_TaxNoGenerated);
 		steuerNummer = new Text(control, SWT.BORDER | SWT.READ_ONLY);
 		steuerNummer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
@@ -130,12 +130,12 @@ class CompanyNamePage extends AbstractElsterExportWizardPage {
 	 */
 	@Override
 	protected void initDataBindings() {
-		createBinding(companyName, "companyName");
-		createBinding(firstName, "userFirstName");
-		createBinding(lastName, "userLastName");
-		createBinding(email, "companyEmail");
-		createBinding(phone, "companyPhone");
-		createBinding(steuerNummerOrig, "companyTaxNumberOrig");
-		createBidirectionalBinding(steuerNummer, "companyTaxNumberGenerated");
+		createBinding(companyName, "companyName"); //$NON-NLS-1$
+		createBinding(firstName, "userFirstName"); //$NON-NLS-1$
+		createBinding(lastName, "userLastName"); //$NON-NLS-1$
+		createBinding(email, "companyEmail"); //$NON-NLS-1$
+		createBinding(phone, "companyPhone"); //$NON-NLS-1$
+		createBinding(steuerNummerOrig, "companyTaxNumberOrig"); //$NON-NLS-1$
+		createBidirectionalBinding(steuerNummer, "companyTaxNumberGenerated"); //$NON-NLS-1$
 	}
 }

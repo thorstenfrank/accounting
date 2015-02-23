@@ -19,27 +19,26 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.tfsw.accounting.elster.wizard.ElsterExportWizard;
 
 /**
+ * Opens a wizard guiding the user through the process of creating a german VAT pre-registration.
+ * 
  * @author Thorsten Frank
- *
- * @since 1.2
  */
 public class UStVAHandler extends AbstractHandler {
 
 	/**
+	 * Creates and opens a {@link WizardDialog} for the {@link ElsterExportWizard}.
+	 * 
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
-		WizardDialog wd = new WizardDialog(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-				new ElsterExportWizard());
-		wd.open();
+		new WizardDialog(HandlerUtil.getActiveShell(event), new ElsterExportWizard()).open();
 		
 		return null; // return null by definition
 	}

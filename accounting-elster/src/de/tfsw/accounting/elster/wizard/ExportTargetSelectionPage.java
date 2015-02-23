@@ -26,6 +26,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.tfsw.accounting.Constants;
+import de.tfsw.accounting.elster.adapter.ElsterDTO;
+
 /**
  * @author Thorsten Frank
  *
@@ -40,7 +43,7 @@ class ExportTargetSelectionPage extends AbstractElsterExportWizardPage {
 	 * 
 	 */
 	ExportTargetSelectionPage() {
-		super(ExportTargetSelectionPage.class.getName(), "Ziel wählen", "Wählen Sie eine Zieldatei für den Export aus.\nDrücken Sie \'Finish\' zum exportieren des XML.");
+		super(ExportTargetSelectionPage.class.getName(), Messages.ExportTargetSelectionPage_Title, Messages.ExportTargetSelectionPage_Description);
 	}
 
 	/**
@@ -56,19 +59,19 @@ class ExportTargetSelectionPage extends AbstractElsterExportWizardPage {
 		control.setLayout(new GridLayout(3, false));
 		
 		Label lblTarget = new Label(control, SWT.NONE);
-		lblTarget.setText("Zieldatei:");
+		lblTarget.setText(Messages.ExportTargetSelectionPage_TargetFile);
 		
 		txtTarget = new Text(control, SWT.BORDER | SWT.READ_ONLY);
 		txtTarget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		Button btnSearch = new Button(control, SWT.PUSH);
-		btnSearch.setText("...");
+		btnSearch.setText(Messages.ExportTargetSelectionPage_FileSelectionLabel);
 		btnSearch.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog fd = new FileDialog(getShell(), SWT.SAVE);
-				fd.setFilterExtensions(new String[]{"*.xml"});
-				
+				fd.setFilterExtensions(new String[]{Constants.XML_FILES});
+				fd.setFileName(buildFileNameSuggestion());
 				final String selection = fd.open();
 				
 				if (selection != null) {
@@ -84,6 +87,20 @@ class ExportTargetSelectionPage extends AbstractElsterExportWizardPage {
 		
 		txtPreview = new Text(control, SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
 		txtPreview.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private String buildFileNameSuggestion() {
+		ElsterDTO dto = getWizard().getAdapter().getData();
+		StringBuilder sb = new StringBuilder("ustva"); //$NON-NLS-1$
+		sb.append(Constants.UNDERSCORE);
+		sb.append(dto.getTimeFrameYear());
+		sb.append(dto.getTimeFrameMonth());
+		sb.append(Constants.XML_FILES.replace(Constants.ASTERISK, Constants.EMPTY_STRING));
+		return sb.toString();
 	}
 	
 	/**

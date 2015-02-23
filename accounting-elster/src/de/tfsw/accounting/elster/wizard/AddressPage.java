@@ -40,7 +40,7 @@ class AddressPage extends AbstractElsterExportWizardPage {
 	 * Create the wizard.
 	 */
 	AddressPage() {
-		super(AddressPage.class.getName(), "Addressdaten", "Anschrift und Kontaktdaten spezifisch für die Vornameldung überprüfen.\nHinweis: aktuell werden nur Adressen in Deutschland unterstützt");
+		super(AddressPage.class.getName(), Messages.AddressPage_Title, Messages.AddressPage_Description);
 	}
 
 	/**
@@ -54,32 +54,32 @@ class AddressPage extends AbstractElsterExportWizardPage {
 		container.setLayout(new GridLayout(4, false));
 		
 		Label lblStreet = new Label(container, SWT.NONE);
-		lblStreet.setText("Strasse:");
+		lblStreet.setText(Messages.AddressPage_Street);
 		street = new Text(container, SWT.BORDER);
 		street.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Label lblStreetNo = new Label(container, SWT.NONE);
-		lblStreetNo.setText("Hausnr:");
+		lblStreetNo.setText(Messages.AddressPage_HouseNo);
 		streetNo = new Text(container, SWT.BORDER);
 		streetNo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		
 		Label lblStreetNoAdd = new Label(container, SWT.NONE);
-		lblStreetNoAdd.setText("Hausnr-Zusatz:");
+		lblStreetNoAdd.setText(Messages.AddressPage_HouseAdd);
 		streetNoAdd = new Text(container, SWT.BORDER);
 		streetNoAdd.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		
 		Label lblPlz = new Label(container, SWT.NONE);
-		lblPlz.setText("PLZ:");
+		lblPlz.setText(Messages.AddressPage_ZIPCode);
 		postCode = new Text(container, SWT.BORDER);
 		postCode.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
 		
 		Label lblCity = new Label(container, SWT.NONE);
-		lblCity.setText("Stadt:");
+		lblCity.setText(Messages.AddressPage_City);
 		city = new Text(container, SWT.BORDER);
 		city.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Label lblCountry = new Label(container, SWT.NONE);
-		lblCountry.setText("Land:");
+		lblCountry.setText(Messages.AddressPage_Country);
 		country = new Text(container, SWT.BORDER | SWT.READ_ONLY);
 		country.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 	}
@@ -97,11 +97,11 @@ class AddressPage extends AbstractElsterExportWizardPage {
 	 */
 	@Override
 	protected void initDataBindings() {
-		createBinding(street, "companyStreetName");
-		createBinding(streetNo, "companyStreetNumber");
-		createBinding(streetNoAdd, "companyStreetAddendum");
-		createBinding(postCode, "companyPostCode");
-		createBinding(city, "companyCity");
-		createBinding(country, "companyCountry");
+		createBinding(street, "companyStreetName"); //$NON-NLS-1$
+		createBinding(streetNo, "companyStreetNumber"); //$NON-NLS-1$
+		createBinding(streetNoAdd, "companyStreetAddendum"); //$NON-NLS-1$
+		createBinding(postCode, "companyPostCode"); //$NON-NLS-1$
+		createBinding(city, "companyCity"); //$NON-NLS-1$
+		createBinding(country, "companyCountry"); //$NON-NLS-1$
 	}
 }

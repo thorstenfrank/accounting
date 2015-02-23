@@ -30,12 +30,12 @@ public class ElsterAdapter201501 extends AbstractElsterAdapter<UstaAnmeldungsste
 	/**
 	 * 
 	 */
-	private static final String VERSION = "201501";
+	private static final String VERSION = "201501"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private static final String TYPE = "UStVA";
+	private static final String TYPE = "UStVA"; //$NON-NLS-1$
 	
 	/**
 	 * @see de.tfsw.accounting.elster.adapter.AbstractElsterAdapter#mapToInterfaceModel()
