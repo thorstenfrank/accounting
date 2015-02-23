@@ -99,7 +99,7 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 		
 		// this page is complete by default, because we already have a timeframe pre-selected
 		setPageComplete(true);
-		reportTimeFrameChange();
+		getWizard().timeFrameChanged(selectedTimeFrame);
 	}
 
 	/**
@@ -108,9 +108,14 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		try {
-			selectedTimeFrame = YearMonth.of(availableYears[yearCombo.getSelectionIndex()], months[monthCombo.getSelectionIndex()]);
-			LOG.debug("Selected time frame changed to " + selectedTimeFrame.toString()); //$NON-NLS-1$
-			reportTimeFrameChange();
+			YearMonth tf = 
+					YearMonth.of(availableYears[yearCombo.getSelectionIndex()], months[monthCombo.getSelectionIndex()]);
+			
+			if (selectedTimeFrame.equals(tf) == false) {
+				selectedTimeFrame = tf;
+				LOG.debug("Selected time frame changed to " + selectedTimeFrame.toString()); //$NON-NLS-1$
+				getWizard().timeFrameChanged(selectedTimeFrame);				
+			}
 		} catch (Exception ex) {
 			LOG.error("Error parsing date", ex); //$NON-NLS-1$
 		}
@@ -123,13 +128,4 @@ class TimeFrameSelectionPage extends AbstractElsterExportWizardPage implements S
 	public void widgetDefaultSelected(SelectionEvent e) {
 		// nothing to do here...
 	}
-	
-	/**
-	 * 
-	 */
-	private void reportTimeFrameChange() {
-		getWizard().timeFrameChanged(selectedTimeFrame);
-	}
-	
-
 }
