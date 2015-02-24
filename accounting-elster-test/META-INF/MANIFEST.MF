@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Accounting ELSTER Tests
-Bundle-SymbolicName: de.tfsw.accounting.elster.test
+Bundle-SymbolicName: de.tfsw.accounting.elster.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: tfsw.de
 Fragment-Host: de.tfsw.accounting.elster;bundle-version="1.0.0"
