@@ -17,7 +17,12 @@ package de.tfsw.accounting.elster.adapter;
 
 
 /**
- * Interface for message adapters to the ELSTER system.
+ * Public interface for message adapters to the ELSTER system for clients.
+ * 
+ * <p>
+ * This interface is not meant to be implemented by clients. New versions of ELSTER adapter implementations must
+ * extend {@link AbstractElsterAdapter}.
+ * </p>
  * 
  * @author Thorsten Frank
  *
@@ -26,20 +31,26 @@ package de.tfsw.accounting.elster.adapter;
 public interface ElsterAdapter {
 	
 	/**
+	 * Returns the data transfer object for manipulation by a client. This object is pre-filled based on the time frame
+	 * used for aquiring a concrete adapter by the {@link ElsterAdapterFactory}.
 	 * 
-	 * @return
+	 * @return the data transfer object
 	 */
 	ElsterDTO getData();
 	
 	/**
+	 * Generates and writes an XML message for the ELSTER based on the current state of data as contained in the
+	 * transfer object returned by {@link #getData()}.
 	 * 
-	 * @param targetFilePath
+	 * @param targetFilePath file name of the XML file to generate
 	 */
 	void writeDataToXML(String targetFilePath);
 	
 	/**
+	 * Generates an XML message for the ELSTER system based on the current state of data as contained in the transfer
+	 * object returned by {@link #getData()}.
 	 * 
-	 * @return
+	 * @return a formatted XML string representing a message to the ELSTER system
 	 */
 	String writeDataToXML();
 }

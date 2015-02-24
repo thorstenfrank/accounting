@@ -27,9 +27,9 @@ import de.tfsw.accounting.AccountingService;
  * the plugin.
  * </p> 
  *  
+ * <p>This class is not meant to be extended by clients.</p> 
+ *  
  * @author Thorsten Frank
- *
- * @since 1.2
  */
 public class AccountingServiceConsumer {
 	
