@@ -96,6 +96,15 @@ public class ElsterDTO implements Serializable {
 	}
 
 	/**
+	 * @param propertyName
+	 * @param listener
+	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+	 */
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+	
+	/**
 	 * Delegate method.
 	 * 
 	 * @param listener
