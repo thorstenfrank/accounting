@@ -2,6 +2,14 @@
 <!-- Version 2015.1 -->
 <xs:schema xmlns:elster="http://www.elster.de/2002/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.elster.de/2002/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 
+	<!-- 
+		This element definition has been manually added to the original schema.
+		
+		This plugin does not support full communication with the ELSTER system, only the generation
+		of XML files for manual upload to the the ELSTER portal for the purpose of reporting VAT input and output.
+		As defined by said portal, only the subset "Anmeldungssteuern" of the whole XML interface is supported for
+		upload, as such, this element has been copied from the parent schema "elster0810_UStA_201501_extern.xsd" 
+	 -->
 	<xs:element name="Anmeldungssteuern" type="elster:usta_AnmeldungssteuernCType"/>
 
 	<xs:complexType name="usta_AnmeldungssteuernCType">
