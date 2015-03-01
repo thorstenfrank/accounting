@@ -231,7 +231,9 @@
       <plugin id="com.ibm.icu"/>
       <plugin id="db4o_osgi"/>
       <plugin id="de.tfsw.accounting.core"/>
-      <plugin id="de.tfsw.accounting.elster"/>
+      <plugin id="de.tfsw.accounting.elster.adapters"/>
+      <plugin id="de.tfsw.accounting.elster.core"/>
+      <plugin id="de.tfsw.accounting.elster.ui"/>
       <plugin id="de.tfsw.accounting.help"/>
       <plugin id="de.tfsw.accounting.reporting"/>
       <plugin id="de.tfsw.accounting.ui"/>
