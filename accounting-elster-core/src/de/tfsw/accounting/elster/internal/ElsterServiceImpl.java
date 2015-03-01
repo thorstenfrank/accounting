@@ -20,10 +20,10 @@ import java.io.StringWriter;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -145,9 +145,29 @@ public class ElsterServiceImpl implements ElsterService {
 			return new Year[0];
 		}
 		
-		Set<Year> years = new HashSet<Year>();
+		Year oldestKnown = null;
+		Year youngestKnown = Year.now();
+		
 		for (YearMonth ym : adapterMap.keySet()) {
-			years.add(Year.from(ym));
+			Year year = Year.from(ym);
+			if (oldestKnown == null || oldestKnown.isAfter(year)) {
+				oldestKnown = year;
+			}
+			if (youngestKnown.isBefore(year)) {
+				youngestKnown = year;
+			}
+		}
+		
+		// if there's only one year available, don't go through the hassle of putting together a sorted set
+		if (oldestKnown.equals(youngestKnown)) {
+			return new Year[]{youngestKnown};
+		}
+		
+		Set<Year> years = new TreeSet<Year>();
+		Year cursor = oldestKnown;
+		while (cursor.isBefore(youngestKnown)) {
+			years.add(cursor);
+			cursor = cursor.plusYears(1);
 		}
 		
 		return years.toArray(new Year[years.size()]);
