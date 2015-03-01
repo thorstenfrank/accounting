@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Accounting ELSTER UI
+Bundle-SymbolicName: de.tfsw.accounting.elster.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: de.tfsw.accounting.elster.ui.ElsterUI
+Bundle-Vendor: tfsw.de
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.tfsw.accounting.elster.core;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/component.xml

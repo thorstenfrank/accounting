@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Accounting ELSTER Adapters Test
+Bundle-SymbolicName: de.tfsw.accounting.elster.adapters.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: tfsw.de
+Fragment-Host: de.tfsw.accounting.elster.adapters;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: de.tfsw.accounting.test-harness;bundle-version="1.0.0",
+ org.junit;bundle-version="4.11.0"

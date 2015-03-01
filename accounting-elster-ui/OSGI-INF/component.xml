@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="false" name="de.tfsw.accounting.elster.ui">
+   <implementation class="de.tfsw.accounting.elster.ui.ElsterServiceProvider"/>
+   <reference bind="setElsterService" cardinality="1..1" interface="de.tfsw.accounting.elster.ElsterService" name="ElsterService" policy="static" unbind="unsetElsterService"/>
+</scr:component>
