@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>de.tfsw.accounting.parent</artifactId>
 		<groupId>de.tfsw.accounting</groupId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.1.0-SNAPSHOT</version>
 		<relativePath>../accounting-parent</relativePath>
 	</parent>
 	<artifactId>de.tfsw.accounting.product</artifactId>
