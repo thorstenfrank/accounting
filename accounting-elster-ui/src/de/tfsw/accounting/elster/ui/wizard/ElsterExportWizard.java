@@ -18,14 +18,9 @@ package de.tfsw.accounting.elster.ui.wizard;
 import java.lang.reflect.InvocationTargetException;
 import java.time.YearMonth;
 
-import javax.security.auth.login.AccountException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWizard;
 
 import de.tfsw.accounting.elster.ElsterDTO;
 import de.tfsw.accounting.elster.ui.ElsterUI;
@@ -34,7 +29,7 @@ import de.tfsw.accounting.elster.ui.ElsterUI;
  * @author Thorsten Frank
  *
  */
-public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
+public class ElsterExportWizard extends Wizard {
 	
 	/**
 	 * 
@@ -45,18 +40,27 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	 * 
 	 */
 	private static final String LAST_KNOWN_EXPORT_DIRECTORY = "lastKnownExportDirectory";
-
+	
+	/**
+	 * 
+	 */
 	private static final String SEPARATOR = System.getProperty("file.separator"); //$NON-NLS-1$
 	
+	/**
+	 * 
+	 */
 	private ElsterDTO elsterDTO;
 	
+	/**
+	 * 
+	 */
 	private String targetFileName;
 	
 	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 * 
 	 */
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public ElsterExportWizard() {
+		super();
 		setHelpAvailable(true);
 		setWindowTitle(Messages.ElsterExportWizard_Title);
 		setNeedsProgressMonitor(true);
@@ -102,7 +106,17 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	protected ElsterDTO getElsterDTO() {
 		return elsterDTO;
 	}
-		
+	
+	/**
+	 * 
+	 * @param newPeriod
+	 */
+	protected void adaptDtoToNewPeriod(YearMonth newPeriod) {
+		if (newPeriod != null && newPeriod.equals(elsterDTO.getFilingPeriod())) {
+			elsterDTO = ElsterUI.getDefault().getElsterService().adaptToPeriod(elsterDTO, newPeriod);
+		}
+	}
+	
 	/**
 	 * @return the targetFileName
 	 */
@@ -118,11 +132,22 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	protected String generatePreview() {
+		return ElsterUI.getDefault().getElsterService().generateXML(elsterDTO);
+	}
+	
+	/**
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
 	@Override
 	public void addPages() {
-		addPage(null);
+		addPage(new TimeFrameSelectionPage());
+		addPage(new CompanyNamePage());
+		addPage(new AmountsPage());
+		addPage(new ExportTargetSelectionPage());
 	}
 	
 	/**
@@ -144,8 +169,8 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 			success = false;
 		}
 		
-		AbstractElsterWizardPage page = (AbstractElsterWizardPage)getContainer().getCurrentPage();
-		page.setErrorMessage(message);
+		((AbstractElsterWizardPage)getContainer().getCurrentPage()).setErrorMessage(message);
+		
 		return success;
 	}
 	
@@ -165,17 +190,17 @@ public class ElsterExportWizard extends Wizard implements IWorkbenchWizard {
 		});
 	}
 	
-	public static void main(String[] args) {
-		String file = "Z:\\accounting\\hoppsasa_201501.xml";
-		System.out.println(file.substring(0, file.lastIndexOf("\\")));
-		String fileName = file.substring(file.lastIndexOf("\\") + 1);
-		System.out.println(fileName);
-		if (fileName.startsWith("ustva_")) {
-			System.out.println("keeping default filename");
-		} else {
-			System.out.println("new pattern");
-			fileName = fileName.substring(0, fileName.lastIndexOf("."));
-			System.out.println(fileName);
-		}
-	}
+//	public static void main(String[] args) {
+//		String file = "Z:\\accounting\\hoppsasa_201501.xml";
+//		System.out.println(file.substring(0, file.lastIndexOf("\\")));
+//		String fileName = file.substring(file.lastIndexOf("\\") + 1);
+//		System.out.println(fileName);
+//		if (fileName.startsWith("ustva_")) {
+//			System.out.println("keeping default filename");
+//		} else {
+//			System.out.println("new pattern");
+//			fileName = fileName.substring(0, fileName.lastIndexOf("."));
+//			System.out.println(fileName);
+//		}
+//	}
 }

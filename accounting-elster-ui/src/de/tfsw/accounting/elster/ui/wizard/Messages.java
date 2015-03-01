@@ -18,12 +18,14 @@ package de.tfsw.accounting.elster.ui.wizard;
 import org.eclipse.osgi.util.NLS;
 
 /**
+ * Localisation Messages for the ELSTER export wizard package.
+ * 
  * @author Thorsten Frank
- *
- * @since 1.2
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "de.tfsw.accounting.elster.wizard.messages"; //$NON-NLS-1$
+	
+	private static final String BUNDLE_NAME = "de.tfsw.accounting.elster.ui.wizard.messages"; //$NON-NLS-1$
+	
 	public static String AbstractElsterWizardPage_icon;
 	public static String AddressPage_City;
 	public static String AddressPage_Country;
