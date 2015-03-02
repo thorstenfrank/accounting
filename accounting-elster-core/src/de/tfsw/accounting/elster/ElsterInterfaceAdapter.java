@@ -24,13 +24,29 @@ import de.tfsw.accounting.AccountingException;
 /**
  * Interface for adapter implementations. Must be defined as an extension.
  * 
+ * <p>Concrete implementations should register as an extension inside their respective <code>plugin.xml</code> like so:
+ * 
+ * <pre>
+ * &lt;extension point="de.tfsw.accounting.elster.elsterInterfaceApdapter">
+ *     &lt;elsterAdapter class="my.concrete.AdapterClassName"/>
+ * &lt;/extension>
+ * </pre>
+ * </p>
+ * 
  * @param T the class representing the root element of a JAXB annotated model used for marshalling to XML
  * 
  * @author Thorsten Frank
  * 
+ * @see #EXTENSION_POINT_ID
+ * 
  */
 public interface ElsterInterfaceAdapter<T> {
 
+	/**
+	 * The extension point ID implementations need to register under.
+	 */
+	public static final String EXTENSION_POINT_ID = "de.tfsw.accounting.elster.elsterInterfaceApdapter"; //$NON-NLS-1$
+	
 	/**
 	 * The earliest period for which this adapter can supply an XML model. 
 	 * 
