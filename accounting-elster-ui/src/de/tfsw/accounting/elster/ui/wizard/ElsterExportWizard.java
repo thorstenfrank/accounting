@@ -112,7 +112,9 @@ public class ElsterExportWizard extends Wizard {
 	 * @param newPeriod
 	 */
 	protected void adaptDtoToNewPeriod(YearMonth newPeriod) {
-		if (newPeriod != null && newPeriod.equals(elsterDTO.getFilingPeriod())) {
+		// only adapt if there is an actual change in the requested period - and of course if the period supplied is
+		// valid
+		if (newPeriod != null && !newPeriod.equals(elsterDTO.getFilingPeriod())) {
 			elsterDTO = ElsterUI.getDefault().getElsterService().adaptToPeriod(elsterDTO, newPeriod);
 		}
 	}
