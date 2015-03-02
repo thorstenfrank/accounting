@@ -1,0 +1,5 @@
+This product includes software developed by
+The Eclipse Foundation (http://www.eclipse.org/).
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
