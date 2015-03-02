@@ -116,6 +116,8 @@ public class ElsterExportWizard extends Wizard {
 		// valid
 		if (newPeriod != null && !newPeriod.equals(elsterDTO.getFilingPeriod())) {
 			elsterDTO = ElsterUI.getDefault().getElsterService().adaptToPeriod(elsterDTO, newPeriod);
+			// update the target filename suggestion
+			initTargetFileName();
 		}
 	}
 	

@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.elster.Bundesland;
+import de.tfsw.accounting.elster.ElsterDTO;
 
 /**
  * ELSTER export wizard page dealing with company and individual names and tax numbers,
@@ -123,5 +124,17 @@ class CompanyNamePage extends AbstractElsterWizardPage {
 		createBinding(steuerNummer, "companyTaxNumberGenerated"); //$NON-NLS-1$
 		
 		setPageComplete(false);
+	}
+	
+	/**
+	 * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			ElsterDTO dto = getDTO();
+			setPageComplete(dto.getFinanzAmtBL() != null && dto.getCompanyTaxNumberGenerated() != null);
+		}
+		super.setVisible(visible);
 	}
 }

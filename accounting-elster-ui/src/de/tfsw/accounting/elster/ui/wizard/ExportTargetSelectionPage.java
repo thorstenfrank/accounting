@@ -35,6 +35,9 @@ import org.eclipse.swt.widgets.Text;
  */
 class ExportTargetSelectionPage extends AbstractElsterWizardPage {
 
+	/** Target filename. */
+	private Text txtTarget;
+	
 	/** Preview text area. */
 	private Text txtPreview;
 	
@@ -60,12 +63,8 @@ class ExportTargetSelectionPage extends AbstractElsterWizardPage {
 		Label lblTarget = new Label(control, SWT.NONE);
 		lblTarget.setText(Messages.ExportTargetSelectionPage_TargetFile);
 		
-		final Text txtTarget = new Text(control, SWT.BORDER | SWT.READ_ONLY);
+		txtTarget = new Text(control, SWT.BORDER | SWT.READ_ONLY);
 		txtTarget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		if (getWizard().getTargetFileName() != null) {
-			txtTarget.setText(getWizard().getTargetFileName());
-		}
-		
 		
 		Button btnSearch = new Button(control, SWT.PUSH);
 		btnSearch.setText(Messages.ExportTargetSelectionPage_FileSelectionLabel);
@@ -103,7 +102,14 @@ class ExportTargetSelectionPage extends AbstractElsterWizardPage {
 		if (visible) {
 			txtPreview.setText(getWizard().generatePreview());
 			final String fileName = getWizard().getTargetFileName();
-			setPageComplete(fileName != null && !fileName.isEmpty());			
+			if (fileName != null && !fileName.isEmpty()) {
+				txtTarget.setText(fileName);
+				setPageComplete(true);
+			} else {
+				txtTarget.setText("");
+				setPageComplete(false);
+			}
+						
 		}
 		
 		super.setVisible(visible);
