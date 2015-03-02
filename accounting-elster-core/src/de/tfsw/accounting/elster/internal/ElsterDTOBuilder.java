@@ -15,6 +15,8 @@
  */
 package de.tfsw.accounting.elster.internal;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -22,10 +24,14 @@ import java.time.YearMonth;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.osgi.service.prefs.BackingStoreException;
 
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.AccountingService;
 import de.tfsw.accounting.Constants;
+import de.tfsw.accounting.elster.Bundesland;
 import de.tfsw.accounting.elster.ElsterDTO;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.IncomeStatement;
@@ -57,6 +63,12 @@ class ElsterDTOBuilder {
 	 * Standard 7% german VAT rate.
 	 */
 	private static final BigDecimal VAT_7 = new BigDecimal("0.07"); //$NON-NLS-1$
+
+	/**
+	 * Key for preferences. {@link Bundesland} is not a persistent entity within the accounting model, but users
+	 * shouldn't have to select this value each and every time they're trying to generate an XML. 
+	 */
+	private static final String LAST_KNOWN_BUNDESLAND = "lastKnownBundesland"; //$NON-NLS-1$
 	
 	/**
 	 * Accounting service instance needed for retrieving source data.
@@ -70,7 +82,7 @@ class ElsterDTOBuilder {
 	 */
 	protected ElsterDTOBuilder(AccountingService accountingService) {
 		if (accountingService == null) {
-			throw new AccountingException("Supplied AccountingService was null!");
+			throw new AccountingException(Messages.ElsterDTOBuilder_ErrorAccountingServiceNull);
 		}
 		this.accountingService = accountingService;
 	}
@@ -92,10 +104,26 @@ class ElsterDTOBuilder {
 		User user = accountingService.getCurrentUser();
 		
 		setNames(user, dto);
+		readBundeslandFromPreferences(dto);
 		setTaxNumber(user, dto);
 		setContactInformation(user.getAddress(), dto);
 		
 		buildAmounts(accountingService.getIncomeStatement(TimeFrame.of(period)), dto);
+		
+		dto.addPropertyChangeListener("finanzAmtBL", new PropertyChangeListener() { //$NON-NLS-1$
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				try {
+					IEclipsePreferences prefs = getPrefs();
+					prefs.put(LAST_KNOWN_BUNDESLAND, evt.getNewValue().toString());
+					prefs.flush();
+					LOG.debug("Saved user-chosen Bundesland to preferences: " + evt.getNewValue().toString()); //$NON-NLS-1$
+				} catch (BackingStoreException e) {
+					LOG.warn("Could not save user-chosen Bundesland value", e); //$NON-NLS-1$
+				}
+			}
+		});
 		
 		return dto;
 	}
@@ -171,6 +199,29 @@ class ElsterDTOBuilder {
 	
 	/**
 	 * 
+	 * @param dto
+	 */
+	private void readBundeslandFromPreferences(ElsterDTO dto) {
+		IEclipsePreferences prefs = getPrefs();
+		String lastKnownBL = prefs.get(LAST_KNOWN_BUNDESLAND, null);
+		if (lastKnownBL == null) {
+			LOG.debug("No previous Bundesland found, user must choose"); //$NON-NLS-1$
+		} else {
+			LOG.debug("Found previously used Bundesland: " + lastKnownBL); //$NON-NLS-1$
+			dto.setFinanzAmtBL(Bundesland.valueOf(lastKnownBL));
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private IEclipsePreferences getPrefs() {
+		return InstanceScope.INSTANCE.getNode(ElsterDTOBuilder.class.getPackage().getName());
+	}
+	
+	/**
+	 * 
 	 * @param user
 	 * @param dto
 	 */
@@ -222,7 +273,7 @@ class ElsterDTOBuilder {
 		
 		dto.setCompanyPostCode(address.getPostalCode());
 		dto.setCompanyCity(address.getCity());
-		dto.setCompanyCountry("Deutschland"); // FIXME make me changeable		
+		dto.setCompanyCountry("Deutschland"); // FIXME make me changeable
 	}
 	
 	/**
@@ -253,6 +304,8 @@ class ElsterDTOBuilder {
 					rev7 = adaptRevenue(revenueByRate.get(rate).getNet());
 					rev7tax = rev7.multiply(rate.getRate());
 					outputTax = outputTax.add(rev7tax);
+				} else {
+					LOG.debug("Unsupported tax rate: " + rate.toShortString()); //$NON-NLS-1$
 				}
 			}
 		}
