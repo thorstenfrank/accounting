@@ -15,6 +15,7 @@
  */
 package de.tfsw.accounting.elster.adapter.base;
 
+import java.math.RoundingMode;
 import java.time.YearMonth;
 
 import de.tfsw.accounting.elster.ElsterDTO;
@@ -84,6 +85,8 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 		ustva.setZeitraum(data.getTimeFrameMonth());
 		ustva.setSteuernummer(data.getCompanyTaxNumberGenerated());
 		
+		// Revenue amounts don't need to be rounded, as they already are scaled to a zero precision
+		
 		if (data.getRevenue19() != null) {
 			ustva.setKz81(data.getRevenue19().toString());
 		}
@@ -93,11 +96,11 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 		}
 		
 		if (data.getInputTax() != null) {
-			ustva.setKz66(data.getInputTax().toString());
+			ustva.setKz66(data.getInputTax().setScale(2, RoundingMode.UP).toString());
 		}
 		
 		if (data.getTaxSum() != null) {
-			ustva.setKz83(data.getTaxSum().toString());
+			ustva.setKz83(data.getTaxSum().setScale(2, RoundingMode.HALF_EVEN).toString());
 		}
 		
 		steuerfall.setUmsatzsteuervoranmeldung(ustva);
