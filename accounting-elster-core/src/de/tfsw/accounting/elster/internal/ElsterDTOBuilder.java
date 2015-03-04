@@ -166,7 +166,16 @@ class ElsterDTOBuilder {
 			((ElsterDTOImpl)dto).setFilingPeriod(period);
 			setCreationDate(dto);
 			setTimeFrames(dto);
+
+			// reset all monetary values before re-calculating them
+			dto.setRevenue7(null);
+			dto.setRevenue7tax(null);
+			dto.setRevenue19(null);
+			dto.setRevenue19tax(null);
+			dto.setInputTax(null);
+			dto.setTaxSum(null);
 			buildAmounts(accountingService.getIncomeStatement(TimeFrame.of(period)), dto);
+			
 			return dto;
 		} else {
 			LOG.warn("Supplied ElsterDTO is an unknown implementation class, will return brand new one"); //$NON-NLS-1$
@@ -316,12 +325,12 @@ class ElsterDTOBuilder {
 				if (rate.getRate().compareTo(VAT_19) == 0) {
 					LOG.debug("Found USt. 19 %"); //$NON-NLS-1$
 					rev19 = adaptRevenue(revenueByRate.get(rate).getNet());
-					rev19tax = rev19.multiply(rate.getRate());
+					rev19tax = rev19.multiply(rate.getRate()).setScale(2, RoundingMode.HALF_EVEN);
 					outputTax = outputTax.add(rev19tax);
 				} else if (rate.getRate().compareTo(VAT_7) == 0) {
 					LOG.debug("Found USt. 7%"); //$NON-NLS-1$
 					rev7 = adaptRevenue(revenueByRate.get(rate).getNet());
-					rev7tax = rev7.multiply(rate.getRate());
+					rev7tax = rev7.multiply(rate.getRate()).setScale(2, RoundingMode.HALF_EVEN);;
 					outputTax = outputTax.add(rev7tax);
 				} else {
 					LOG.debug("Unsupported tax rate: " + rate.toShortString()); //$NON-NLS-1$
@@ -343,8 +352,8 @@ class ElsterDTOBuilder {
 		}
 
 		if (source.getTotalExpenses().getTax() != null) {
-			target.setInputTax(source.getTotalExpenses().getTax());
-			target.setTaxSum(outputTax.subtract(target.getInputTax()));			
+			target.setInputTax(source.getTotalExpenses().getTax().setScale(2, RoundingMode.HALF_EVEN));
+			target.setTaxSum(outputTax.subtract(target.getInputTax()));
 		} else {
 			target.setTaxSum(outputTax);
 		}
