@@ -24,6 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -54,42 +55,86 @@ class CompanyNamePage extends AbstractElsterWizardPage {
 		Composite control = new Composite(parent, SWT.NULL);
 		setControl(control);
 		
-		control.setLayout(new GridLayout(2, false));
+		control.setLayout(new GridLayout(1, false));
 		
-		Label lblCompanyName = new Label(control, SWT.NONE);
+		createNamesGroup(control);
+		
+		Label hSep1 = new Label(control, SWT.HORIZONTAL);
+		hSep1.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		
+		createContactInfoGroup(control);
+
+		Label hSep2 = new Label(control, SWT.HORIZONTAL);
+		hSep2.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		
+		createTaxGroup(control);
+		
+		setPageComplete(false);
+	}
+
+	/**
+	 * @param control
+	 */
+	private void createNamesGroup(Composite control) {
+		Group namesGroup = new Group(control, SWT.SHADOW_ETCHED_IN);
+		namesGroup.setText(Messages.CompanyNamePage_GroupName);
+		namesGroup.setLayout(new GridLayout(4, false));
+		namesGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		
+		Label lblCompanyName = new Label(namesGroup, SWT.NONE);
 		lblCompanyName.setText(Messages.CompanyNamePage_CompanyName);
-		Text companyName = new Text(control, SWT.BORDER);
-		companyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		Text companyName = new Text(namesGroup, SWT.BORDER);
+		companyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		createBinding(companyName, "companyName"); //$NON-NLS-1$
 		
-		Label lblFirstName = new Label(control, SWT.NONE);
+		Label lblFirstName = new Label(namesGroup, SWT.NONE);
 		lblFirstName.setText(Messages.CompanyNamePage_FirstName);
-		Text firstName = new Text(control, SWT.BORDER);
+		Text firstName = new Text(namesGroup, SWT.BORDER);
 		firstName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		createBinding(firstName, "userFirstName"); //$NON-NLS-1$
 		
-		Label lblLastName = new Label(control, SWT.NONE);
+		Label lblLastName = new Label(namesGroup, SWT.NONE);
 		lblLastName.setText(Messages.CompanyNamePage_LastName);
-		Text lastName = new Text(control, SWT.BORDER);
+		Text lastName = new Text(namesGroup, SWT.BORDER);
 		lastName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		createBinding(lastName, "userLastName"); //$NON-NLS-1$
+	}
+	
+	/**
+	 * @param control
+	 */
+	private void createContactInfoGroup(Composite control) {
+		Group contactInfoGroup = new Group(control, SWT.SHADOW_ETCHED_IN);
+		contactInfoGroup.setText(Messages.CompanyNamePage_GroupContactInfo);
+		contactInfoGroup.setLayout(new GridLayout(4, false));
+		contactInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		
-		Label lblEmail = new Label(control, SWT.NONE);
+		Label lblEmail = new Label(contactInfoGroup, SWT.NONE);
 		lblEmail.setText(Messages.CompanyNamePage_Email);
-		Text email = new Text(control, SWT.BORDER);
+		Text email = new Text(contactInfoGroup, SWT.BORDER);
 		email.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		createBinding(email, "companyEmail"); //$NON-NLS-1$
 		
-		Label lblPhone = new Label(control, SWT.NONE);
+		Label lblPhone = new Label(contactInfoGroup, SWT.NONE);
 		lblPhone.setText(Messages.CompanyNamePage_Phone);
-		Text phone = new Text(control, SWT.BORDER);
+		Text phone = new Text(contactInfoGroup, SWT.BORDER);
 		phone.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		createBinding(phone, "companyPhone"); //$NON-NLS-1$
+	}
+	
+	/**
+	 * @param control
+	 */
+	private void createTaxGroup(Composite control) {
+		Group taxGroup = new Group(control, SWT.SHADOW_ETCHED_IN);
+		taxGroup.setText(Messages.CompanyNamePage_GroupTax);
+		taxGroup.setLayout(new GridLayout(4, false));
+		taxGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		
-		Label lblBundesland = new Label(control, SWT.NONE);
+		Label lblBundesland = new Label(taxGroup, SWT.NONE);
 		lblBundesland.setText(Messages.CompanyNamePage_State);
-		final ComboViewer bundeslandViewer = new ComboViewer(control, SWT.READ_ONLY);
-		bundeslandViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		final ComboViewer bundeslandViewer = new ComboViewer(taxGroup, SWT.READ_ONLY);
+		bundeslandViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		bundeslandViewer.setContentProvider(ArrayContentProvider.getInstance());
 		bundeslandViewer.setLabelProvider(new LabelProvider() {
 			@Override
@@ -109,21 +154,17 @@ class CompanyNamePage extends AbstractElsterWizardPage {
 		});
 		createBinding(bundeslandViewer, "finanzAmtBL"); //$NON-NLS-1$
 		
-		
-		
-		Label lblTaxNo = new Label(control, SWT.NONE);
+		Label lblTaxNo = new Label(taxGroup, SWT.NONE);
 		lblTaxNo.setText(Messages.CompanyNamePage_TaxNoOrig);
-		Text steuerNummerOrig = new Text(control, SWT.BORDER);
+		Text steuerNummerOrig = new Text(taxGroup, SWT.BORDER);
 		steuerNummerOrig.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		createBinding(steuerNummerOrig, "companyTaxNumberOrig"); //$NON-NLS-1$
 		
-		Label lblTaxNoGen = new Label(control, SWT.NONE);
+		Label lblTaxNoGen = new Label(taxGroup, SWT.NONE);
 		lblTaxNoGen.setText(Messages.CompanyNamePage_TaxNoGenerated);
-		Text steuerNummer = new Text(control, SWT.BORDER | SWT.READ_ONLY);
+		Text steuerNummer = new Text(taxGroup, SWT.BORDER | SWT.READ_ONLY);
 		steuerNummer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		createBinding(steuerNummer, "companyTaxNumberGenerated"); //$NON-NLS-1$
-		
-		setPageComplete(false);
 	}
 	
 	/**

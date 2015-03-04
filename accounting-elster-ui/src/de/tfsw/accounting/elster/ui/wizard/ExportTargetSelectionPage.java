@@ -87,8 +87,14 @@ class ExportTargetSelectionPage extends AbstractElsterWizardPage {
 		Label horiSep1 = new Label(control, SWT.SEPARATOR | SWT.HORIZONTAL);
 		horiSep1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
-		txtPreview = new Text(control, SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
-		txtPreview.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		Label lblPreview = new Label(control, SWT.NONE);
+		lblPreview.setText(Messages.ExportTargetSelectionPage_Preview);
+		lblPreview.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+				
+		txtPreview = new Text(control, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		gd.heightHint = 350;
+		txtPreview.setLayoutData(gd);
 	}
 	
 	/**

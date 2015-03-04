@@ -27,6 +27,7 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "de.tfsw.accounting.elster.ui.wizard.messages"; //$NON-NLS-1$
 	
 	public static String AbstractElsterWizardPage_icon;
+	
 	public static String AddressPage_City;
 	public static String AddressPage_Country;
 	public static String AddressPage_Description;
@@ -35,6 +36,7 @@ public class Messages extends NLS {
 	public static String AddressPage_Street;
 	public static String AddressPage_Title;
 	public static String AddressPage_ZIPCode;
+	
 	public static String AmountsPage_Description;
 	public static String AmountsPage_InputTax;
 	public static String AmountsPage_Kz66;
@@ -45,23 +47,32 @@ public class Messages extends NLS {
 	public static String AmountsPage_Sum;
 	public static String AmountsPage_TaxSum;
 	public static String AmountsPage_Title;
+	
 	public static String AmountsPage_VAT19;
 	public static String AmountsPage_VAT7;
+	
 	public static String CompanyNamePage_CompanyName;
 	public static String CompanyNamePage_Description;
 	public static String CompanyNamePage_Email;
 	public static String CompanyNamePage_FirstName;
 	public static String CompanyNamePage_LastName;
+	public static String CompanyNamePage_GroupName;
+	public static String CompanyNamePage_GroupContactInfo;
+	public static String CompanyNamePage_GroupTax;
 	public static String CompanyNamePage_Phone;
 	public static String CompanyNamePage_State;
 	public static String CompanyNamePage_TaxNoGenerated;
 	public static String CompanyNamePage_TaxNoOrig;
 	public static String CompanyNamePage_Title;
+	
 	public static String ElsterExportWizard_Title;
+	
 	public static String ExportTargetSelectionPage_Description;
 	public static String ExportTargetSelectionPage_FileSelectionLabel;
+	public static String ExportTargetSelectionPage_Preview;
 	public static String ExportTargetSelectionPage_TargetFile;
 	public static String ExportTargetSelectionPage_Title;
+	
 	public static String TimeFrameSelectionPage_Description;
 	public static String TimeFrameSelectionPage_Period;
 	public static String TimeFrameSelectionPage_Title;
