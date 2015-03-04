@@ -15,12 +15,18 @@
  */
 package de.tfsw.accounting.elster.internal;
 
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -63,7 +69,20 @@ class ElsterDTOBuilder {
 	 * Standard 7% german VAT rate.
 	 */
 	private static final BigDecimal VAT_7 = new BigDecimal("0.07"); //$NON-NLS-1$
-
+	
+	/**
+	 * 
+	 */
+	private static final DateTimeFormatter BASIC_ISO_DATE_FORMATTER;
+	static {
+		BASIC_ISO_DATE_FORMATTER = new DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .appendValue(YEAR, 4)
+        .appendValue(MONTH_OF_YEAR, 2)
+        .appendValue(DAY_OF_MONTH, 2)
+        .toFormatter();
+	}
+	
 	/**
 	 * Key for preferences. {@link Bundesland} is not a persistent entity within the accounting model, but users
 	 * shouldn't have to select this value each and every time they're trying to generate an XML. 
@@ -160,7 +179,7 @@ class ElsterDTOBuilder {
 	 * @param dto
 	 */
 	private void setCreationDate(ElsterDTO dto) {
-		dto.setCreationDate(LocalDate.now().toString().replaceAll(RegexPatterns.NON_DIGITS, Constants.EMPTY_STRING));
+		dto.setCreationDate(LocalDate.now().format(BASIC_ISO_DATE_FORMATTER));
 	}
 	
 	/**
