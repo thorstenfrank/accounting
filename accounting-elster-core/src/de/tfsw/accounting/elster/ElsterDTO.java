@@ -87,8 +87,14 @@ public abstract class ElsterDTO implements Serializable {
 	private BigDecimal taxSum;
 
 	/**
+	 * Returns the filing period this DTO was built for.
 	 * 
-	 * @return
+	 * <p>
+	 * This class does intentionally not define a setter method for this property, because clients must not change
+	 * the period directly, and subclasses may need to react to period changes.
+	 * </p>
+	 * 
+	 * @return	the filing period
 	 */
 	public abstract YearMonth getFilingPeriod();
 	
@@ -113,7 +119,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setFinanzAmtBL(Bundesland finanzAmtBL) {
 		final Bundesland oldValue = this.finanzAmtBL;
 		this.finanzAmtBL = finanzAmtBL;
-		propertyChangeSupport.firePropertyChange("finanzAmtBL", oldValue, finanzAmtBL);
+		firePropertyChange("finanzAmtBL", oldValue, finanzAmtBL);
 		setCompanyTaxNumberGenerated();
 	}
 	
@@ -130,7 +136,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCreationDate(String creationDate) {
 		final String oldValue = this.creationDate;
 		this.creationDate = creationDate;
-		propertyChangeSupport.firePropertyChange("creationDate", oldValue, creationDate);
+		firePropertyChange("creationDate", oldValue, creationDate);
 	}
 
 	/**
@@ -146,7 +152,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setTimeFrameYear(String timeFrameYear) {
 		final String oldValue = this.timeFrameYear;
 		this.timeFrameYear = timeFrameYear;
-		propertyChangeSupport.firePropertyChange("timeFrameYear", oldValue, timeFrameYear);
+		firePropertyChange("timeFrameYear", oldValue, timeFrameYear);
 	}
 
 	/**
@@ -162,7 +168,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setTimeFrameMonth(String timeFrameMonth) {
 		final String oldValue = this.timeFrameMonth;
 		this.timeFrameMonth = timeFrameMonth;
-		propertyChangeSupport.firePropertyChange("timeFrameMonth", oldValue, timeFrameMonth);
+		firePropertyChange("timeFrameMonth", oldValue, timeFrameMonth);
 	}
 
 	/**
@@ -178,7 +184,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyName(String companyName) {
 		final String oldValue = this.companyName;
 		this.companyName = companyName;
-		propertyChangeSupport.firePropertyChange("companyName", oldValue, companyName);
+		firePropertyChange("companyName", oldValue, companyName);
 	}
 
 	/**
@@ -194,7 +200,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setUserFirstName(String userFirstName) {
 		final String oldValue = this.userFirstName;
 		this.userFirstName = userFirstName;
-		propertyChangeSupport.firePropertyChange("userFirstName", oldValue, userFirstName);
+		firePropertyChange("userFirstName", oldValue, userFirstName);
 	}
 
 	/**
@@ -210,7 +216,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setUserLastName(String userLastName) {
 		final String oldValue = this.userLastName;
 		this.userLastName = userLastName;
-		propertyChangeSupport.firePropertyChange("userLastName", oldValue, userLastName);
+		firePropertyChange("userLastName", oldValue, userLastName);
 	}
 
 	/**
@@ -226,7 +232,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyTaxNumberOrig(String companyTaxNumberOrig) {
 		final String oldValue = this.companyTaxNumberOrig;
 		this.companyTaxNumberOrig = companyTaxNumberOrig;
-		propertyChangeSupport.firePropertyChange("companyTaxNumberOrig", oldValue, companyTaxNumberOrig);
+		firePropertyChange("companyTaxNumberOrig", oldValue, companyTaxNumberOrig);
 		setCompanyTaxNumberGenerated();
 	}
 
@@ -244,7 +250,7 @@ public abstract class ElsterDTO implements Serializable {
 	protected void setCompanyTaxNumberGenerated() {
 		final String oldValue = this.companyTaxNumberGenerated;
 		this.companyTaxNumberGenerated = generateTaxNumber();
-		propertyChangeSupport.firePropertyChange("companyTaxNumberGenerated", oldValue, companyTaxNumberGenerated);
+		firePropertyChange("companyTaxNumberGenerated", oldValue, companyTaxNumberGenerated);
 	}
 	
 	/**
@@ -260,7 +266,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyPhone(String companyPhone) {
 		final String oldValue = this.companyPhone;
 		this.companyPhone = companyPhone;
-		propertyChangeSupport.firePropertyChange("companyPhone", oldValue, companyPhone);
+		firePropertyChange("companyPhone", oldValue, companyPhone);
 	}
 
 	/**
@@ -276,7 +282,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyEmail(String companyEmail) {
 		final String oldValue = this.companyEmail;
 		this.companyEmail = companyEmail;
-		propertyChangeSupport.firePropertyChange("companyEmail", oldValue, companyEmail);
+		firePropertyChange("companyEmail", oldValue, companyEmail);
 	}
 
 	/**
@@ -292,7 +298,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyStreetName(String companyStreetName) {
 		final String oldValue = this.companyStreetName;
 		this.companyStreetName = companyStreetName;
-		propertyChangeSupport.firePropertyChange("companyStreetName", oldValue, companyStreetName);
+		firePropertyChange("companyStreetName", oldValue, companyStreetName);
 	}
 
 	/**
@@ -308,7 +314,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyStreetNumber(String companyStreetNumber) {
 		final String oldValue = this.companyStreetNumber;
 		this.companyStreetNumber = companyStreetNumber;
-		propertyChangeSupport.firePropertyChange("companyStreetNumber", oldValue, companyStreetNumber);
+		firePropertyChange("companyStreetNumber", oldValue, companyStreetNumber);
 	}
 
 	/**
@@ -324,7 +330,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyStreetAddendum(String companyStreetAddendum) {
 		final String oldValue = this.companyStreetAddendum;
 		this.companyStreetAddendum = companyStreetAddendum;
-		propertyChangeSupport.firePropertyChange("companyStreetAddendum", oldValue, companyStreetAddendum);
+		firePropertyChange("companyStreetAddendum", oldValue, companyStreetAddendum);
 	}
 
 	/**
@@ -340,7 +346,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyPostCode(String companyPostCode) {
 		final String oldValue = this.companyPostCode;
 		this.companyPostCode = companyPostCode;
-		propertyChangeSupport.firePropertyChange("companyPostCode", oldValue, companyPostCode);
+		firePropertyChange("companyPostCode", oldValue, companyPostCode);
 	}
 
 	/**
@@ -356,7 +362,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyCity(String companyCity) {
 		final String oldValue = this.companyCity;
 		this.companyCity = companyCity;
-		propertyChangeSupport.firePropertyChange("companyCity", oldValue, companyCity);
+		firePropertyChange("companyCity", oldValue, companyCity);
 	}
 
 	/**
@@ -372,7 +378,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setCompanyCountry(String companyCountry) {
 		final String oldValue = this.companyCountry;
 		this.companyCountry = companyCountry;
-		propertyChangeSupport.firePropertyChange("companyCountry", oldValue, companyCountry);
+		firePropertyChange("companyCountry", oldValue, companyCountry);
 	}
 
 	/**
@@ -388,7 +394,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setRevenue19(BigDecimal revenue19) {
 		final BigDecimal oldValue = this.revenue19;
 		this.revenue19 = revenue19;
-		propertyChangeSupport.firePropertyChange("revenue19", oldValue, revenue19);
+		firePropertyChange("revenue19", oldValue, revenue19);
 	}
 
 	/**
@@ -404,7 +410,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setRevenue19tax(BigDecimal revenue19tax) {
 		final BigDecimal oldValue = this.revenue19tax;
 		this.revenue19tax = revenue19tax;
-		propertyChangeSupport.firePropertyChange("revenue19tax", oldValue, revenue19tax);
+		firePropertyChange("revenue19tax", oldValue, revenue19tax);
 	}
 
 	/**
@@ -420,7 +426,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setRevenue7(BigDecimal revenue7) {
 		final BigDecimal oldValue = this.revenue7;
 		this.revenue7 = revenue7;
-		propertyChangeSupport.firePropertyChange("revenue7", oldValue, revenue7);
+		firePropertyChange("revenue7", oldValue, revenue7);
 	}
 
 	/**
@@ -436,7 +442,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setRevenue7tax(BigDecimal revenue7tax) {
 		final BigDecimal oldValue = this.revenue7tax;
 		this.revenue7tax = revenue7tax;
-		propertyChangeSupport.firePropertyChange("revenue7tax", oldValue, revenue7tax);
+		firePropertyChange("revenue7tax", oldValue, revenue7tax);
 	}
 
 	/**
@@ -452,7 +458,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setInputTax(BigDecimal inputTax) {
 		final BigDecimal oldValue = this.inputTax;
 		this.inputTax = inputTax;
-		propertyChangeSupport.firePropertyChange("inputTax", oldValue, inputTax);
+		firePropertyChange("inputTax", oldValue, inputTax);
 	}
 
 	/**
@@ -468,7 +474,7 @@ public abstract class ElsterDTO implements Serializable {
 	public void setTaxSum(BigDecimal taxSum) {
 		final BigDecimal oldValue = this.taxSum;
 		this.taxSum = taxSum;
-		propertyChangeSupport.firePropertyChange("taxSum", oldValue, taxSum);
+		firePropertyChange("taxSum", oldValue, taxSum);
 	}
 	
 	/**
@@ -504,5 +510,15 @@ public abstract class ElsterDTO implements Serializable {
 	 */
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+
+	/**
+	 * @param propertyName
+	 * @param oldValue
+	 * @param newValue
+	 * @see java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String, java.lang.Object, java.lang.Object)
+	 */
+	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
 	}
 }

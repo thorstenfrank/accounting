@@ -80,7 +80,9 @@ class ElsterDTOImpl extends ElsterDTO {
 	 * @param period
 	 */
 	protected void setFilingPeriod(YearMonth period) {
+		YearMonth oldValue = this.filingPeriod;
 		this.filingPeriod = period;
+		firePropertyChange("filingPeriod", oldValue, period);
 	}
 	
 	/**
