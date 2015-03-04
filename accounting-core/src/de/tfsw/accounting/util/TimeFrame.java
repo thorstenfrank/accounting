@@ -240,8 +240,52 @@ public class TimeFrame {
     	}
     	return (from.getTimeInMillis() <= date.getTime() && until.getTimeInMillis() >= date.getTime());
     }
-    
+        
     /**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((from == null) ? 0 : from.hashCode());
+		result = prime * result + ((until == null) ? 0 : until.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TimeFrame)) {
+			return false;
+		}
+		TimeFrame other = (TimeFrame) obj;
+		if (from == null) {
+			if (other.from != null) {
+				return false;
+			}
+		} else if (!from.equals(other.from)) {
+			return false;
+		}
+		if (until == null) {
+			if (other.until != null) {
+				return false;
+			}
+		} else if (!until.equals(other.until)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
      * 
      * {@inheritDoc}.
      * @see java.lang.Object#toString()
