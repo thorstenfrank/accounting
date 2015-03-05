@@ -307,6 +307,96 @@ public class ElsterDTOBuilderTest {
 	}
 	
 	/**
+	 * Tests conversion of names from {@link User} to {@link ElsterDTO}.
+	 */
+	@Test
+	public void testNameConversionSingleName() {
+		YearMonth period = YearMonth.now().minusMonths(1);
+		User user = getTestUser();
+		user.setName("Singlename");
+		
+		initMock(period, user, getTestIncomeStatement(period));		
+		
+		ElsterDTO dto = new ElsterDTOBuilder(asMock).createDTO(period);
+		
+		assertEquals(user.getName(), dto.getCompanyName());
+		assertNull(dto.getUserFirstName());
+		assertNull(dto.getUserLastName());
+	}
+	
+	/**
+	 * Tests conversion of names from {@link User} to {@link ElsterDTO}.
+	 */
+	@Test
+	public void testNameConversionMultipleNames() {
+		YearMonth period = YearMonth.now().minusMonths(1);
+		User user = getTestUser();
+		user.setName("More Than Three Names");
+		
+		initMock(period, user, getTestIncomeStatement(period));		
+		
+		ElsterDTO dto = new ElsterDTOBuilder(asMock).createDTO(period);
+		
+		assertNull(dto.getCompanyName());
+		assertNull(dto.getUserFirstName());
+		assertNull(dto.getUserLastName());
+	}
+	
+	/**
+	 * Tests conversion of street address data from {@link Address} to {@link ElsterDTO}.
+	 */
+	@Test
+	public void testStreetAddressConversion() {
+		YearMonth period = YearMonth.now().minusMonths(1);
+		User user = getTestUser();
+		user.getAddress().setStreet("Street With House Number 1");
+		
+		initMock(period, user, getTestIncomeStatement(period));		
+		
+		ElsterDTO dto = new ElsterDTOBuilder(asMock).createDTO(period);
+		
+		assertEquals("Street With House Number", dto.getCompanyStreetName());
+		assertEquals("1", dto.getCompanyStreetNumber());
+		assertNull(dto.getCompanyStreetAddendum());
+	}
+
+	/**
+	 * Tests conversion of street address data from {@link Address} to {@link ElsterDTO}.
+	 */
+	@Test
+	public void testStreetAddressWithAddendumConversion() {
+		YearMonth period = YearMonth.now().minusMonths(1);
+		User user = getTestUser();
+		user.getAddress().setStreet("WithAddendum 123a");
+		
+		initMock(period, user, getTestIncomeStatement(period));		
+		
+		ElsterDTO dto = new ElsterDTOBuilder(asMock).createDTO(period);
+		
+		assertEquals("WithAddendum", dto.getCompanyStreetName());
+		assertEquals("123", dto.getCompanyStreetNumber());
+		assertEquals("a", dto.getCompanyStreetAddendum());
+	}
+
+	/**
+	 * Tests conversion of street address data from {@link Address} to {@link ElsterDTO}.
+	 */
+	@Test
+	public void testStreetAddressWithAddendumConversion2() {
+		YearMonth period = YearMonth.now().minusMonths(1);
+		User user = getTestUser();
+		user.getAddress().setStreet("WithAddendum 64/2");
+		
+		initMock(period, user, getTestIncomeStatement(period));		
+		
+		ElsterDTO dto = new ElsterDTOBuilder(asMock).createDTO(period);
+		
+		assertEquals("WithAddendum", dto.getCompanyStreetName());
+		assertEquals("64", dto.getCompanyStreetNumber());
+		assertEquals("2", dto.getCompanyStreetAddendum());
+	}
+	
+	/**
 	 * 
 	 * @param period
 	 * @param user
