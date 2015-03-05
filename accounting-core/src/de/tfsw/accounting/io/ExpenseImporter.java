@@ -21,8 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -34,10 +34,10 @@ import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.Messages;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseImportParams;
+import de.tfsw.accounting.model.ExpenseImportParams.DateFormatPattern;
 import de.tfsw.accounting.model.ExpenseImportResult;
 import de.tfsw.accounting.model.ExpenseType;
 import de.tfsw.accounting.model.TaxRate;
-import de.tfsw.accounting.model.ExpenseImportParams.DateFormatPattern;
 
 /**
  * @author thorsten
@@ -180,9 +180,7 @@ public class ExpenseImporter {
      * @param expense
      * @param rawDate
      */
-    private void parseDate(Expense target, String source, StringBuilder warnings) {
-    	Calendar cal = Calendar.getInstance();
-    	
+    private void parseDate(Expense target, String source, StringBuilder warnings) {    	
     	String[] parts = source.split(NON_DIGITS);
     	
     	if (parts.length != 3) {
@@ -201,12 +199,8 @@ public class ExpenseImporter {
     	}
     	
     	DateFormatPattern pattern = params.getDateFormatPattern();
-    	
-		cal.set(Calendar.DAY_OF_MONTH, values[pattern.getDayOrder()]);
-		cal.set(Calendar.MONTH, values[pattern.getMonthOrder()] - 1);
-		cal.set(Calendar.YEAR, values[pattern.getYearOrder()]);
-    	
-    	target.setPaymentDate(cal.getTime());
+    	target.setPaymentDate(LocalDate.of(
+    			values[pattern.getYearOrder()], values[pattern.getMonthOrder()], values[pattern.getDayOrder()]));
     }
     
 	/**

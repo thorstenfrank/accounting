@@ -15,7 +15,7 @@
  */
 package de.tfsw.accounting.ui.expense;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -45,7 +45,7 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 	ExpenseWizardPage() {
 		super(ExpenseWizardPage.class.getName());
 		this.expense = new Expense();
-		expense.setPaymentDate(new Date());
+		expense.setPaymentDate(LocalDate.now());
 		setTitle(Messages.EditExpenseWizard_newTitle);
 		setDescription(Messages.EditExpenseWizard_newDesc);
 	}

@@ -16,7 +16,7 @@
 package de.tfsw.accounting.model;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -49,7 +49,7 @@ public class Expense extends AbstractBaseEntity {
     
     private String description;
     
-    private Date paymentDate;
+    private LocalDate paymentDate;
     
     private BigDecimal netAmount;
     
@@ -98,14 +98,14 @@ public class Expense extends AbstractBaseEntity {
 	/**
      * @return the paymentDate
      */
-    public Date getPaymentDate() {
+    public LocalDate getPaymentDate() {
     	return paymentDate;
     }
 
 	/**
      * @param paymentDate the paymentDate to set
      */
-    public void setPaymentDate(Date paymentDate) {
+    public void setPaymentDate(LocalDate paymentDate) {
     	this.paymentDate = paymentDate;
     }
 

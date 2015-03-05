@@ -211,6 +211,7 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			WidgetHelper.createLabel(composite, Messages.labelTaxRate);
 			ComboViewer taxRateCombo = 
 					WidgetHelper.createTaxRateCombo(composite, bindingContext, position, InvoicePosition.FIELD_TAX_RATE);
+			taxRateCombo.getCombo().setEnabled(editable);
 			taxRateCombo.addPostSelectionChangedListener(new ISelectionChangedListener() {
 				@Override
 				public void selectionChanged(SelectionChangedEvent event) {

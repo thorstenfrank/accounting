@@ -15,6 +15,7 @@
  */
 package de.tfsw.accounting.ui.invoice;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -48,7 +49,7 @@ public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(PayInvoiceFromSelectionHandler.class);
 	
-	private Date paymentDate;
+	private LocalDate paymentDate;
 	
 	/**
 	 * {@inheritDoc}.
@@ -75,9 +76,9 @@ public class PayInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 					public void widgetSelected(SelectionEvent e) {
 						paymentDate = WidgetHelper.widgetToDate(paymentDateWidget);
 						boolean okEnabled = false;
-						if (paymentDate.after(new Date())) {
+						if (paymentDate.isAfter(LocalDate.now())) {
 							setErrorMessage(Messages.MarkInvoiceAsPaidCommand_errorPaymentDateInTheFuture);
-						} else if (paymentDate.before(invoice.getSentDate())) {
+						} else if (paymentDate.isBefore(invoice.getSentDate())) {
 							setErrorMessage(Messages.MarkInvoiceAsPaidCommand_errorPaymentDateBeforeSentDate);
 						} else {
 							okEnabled = true;

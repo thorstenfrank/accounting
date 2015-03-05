@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -199,8 +198,8 @@ public class ModelWrapper {
     	try {
 	        Object result = get(model, property);
 	        
-	        if (result != null && result instanceof Date) {
-	        	return FormatUtil.formatDate((Date) result);
+	        if (result != null && result instanceof LocalDate) {
+	        	return FormatUtil.formatDate((LocalDate) result);
 	        }
         } catch (Exception e) {
         	LOG.error(String.format("Error parsing date from property [%s]", property), e); //$NON-NLS-1$

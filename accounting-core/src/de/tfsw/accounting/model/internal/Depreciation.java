@@ -17,7 +17,7 @@ package de.tfsw.accounting.model.internal;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import de.tfsw.accounting.model.AnnualDepreciation;
@@ -32,7 +32,7 @@ public interface Depreciation extends Serializable {
 	 * 
 	 * @return
 	 */
-	Date getDepreciationEnd();
+	LocalDate getDepreciationEnd();
 
 	/**
 	 * 

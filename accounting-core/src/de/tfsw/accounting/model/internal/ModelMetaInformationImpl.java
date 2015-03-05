@@ -15,7 +15,7 @@
  */
 package de.tfsw.accounting.model.internal;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.Set;
 
 import de.tfsw.accounting.model.ModelMetaInformation;
@@ -33,11 +33,11 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 
 	private int numberOfInvoices;
 	
-	private Calendar oldestInvoice;
+	private LocalDate oldestInvoice;
 	
 	private int numberOfExpenses;
 	
-	private Calendar oldestExpense;
+	private LocalDate oldestExpense;
 
 	private Set<String> expenseCategories;
 	
@@ -47,7 +47,7 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 	 * @see de.tfsw.accounting.model.ModelMetaInformation#getOldestKnownInvoiceDate()
 	 */
 	@Override
-	public Calendar getOldestKnownInvoiceDate() {
+	public LocalDate getOldestKnownInvoiceDate() {
 		return oldestInvoice;
 	}
 
@@ -56,7 +56,7 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 	 * @see de.tfsw.accounting.model.ModelMetaInformation#getOldestKnownExpenseDate()
 	 */
 	@Override
-	public Calendar getOldestKnownExpenseDate() {
+	public LocalDate getOldestKnownExpenseDate() {
 		return oldestExpense;
 	}
 
@@ -77,7 +77,7 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 	/**
 	 * @param oldestInvoice the oldestInvoice to set
 	 */
-	public void setOldestInvoice(Calendar oldestInvoice) {
+	public void setOldestInvoice(LocalDate oldestInvoice) {
 		this.oldestInvoice = oldestInvoice;
 	}
 
@@ -98,7 +98,7 @@ public class ModelMetaInformationImpl implements ModelMetaInformation {
 	/**
 	 * @param oldestExpense the oldestExpense to set
 	 */
-	public void setOldestExpense(Calendar oldestExpense) {
+	public void setOldestExpense(LocalDate oldestExpense) {
 		this.oldestExpense = oldestExpense;
 	}
 

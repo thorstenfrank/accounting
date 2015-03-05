@@ -15,6 +15,7 @@
  */
 package de.tfsw.accounting;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -180,7 +181,7 @@ public interface AccountingService {
 	 * @see Invoice#getDueDate() 
 	 */
 	@ModelChanging
-	Invoice sendInvoice(Invoice invoice, Date sentDate);
+	Invoice sendInvoice(Invoice invoice, LocalDate sentDate);
 	
 	/**
 	 * Assigns the payment date to the invoice and saves it. Afterwards, the invoice will be in state
@@ -197,7 +198,7 @@ public interface AccountingService {
 	 * @see Invoice#canBePaid()
 	 */
 	@ModelChanging
-	Invoice markAsPaid(Invoice invoice, Date paymentDate);
+	Invoice markAsPaid(Invoice invoice, LocalDate paymentDate);
 	
 	/**
 	 * Cancels the supplied invoice and saves it. The returned invoice will be in state {@link InvoiceState#CANCELLED}.

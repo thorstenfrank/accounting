@@ -16,8 +16,6 @@
 package de.tfsw.accounting.ui.util;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -94,28 +92,6 @@ public class WidgetHelper {
 		selectAllOnEntry(theText);
 		return theText;
 	}
-
-	/**
-	 * Transforms the contents of the supplied {@link DateTime} widget to a {@link Date}.
-	 * All fields except for the day, month and year are nullified.
-	 * 
-	 * @param dateTime source
-	 * @return the {@link Date} that represents the date as contained in the supplied widget
-	 * @deprecated	use {@link #widgetToLocalDate(DateTime)} instead
-	 */
-	public static Date widgetToDate(DateTime dateTime) {
-		Calendar cal = Calendar.getInstance();
-		
-		cal.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
-		cal.set(Calendar.MONTH, dateTime.getMonth());
-		cal.set(Calendar.YEAR, dateTime.getYear());
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		
-		return cal.getTime();
-	}
 	
 	/**
 	 * Applies the date currently represented by the supplied widget to a new {@link LocalDate}.
@@ -123,32 +99,8 @@ public class WidgetHelper {
 	 * @param dateTime	source
 	 * @return the {@link LocalDate} that represents the date as contained in the supplied widget
 	 */
-	public static LocalDate widgetToLocalDate(DateTime dateTime) {
+	public static LocalDate widgetToDate(DateTime dateTime) {
 		return LocalDate.of(dateTime.getYear(), dateTime.getMonth() + DATE_TIME_MONTH_OFFSET, dateTime.getDay());
-	}
-	
-	/**
-	 * Applies the day, month and year of the supplied {@link Date} to the supplied {@link DateTime} widget.
-	 * 
-	 * @param date		source
-	 * @param dateTime  target
-	 * @deprecated use {@link #dateToWidget(LocalDate, DateTime)} instead
-	 */
-	public static void dateToWidget(Date date, DateTime dateTime) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		dateToWidget(cal, dateTime);
-	}
-	
-	/**
-	 * Applies the day, month and year of the supplied {@link Calendar} to the supplied {@link DateTime} widget.
-	 * 
-	 * @param cal		source
-	 * @param dateTime  target
-	 * @deprecated use {@link #dateToWidget(LocalDate, DateTime)} instead
-	 */
-	public static void dateToWidget(Calendar cal, DateTime dateTime) {
-		dateTime.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 	}
 	
 	/**

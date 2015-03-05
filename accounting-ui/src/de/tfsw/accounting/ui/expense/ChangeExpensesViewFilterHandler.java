@@ -15,8 +15,6 @@
  */
 package de.tfsw.accounting.ui.expense;
 
-import java.util.Calendar;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -180,12 +178,10 @@ public class ChangeExpensesViewFilterHandler extends AbstractTimeFrameSelectionH
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * @see de.tfsw.accounting.ui.AbstractTimeFrameSelectionHandler#getStartDateForYearSelector()
 	 */
 	@Override
-	protected Calendar getStartDateForYearSelector() {
-		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownExpenseDate();
+	protected int getStartDateForYearSelector() {
+		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownExpenseDate().getYear();
 	}
-
 }

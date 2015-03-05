@@ -16,7 +16,6 @@
 package de.tfsw.accounting.ui.revenue;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.TrayDialog;
@@ -103,13 +102,11 @@ public class RevenueByYearDialog extends TrayDialog {
 		
 		List<Revenue> all = AccountingUI.getAccountingService().getRevenueByYears();
 		List<RevenueByYearWrapper> wrappers = new ArrayList<RevenueByYearWrapper>();
-		Calendar cal = Calendar.getInstance();
 		int years = 0;
 		Price grandTotal = new Price();
 		
 		for (Revenue revenue : all) {
-			cal.setTime(revenue.getTimeFrame().getFrom());
-			RevenueByYearWrapper wrapper = new RevenueByYearWrapper(cal.get(Calendar.YEAR), revenue);
+			RevenueByYearWrapper wrapper = new RevenueByYearWrapper(revenue.getTimeFrame().getFromYear(), revenue);
 			wrappers.add(wrapper);
 			years++;
 			grandTotal.add(revenue.getTotalRevenue());

@@ -266,7 +266,7 @@ class CVEditor extends AbstractAccountingEditor implements ModelChangeListener {
 		from.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				LocalDate start = WidgetHelper.widgetToLocalDate(from);
+				LocalDate start = WidgetHelper.widgetToDate(from);
 				LOG.debug("PARSED: " + start.toString());
 				if (start.isAfter(LocalDate.now())) {
 					showWarningMessage(String.format("\"%s\" cannot be in the future", Messages.labelFrom), "Validation Error", false);
@@ -291,7 +291,7 @@ class CVEditor extends AbstractAccountingEditor implements ModelChangeListener {
 					currentSelection.setUntil(null);
 				} else {
 					until.setEnabled(true);
-					currentSelection.setUntil(WidgetHelper.widgetToLocalDate(until));
+					currentSelection.setUntil(WidgetHelper.widgetToDate(until));
 				}
 			}
 		});
@@ -302,7 +302,7 @@ class CVEditor extends AbstractAccountingEditor implements ModelChangeListener {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				CVEntry entry = cv.getReferences().get(cvEntriesList.getSelectionIndex());
-				entry.setUntil(WidgetHelper.widgetToLocalDate(until));
+				entry.setUntil(WidgetHelper.widgetToDate(until));
 				setIsDirty(true);
 			}
 		});

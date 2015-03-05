@@ -16,7 +16,7 @@
 package de.tfsw.accounting.model;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
@@ -32,7 +32,7 @@ public interface ModelMetaInformation extends Serializable {
 	 * 
 	 * @see Invoice#getInvoiceDate()
 	 */
-	Calendar getOldestKnownInvoiceDate();
+	LocalDate getOldestKnownInvoiceDate();
 
 	/**
 	 * Returns the earliest {@link Expense#getPaymentDate()} of all expenses in the Database.
@@ -41,7 +41,7 @@ public interface ModelMetaInformation extends Serializable {
 	 *  
 	 *  @see Expense#getPaymentDate()
 	 */
-	Calendar getOldestKnownExpenseDate();
+	LocalDate getOldestKnownExpenseDate();
 
 	/**
 	 * Returns a distinct and alphabetically sorted list of all expense categories stored in the database.

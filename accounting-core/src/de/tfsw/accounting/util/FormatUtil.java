@@ -17,11 +17,12 @@ package de.tfsw.accounting.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -58,12 +59,12 @@ public final class FormatUtil {
      * 
      */
     private static final Map<Locale, NumberFormat> PERCENT_FORMATTER_MAP = new HashMap<Locale, NumberFormat>();
-    
+        
     /**
      * 
      */
-    private static final Map<Locale, DateFormat> DATE_FORMATTER_MAP = new HashMap<Locale, DateFormat>();
-
+    private static final Map<Locale, DateTimeFormatter> DATE_FORMATTER_MAP = new HashMap<Locale, DateTimeFormatter>();
+    
     /**
      * 
      */
@@ -132,9 +133,9 @@ public final class FormatUtil {
      * @param locale
      * @return
      */
-    private static DateFormat getDateFormatter(Locale locale) {
+    private static DateTimeFormatter getDateFormatter(Locale locale) {
     	if (!DATE_FORMATTER_MAP.containsKey(locale)) {
-    		DATE_FORMATTER_MAP.put(locale, DateFormat.getDateInstance(DateFormat.DEFAULT, locale));
+    		DATE_FORMATTER_MAP.put(locale, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale));
     	}
     	return DATE_FORMATTER_MAP.get(locale);
     }
@@ -276,49 +277,22 @@ public final class FormatUtil {
     }
     
     /**
+     * This is equivalent to <code>formatDate(Locale.getDefault(), date)</code>.
      * 
-     * @param locale
-     * @param date
-     * @return
+     * @see #formatDate(Locale, LocalDate)
      */
-    public static String formatDate(Locale locale, Date date) {
-    	return getDateFormatter(locale).format(date);
-    }
-    
-    /**
-     * 
-     * @param date
-     * @return
-     */
-    public static String formatDate(Date date) {
+    public static String formatDate(LocalDate date) {
     	return formatDate(Locale.getDefault(), date);
     }
     
     /**
      * 
      * @param locale
-     * @param dateString
+     * @param date
      * @return
-     * @throws AccountingException if the date could not be parsed
      */
-    public static Date parseDate(Locale locale, String dateString) {
-    	try {
-			return getDateFormatter(locale).parse(dateString);
-		} catch (ParseException e) {
-			final String errorMsg = Messages.bind(Messages.FormatUtil_errorParsingDate, dateString);
-			LOG.error(errorMsg, e);
-			throw new AccountingException(errorMsg, e);
-		}
-    }
-    
-    /**
-     * 
-     * @param dateString
-     * @return
-     * @throws AccountingException if the date could not be parsed
-     */
-    public static Date parseDate(String dateString) {
-    	return parseDate(Locale.getDefault(), dateString);
+    public static String formatDate(Locale locale, LocalDate date) {
+    	return getDateFormatter(locale).format(date);
     }
     
     /**

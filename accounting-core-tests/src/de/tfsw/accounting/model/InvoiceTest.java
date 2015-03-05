@@ -17,21 +17,13 @@ package de.tfsw.accounting.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.junit.Test;
-
-import de.tfsw.accounting.model.Address;
-import de.tfsw.accounting.model.Client;
-import de.tfsw.accounting.model.Invoice;
-import de.tfsw.accounting.model.InvoicePosition;
-import de.tfsw.accounting.model.InvoiceState;
-import de.tfsw.accounting.model.PaymentTerms;
-import de.tfsw.accounting.model.User;
 
 /**
  * Test for {@link Invoice}.
@@ -79,7 +71,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeSent());
 		
 		// CREATED
-		invoice.setCreationDate(new Date());
+		invoice.setCreationDate(LocalDate.now());
 		assertEquals(InvoiceState.CREATED, invoice.getState());
 		assertTrue(invoice.canBeEdited());
 		assertTrue(invoice.canBeDeleted());
@@ -88,7 +80,7 @@ public class InvoiceTest {
 		assertTrue(invoice.canBeExported());
 		assertTrue(invoice.canBeSent());
 		
-		invoice.setSentDate(new Date());
+		invoice.setSentDate(LocalDate.now());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		// SENT
@@ -101,7 +93,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeSent());
 		
 		// CANCELLED from SENT
-		invoice.setCancelledDate(new Date());
+		invoice.setCancelledDate(LocalDate.now());
 		assertEquals(InvoiceState.CANCELLED, invoice.getState());
 		assertFalse(invoice.canBeEdited());
 		assertFalse(invoice.canBeDeleted());
@@ -112,7 +104,7 @@ public class InvoiceTest {
 		
 		// PAID
 		invoice.setCancelledDate(null);
-		invoice.setPaymentDate(new Date());
+		invoice.setPaymentDate(LocalDate.now());
 		assertEquals(InvoiceState.PAID, invoice.getState());
 		assertFalse(invoice.canBeEdited());
 		assertFalse(invoice.canBeDeleted());
@@ -123,7 +115,7 @@ public class InvoiceTest {
 		
 		// CANCELLED from PAID
 		// this should never happen since a cancelled invoice cannot be marked as paid, but stil...
-		invoice.setCancelledDate(new Date());
+		invoice.setCancelledDate(LocalDate.now());
 		assertEquals(InvoiceState.CANCELLED, invoice.getState());
 		assertFalse(invoice.canBeEdited());
 		assertFalse(invoice.canBeDeleted());
@@ -136,10 +128,9 @@ public class InvoiceTest {
 		invoice.setCancelledDate(null);
 		
 		// OVERDUE
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 3);
-		invoice.setSentDate(cal.getTime());
-		invoice.setInvoiceDate(cal.getTime());
+		LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
+		invoice.setSentDate(threeMonthsAgo);
+		invoice.setInvoiceDate(threeMonthsAgo);
 		invoice.setPaymentDate(null);
 		assertEquals(InvoiceState.OVERDUE, invoice.getState());
 		assertFalse(invoice.canBeEdited());
@@ -150,7 +141,7 @@ public class InvoiceTest {
 		assertFalse(invoice.canBeSent());
 		
 		// CANCELLED from OVERDUE
-		invoice.setCancelledDate(new Date());
+		invoice.setCancelledDate(LocalDate.now());
 		assertEquals(InvoiceState.CANCELLED, invoice.getState());
 		assertFalse(invoice.canBeEdited());
 		assertFalse(invoice.canBeDeleted());
@@ -180,12 +171,14 @@ public class InvoiceTest {
 	}
 	
 	/**
-	 * Test method for {@link Invoice#updateDueDate()}.
+	 * Test method for {@link Invoice#getDueDate()}.
 	 */
 	@Test
 	public void testDueDateUpdating() {
 		Invoice invoice = new Invoice();
-		invoice.setInvoiceDate(new Date());
+		invoice.setInvoiceDate(LocalDate.now());
+		assertNull(invoice.getDueDate());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
+		assertEquals(LocalDate.now().plusDays(PaymentTerms.getDefault().getFullPaymentTargetInDays()), invoice.getDueDate());
 	}
 }

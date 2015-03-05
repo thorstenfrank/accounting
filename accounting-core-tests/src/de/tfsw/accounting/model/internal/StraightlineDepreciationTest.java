@@ -16,8 +16,8 @@
 package de.tfsw.accounting.model.internal;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -36,7 +36,7 @@ public class StraightlineDepreciationTest extends DepreciationTestBase {
 	
 	private static Expense[] EXPENSES;
 	private static List<AnnualDepreciation[]> EXPECTED_PLANS;
-	private static Calendar[] EXPECTED_END;
+	private static LocalDate[] EXPECTED_END;
 	private static BigDecimal[] EXPECTED_ANNUAL_AMOUNTS;
 	private static BigDecimal[] EXPECTED_MONTHLY_AMOUNTS;
 	private static BigDecimal[] EXPECTED_TOTAL_AMOUNTS;
@@ -48,7 +48,7 @@ public class StraightlineDepreciationTest extends DepreciationTestBase {
 	public static void setUpBeforeClass() throws Exception {
 		EXPENSES = new Expense[NUMBER_OF_RUNS];
 		EXPECTED_PLANS = new ArrayList<AnnualDepreciation[]>(NUMBER_OF_RUNS);
-		EXPECTED_END = new Calendar[NUMBER_OF_RUNS];
+		EXPECTED_END = new LocalDate[NUMBER_OF_RUNS];
 		EXPECTED_ANNUAL_AMOUNTS = new BigDecimal[NUMBER_OF_RUNS];
 		EXPECTED_MONTHLY_AMOUNTS = new BigDecimal[NUMBER_OF_RUNS];
 		EXPECTED_TOTAL_AMOUNTS = new BigDecimal[NUMBER_OF_RUNS];
@@ -62,11 +62,8 @@ public class StraightlineDepreciationTest extends DepreciationTestBase {
 	 * @param index
 	 */
 	private static void buildExpectedOne(int index) {
-		EXPENSES[index] = createExpense(DepreciationMethod.STRAIGHTLINE, new BigDecimal("1738.58"), 2, Calendar.MAY, 2007, 3, BigDecimal.ONE);
-		EXPECTED_END[index] = Calendar.getInstance();
-		EXPECTED_END[index].set(Calendar.DAY_OF_MONTH, 2);
-		EXPECTED_END[index].set(Calendar.MONTH, Calendar.APRIL);
-		EXPECTED_END[index].set(Calendar.YEAR, 2010);
+		EXPENSES[index] = createExpense(DepreciationMethod.STRAIGHTLINE, new BigDecimal("1738.58"), 2, 5, 2007, 3, BigDecimal.ONE);
+		EXPECTED_END[index] = LocalDate.of(2010, 4, 2);
 		EXPECTED_ANNUAL_AMOUNTS[index] = new BigDecimal("579.19");
 		EXPECTED_MONTHLY_AMOUNTS[index] = new BigDecimal("48.27");
 		EXPECTED_TOTAL_AMOUNTS[index] = new BigDecimal("1737.58");
@@ -84,11 +81,8 @@ public class StraightlineDepreciationTest extends DepreciationTestBase {
 	 * @param index
 	 */
 	private static void buildExpectedTwo(int index) {
-		EXPENSES[index] = createExpense(DepreciationMethod.STRAIGHTLINE, new BigDecimal("3846.45"), 30, Calendar.OCTOBER, 2013, 6, new BigDecimal("355"));
-		EXPECTED_END[index] = Calendar.getInstance();
-		EXPECTED_END[index].set(Calendar.DAY_OF_MONTH, 30);
-		EXPECTED_END[index].set(Calendar.MONTH, Calendar.SEPTEMBER);
-		EXPECTED_END[index].set(Calendar.YEAR, 2019);
+		EXPENSES[index] = createExpense(DepreciationMethod.STRAIGHTLINE, new BigDecimal("3846.45"), 30, 10, 2013, 6, new BigDecimal("355"));
+		EXPECTED_END[index] = LocalDate.of(2019, 9, 30);
 		EXPECTED_ANNUAL_AMOUNTS[index] = new BigDecimal("581.91");
 		EXPECTED_MONTHLY_AMOUNTS[index] = new BigDecimal("48.49");
 		EXPECTED_TOTAL_AMOUNTS[index] = new BigDecimal("3491.45");
@@ -135,7 +129,7 @@ public class StraightlineDepreciationTest extends DepreciationTestBase {
 	 * @param testRunIndex
 	 * @return
 	 */
-	protected Calendar getExpectedEnd(int testRunIndex) {
+	protected LocalDate getExpectedEnd(int testRunIndex) {
 		return EXPECTED_END[testRunIndex];
 	}
 	

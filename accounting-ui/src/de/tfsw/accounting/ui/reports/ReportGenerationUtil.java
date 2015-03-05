@@ -17,7 +17,6 @@ package de.tfsw.accounting.ui.reports;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -97,19 +96,10 @@ public class ReportGenerationUtil {
 		
 		StringBuffer sb = new StringBuffer(fileNameBase);
 		
-    	Calendar from = Calendar.getInstance();
-    	from.setTime(timeFrame.getFrom());
-    	Calendar until = Calendar.getInstance();
-    	until.setTime(timeFrame.getUntil());
-    	
-    	if (from.get(Calendar.YEAR) == until.get(Calendar.YEAR)) {
-    		sb.append(Constants.UNDERSCORE).append(from.get(Calendar.YEAR));
-        	if (from.get(Calendar.MONTH) == until.get(Calendar.MONTH)) {
-        		int month = from.get(Calendar.MONTH) + 1;
-        		if (month < 10) { // prepend a zero to single-digit months
-        			sb.append("0"); //$NON-NLS-1$
-        		}
-        		sb.append(month);
+    	if (timeFrame.isInSameYear()) {
+    		sb.append(Constants.UNDERSCORE).append(timeFrame.getFromYear());
+        	if (timeFrame.isInSameMonth()) {
+        		sb.append(String.format("%02d", timeFrame.getFromMonth()));
         	}
     	}
 		

@@ -166,9 +166,9 @@ public abstract class AbstractReportDialog extends TrayDialog {
 		WidgetHelper.grabHorizontal(years);
 		yearIndexMap = new ArrayList<Integer>();
 		ModelMetaInformation meta = AccountingUI.getAccountingService().getModelMetaInformation();
-		int oldest = meta.getOldestKnownExpenseDate().after(meta.getOldestKnownInvoiceDate()) ? 
-				meta.getOldestKnownInvoiceDate().get(Calendar.YEAR) : 
-					meta.getOldestKnownExpenseDate().get(Calendar.YEAR);
+		int oldest = meta.getOldestKnownExpenseDate().isAfter(meta.getOldestKnownInvoiceDate()) 
+				? meta.getOldestKnownInvoiceDate().getYear() 
+				: meta.getOldestKnownExpenseDate().getYear();
 		for (int i = oldest; i <= currentYear; i++) {
 			years.add(Integer.toString(i));
 			yearIndexMap.add(i);

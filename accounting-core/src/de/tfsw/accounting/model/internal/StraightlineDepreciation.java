@@ -18,16 +18,14 @@ package de.tfsw.accounting.model.internal;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import de.tfsw.accounting.model.AnnualDepreciation;
 import de.tfsw.accounting.model.Expense;
-import de.tfsw.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -54,11 +52,6 @@ class StraightlineDepreciation implements Depreciation {
 	 * Default scale for monetary amounts: 2
 	 */
 	private static final int SCALE = 2;
-	
-	/**
-	 * 
-	 */
-	private static final int MONTHS_IN_YEAR = 12;
 	
 	/**
 	 * The expense being depreciated
@@ -109,7 +102,7 @@ class StraightlineDepreciation implements Depreciation {
 	 * @return
 	 */
 	private BigDecimal getMonthlyDepreciationAmountUnrounded() {
-		return getAnnualDepreciationAmountUnrounded().divide(new BigDecimal(MONTHS_IN_YEAR), MATH_CONTEXT);
+		return getAnnualDepreciationAmountUnrounded().divide(new BigDecimal(12), MATH_CONTEXT);
 	}
 	
 	/**
@@ -135,23 +128,25 @@ class StraightlineDepreciation implements Depreciation {
 
 		LOG.debug("Annual amount: " + annualDepreciationAmount.toString()); //$NON-NLS-1$
 		
-		// calculate the number of months in the purchase year
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(expense.getPaymentDate());
-		LOG.debug("Payment date was: " + FormatUtil.formatDate(expense.getPaymentDate())); //$NON-NLS-1$
+		LocalDate paymentDate = expense.getPaymentDate();
 		
-		final int startingYear = cal.get(Calendar.YEAR);
+		// calculate the number of months in the purchase year
+		LOG.debug("Payment date was: " + paymentDate.toString()); //$NON-NLS-1$
+		
+		final int startingYear = paymentDate.getYear();
 		
 		LOG.debug("Starting year: " + startingYear); //$NON-NLS-1$
 		
-		final int monthsFirstYear = MONTHS_IN_YEAR - cal.get(Calendar.MONTH);
+		// calculate the number of months that the first year of depreciation includes,
+		// e.g. 12 months if the expense was bought in january, 6 months if it was bought in July, 1 month if december
+		final int monthsFirstYear = 13 - paymentDate.getMonthValue();
 		
 		LOG.debug("Months considered in first year: " + monthsFirstYear); //$NON-NLS-1$
 		
 		int finalYear = startingYear + expense.getDepreciationPeriodInYears();
 		
 		// cut off the final (partial) year if the expense was made in january
-		if (monthsFirstYear == MONTHS_IN_YEAR) {
+		if (monthsFirstYear == 12) {
 			finalYear--;
 		}
 		
@@ -217,13 +212,9 @@ class StraightlineDepreciation implements Depreciation {
 	 * @return the depreciationEnd
 	 */
 	@Override
-    public Date getDepreciationEnd() {
+    public LocalDate getDepreciationEnd() {
 		if (expense != null && expense.getPaymentDate() != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(expense.getPaymentDate());
-			cal.add(Calendar.YEAR, expense.getDepreciationPeriodInYears());
-			cal.add(Calendar.MONTH, -1);
-			return cal.getTime();
+			return expense.getPaymentDate().plusYears(expense.getDepreciationPeriodInYears()).minusMonths(1);
 		}
 		return null;
 	}

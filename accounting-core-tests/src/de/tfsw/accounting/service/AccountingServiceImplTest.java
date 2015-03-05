@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.junit.After;
 import org.junit.Before;
@@ -320,7 +320,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
         }
 		
 		// test checks regarding Invoice State
-		invoice.setSentDate(new Date());
+		invoice.setSentDate(LocalDate.now());
 		try {
 	        serviceUnderTest.saveInvoice(invoice);
 	        fail("Invoice with state [SENT] should not have been saved properly");
@@ -328,7 +328,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	        // this is what we want	
         }
 		
-		invoice.setCancelledDate(new Date());
+		invoice.setCancelledDate(LocalDate.now());
 		try {
 	        serviceUnderTest.saveInvoice(invoice);
 	        fail("Invoice with state [CANCELLED] should not have been saved properly");
@@ -337,7 +337,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
         }
 
 		// reset values to make the Invoice saveable
-		invoice.setCreationDate(new Date());
+		invoice.setCreationDate(LocalDate.now());
 		invoice.setSentDate(null);
 		invoice.setCancelledDate(null);
 		invoice.setUser(getTestUser());
@@ -365,7 +365,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		// nothing should happen
 		assertNull(serviceUnderTest.sendInvoice(null, null));
 		
-		final Date today = new Date();
+		final LocalDate today = LocalDate.now();
 		
 		// try to send a cancelled invoice - should yield an exception
 		invoice.setCancelledDate(today);
@@ -396,8 +396,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		}
 		
 		// prepare the invoice for a proper save
-		invoice.setInvoiceDate(new Date());
-		invoice.setCreationDate(new Date());
+		invoice.setInvoiceDate(LocalDate.now());
+		invoice.setCreationDate(LocalDate.now());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		invoice.setUser(getTestUser());
 		
@@ -414,7 +414,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		Invoice invoice = new Invoice();
 		invoice.setUser(getTestUser());
 		invoice.setClient(new Client());
-		invoice.setCreationDate(new Date());
+		invoice.setCreationDate(LocalDate.now());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		// mock behavior
@@ -431,7 +431,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		serviceUnderTest.markAsPaid(invoice, null);
 		assertNull(invoice.getPaymentDate());
 		
-		final Date paymentDate = new Date();
+		final LocalDate paymentDate = LocalDate.now();
 		
 		try {
 	        serviceUnderTest.markAsPaid(invoice, paymentDate);
@@ -440,7 +440,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	        // this is what we want
         }
 		
-		invoice.setSentDate(new Date());
+		invoice.setSentDate(LocalDate.now());
 		
 		Invoice paid = serviceUnderTest.markAsPaid(invoice, paymentDate);
 		assertEquals(invoice, paid);
@@ -455,8 +455,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		assertNull(serviceUnderTest.cancelInvoice(null));
 		
 		Invoice invoice = new Invoice();
-		invoice.setCreationDate(new Date());
-		invoice.setSentDate(new Date());
+		invoice.setCreationDate(LocalDate.now());
+		invoice.setSentDate(LocalDate.now());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		ocMock.store(invoice);
@@ -570,8 +570,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		serviceUnderTest.deleteInvoice(invoice);
 		
 		// try deleting an invoice in an advanced state
-		invoice.setCreationDate(new Date());
-		invoice.setSentDate(new Date());
+		invoice.setCreationDate(LocalDate.now());
+		invoice.setSentDate(LocalDate.now());
 		invoice.setPaymentTerms(PaymentTerms.getDefault());
 		
 		try {

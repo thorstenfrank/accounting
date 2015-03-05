@@ -16,9 +16,8 @@
 package de.tfsw.accounting.model.internal;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import de.tfsw.accounting.model.AnnualDepreciation;
@@ -49,7 +48,7 @@ class ImmediateWriteOff implements Depreciation {
 	 * @see Depreciation#getDepreciationEnd()
 	 */
 	@Override
-	public Date getDepreciationEnd() {
+	public LocalDate getDepreciationEnd() {
 		return expense.getPaymentDate();
 	}
 
@@ -62,9 +61,7 @@ class ImmediateWriteOff implements Depreciation {
 		List<AnnualDepreciation> schedule = new ArrayList<AnnualDepreciation>();
 		
 		AnnualDepreciation ad = new AnnualDepreciation();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(expense.getPaymentDate());
-		ad.setYear(cal.get(Calendar.YEAR));
+		ad.setYear(expense.getPaymentDate().getYear());
 		ad.setAccumulatedDepreciation(expense.getNetAmount());
 		ad.setBeginningOfYearBookValue(expense.getNetAmount());
 		ad.setDepreciationAmount(expense.getNetAmount());

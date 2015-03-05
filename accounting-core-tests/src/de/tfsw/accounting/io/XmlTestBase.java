@@ -20,9 +20,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -66,22 +65,17 @@ class XmlTestBase extends BaseTestFixture {
 		invoice.setPaymentTerms(getTestClient().getDefaultPaymentTerms());
 		invoice.setUser(getTestUser());
 
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.YEAR, 2011);
-		invoice.setCreationDate(cal.getTime());
-		invoice.setInvoiceDate(cal.getTime());
-		invoice.setSentDate(cal.getTime());
+		LocalDate date = LocalDate.of(2011, 1, 1);
+		invoice.setCreationDate(date);
+		invoice.setInvoiceDate(date);
+		invoice.setSentDate(date);
 		
-		cal.add(Calendar.DAY_OF_MONTH, invoice.getPaymentTerms().getFullPaymentTargetInDays());
-		invoice.setPaymentDate(cal.getTime());
+		invoice.setPaymentDate(date.plusDays(invoice.getPaymentTerms().getFullPaymentTargetInDays()));
 
 		InvoicePosition ip = new InvoicePosition();
 		ip.setDescription("JUnitInvoicePosition");
 		ip.setPricePerUnit(new BigDecimal("55"));
 		ip.setQuantity(new BigDecimal("100.5"));
-		ip.setRevenueRelevant(true);
 		ip.setTaxRate(invoice.getUser().getTaxRates().iterator().next());
 		ip.setUnit("JUnitUnit");
 		
@@ -103,11 +97,7 @@ class XmlTestBase extends BaseTestFixture {
 		expense.setDescription("ExpenseDescription");
 		expense.setExpenseType(type);
 		expense.setNetAmount(new BigDecimal("20.23"));
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.YEAR, 2011);
-		expense.setPaymentDate(cal.getTime());
+		expense.setPaymentDate(LocalDate.of(2011, 1, 1));
 		if (includeVAT) {
 			expense.setTaxRate(getTestUser().getTaxRates().iterator().next());
 		}
@@ -262,18 +252,15 @@ class XmlTestBase extends BaseTestFixture {
 	 * @param date
 	 * @param xmlDate
 	 */
-	protected void assertDatesSame(Date date, XMLGregorianCalendar xmlDate) {
+	protected void assertDatesSame(LocalDate date, XMLGregorianCalendar xmlDate) {
 		if (date == null) {
 			assertNull(xmlDate);
 			return;
 		} else {
 			assertNotNull(xmlDate);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			
-			assertEquals(cal.get(Calendar.DAY_OF_MONTH), xmlDate.getDay());
-			assertEquals(cal.get(Calendar.MONTH) + 1, xmlDate.getMonth());
-			assertEquals(cal.get(Calendar.YEAR), xmlDate.getYear());
+			assertEquals(date.getDayOfMonth(), xmlDate.getDay());
+			assertEquals(date.getMonthValue(), xmlDate.getMonth());
+			assertEquals(date.getYear(), xmlDate.getYear());
 		}
 	}
 	

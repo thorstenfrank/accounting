@@ -18,8 +18,7 @@ package de.tfsw.accounting.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.junit.Test;
 
@@ -31,11 +30,6 @@ import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.PaymentTerms;
 import de.tfsw.accounting.model.User;
-import de.tfsw.accounting.service.FindCurrentUserPredicate;
-import de.tfsw.accounting.service.FindExpensesPredicate;
-import de.tfsw.accounting.service.FindInvoicesForClientPredicate;
-import de.tfsw.accounting.service.FindInvoicesForRevenuePredicate;
-import de.tfsw.accounting.service.FindInvoicesPredicate;
 import de.tfsw.accounting.util.TimeFrame;
 
 /**
@@ -81,8 +75,8 @@ public class PredicateTests extends BaseTestFixture {
 		candidate.setUser(getTestUser());
 		assertTrue(predicate.match(candidate));
 		
-		candidate.setCreationDate(new Date());
-		candidate.setSentDate(new Date());
+		candidate.setCreationDate(LocalDate.now());
+		candidate.setSentDate(LocalDate.now());
 		candidate.setPaymentTerms(PaymentTerms.getDefault());
 		assertTrue(predicate.match(candidate));
 		
@@ -90,7 +84,7 @@ public class PredicateTests extends BaseTestFixture {
 		
 		assertTrue(predicate.match(candidate));
 		
-		candidate.setCancelledDate(new Date());
+		candidate.setCancelledDate(LocalDate.now());
 		assertFalse(predicate.match(candidate));
 	}
 	
@@ -99,36 +93,28 @@ public class PredicateTests extends BaseTestFixture {
 	 */
 	@Test
 	public void testFindInvoicesForRevenuePredicate() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 2);
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.YEAR, 2012);
-		
-		final Date from = cal.getTime();
-		cal.set(Calendar.DAY_OF_MONTH, 30);
-		final Date until = cal.getTime();
-		TimeFrame timeFrame = new TimeFrame(from, until);
+		TimeFrame timeFrame = new TimeFrame(LocalDate.of(2012, 1, 2), LocalDate.of(2012, 1, 30));
 		
 		FindInvoicesForRevenuePredicate predicate = new FindInvoicesForRevenuePredicate(timeFrame);
-		
+				
 		Invoice invoice = new Invoice();
-		invoice.setCreationDate(cal.getTime()); // actual date doesn't matter, just need this to get state CREATED		
+		invoice.setCreationDate(LocalDate.of(2012, 1, 2)); // actual date doesn't matter, just need this to get state CREATED		
 		assertFalse(predicate.match(invoice));
 		
-		cal.set(Calendar.DAY_OF_MONTH, 15);
-		invoice.setPaymentDate(cal.getTime());
-		invoice.setCancelledDate(cal.getTime()); // Invoice was paid, but also cancelled - should be ignored
+		// even though the payment date is in range, it was cancelled, so it should be ignored by the predicate
+		invoice.setPaymentDate(LocalDate.of(2012, 1, 15));
+		invoice.setCancelledDate(invoice.getPaymentDate()); // Invoice was paid, but also cancelled - should be ignored
 		assertFalse(predicate.match(invoice));
 		
 		invoice.setCancelledDate(null);
 		assertTrue(predicate.match(invoice));
 		
-		cal.set(Calendar.DAY_OF_MONTH, 1); // outside of range
-		invoice.setPaymentDate(cal.getTime());
+		// outside of range (one day before)
+		invoice.setPaymentDate(LocalDate.of(2012, 1, 1));
 		assertFalse(predicate.match(invoice));
 		
-		cal.set(Calendar.DAY_OF_MONTH, 31); // outside of range
-		invoice.setPaymentDate(cal.getTime());
+		// outside of range (one day late)
+		invoice.setPaymentDate(LocalDate.of(2012, 1, 31));
 		assertFalse(predicate.match(invoice));
 	}
 	
@@ -156,27 +142,24 @@ public class PredicateTests extends BaseTestFixture {
 	public void testFindExpensesPredicate() {
 		FindExpensesPredicate predicate = new FindExpensesPredicate();
 		
-		Calendar cal = Calendar.getInstance();
+		LocalDate date = LocalDate.now();
 		Expense expense = new Expense();
 		expense.setExpenseType(ExpenseType.OPEX);
-		expense.setPaymentDate(cal.getTime());
+		expense.setPaymentDate(date);
 		
 		assertTrue(predicate.match(expense));
 		
 		predicate = new FindExpensesPredicate(TimeFrame.currentMonth());
 		assertTrue(predicate.match(expense));
 		
-		cal.add(Calendar.MONTH, -1);
-		expense.setPaymentDate(cal.getTime());
+		expense.setPaymentDate(date.minusMonths(1));
 		assertFalse(predicate.match(expense));
 		
-		cal.add(Calendar.MONTH, 2);
-		expense.setPaymentDate(cal.getTime());
+		expense.setPaymentDate(date.plusMonths(2));
 		assertFalse(predicate.match(expense));
 		
 		// and back to the original date
-		cal = Calendar.getInstance();
-		expense.setPaymentDate(cal.getTime());
+		expense.setPaymentDate(LocalDate.now());
 		
 		predicate = new FindExpensesPredicate(TimeFrame.currentMonth(), ExpenseType.CAPEX, ExpenseType.OTHER);
 		assertFalse(predicate.match(expense));

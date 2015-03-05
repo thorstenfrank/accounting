@@ -15,13 +15,17 @@
  */
 package de.tfsw.accounting.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +50,6 @@ import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.PaymentTerms;
 import de.tfsw.accounting.model.PaymentType;
 import de.tfsw.accounting.model.User;
-import de.tfsw.accounting.service.AccountingServiceImpl;
 import de.tfsw.accounting.util.TimeFrame;
 
 /**
@@ -410,13 +413,13 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		e1.setDescription("Expense 1");
 		e1.setExpenseType(ExpenseType.OPEX);
 		e1.setNetAmount(new BigDecimal("125"));
-		e1.setPaymentDate(buildDate(1, 0, 2012));
+		e1.setPaymentDate(LocalDate.of(2012, 1, 1));
 		
 		Expense e2 = new Expense();
 		e2.setDescription("Expense 2");
 		e2.setExpenseType(ExpenseType.OPEX);
 		e2.setNetAmount(new BigDecimal("200"));
-		e2.setPaymentDate(buildDate(31, 0, 2012));
+		e2.setPaymentDate(LocalDate.of(2012, 1, 31));
 		
 		List<Expense> expenses = new ArrayList<Expense>();
 		expenses.add(e1);
@@ -431,13 +434,13 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		e3.setDescription("Expense 3");
 		e3.setExpenseType(ExpenseType.CAPEX);
 		e3.setNetAmount(new BigDecimal("300"));
-		e3.setPaymentDate(buildDate(31, 1, 2012));		
+		e3.setPaymentDate(LocalDate.of(2012, 2, 28));
 		serviceUnderTest.saveExpense(e3);
 
 		ec = serviceUnderTest.findExpenses(null);
 		assertEquals(3, ec.getExpenses().size());
 		
-		ec = serviceUnderTest.findExpenses(new TimeFrame(buildDate(1, 0, 2012), buildDate(30, 0, 2012)));
+		ec = serviceUnderTest.findExpenses(new TimeFrame(LocalDate.of(2012, 1, 1), LocalDate.of(2012, 1, 30)));
 		assertEquals(1, ec.getExpenses().size());
 		
 		Expense fromService = ec.getExpenses().iterator().next();
@@ -468,26 +471,26 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 		
 		Expense expense = new Expense();
 		expense.setDescription("Desc1");
-		expense.setPaymentDate(new Date());
+		expense.setPaymentDate(LocalDate.now());
 		expense.setCategory(cat2);
 		serviceUnderTest.saveExpense(expense);
 		
 		expense = new Expense();
 		expense.setDescription("Desc2");
 		expense.setCategory(cat2);
-		expense.setPaymentDate(new Date());
+		expense.setPaymentDate(LocalDate.now());
 		serviceUnderTest.saveExpense(expense);
 		
 		expense = new Expense();
 		expense.setDescription("Desc3");
 		expense.setCategory(cat1);
-		expense.setPaymentDate(new Date());
+		expense.setPaymentDate(LocalDate.now());
 		serviceUnderTest.saveExpense(expense);
 
 		expense = new Expense();
 		expense.setDescription("Desc4");
 		expense.setCategory(null);
-		expense.setPaymentDate(new Date());
+		expense.setPaymentDate(LocalDate.now());
 		serviceUnderTest.saveExpense(expense);
 		
 		List<String> categories = 

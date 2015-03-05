@@ -17,12 +17,12 @@ package de.tfsw.accounting.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -179,10 +179,10 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		LOG.debug("Looking for oldest expense and all expense categories"); //$NON-NLS-1$
 		
-		Date oldestExpenseDate = new Date();
+		LocalDate oldestExpenseDate = LocalDate.now();
 		Set<String> expenseCategories = new TreeSet<String>();
 		for (Expense expense : expenses) {
-			if (expense.getPaymentDate() != null && oldestExpenseDate.after(expense.getPaymentDate())) {
+			if (expense.getPaymentDate() != null && oldestExpenseDate.isAfter(expense.getPaymentDate())) {
 				oldestExpenseDate = expense.getPaymentDate();
 			}
 			
@@ -195,24 +195,20 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("Number of categories found: " + expenseCategories.size()); //$NON-NLS-1$
 		modelMetaInformation.setExpenseCategories(expenseCategories);
 		
-		LOG.debug("Oldest known expense is from: " + FormatUtil.formatDate(oldestExpenseDate)); //$NON-NLS-1$
-		Calendar oldestExpense = Calendar.getInstance();
-		oldestExpense.setTime(oldestExpenseDate);
-		modelMetaInformation.setOldestExpense(oldestExpense);
+		LOG.debug("Oldest known expense is from: " + oldestExpenseDate.toString()); //$NON-NLS-1$
+		modelMetaInformation.setOldestExpense(oldestExpenseDate);
 		
 		ObjectSet<Invoice> invoices = objectContainer.query(Invoice.class);
 		LOG.debug("Searching for oldest invoice, total found: " + invoices.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfInvoices(invoices.size());
-		Date oldestInvoiceDate = new Date();
+		LocalDate oldestInvoiceDate = LocalDate.now();
 		for (Invoice invoice : invoices) {
-			if (invoice.getInvoiceDate() != null && oldestInvoiceDate.after(invoice.getInvoiceDate())) {
+			if (invoice.getInvoiceDate() != null && oldestInvoiceDate.isAfter(invoice.getInvoiceDate())) {
 				oldestInvoiceDate = invoice.getInvoiceDate();
 			}
 		}
-		LOG.debug("Oldest invoice is from: " + FormatUtil.formatDate(oldestInvoiceDate)); //$NON-NLS-1$
-		Calendar oldestInvoice = Calendar.getInstance();
-		oldestInvoice.setTime(oldestInvoiceDate);
-		modelMetaInformation.setOldestInvoice(oldestInvoice);
+		LOG.debug("Oldest invoice is from: " + oldestInvoiceDate.toString()); //$NON-NLS-1$
+		modelMetaInformation.setOldestInvoice(oldestInvoiceDate);
     }
 
 	/**
@@ -496,7 +492,7 @@ public class AccountingServiceImpl implements AccountingService {
 		invoice.setNumber(invoiceNumber);
 		invoice.setUser(getCurrentUser());
 		invoice.setClient(client);
-		invoice.setInvoiceDate(new Date());
+		invoice.setInvoiceDate(LocalDate.now());
 
 		// assign payment terms
 		if (client.getDefaultPaymentTerms() != null) {
@@ -550,7 +546,7 @@ public class AccountingServiceImpl implements AccountingService {
 		if (invoice.getCreationDate() == null) {
 			LOG.info("Saving invoice for the first time: " + invoice.getNumber()); //$NON-NLS-1$
 			validateInvoiceNumberNotYetUsed(invoice.getNumber());
-			invoice.setCreationDate(new Date());
+			invoice.setCreationDate(LocalDate.now());
 			updateInvoiceSequencer(invoice.getNumber());
 		}
 
@@ -559,9 +555,8 @@ public class AccountingServiceImpl implements AccountingService {
 		BUSINESS_LOG.info("Saved invoice: " + invoice.getNumber()); //$NON-NLS-1$
 		
 		// update model meta info if necessary
-		if (invoice.getInvoiceDate() != null && 
-				modelMetaInformation.getOldestKnownInvoiceDate().getTime().after(invoice.getInvoiceDate())) {
-			modelMetaInformation.getOldestKnownInvoiceDate().setTime(invoice.getInvoiceDate());
+		if (invoice.getInvoiceDate() != null && modelMetaInformation.getOldestKnownInvoiceDate().isAfter(invoice.getInvoiceDate())) {
+			modelMetaInformation.setOldestInvoice(invoice.getInvoiceDate());
 		}
 		
 		
@@ -571,10 +566,10 @@ public class AccountingServiceImpl implements AccountingService {
 	/**
 	 * {@inheritDoc}.
 	 * 
-	 * @see de.tfsw.accounting.AccountingService#sendInvoice(Invoice, Date)
+	 * @see de.tfsw.accounting.AccountingService#sendInvoice(Invoice, LocalDate)
 	 */
 	@Override
-	public Invoice sendInvoice(Invoice invoice, Date sentDate) {
+	public Invoice sendInvoice(Invoice invoice, LocalDate sentDate) {
 		if (invoice == null) {
 			LOG.warn("Trying to send invoice which is [null]. Aborting..."); //$NON-NLS-1$
 			return null;
@@ -592,7 +587,7 @@ public class AccountingServiceImpl implements AccountingService {
 		if (invoice.getDueDate() == null) {
 			LOG.error("Cannot send an invoice without a due date: " + invoice.getNumber());
 			throw new AccountingException(Messages.AccountingService_errorCannotSendInvoiceWithoutDueDate);
-		} else if (invoice.getDueDate().before(sentDate)) {
+		} else if (invoice.getDueDate().isBefore(sentDate)) {
 			final String dueDate = FormatUtil.formatDate(invoice.getDueDate());
 			LOG.error(String.format("Invoice [%s] has a due date in the past (%s), cannot send!",  //$NON-NLS-1$
 					invoice.getNumber(), dueDate));
@@ -615,10 +610,10 @@ public class AccountingServiceImpl implements AccountingService {
 		
 	/**
      * {@inheritDoc}.
-     * @see de.tfsw.accounting.AccountingService#markAsPaid(de.tfsw.accounting.model.Invoice, java.util.Date)
+     * @see de.tfsw.accounting.AccountingService#markAsPaid(Invoice, LocalDate)
      */
     @Override
-    public Invoice markAsPaid(Invoice invoice, Date paymentDate) {
+    public Invoice markAsPaid(Invoice invoice, LocalDate paymentDate) {
     	if (invoice == null) {
     		LOG.warn("Trying to mark invoice [null] as paid, ignoring this service call"); //$NON-NLS-1$
     		return null;
@@ -659,7 +654,7 @@ public class AccountingServiceImpl implements AccountingService {
     		throw new AccountingException("This invoice cannot be cancelled");
     	}
     	
-    	invoice.setCancelledDate(new Date());
+    	invoice.setCancelledDate(LocalDate.now());
     	doStoreEntity(invoice);
     	
     	BUSINESS_LOG.info("Invoice was cancelled: " + invoice.getNumber()); //$NON-NLS-1$
@@ -825,7 +820,7 @@ public class AccountingServiceImpl implements AccountingService {
     public List<Revenue> getRevenueByYears() {
     	List<Revenue> totalRevenue = new ArrayList<Revenue>();
     	
-    	// get all invoices
+    	// get all paid invoices
     	List<Invoice> allInvoices = new ArrayList<Invoice>(findInvoices(InvoiceState.PAID));
     	
     	if (allInvoices.isEmpty()) {
@@ -841,9 +836,7 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	for (Invoice invoice : allInvoices) {
     		// get year
-    		Calendar cal = Calendar.getInstance();
-    		cal.setTime(invoice.getPaymentDate());
-    		int tempCurrentYear = cal.get(Calendar.YEAR);
+    		int tempCurrentYear = invoice.getPaymentDate().getYear();
     		
     		if (tempCurrentYear != currentYear) {
     			if (currentYear > 0) {
@@ -857,12 +850,11 @@ public class AccountingServiceImpl implements AccountingService {
     			LOG.debug("Collecting revenue for new year: " + tempCurrentYear);
     			// start up the new year
     			currentRevenue = new Revenue();
-    			currentRevenue.setTimeFrame(new TimeFrame(invoice.getPaymentDate(), invoice.getPaymentDate()));
+    			currentRevenue.setTimeFrame(TimeFrame.ofYear(invoice.getPaymentDate().getYear()));
     			currentInvoices = new ArrayList<Invoice>();
     			currentYear = tempCurrentYear;
     		}
     		
-    		currentRevenue.getTimeFrame().setUntil(invoice.getPaymentDate());
     		currentInvoices.add(invoice);
     	}
     	
@@ -924,9 +916,8 @@ public class AccountingServiceImpl implements AccountingService {
      * @param expense
      */
     private void checkAndUpdateMetaInfo(Expense expense) {
-    	if (expense.getPaymentDate() != null && 
-    			modelMetaInformation.getOldestKnownExpenseDate().getTime().after(expense.getPaymentDate())) {
-    		modelMetaInformation.getOldestKnownExpenseDate().setTime(expense.getPaymentDate());
+    	if (expense.getPaymentDate() != null && modelMetaInformation.getOldestKnownExpenseDate().isAfter(expense.getPaymentDate())) {
+    		modelMetaInformation.setOldestExpense(expense.getPaymentDate());
     	}
     	
     	if (expense.getCategory() != null) {

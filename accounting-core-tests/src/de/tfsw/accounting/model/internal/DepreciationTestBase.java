@@ -18,7 +18,7 @@ package de.tfsw.accounting.model.internal;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.Test;
@@ -81,7 +81,7 @@ public abstract class DepreciationTestBase extends BaseTestFixture {
 	 * @param testRunIndex
 	 * @return
 	 */
-	protected abstract Calendar getExpectedEnd(int testRunIndex);
+	protected abstract LocalDate getExpectedEnd(int testRunIndex);
 	
 	/**
 	 * 
@@ -120,11 +120,7 @@ public abstract class DepreciationTestBase extends BaseTestFixture {
 		ex.setDepreciationPeriodInYears(period);
 		ex.setExpenseType(ExpenseType.CAPEX);
 		ex.setNetAmount(amount);
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, day);
-		cal.set(Calendar.MONTH, month);
-		cal.set(Calendar.YEAR, year);
-		ex.setPaymentDate(cal.getTime());
+		ex.setPaymentDate(LocalDate.of(year, month, day));
 		ex.setSalvageValue(salvage);
 		
 		return ex;

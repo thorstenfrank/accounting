@@ -15,8 +15,11 @@
  */
 package de.tfsw.accounting.ui;
 
+import java.time.DateTimeException;
+import java.time.Month;
+import java.time.Year;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,10 +47,7 @@ import de.tfsw.accounting.util.TimeFrameType;
  */
 public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccountingHandler {
 	
-	/**
-	 * 
-	 */
-	private static final int INDEX_WHOLE_YEAR = Calendar.DECEMBER + 1;
+	private static final int SELECTION_WHOLE_YEAR = 0;
 	
 	private TimeFrame currentTimeFrame;
 	private boolean timeFrameActive = true;
@@ -62,7 +62,7 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 * 
 	 * @return
 	 */
-	protected abstract Calendar getStartDateForYearSelector();
+	protected abstract int getStartDateForYearSelector();
 	
 	/**
 	 * @return the currentTimeFrame
@@ -110,12 +110,11 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		WidgetHelper.createLabel(group, Messages.labelMonth);
 		months = new Combo(group, SWT.READ_ONLY);
 		months.setEnabled(enabledByDefault);
-		Calendar cal = Calendar.getInstance();
-		for (int i = 0;i <= Calendar.DECEMBER; i++) {
-			cal.set(Calendar.MONTH, i);
-			months.add(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+		months.add(TimeFrameType.WHOLE_YEAR.getTranslatedName(), SELECTION_WHOLE_YEAR);
+		
+		for (Month month : Month.values()) {
+			months.add(month.getDisplayName(TextStyle.FULL, Locale.getDefault()), month.getValue());
 		}
-		months.add(TimeFrameType.WHOLE_YEAR.getTranslatedName());
 		createMonthsSelectionListener();
 		
 		// YEAR COMBO
@@ -124,9 +123,11 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		years.setEnabled(enabledByDefault);
 		WidgetHelper.grabHorizontal(years);
 		yearIndexMap = new ArrayList<Integer>();
-		for (int i = getStartDateForYearSelector().get(Calendar.YEAR); i <= cal.get(Calendar.YEAR); i++) {
-			years.add(Integer.toString(i));
-			yearIndexMap.add(i);
+		int index = 0;
+		for (int year = getStartDateForYearSelector(); year <= Year.now().getValue(); year++) {
+			years.add(Integer.toString(year), index);
+			yearIndexMap.add(index, year);
+			index++;
 		}
 		createYearsSelectionListener();
 		
@@ -170,7 +171,7 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		buildTimeFrameTypeButton(TimeFrameType.CURRENT_YEAR, presetsCombo);
 		buildTimeFrameTypeButton(TimeFrameType.LAST_YEAR, presetsCombo);
 		
-		currentTimeFrameChanged();
+		currentTimeFrameChanged(true);
 		
 		return group;
 	}
@@ -206,23 +207,23 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				currentTimeFrame = timeFrame;
-				currentTimeFrameChanged();
+				currentTimeFrameChanged(true);
 			}
 		});
 		return b;
 	}
 	
-
-	
 	/**
 	 * 
 	 */
-	private void currentTimeFrameChanged() {
+	private void currentTimeFrameChanged(boolean updateCombos) {
 		WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
 		WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), to);
 		getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
 		
-		updateComboSelections();
+		if (updateCombos) {
+			updateComboSelections();
+		}
 	}
 	
 	/**
@@ -230,26 +231,24 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 */
 	private void updateComboSelections() {
 		getLogger().debug("Current time frame type is now: " + currentTimeFrame.getType().name());
-		int monthIndex = -1;
-		int yearIndex = -1;
-		
-		yearIndex = yearIndexMap.indexOf(currentTimeFrame.getFromYear());
-		monthIndex = currentTimeFrame.getFromMonth();
-
 		switch (currentTimeFrame.getType()) {
 		case CURRENT_YEAR:
 		case LAST_YEAR:
 		case WHOLE_YEAR:
-			monthIndex = INDEX_WHOLE_YEAR;
+			months.select(SELECTION_WHOLE_YEAR);
+			years.select(yearIndexMap.indexOf(currentTimeFrame.getFromYear()));
+			break;
+		case CURRENT_MONTH:
+		case LAST_MONTH:
+		case SINGLE_MONTH:
+			months.select(currentTimeFrame.getFromMonth());
+			years.select(yearIndexMap.indexOf(currentTimeFrame.getFromYear()));
 			break;
 		case CUSTOM:
-			monthIndex = -1;
-			yearIndex = -1;
+			months.select(-1);
+			years.select(-1);
 			break;
 		}
-		
-		months.select(monthIndex);
-		years.select(yearIndex);
 	}
 	
 	/**
@@ -272,11 +271,11 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		years.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), false);
-				if (months.getSelectionIndex() < 0) {
-					months.select(INDEX_WHOLE_YEAR);
+				currentTimeFrame.setYear(Integer.parseInt(years.getItem(years.getSelectionIndex())), false);
+				if (months.getSelectionIndex() < SELECTION_WHOLE_YEAR) {
+					months.select(SELECTION_WHOLE_YEAR);
 				}
-				currentTimeFrameChanged();
+				currentTimeFrameChanged(false);
 			}
 		});
 	}
@@ -288,15 +287,19 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		months.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (months.getSelectionIndex() <= Calendar.DECEMBER) {
+				
+				try {
 					currentTimeFrame.setMonth(months.getSelectionIndex());
-				} else {
-					if (years.getSelectionIndex() < 0) {
+				} catch (DateTimeException ex) {
+					// this happens when the user selects WHOLE_YEAR (index = 0)
+					final int selectionIndex = years.getSelectionIndex();
+					if (selectionIndex < 0) {
+						// nothing selected at the moment - we'll choose the most recent year
 						years.select(years.getItemCount() - 1);
 					}
-					currentTimeFrame.setYear(yearIndexMap.get(years.getSelectionIndex()), true);
-				}
-				currentTimeFrameChanged();
+					currentTimeFrame.setYear(Integer.parseInt(years.getItem(selectionIndex)), true);
+				}				
+				currentTimeFrameChanged(false);
 			}
 		});
 	}

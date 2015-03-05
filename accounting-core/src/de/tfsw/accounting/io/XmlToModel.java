@@ -15,9 +15,8 @@
  */
 package de.tfsw.accounting.io;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -333,16 +332,11 @@ class XmlToModel {
 	 * @param xmlCalendar
 	 * @return
 	 */
-	private Date convertDate(XMLGregorianCalendar xmlCalendar) {
+	private LocalDate convertDate(XMLGregorianCalendar xmlCalendar) {
 		if (xmlCalendar == null) {
 			return null;
 		}
-		Calendar cal = xmlCalendar.toGregorianCalendar();
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal.getTime();
+		return LocalDate.of(xmlCalendar.getYear(), xmlCalendar.getMonth(), xmlCalendar.getDay());
 	}
 	
 	/**

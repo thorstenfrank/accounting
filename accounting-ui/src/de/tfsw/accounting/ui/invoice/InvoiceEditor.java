@@ -16,8 +16,8 @@
 package de.tfsw.accounting.ui.invoice;
 
 import java.beans.PropertyChangeEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -225,7 +225,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		
 		// INVOICE DATE
 		if (invoice.getInvoiceDate() == null) {
-			invoice.setInvoiceDate(new Date());
+			invoice.setInvoiceDate(LocalDate.now());
 		}
 		toolkit.createLabel(left, Messages.labelInvoiceDate);
 		DateTime invoiceDate = new DateTime(left, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
@@ -234,7 +234,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 		invoiceDate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				final Date newInvoiceDate = WidgetHelper.widgetToDate((DateTime) e.getSource());
+				final LocalDate newInvoiceDate = WidgetHelper.widgetToDate((DateTime) e.getSource());
 				Invoice invoice = getEditorInput().getInvoice();								
 				if (invoice.getInvoiceDate().compareTo(newInvoiceDate) != 0) {
 					invoice.setInvoiceDate(newInvoiceDate);

@@ -16,7 +16,6 @@
 package de.tfsw.accounting.ui.invoice;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -152,12 +151,10 @@ public class ChangeInvoicesFilterHandler extends AbstractTimeFrameSelectionHandl
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * @see de.tfsw.accounting.ui.AbstractTimeFrameSelectionHandler#getStartDateForYearSelector()
 	 */
 	@Override
-	protected Calendar getStartDateForYearSelector() {
-		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownInvoiceDate();
+	protected int getStartDateForYearSelector() {
+		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownInvoiceDate().getYear();
 	}
-
 }

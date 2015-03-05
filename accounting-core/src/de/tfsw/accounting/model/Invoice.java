@@ -15,8 +15,7 @@
  */
 package de.tfsw.accounting.model;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -46,11 +45,11 @@ public class Invoice extends AbstractBaseEntity {
 	public static final String FIELD_INVOICE_POSITIONS = "invoicePositions";
 	
 	private String number;
-	private Date creationDate;
-	private Date invoiceDate;
-	private Date sentDate;
-	private Date paymentDate;
-	private Date cancelledDate;
+	private LocalDate creationDate;
+	private LocalDate invoiceDate;
+	private LocalDate sentDate;
+	private LocalDate paymentDate;
+	private LocalDate cancelledDate;
 	private User user;
 	private Client client;
 	private PaymentTerms paymentTerms;
@@ -95,8 +94,8 @@ public class Invoice extends AbstractBaseEntity {
 	 */
 	private boolean isOverdue() {
 		if (sentDate != null) {
-			final Date dueDate = getDueDate();
-			if (dueDate != null && dueDate.before(new Date())) {
+			final LocalDate dueDate = getDueDate();
+			if (dueDate != null && dueDate.isBefore(LocalDate.now())) {
 				return true;
 			}
 		}
@@ -107,7 +106,7 @@ public class Invoice extends AbstractBaseEntity {
 	/**
 	 * @return the creationDate
 	 */
-	public Date getCreationDate() {
+	public LocalDate getCreationDate() {
 		return creationDate;
 	}
 
@@ -115,87 +114,75 @@ public class Invoice extends AbstractBaseEntity {
 	 * Do not call this method - the creation date is automatically set upon the first save of this instance!
 	 * @param creationDate the creationDate to set
 	 */
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(LocalDate creationDate) {
 		this.creationDate = creationDate;
 	}
 
 	/**
 	 * @return the invoiceDate
 	 */
-	public Date getInvoiceDate() {
+	public LocalDate getInvoiceDate() {
 		return invoiceDate;
 	}
 
 	/**
 	 * @param invoiceDate the invoiceDate to set
 	 */
-	public void setInvoiceDate(Date invoiceDate) {
+	public void setInvoiceDate(LocalDate invoiceDate) {
 		this.invoiceDate = invoiceDate;
 	}
 
 	/**
+	 * This is newly calculated based on {@link #getInvoiceDate()} and {@link #getPaymentTerms()}.
 	 * @return the dueDate
 	 */
-	public Date getDueDate() {
-		Date dueDate = null;
+	public LocalDate getDueDate() {
+		LocalDate dueDate = null;
 	    if (invoiceDate != null && paymentTerms != null) {
-        	Calendar cal = Calendar.getInstance();
-        	cal.setTime(invoiceDate);
-    		cal.add(Calendar.DAY_OF_MONTH, this.paymentTerms.getFullPaymentTargetInDays());
-        	dueDate = cal.getTime();
+	    	dueDate = invoiceDate.plusDays(paymentTerms.getFullPaymentTargetInDays());
     	}
 		return dueDate;
 	}
-
-	/**
-	 * @param dueDate the dueDate to set
-	 * @deprecated the due date is calculated at runtime by {@link #getDueDate()}, so calling this method has absolutely
-	 * no effect. 
-	 */
-	@Deprecated
-	public void setDueDate(Date dueDate) {
-		// nothing to do here...
-	}
-
+	
 	/**
 	 * @return the paymentDate
 	 */
-	public Date getPaymentDate() {
+	public LocalDate getPaymentDate() {
 		return paymentDate;
 	}
 
 	/**
 	 * @param paymentDate the paymentDate to set
 	 */
-	public void setPaymentDate(Date paymentDate) {
+	public void setPaymentDate(LocalDate paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
 	/**
 	 * @return the sentDate
 	 */
-	public Date getSentDate() {
+	public LocalDate getSentDate() {
 		return sentDate;
 	}
 
 	/**
 	 * @param sentDate the sentDate to set
 	 */
-	public void setSentDate(Date sentDate) {
+	public void setSentDate(LocalDate sentDate) {
 		this.sentDate = sentDate;
 	}
 
 	/**
 	 * @return the cancelledDate
 	 */
-	public Date getCancelledDate() {
+	public LocalDate getCancelledDate() {
 		return cancelledDate;
 	}
 
 	/**
 	 * @param cancelledDate the cancelledDate to set
 	 */
-	public void setCancelledDate(Date cancelledDate) {
+	public void setCancelledDate(LocalDate cancelledDate) {
 		this.cancelledDate = cancelledDate;
 	}
 

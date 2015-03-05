@@ -15,8 +15,7 @@
  */
 package de.tfsw.accounting.io;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -299,17 +298,16 @@ class ModelToXml {
 	 * @param date
 	 * @return
 	 */
-	private XMLGregorianCalendar convertDate(Date date) {
+	private XMLGregorianCalendar convertDate(LocalDate date) {
 		if (date == null) {
 			return null;
 		}
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
+
 		try {
 	        XMLGregorianCalendar xmlCal = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-	        xmlCal.setDay(cal.get(Calendar.DAY_OF_MONTH));
-	        xmlCal.setMonth(cal.get(Calendar.MONTH) + 1);
-	        xmlCal.setYear(cal.get(Calendar.YEAR));
+	        xmlCal.setDay(date.getDayOfMonth());
+	        xmlCal.setMonth(date.getMonthValue());
+	        xmlCal.setYear(date.getYear());
 	        return xmlCal;
         } catch (DatatypeConfigurationException e) {
         	LOG.error("Could not convert date to XML", e); //$NON-NLS-1$

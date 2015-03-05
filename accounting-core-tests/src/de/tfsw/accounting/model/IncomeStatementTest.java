@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -28,10 +29,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.tfsw.accounting.BaseTestFixture;
-import de.tfsw.accounting.model.Expense;
-import de.tfsw.accounting.model.ExpenseCollection;
-import de.tfsw.accounting.model.IncomeStatement;
-import de.tfsw.accounting.model.Price;
 import de.tfsw.accounting.util.TimeFrame;
 
 /**
@@ -47,8 +44,7 @@ public class IncomeStatementTest extends BaseTestFixture {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		IS.setTimeFrame(new TimeFrame(buildDate(1, 0, 2010), buildDate(31, 11, 2010)));
-		
+		IS.setTimeFrame(TimeFrame.ofYear(2010));
 		Set<Expense> opexExpenses = new HashSet<>();
 		Set<Expense> capexExpenses = new HashSet<>();
 		Set<Expense> otherExpenses = new HashSet<>();

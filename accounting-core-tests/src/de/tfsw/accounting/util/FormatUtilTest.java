@@ -16,18 +16,16 @@
 package de.tfsw.accounting.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import org.junit.Test;
 
 import de.tfsw.accounting.AccountingException;
-import de.tfsw.accounting.util.FormatUtil;
 
 /**
  * @author thorsten
@@ -107,7 +105,10 @@ public class FormatUtilTest {
 			// this is what we want
 		}
 	}
-
+	
+	/**
+	 * Test for {@link FormatUtil#formatDate(Locale, LocalDate)}.
+	 */
 	@Test
 	public void testFormatDate() {
 		Calendar cal = Calendar.getInstance();
@@ -115,48 +116,9 @@ public class FormatUtilTest {
 		cal.set(Calendar.MONTH, 8);
 		cal.set(Calendar.YEAR, 2010);
 		
-		Date date = cal.getTime();
+		LocalDate date = LocalDate.of(2010, 9, 13);
 		
 		assertEquals("Sep 13, 2010", FormatUtil.formatDate(Locale.US, date));
 		assertEquals("13.09.2010", FormatUtil.formatDate(Locale.GERMANY, date));
-	}
-	
-	@Test
-	public void testParseDate() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 13);
-		cal.set(Calendar.MONTH, 8);
-		cal.set(Calendar.YEAR, 2010);
-		
-		Calendar compareCal = Calendar.getInstance();
-		
-		Date date = FormatUtil.parseDate(Locale.US, "Sep 13, 2010");	
-		
-		assertNotNull(date);
-		compareCal.setTime(date);
-		assertDatesAreEqual(cal, compareCal);
-		
-		try {
-			date = FormatUtil.parseDate(Locale.US, "9/13/10");
-			fail("Unparseable date should have yielded an exception");
-		} catch (AccountingException e) {
-			// this is what we want
-		}
-		
-		date = FormatUtil.parseDate(Locale.GERMANY, "13.09.2010");			
-		assertNotNull(date);
-		compareCal.setTime(date);
-		assertDatesAreEqual(cal, compareCal);
-	}
-	
-	/**
-	 * 
-	 * @param expected
-	 * @param actual
-	 */
-	private void assertDatesAreEqual(Calendar expected, Calendar actual) {
-		assertEquals(expected.get(Calendar.DAY_OF_MONTH), actual.get(Calendar.DAY_OF_MONTH));
-		assertEquals(expected.get(Calendar.MONTH), actual.get(Calendar.MONTH));
-		assertEquals(expected.get(Calendar.YEAR), actual.get(Calendar.YEAR));		
 	}
 }

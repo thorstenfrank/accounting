@@ -16,7 +16,7 @@
 package de.tfsw.accounting.ui.expense;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.Expense;
@@ -59,7 +59,7 @@ class ExpenseWrapper {
 	 * @return
 	 * @see de.tfsw.accounting.model.Expense#getPaymentDate()
 	 */
-	protected Date getPaymentDate() {
+	protected LocalDate getPaymentDate() {
 		return expense.getPaymentDate();
 	}
 	
