@@ -79,6 +79,7 @@ public class ElsterExportWizard extends Wizard {
 		sb.append("ustva_");
 		sb.append(elsterDTO.getTimeFrameYear());
 		sb.append(elsterDTO.getTimeFrameMonth());
+		sb.append(".xml");
 		this.targetFileName = sb.toString();
 	}
 	
