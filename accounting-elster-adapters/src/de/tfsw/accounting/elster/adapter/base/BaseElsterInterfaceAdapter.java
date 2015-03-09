@@ -79,6 +79,7 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 		unternehmer.setHausnummer(data.getCompanyStreetNumber());
 		unternehmer.setHNrZusatz(data.getCompanyStreetAddendum());
 		unternehmer.setPLZ(data.getCompanyPostCode());
+		unternehmer.setOrt(data.getCompanyCity());
 		unternehmer.setLand(data.getCompanyCountry());
 		steuerfall.setUnternehmer(unternehmer);
 		
