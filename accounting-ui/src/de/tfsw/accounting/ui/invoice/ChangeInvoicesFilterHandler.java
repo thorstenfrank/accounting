@@ -133,7 +133,7 @@ public class ChangeInvoicesFilterHandler extends AbstractTimeFrameSelectionHandl
 			LOG.info(sb.toString());
 			
 			invoiceView.setInvoiceStateFilter(stateSelection);
-			invoiceView.setTimeFrameFilter(getCurrentTimeFrame());			
+			invoiceView.setTimeFrameFilter(getTimeFrame());			
 			
 			invoiceView.modelChanged();
 		} else {
@@ -151,10 +151,10 @@ public class ChangeInvoicesFilterHandler extends AbstractTimeFrameSelectionHandl
 	}
 
 	/**
-	 * @see de.tfsw.accounting.ui.AbstractTimeFrameSelectionHandler#getStartDateForYearSelector()
+	 * @see de.tfsw.accounting.ui.util.MonthAndYearSelectorCallback#getOldestYear()
 	 */
 	@Override
-	protected int getStartDateForYearSelector() {
+	public int getOldestYear() {
 		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownInvoiceDate().getYear();
 	}
 }

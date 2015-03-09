@@ -84,7 +84,7 @@ public class ChangeExpensesViewFilterHandler extends AbstractTimeFrameSelectionH
 		}
 		
 		LOG.info("Changing expenses view"); //$NON-NLS-1$
-		expensesView.updateExpenses(getCurrentTimeFrame());
+		expensesView.updateExpenses(getTimeFrame());
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class ChangeExpensesViewFilterHandler extends AbstractTimeFrameSelectionH
 			setCurrentTimeFrame(null);
 		}
 		
-		return getCurrentTimeFrame() != null;
+		return getTimeFrame() != null;
     }
 
 	/**
@@ -178,10 +178,10 @@ public class ChangeExpensesViewFilterHandler extends AbstractTimeFrameSelectionH
 	}
 
 	/**
-	 * @see de.tfsw.accounting.ui.AbstractTimeFrameSelectionHandler#getStartDateForYearSelector()
+	 * @see de.tfsw.accounting.ui.util.MonthAndYearSelectorCallback#getOldestYear()
 	 */
 	@Override
-	protected int getStartDateForYearSelector() {
+	public int getOldestYear() {
 		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownExpenseDate().getYear();
 	}
 }

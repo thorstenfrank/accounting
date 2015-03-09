@@ -15,13 +15,8 @@
  */
 package de.tfsw.accounting.ui;
 
-import java.time.DateTimeException;
-import java.time.Month;
-import java.time.Year;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -35,6 +30,8 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import de.tfsw.accounting.ui.util.MonthAndYearSelector;
+import de.tfsw.accounting.ui.util.MonthAndYearSelectorCallback;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 import de.tfsw.accounting.util.TimeFrame;
 import de.tfsw.accounting.util.TimeFrameType;
@@ -45,30 +42,31 @@ import de.tfsw.accounting.util.TimeFrameType;
  * @author Thorsten Frank - thorsten.frank@tfsw.de
  *
  */
-public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccountingHandler {
-	
-	private static final int SELECTION_WHOLE_YEAR = 0;
-	
+public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccountingHandler implements MonthAndYearSelectorCallback {
+		
 	private TimeFrame currentTimeFrame;
 	private boolean timeFrameActive = true;
 	private DateTime from;
 	private DateTime to;
 	private Combo months;
 	private Combo years;
-	private List<Integer> yearIndexMap;
 	private List<Button> typeButtons;
 	
 	/**
-	 * 
-	 * @return
+	 * @see de.tfsw.accounting.ui.util.MonthAndYearSelectorCallback#getTimeFrame()
 	 */
-	protected abstract int getStartDateForYearSelector();
-	
-	/**
-	 * @return the currentTimeFrame
-	 */
-	protected TimeFrame getCurrentTimeFrame() {
+	@Override
+	public TimeFrame getTimeFrame() {
 		return timeFrameActive ? currentTimeFrame : null;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.ui.util.MonthAndYearSelectorCallback#timeFrameChanged()
+	 */
+	@Override
+	public void timeFrameChanged() {
+		WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
+		WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), to);
 	}
 
 	/**
@@ -110,26 +108,12 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		WidgetHelper.createLabel(group, Messages.labelMonth);
 		months = new Combo(group, SWT.READ_ONLY);
 		months.setEnabled(enabledByDefault);
-		months.add(TimeFrameType.WHOLE_YEAR.getTranslatedName(), SELECTION_WHOLE_YEAR);
-		
-		for (Month month : Month.values()) {
-			months.add(month.getDisplayName(TextStyle.FULL, Locale.getDefault()), month.getValue());
-		}
-		createMonthsSelectionListener();
-		
+
 		// YEAR COMBO
 		WidgetHelper.createLabel(group, Messages.labelYear);		
 		years = new Combo(group, SWT.READ_ONLY);
 		years.setEnabled(enabledByDefault);
 		WidgetHelper.grabHorizontal(years);
-		yearIndexMap = new ArrayList<Integer>();
-		int index = 0;
-		for (int year = getStartDateForYearSelector(); year <= Year.now().getValue(); year++) {
-			years.add(Integer.toString(year), index);
-			yearIndexMap.add(index, year);
-			index++;
-		}
-		createYearsSelectionListener();
 		
 		GridDataFactory gdf = GridDataFactory.fillDefaults().span(4, 1).grab(true, false);
 		
@@ -159,6 +143,8 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 			}
 		});
 		
+		MonthAndYearSelector selector = new MonthAndYearSelector(this, months, years);
+		
 		// PRESETS
 		Composite presetsCombo = new Composite(group, SWT.NONE);
 		presetsCombo.setLayout(new GridLayout(4, true));
@@ -166,12 +152,12 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		Label presetsLabel = WidgetHelper.createLabel(presetsCombo, Messages.labelPresets);
 		gdf.applyTo(presetsLabel);
 		typeButtons = new ArrayList<Button>();
-		buildTimeFrameTypeButton(TimeFrameType.CURRENT_MONTH, presetsCombo);
-		buildTimeFrameTypeButton(TimeFrameType.LAST_MONTH, presetsCombo);
-		buildTimeFrameTypeButton(TimeFrameType.CURRENT_YEAR, presetsCombo);
-		buildTimeFrameTypeButton(TimeFrameType.LAST_YEAR, presetsCombo);
+		buildTimeFrameTypeButton(selector, TimeFrameType.CURRENT_MONTH, presetsCombo);
+		buildTimeFrameTypeButton(selector, TimeFrameType.LAST_MONTH, presetsCombo);
+		buildTimeFrameTypeButton(selector, TimeFrameType.CURRENT_YEAR, presetsCombo);
+		buildTimeFrameTypeButton(selector, TimeFrameType.LAST_YEAR, presetsCombo);
 		
-		currentTimeFrameChanged(true);
+		timeFrameChanged();
 		
 		return group;
 	}
@@ -182,75 +168,17 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 	 * @param parent
 	 * @return
 	 */
-	private Button buildTimeFrameTypeButton(TimeFrameType type, Composite parent) {
-		final Button b = new Button(parent, SWT.PUSH);
+	private Button buildTimeFrameTypeButton(MonthAndYearSelector selector, TimeFrameType type, Composite parent) {
+		Button b = new Button(parent, SWT.PUSH);
+		b.setData(TIME_FRAME_TYPE_KEY, type);
 		WidgetHelper.grabHorizontal(b);
 		typeButtons.add(b);
 		b.setText(type.getTranslatedName());
-		final TimeFrame timeFrame;
-		switch (type) {
-		case CURRENT_YEAR:
-			timeFrame = TimeFrame.currentYear();
-			break;
-		case LAST_MONTH:
-			timeFrame = TimeFrame.lastMonth();
-			break;
-		case LAST_YEAR:
-			timeFrame = TimeFrame.lastYear();
-			break;
-		default:
-			timeFrame = TimeFrame.currentMonth();
-			break;
-		}
-		
-		b.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				currentTimeFrame = timeFrame;
-				currentTimeFrameChanged(true);
-			}
-		});
+		selector.adaptTimeFrameTypeSelector(b);
+		b.setSelection(type == currentTimeFrame.getType());
 		return b;
 	}
-	
-	/**
-	 * 
-	 */
-	private void currentTimeFrameChanged(boolean updateCombos) {
-		WidgetHelper.dateToWidget(currentTimeFrame.getFrom(), from);
-		WidgetHelper.dateToWidget(currentTimeFrame.getUntil(), to);
-		getLogger().debug(String.format("Chosen timeframe is [%s]", currentTimeFrame.toString())); //$NON-NLS-1$
 		
-		if (updateCombos) {
-			updateComboSelections();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	private void updateComboSelections() {
-		getLogger().debug("Current time frame type is now: " + currentTimeFrame.getType().name());
-		switch (currentTimeFrame.getType()) {
-		case CURRENT_YEAR:
-		case LAST_YEAR:
-		case WHOLE_YEAR:
-			months.select(SELECTION_WHOLE_YEAR);
-			years.select(yearIndexMap.indexOf(currentTimeFrame.getFromYear()));
-			break;
-		case CURRENT_MONTH:
-		case LAST_MONTH:
-		case SINGLE_MONTH:
-			months.select(currentTimeFrame.getFromMonth());
-			years.select(yearIndexMap.indexOf(currentTimeFrame.getFromYear()));
-			break;
-		case CUSTOM:
-			months.select(-1);
-			years.select(-1);
-			break;
-		}
-	}
-	
 	/**
 	 * 
 	 */
@@ -262,45 +190,5 @@ public abstract class AbstractTimeFrameSelectionHandler extends AbstractAccounti
 		for (Button b : typeButtons) {
 			b.setEnabled(timeFrameActive);
 		}
-	}
-	
-	/**
-	 * 
-	 */
-	private void createYearsSelectionListener() {
-		years.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				currentTimeFrame.setYear(Integer.parseInt(years.getItem(years.getSelectionIndex())), false);
-				if (months.getSelectionIndex() < SELECTION_WHOLE_YEAR) {
-					months.select(SELECTION_WHOLE_YEAR);
-				}
-				currentTimeFrameChanged(false);
-			}
-		});
-	}
-
-	/**
-	 * 
-	 */
-	private void createMonthsSelectionListener() {
-		months.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				
-				try {
-					currentTimeFrame.setMonth(months.getSelectionIndex());
-				} catch (DateTimeException ex) {
-					// this happens when the user selects WHOLE_YEAR (index = 0)
-					final int selectionIndex = years.getSelectionIndex();
-					if (selectionIndex < 0) {
-						// nothing selected at the moment - we'll choose the most recent year
-						years.select(years.getItemCount() - 1);
-					}
-					currentTimeFrame.setYear(Integer.parseInt(years.getItem(selectionIndex)), true);
-				}				
-				currentTimeFrameChanged(false);
-			}
-		});
 	}
 }

@@ -77,6 +77,14 @@ public class ExpenseDialog extends AbstractReportDialog {
 	public ExpenseDialog(Shell shell) {
 		super(shell, TimeFrame.currentYear());
 	}
+		
+	/**
+	 * @see de.tfsw.accounting.ui.reports.AbstractReportDialog#getOldestYear()
+	 */
+	@Override
+	public int getOldestYear() {
+		return AccountingUI.getAccountingService().getModelMetaInformation().getOldestKnownExpenseDate().getYear();
+	}
 	
 	/**
 	 * 
