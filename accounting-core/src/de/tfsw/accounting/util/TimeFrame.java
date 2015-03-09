@@ -347,6 +347,39 @@ public class TimeFrame {
     	return sb.toString();
     }
     
+    /**
+     * 
+     * @param type
+     */
+    public void adjustInto(TimeFrameType type) {
+    	switch (type) {
+		case CURRENT_MONTH:
+			adjustIntoCurrentMonth();
+			break;
+		case LAST_MONTH:
+			adjustIntoLastMonth();
+			break;
+		case CURRENT_YEAR:
+			adjustIntoCurrentYear();
+			break;
+		case LAST_YEAR:
+			adjustIntoLastYear();
+			break;
+		default:
+			LOG.warn("Cannot adjustInto(TimeFrameType) with type " + type.name());
+			break;
+		}
+    }
+    
+    /**
+     * 
+     */
+    public void adjustIntoCurrentMonth() {
+    	type = TimeFrameType.CURRENT_MONTH;
+		from = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());				
+		until = from.with(TemporalAdjusters.lastDayOfMonth());
+    }
+    
 	/**
 	 * The current month, starting on the first and ending on the last day, such as Jan 1 - Jan 31, Feb 1 - Feb 28.
 	 * 
@@ -356,11 +389,19 @@ public class TimeFrame {
 	 */
 	public static TimeFrame currentMonth() {
 		TimeFrame thisMonth = new TimeFrame(TimeFrameType.CURRENT_MONTH);
-		thisMonth.from = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());				
-		thisMonth.until = thisMonth.from.with(TemporalAdjusters.lastDayOfMonth());
+		thisMonth.adjustIntoCurrentMonth();
 		return thisMonth;		
 	}
     
+	/**
+	 * 
+	 */
+	public void adjustIntoLastMonth() {
+		type = TimeFrameType.LAST_MONTH;
+		from = LocalDate.now().minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+		until = from.with(TemporalAdjusters.lastDayOfMonth());
+	}
+	
     /**
      * The month before the current one.
      * 
@@ -370,9 +411,17 @@ public class TimeFrame {
      */
 	public static TimeFrame lastMonth() {
 		TimeFrame lastMonth = new TimeFrame(TimeFrameType.LAST_MONTH);
-		lastMonth.from = LocalDate.now().minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
-		lastMonth.until = lastMonth.from.with(TemporalAdjusters.lastDayOfMonth());		
+		lastMonth.adjustIntoLastMonth();
 		return lastMonth;
+	}
+	
+	/**
+	 * 
+	 */
+	public void adjustIntoCurrentYear() {
+		type = TimeFrameType.CURRENT_YEAR;
+		from = LocalDate.now().with(TemporalAdjusters.firstDayOfYear());
+		until = from.with(TemporalAdjusters.lastDayOfYear());
 	}
 	
 	/**
@@ -384,9 +433,17 @@ public class TimeFrame {
 	 */
 	public static TimeFrame currentYear() {
 		TimeFrame thisYear = new TimeFrame(TimeFrameType.CURRENT_YEAR);
-		thisYear.from = LocalDate.now().with(TemporalAdjusters.firstDayOfYear());
-		thisYear.until = thisYear.from.with(TemporalAdjusters.lastDayOfYear());				
+		thisYear.adjustIntoCurrentYear();
 		return thisYear;
+	}
+	
+	/**
+	 * 
+	 */
+	public void adjustIntoLastYear() {
+		type = TimeFrameType.LAST_YEAR;
+		from = LocalDate.now().minusYears(1).with(TemporalAdjusters.firstDayOfYear());
+		until = from.with(TemporalAdjusters.lastDayOfYear());
 	}
 	
 	/**
@@ -398,9 +455,7 @@ public class TimeFrame {
 	 */
 	public static TimeFrame lastYear() {
 		TimeFrame lastYear = new TimeFrame(TimeFrameType.LAST_YEAR);
-		lastYear.from = LocalDate.now().minusYears(1).with(TemporalAdjusters.firstDayOfYear());
-		lastYear.until = lastYear.from.with(TemporalAdjusters.lastDayOfYear());
-		
+		lastYear.adjustIntoLastYear();
 		return lastYear;		
 	}
 	
