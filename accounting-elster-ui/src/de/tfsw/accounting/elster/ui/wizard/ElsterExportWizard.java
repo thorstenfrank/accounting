@@ -150,6 +150,7 @@ public class ElsterExportWizard extends Wizard {
 	public void addPages() {
 		addPage(new TimeFrameSelectionPage());
 		addPage(new CompanyNamePage());
+		addPage(new AddressPage());
 		addPage(new AmountsPage());
 		addPage(new ExportTargetSelectionPage());
 	}
