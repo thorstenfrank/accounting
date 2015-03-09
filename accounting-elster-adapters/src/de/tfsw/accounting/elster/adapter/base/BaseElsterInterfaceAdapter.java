@@ -78,6 +78,8 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 		unternehmer.setStr(data.getCompanyStreetName());
 		unternehmer.setHausnummer(data.getCompanyStreetNumber());
 		unternehmer.setHNrZusatz(data.getCompanyStreetAddendum());
+		unternehmer.setPLZ(data.getCompanyPostCode());
+		unternehmer.setLand(data.getCompanyCountry());
 		steuerfall.setUnternehmer(unternehmer);
 		
 		UstaUmsatzsteuervoranmeldungCType ustva = new UstaUmsatzsteuervoranmeldungCType();
