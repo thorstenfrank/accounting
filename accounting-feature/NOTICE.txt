@@ -1,0 +1,18 @@
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software developed by
+The Eclipse Foundation (http://www.eclipse.org/).
+
+This product includes software developed by
+Jaspersoft (https://community.jaspersoft.com/project/jasperreports-library).
+
+This product includes software by 
+Bruno Lowagie and others (http://itextpdf.com).
+
+Fonts used on documents are Titillium
+by the Accademia die Belle Arti di Urbino (http://www.campivisivi.net/titillium).
+
+Icons used are from the Silk icon set 1.3
+by Mark James (http://www.famfamfam.com/lab/icons/silk/)
+Licensed under a Creative Commons Attribution 2.5 License

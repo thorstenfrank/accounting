@@ -1,0 +1,7 @@
+# Removes files added during the build
+# These license and notice files apply to the Eclipse RCP feature, and can be found there in the finished product
+instructions.configure=\
+    org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/readme);\
+    org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/notice.html);\
+    org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/epl-v10.html);\
+    org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/eclipsec.exe);\

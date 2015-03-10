@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="%product.name" uid="accounting" id="de.tfsw.accounting.ui.product" application="de.tfsw.accounting.ui.application" version="1.3.2" useFeatures="true" includeLaunchers="true">
+<product name="%product.name" uid="accounting" id="de.tfsw.accounting.ui.product" application="de.tfsw.accounting.ui.application" version="1.3.3" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="aboutimage.png"/>
