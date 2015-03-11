@@ -26,22 +26,18 @@
       startupMessageRect="7,10,440,20"
       startupForegroundColor="000000" />
    <launcher name="accounting">
+      <linux icon="icons/icon.xpm"/>
       <solaris/>
-      <win useIco="false">
-         <bmp
-            winSmallHigh="icons/accounting_16_32.bmp"
-            winSmallLow="icons/accounting_16_8.bmp"
-            winMediumHigh="icons/accounting_32_32.bmp"
-            winMediumLow="icons/accounting_32_8.bmp"
-            winLargeHigh="icons/accounting_48_32.bmp"
-            winLargeLow="icons/accounting_48_8.bmp"
-            winExtraLargeHigh="icons/accounting_256_32.bmp"/>
+      <win useIco="true">
+         <ico path="icons/accounting.ico"/>
+         <bmp/>
       </win>
    </launcher>
 
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
+      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
    </vm>
 
