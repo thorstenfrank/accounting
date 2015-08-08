@@ -26,7 +26,7 @@ import java.util.List;
  * @since  1.0
  * @see    ExpenseType
  */
-public class Expense extends AbstractBaseEntity {
+public class Expense extends AbstractExpense {
 
 	/**
 	 * Serial Version UID.
@@ -34,12 +34,7 @@ public class Expense extends AbstractBaseEntity {
 	private static final long serialVersionUID = 2L;
 
     public static final String FIELD_ID = "id";
-    public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_PAYMENT_DATE = "paymentDate";
-    public static final String FIELD_NET_AMOUNT = "netAmount";
-    public static final String FIELD_TAX_RATE = "taxRate";
-    public static final String FIELD_TYPE = "expenseType";
-    public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_DEPRECIATION_METHOD = "depreciationMethod";
     public static final String FIELD_DEPRECIATION_PERIOD = "depreciationPeriodInYears";
     public static final String FIELD_SALVAGE_VALUE = "salvageValue";
@@ -47,17 +42,7 @@ public class Expense extends AbstractBaseEntity {
     
     private String id;
     
-    private String description;
-    
     private LocalDate paymentDate;
-    
-    private BigDecimal netAmount;
-    
-    private TaxRate taxRate;
-
-    private ExpenseType expenseType;
-    
-    private String category;
     
     private DepreciationMethod depreciationMethod;
     
@@ -82,20 +67,6 @@ public class Expense extends AbstractBaseEntity {
 	}
 
 	/**
-     * @return the description
-     */
-    public String getDescription() {
-    	return description;
-    }
-
-	/**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-    	this.description = description;
-    }
-
-	/**
      * @return the paymentDate
      */
     public LocalDate getPaymentDate() {
@@ -108,63 +79,7 @@ public class Expense extends AbstractBaseEntity {
     public void setPaymentDate(LocalDate paymentDate) {
     	this.paymentDate = paymentDate;
     }
-
-	/**
-     * @return the netAmount
-     */
-    public BigDecimal getNetAmount() {
-    	return netAmount;
-    }
-
-	/**
-     * @param netAmount the netAmount to set
-     */
-    public void setNetAmount(BigDecimal netAmount) {
-    	this.netAmount = netAmount;
-    }
-
-	/**
-     * @return the taxRate
-     */
-    public TaxRate getTaxRate() {
-    	return taxRate;
-    }
-
-	/**
-     * @param taxRate the taxRate to set
-     */
-    public void setTaxRate(TaxRate taxRate) {
-    	this.taxRate = taxRate;
-    }
-
-	/**
-	 * @return the expenseType
-	 */
-	public ExpenseType getExpenseType() {
-		return expenseType;
-	}
-
-	/**
-	 * @param expenseType the expenseType to set
-	 */
-	public void setExpenseType(ExpenseType expenseType) {
-		this.expenseType = expenseType;
-	}
-
-	/**
-	 * @return the category
-	 */
-	public String getCategory() {
-		return category;
-	}
-
-	/**
-	 * @param category the category to set
-	 */
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
+    
 	/**
 	 * @return the depreciationMethod
 	 */
@@ -231,9 +146,9 @@ public class Expense extends AbstractBaseEntity {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer("Expense: ");
-		sb.append(description);
-		sb.append(" / Category: ").append(category);
-		sb.append(" Type: ").append(expenseType != null ? expenseType.toString() : "null");
+		sb.append(getDescription());
+		sb.append(" / Category: ").append(getCategory());
+		sb.append(" Type: ").append(getExpenseType() != null ? getExpenseType().toString() : "null");
 		return sb.toString();
 	}
 }

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.tfsw.accounting.model.AbstractExpense;
 import de.tfsw.accounting.model.AnnualDepreciation;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.Invoice;
@@ -199,7 +200,7 @@ public final class CalculationUtil {
      * @param expense
      * @return
      */
-    public static Price calculatePrice(Expense expense) {
+    public static Price calculatePrice(AbstractExpense expense) {
     	BigDecimal net = expense.getNetAmount() != null ? expense.getNetAmount() : BigDecimal.ZERO;
     	BigDecimal tax = null;
     	BigDecimal gross = BigDecimal.ZERO;
