@@ -33,6 +33,10 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class CollectionContentProvider implements IStructuredContentProvider {
 	
+	public static final CollectionContentProvider NO_EMPTY = new CollectionContentProvider(false);
+	
+	public static final CollectionContentProvider WITH_EMPTY = new CollectionContentProvider(true);
+	
 	/**
 	 * 
 	 */

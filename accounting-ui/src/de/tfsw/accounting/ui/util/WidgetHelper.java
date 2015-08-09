@@ -19,11 +19,10 @@ import java.time.LocalDate;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -35,7 +34,6 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.conversion.FromStructuredSelectionConverter;
@@ -44,7 +42,7 @@ import de.tfsw.accounting.ui.conversion.ToStructuredSelectionConverter;
 /**
  * Simple helper class containing often used widget creation code.
  * 
- * @author tfrank1
+ * @author Thorsten Frank
  */
 public class WidgetHelper {
 	
@@ -164,24 +162,16 @@ public class WidgetHelper {
 		
 		ComboViewer taxRateCombo = new ComboViewer(parent, SWT.READ_ONLY);
 		grabHorizontal(taxRateCombo.getCombo());
-		taxRateCombo.setContentProvider(new CollectionContentProvider(true));
+		taxRateCombo.setContentProvider(CollectionContentProvider.WITH_EMPTY);
 		taxRateCombo.setInput(AccountingUI.getAccountingService().getCurrentUser().getTaxRates());
-		taxRateCombo.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(Object element) {
-				if (element instanceof TaxRate) {
-					return ((TaxRate) element).toShortString();
-				}
-				return Constants.HYPHEN;
-			}
-		});
+		taxRateCombo.setLabelProvider(new GenericLabelProvider(TaxRate.class, "toShortString"));
 		UpdateValueStrategy from = new UpdateValueStrategy();
 		from.setConverter(new FromStructuredSelectionConverter(TaxRate.class));
 		UpdateValueStrategy to = new UpdateValueStrategy();
 		to.setConverter(new ToStructuredSelectionConverter(TaxRate.class));
 		bindingContext.bindValue(
 				ViewersObservables.observeSinglePostSelection(taxRateCombo), 
-				PojoObservables.observeValue(pojo, property),
+				PojoProperties.value(property).observe(pojo),
 				from, to);
 		
 		return taxRateCombo;
