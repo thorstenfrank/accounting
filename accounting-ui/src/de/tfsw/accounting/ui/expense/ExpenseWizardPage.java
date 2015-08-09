@@ -26,13 +26,15 @@ import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.ui.Messages;
+import de.tfsw.accounting.ui.expense.editing.ExpenseEditHelper;
+import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
  * @author thorsten
  *
  */
-class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallback {
+class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperClient {
 	
 	/**
 	 * 
@@ -71,11 +73,11 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 		GridLayout layout = new GridLayout(2, false);
 		composite.setLayout(layout);
 		
-		ExpenseEditingHelper expenseEditingHelper = new ExpenseEditingHelper(expense, this);
+		ExpenseEditHelper editHelper = new ExpenseEditHelper(expense, this);
 		
-		expenseEditingHelper.createBasicSection(composite);
+		editHelper.createBasicSection(composite);
 		
-		expenseEditingHelper.createPriceSection(composite);
+		editHelper.createPriceSection(composite);
 				
 		setControl(composite);
 		
@@ -84,7 +86,7 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 	
 	/**
 	 * {@inheritDoc}
-	 * @see ExpenseEditingHelperCallback#modelHasChanged()
+	 * @see ExpenseEditingHelperClient#modelHasChanged()
 	 */
 	@Override
 	public void modelHasChanged() {
@@ -93,7 +95,7 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 
 	/**
 	 * {@inheritDoc}
-	 * @see ExpenseEditingHelperCallback#createLabel(org.eclipse.swt.widgets.Composite, java.lang.String)
+	 * @see ExpenseEditingHelperClient#createLabel(org.eclipse.swt.widgets.Composite, java.lang.String)
 	 */
 	@Override
 	public Label createLabel(Composite parent, String text) {
@@ -102,7 +104,7 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperCallba
 
 	/**
 	 * {@inheritDoc}
-	 * @see ExpenseEditingHelperCallback#createText(org.eclipse.swt.widgets.Composite, int)
+	 * @see ExpenseEditingHelperClient#createText(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
 	public Text createText(Composite parent, int style) {
