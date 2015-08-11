@@ -48,6 +48,8 @@ import de.tfsw.accounting.ui.AbstractAccountingEditor;
 import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.IDs;
 import de.tfsw.accounting.ui.Messages;
+import de.tfsw.accounting.ui.expense.editing.ExpenseEditHelper;
+import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
 import de.tfsw.accounting.util.CalculationUtil;
 import de.tfsw.accounting.util.FormatUtil;
 
@@ -55,7 +57,7 @@ import de.tfsw.accounting.util.FormatUtil;
  * @author thorsten
  *
  */
-public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEditingHelperCallback {
+public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEditingHelperClient {
 
 	private static final Logger LOG = Logger.getLogger(ExpenseEditor.class);
 	
@@ -63,7 +65,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	private FormToolkit toolkit;
 	private ScrolledForm form;
 	
-	private ExpenseEditingHelper expenseEditingHelper;
+	private ExpenseEditHelper editHelper;
 	
 	private TableViewer deprecTableViewer;
 	
@@ -102,7 +104,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	@Override
 	public void createPartControl(Composite parent) {
 		
-		this.expenseEditingHelper = new ExpenseEditingHelper(getEditorInput().getExpense(), this);
+		this.editHelper = new ExpenseEditHelper(getEditorInput().getExpense(), this);
 		
 		// init toolkit and overall layout manager
 		toolkit = new FormToolkit(parent.getDisplay());
@@ -146,7 +148,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		Composite sectionClient = toolkit.createComposite(section);
 		sectionClient.setLayout(new GridLayout(2, false));
 		
-		expenseEditingHelper.createBasicSection(sectionClient);
+		editHelper.createBasicSection(sectionClient);
 		
 		section.setClient(sectionClient);
 	}
@@ -164,7 +166,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		Composite sectionClient = toolkit.createComposite(section);
 		sectionClient.setLayout(new GridLayout(2, false));
 		
-		expenseEditingHelper.createPriceSection(sectionClient);
+		editHelper.createPriceSection(sectionClient);
 		
 		section.setClient(sectionClient);
 	}
@@ -182,7 +184,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		Composite sectionClient = toolkit.createComposite(section);
 		sectionClient.setLayout(new GridLayout(2, false));
 		
-		expenseEditingHelper.createDepreciationSection(sectionClient);
+		editHelper.createDepreciationSection(sectionClient);
 		
 		section.setClient(sectionClient);
 	}
@@ -234,12 +236,7 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 	 */
 	private void updateDepreciationTable(boolean recalculate) {
 		Expense expense = getEditorInput().getExpense();
-		
-		String type = expense.getDepreciationMethod() != null ? expense.getDepreciationMethod().toString() : "NONE"; //$NON-NLS-N$
-		
-		LOG.debug("Updating depreciation table: " + type); //$NON-NLS-1$
-		
-		if (expense.getExpenseType().isDepreciationPossible() && expense.getDepreciationMethod() != null) {
+		if (checkDepreciationPreConditions(expense)) {
 			if (recalculate) {
 				LOG.debug("Recalculating depreciation schedule"); //$NON-NLS-1$
 				expense.setDepreciationSchedule(CalculationUtil.calculateDepreciationSchedule(expense));
@@ -261,6 +258,20 @@ public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEd
 		}
 		
 		deprecTableViewer.refresh();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean checkDepreciationPreConditions(Expense expense) {
+		if (expense.getExpenseType() != null && expense.getExpenseType().isDepreciationPossible()) {
+			if (expense.getDepreciationMethod() != null && expense.getDepreciationPeriodInYears() != null) {
+				return expense.getDepreciationPeriodInYears() >= 0;
+			}
+		}
+		
+		return false; // default
 	}
 	
 	/**

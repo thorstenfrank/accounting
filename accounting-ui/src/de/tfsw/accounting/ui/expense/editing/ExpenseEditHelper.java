@@ -15,15 +15,20 @@
  */
 package de.tfsw.accounting.ui.expense.editing;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 
+import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.DepreciationMethod;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.ui.Messages;
@@ -36,9 +41,15 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
  */
 public class ExpenseEditHelper extends BaseExpenseEditHelper {
 
+	private static final Logger LOG = Logger.getLogger(ExpenseEditHelper.class);
+	
+	// model object
 	private Expense expense;
 	
-	// 
+	// Depreciation section
+	private ComboViewer depreciationMethod;
+	private Spinner depreciationPeriod;
+	private Text scrapValue;
 	
 	/**
 	 * @param expense
@@ -75,24 +86,69 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 	 * 
 	 */
 	public void createDepreciationSection(Composite parent) {
-		// DEPRECIATION METHOD
-		createComboViewer(parent, SWT.READ_ONLY, Messages.labelDepreciationMethod, Expense.FIELD_DEPRECIATION_METHOD, 
-				DepreciationMethod.class, DepreciationMethod.values(), new GenericLabelProvider(DepreciationMethod.class, "getTranslatedString"));
+		boolean enabled = isDepreciationEnabled();
+		
+		depreciationMethod = createComboViewer(parent, SWT.READ_ONLY, Messages.labelDepreciationMethod, 
+				Expense.FIELD_DEPRECIATION_METHOD, DepreciationMethod.class, DepreciationMethod.values(), 
+				new GenericLabelProvider(DepreciationMethod.class, "getTranslatedString"));
+		depreciationMethod.getCombo().setEnabled(enabled);
 		
 		// PERIOD
 		getClient().createLabel(parent, Messages.labelDepreciationPeriodInYears);
-		Spinner depreciationPeriod = new Spinner(parent, SWT.BORDER);
+		depreciationPeriod = new Spinner(parent, SWT.BORDER);
 		depreciationPeriod.setMinimum(0);
 		depreciationPeriod.setMaximum(100);
 		depreciationPeriod.setIncrement(1);
 		WidgetHelper.grabHorizontal(depreciationPeriod);
-		
+		depreciationPeriod.setEnabled(enabled);
 		getBindingCtx().bindValue(
 				WidgetProperties.selection().observe(depreciationPeriod),
 				PojoProperties.value(Expense.FIELD_DEPRECIATION_PERIOD).observe(expense));
+		depreciationPeriod.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				notifyModelChange(Expense.FIELD_DEPRECIATION_PERIOD);
+			}
+		});
 		
+		scrapValue = createAndBindText(parent, Messages.labelScrapValue, expense, Expense.FIELD_SALVAGE_VALUE, false);
+		scrapValue.setEnabled(enabled);
+	}
+	
+	/**
+	 * @see de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper#notifiyModelChangeInternal(java.lang.String)
+	 */
+	@Override
+	protected void notifiyModelChangeInternal(String origin) {
+		if (Expense.FIELD_TYPE.equals(origin)) {
+			LOG.debug("Expense_Type changed, now enabling/disabling depreciation widgets");
+			enableOrDisableDepreciation();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void enableOrDisableDepreciation() {
+		boolean enable = isDepreciationEnabled();
 		
-		// SALVAGE VALUE
-		createAndBindText(parent, Messages.labelScrapValue, expense, Expense.FIELD_SALVAGE_VALUE, false);
+		// if depreciation isn't possible for the expense type, make sure that the depreciation values are set to null/empty
+		if (!enable) {
+			depreciationPeriod.setSelection(0);
+			scrapValue.setText(Constants.EMPTY_STRING);
+			depreciationMethod.setSelection(StructuredSelection.EMPTY);
+		}
+		
+		depreciationMethod.getCombo().setEnabled(enable);
+		depreciationPeriod.setEnabled(enable);
+		scrapValue.setEnabled(enable);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean isDepreciationEnabled() {
+		return expense.getExpenseType() != null && expense.getExpenseType().isDepreciationPossible();
 	}
 }

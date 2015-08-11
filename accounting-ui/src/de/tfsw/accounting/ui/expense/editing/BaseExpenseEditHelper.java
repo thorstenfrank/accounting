@@ -23,8 +23,6 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.observable.value.IValueChangeListener;
-import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -34,13 +32,13 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.AbstractExpense;
@@ -64,7 +62,7 @@ import de.tfsw.accounting.util.CalculationUtil;
  * @author Thorsten Frank
  *
  */
-public class BaseExpenseEditHelper implements ISelectionChangedListener, IValueChangeListener {
+public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyListener {
 
 	/** */
 	private static final Logger LOG = Logger.getLogger(BaseExpenseEditHelper.class);
@@ -168,19 +166,8 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, IValueC
 	public void createPriceSection(Composite container) {
 		this.price = CalculationUtil.calculatePrice(expense);
 		
-		KeyListener kl = new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				Text source = (Text)e.getSource();
-				priceCalculationBase = source.getData(KEY_WIDGET_DATA).toString();
-				recalculatePrice();
-			}
-		};
-		
-		Text net = createText(container, Messages.labelNet, Price.FIELD_NET);
-		net.addKeyListener(kl);
 		// NET VALUE
-		bindPrice(net, Price.FIELD_NET);
+		bindPrice(createText(container, Messages.labelNet, Price.FIELD_NET), Price.FIELD_NET);
 		
 		// TAX RATE
 		client.createLabel(container, Messages.labelTaxRate);
@@ -196,16 +183,48 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, IValueC
 		bindPrice(taxAmount, Price.FIELD_TAX);
 		
 		// GROSS VALUE
-		Text gross = createText(container, Messages.labelGross, Price.FIELD_GROSS);
-		gross.addKeyListener(kl);
-		bindPrice(gross, Price.FIELD_GROSS);
+		bindPrice(createText(container, Messages.labelGross, Price.FIELD_GROSS), Price.FIELD_GROSS);
+	}
+	
+	/**
+	 * 
+	 */
+	protected void notifyModelChange(String origin) {
+		if (origin == null) {
+			LOG.warn("Origin was null, model change notification aborted"); //$NON-NLS-1$
+			return;
+		}
+		
+		LOG.debug(String.format("MODEL_CHANGE: [%s]", origin));
+		
+		if (Expense.FIELD_TAX_RATE.equals(origin)) {
+			recalculatePrice();
+		} else if (Price.FIELD_NET.equals(origin) || Price.FIELD_GROSS.equals(origin)) {
+			priceCalculationBase = origin;
+			recalculatePrice();
+		}
+		
+		notifiyModelChangeInternal(origin);
+		
+		client.modelHasChanged();
+	}
+	
+	/**
+	 * Subclasses may override this method. Default implementation is empty.
+	 * 
+	 * @param origin
+	 */
+	protected void notifiyModelChangeInternal(String origin) {
+		
 	}
 	
 	/**
 	 * 
 	 */
 	protected void recalculatePrice() {
-		// wait for the calculation to finish
+		// we're setting multiple values within a calculation, causing other events to be fired that want to trigger
+		// a recalulation - this is to prevent that from happening. While a calculation is taking place, we're not
+		// accepting requests
 		if (priceCalculationInProgress) {
 			return;
 		}
@@ -323,7 +342,8 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, IValueC
 		IObservableValue swtObservable = WidgetProperties.text(SWT.Modify).observe(text);
 		IObservableValue pojoObservable = isBean ? BeanProperties.value(property).observe(pojo) : PojoProperties.value(property).observe(pojo);
 		bindingCtx.bindValue(swtObservable, pojoObservable);
-		pojoObservable.addValueChangeListener(this);
+		text.addKeyListener(this);
+		//pojoObservable.addValueChangeListener(this);
 	}
 	
 	/**
@@ -346,31 +366,67 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, IValueC
 		IObservableValue swtObservable = WidgetProperties.text(SWT.Modify).observe(text);
 		IObservableValue pojoObservable = isBean ? BeanProperties.value(property).observe(pojo) : PojoProperties.value(property).observe(pojo);
 		bindingCtx.bindValue(swtObservable, pojoObservable, toPrice, fromPrice);
-		pojoObservable.addValueChangeListener(this);
+		text.addKeyListener(this);
+		//pojoObservable.addValueChangeListener(this);
 	}
-
+	
 	/**
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		if (event.getSource() instanceof ComboViewer) {
-			String data = ((ComboViewer) event.getSource()).getData(KEY_WIDGET_DATA).toString();			
+		String origin;
+		if (event.getSource() instanceof StructuredViewer) {
+			origin = ((StructuredViewer) event.getSource()).getData(KEY_WIDGET_DATA).toString();			
 			Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
-			LOG.debug(String.format("SELECTION for property [%s] is [%s]", data, selection));
-			
-			if (Expense.FIELD_TAX_RATE.equals(data)) {
-				recalculatePrice();
-			}
+			LOG.debug(String.format("SELECTION for property [%s] is [%s]", origin, selection));
+			notifyModelChange(origin);			
+		} else if (event.getSource() instanceof Widget) {
+			extractOriginFromWidget((Widget) event.getSource());
 		}
 	}
 	
 	/**
-	 * @see org.eclipse.core.databinding.observable.value.IValueChangeListener#handleValueChange(org.eclipse.core.databinding.observable.value.ValueChangeEvent)
+	 * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
 	 */
 	@Override
-	public void handleValueChange(ValueChangeEvent event) {
-		//LOG.debug("modelHasChanged " + event.diff.toString());
-		client.modelHasChanged();
+	public void keyPressed(KeyEvent e) {
 	}
+	
+	/**
+	 * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
+	 */
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getSource() instanceof Widget) {
+			extractOriginFromWidget((Widget) e.getSource());
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param widget
+	 */
+	private void extractOriginFromWidget(Widget widget) {
+		Object data = widget.getData(KEY_WIDGET_DATA);
+		if (data == null || !(data instanceof String)) {
+			LOG.warn(String.format("Illegal data stored in widget under key [%s] : [%s]", KEY_WIDGET_DATA, data));
+		} else {
+			notifyModelChange((String) data);
+		}
+	}
+//
+//	/**
+//	 * @see org.eclipse.core.databinding.observable.value.IValueChangeListener#handleValueChange(org.eclipse.core.databinding.observable.value.ValueChangeEvent)
+//	 */
+//	@Override
+//	public void handleValueChange(ValueChangeEvent event) {
+//		if (event.getSource() instanceof ISWTObservable) {
+//			notifyModelChange(getOriginFromWidget(((ISWTObservableValue) event.getSource()).getWidget()));
+//		} else {
+//			LOG.warn(String.format("Unknown value change source: [%s]", event.getSource().toString()));
+//		}
+//		
+//	}
 }
