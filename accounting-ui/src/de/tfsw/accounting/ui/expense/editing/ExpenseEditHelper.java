@@ -74,7 +74,7 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				expense.setPaymentDate(WidgetHelper.widgetToDate(paymentDate));
-				getClient().modelHasChanged();
+				notifyModelChange(Expense.FIELD_PAYMENT_DATE);
 			}
 		});
 		
@@ -85,7 +85,7 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 	/**
 	 * 
 	 */
-	public void createDepreciationSection(Composite parent) {
+	public void createDepreciationSection(Composite parent) {		
 		boolean enabled = isDepreciationEnabled();
 		
 		depreciationMethod = createComboViewer(parent, SWT.READ_ONLY, Messages.labelDepreciationMethod, 
@@ -130,6 +130,10 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 	 * 
 	 */
 	private void enableOrDisableDepreciation() {
+		if (depreciationMethod == null) {
+			return;
+		}
+		
 		boolean enable = isDepreciationEnabled();
 		
 		// if depreciation isn't possible for the expense type, make sure that the depreciation values are set to null/empty
