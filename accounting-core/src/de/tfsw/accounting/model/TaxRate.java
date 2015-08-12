@@ -53,6 +53,26 @@ public class TaxRate extends AbstractBaseEntity {
 	private boolean isVAT = true;
 	
 	/**
+	 * 
+	 */
+	public TaxRate() {
+		super();
+	}
+	
+	/**
+	 * @param shortName
+	 * @param longName
+	 * @param rate
+	 * @param isVAT
+	 */
+	public TaxRate(String shortName, String longName, BigDecimal rate, boolean isVAT) {
+		this.shortName = shortName;
+		this.longName = longName;
+		this.rate = rate;
+		this.isVAT = isVAT;
+	}
+	
+	/**
 	 * @return the shortName
 	 */
 	public String getShortName() {
