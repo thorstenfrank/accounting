@@ -27,23 +27,30 @@ import org.apache.log4j.Logger;
  */
 public class RecurrenceRule extends AbstractBaseEntity {
 
-	/**
-	 * 
-	 */
+	/**	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = Logger.getLogger(RecurrenceRule.class);
 	
+	/** Property name for {@link #getUntil()}. */
+	public static final String FIELD_UNTIL = "until";
+	/** Property name for {@link #getCount()}. */
+	public static final String FIELD_COUNT = "count";
+	/** Property name for {@link #getFrequency()}. */
+	public static final String FIELD_FREQUENCY = "frequency";
+	/** Property name for {@link #getInterval()}. */
+	public static final String FIELD_INTERVAL = "interval";
+	
+	/**
+	 * Frequency of application of a rule.
+	 */
 	public enum Frequency {
 		DAILY, WEEKLY, MONTHLY, YEARLY;
 	}
 	
 	private LocalDate until;
-	
 	private Integer count;
-	
 	private Frequency frequency;
-	
 	private int interval = 1;
 	
 	/**

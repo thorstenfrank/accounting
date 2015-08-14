@@ -34,9 +34,12 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
@@ -62,7 +65,7 @@ import de.tfsw.accounting.util.CalculationUtil;
  * @author Thorsten Frank
  *
  */
-public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyListener {
+public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyListener, SelectionListener {
 
 	/** */
 	private static final Logger LOG = Logger.getLogger(BaseExpenseEditHelper.class);
@@ -284,15 +287,55 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	 * @return
 	 */
 	protected ComboViewer createComboViewer(Composite parent, int style, String label, String property, Class<?> contentType, Object input, LabelProvider labelProvider) {
+		return createComboViewer(parent, style, label, property, contentType, true, input, labelProvider);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param style
+	 * @param label
+	 * @param property
+	 * @param contentType
+	 * @param includeEmptyElement
+	 * @param input
+	 * @param labelProvider
+	 * @return
+	 */
+	protected ComboViewer createComboViewer(Composite parent, int style, String label, String property, Class<?> contentType, boolean includeEmptyElement, Object input, LabelProvider labelProvider) {
 		client.createLabel(parent, label);
 		ComboViewer viewer = new ComboViewer(parent, style);
 		viewer.setData(KEY_WIDGET_DATA, property);
 		WidgetHelper.grabHorizontal(viewer.getCombo());
-		viewer.setContentProvider(new CollectionContentProvider(true));
+		viewer.setContentProvider(new CollectionContentProvider(includeEmptyElement));
 		viewer.setInput(input);
 		viewer.setLabelProvider(labelProvider);
 		bind(contentType, viewer, property, true);
-		return viewer;
+		return viewer;		
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param style
+	 * @param label may be <code>null</code>
+	 * @param model
+	 * @param property
+	 * @param isBean
+	 * @return
+	 */
+	protected Spinner createSpinner(Composite parent, int style, String label, Object model, String property, boolean isBean) {
+		if (label != null) {
+			client.createLabel(parent, label);	
+		}
+		Spinner spinner = new Spinner(parent, style);
+		spinner.setMinimum(0);
+		spinner.setMaximum(100);
+		spinner.setIncrement(1);
+		IObservableValue pojoObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
+		bindingCtx.bindValue(WidgetProperties.selection().observe(spinner), pojoObservable);
+		spinner.addSelectionListener(this);
+		return spinner;
 	}
 	
 	/**
@@ -404,6 +447,24 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		
 	}
 	
+	/**
+	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		if (e.getSource() instanceof Widget) {
+			extractOriginFromWidget((Widget) e.getSource());
+		}
+	}
+
+	/**
+	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetDefaultSelected(SelectionEvent e) {
+		widgetSelected(e);
+	}
+
 	/**
 	 * 
 	 * @param widget

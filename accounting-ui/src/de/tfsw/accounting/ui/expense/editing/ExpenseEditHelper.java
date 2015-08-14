@@ -16,8 +16,6 @@
 package de.tfsw.accounting.ui.expense.editing;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.databinding.beans.PojoProperties;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -94,22 +92,8 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 		depreciationMethod.getCombo().setEnabled(enabled);
 		
 		// PERIOD
-		getClient().createLabel(parent, Messages.labelDepreciationPeriodInYears);
-		depreciationPeriod = new Spinner(parent, SWT.BORDER);
-		depreciationPeriod.setMinimum(0);
-		depreciationPeriod.setMaximum(100);
-		depreciationPeriod.setIncrement(1);
-		WidgetHelper.grabHorizontal(depreciationPeriod);
+		depreciationPeriod = createSpinner(parent, SWT.READ_ONLY, Messages.labelDepreciationPeriodInYears, expense, Expense.FIELD_DEPRECIATION_PERIOD, false);
 		depreciationPeriod.setEnabled(enabled);
-		getBindingCtx().bindValue(
-				WidgetProperties.selection().observe(depreciationPeriod),
-				PojoProperties.value(Expense.FIELD_DEPRECIATION_PERIOD).observe(expense));
-		depreciationPeriod.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				notifyModelChange(Expense.FIELD_DEPRECIATION_PERIOD);
-			}
-		});
 		
 		scrapValue = createAndBindText(parent, Messages.labelScrapValue, expense, Expense.FIELD_SALVAGE_VALUE, false);
 		scrapValue.setEnabled(enabled);

@@ -32,25 +32,94 @@ public class RecurringExpense extends AbstractExpense {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/** Property name of {@link #getRule()}. */
+	public static final String FIELD_RULE = "rule";
+	/** Property name of {@link #isActive()}. */
+	public static final String FIELD_ACTIVE = "active";
+	/** Property name of {@link #getNumberOfApplications()}. */
+	public static final String FIELD_APPLICATIONS = "numberOfApplications";
+	/** Property name of {@link #getFirstApplication()}. */
+	public static final String FIELD_FIRST = "firstApplication";
+	/** Property name of {@link #getLastApplication()}. */
+	public static final String FIELD_LAST = "lastApplication";
+	
 	// RRULE
 	private RecurrenceRule rule;
-
+	private boolean active;
 	private int numberOfApplications;
 	private LocalDate firstApplication;
 	private LocalDate lastApplication;
-	
-	// Expense template data
 	
 	/**
 	 * 
 	 */
 	public RecurringExpense() {
+		this.active = true;
 		this.firstApplication = LocalDate.now();
+		this.numberOfApplications = 0;
 		this.rule = new RecurrenceRule();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Expense apply() {
-		return null;
+		Expense expense = null;
+		
+		updateActiveState();
+		
+		if (active) {
+			expense = new Expense();
+			expense.setCategory(getCategory());
+			expense.setDescription(getDescription());
+			expense.setExpenseType(getExpenseType());
+			expense.setNetAmount(getNetAmount());
+			expense.setTaxRate(getTaxRate());
+			checkPostConditions();
+		}
+		
+		return expense;
+	}
+	
+	/**
+	 * 
+	 */
+	public void updateActiveState() {
+		active = active & checkPreConditions();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean checkPreConditions() {
+		if (active) {
+			if (rule.getCount() != null) {
+				return numberOfApplications <= rule.getCount();
+			} else if (rule.getUntil() != null) {
+				return rule.getUntil().isAfter(LocalDate.now());
+			} else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkPostConditions() {
+		this.numberOfApplications++;
+		this.lastApplication = LocalDate.now();
+		if (this.firstApplication == null) {
+			this.firstApplication = LocalDate.now();
+		}
+		
+		if (active && rule.getCount() != null && numberOfApplications >= rule.getCount()) {
+			active = false;
+		}
 	}
 	
 	/**
@@ -58,15 +127,13 @@ public class RecurringExpense extends AbstractExpense {
 	 * @return
 	 */
 	public LocalDate getNextApplication() {
-		if (rule == null) {
+		updateActiveState();
+		
+		if (rule == null || !active) {
 			return null;
 		}
 		
-		if (lastApplication == null) {
-			return LocalDate.now();
-		}
-		
-		LocalDate next = lastApplication;
+		LocalDate next = lastApplication != null ? lastApplication : firstApplication;
 		
 		switch (rule.getFrequency()) {
 		case DAILY:
@@ -88,6 +155,21 @@ public class RecurringExpense extends AbstractExpense {
 		return next;
 	}
 	
+	/**
+	 * @return the active
+	 */
+	public boolean isActive() {
+		updateActiveState();
+		return active;
+	}
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	/**
 	 * @return the rule
 	 */

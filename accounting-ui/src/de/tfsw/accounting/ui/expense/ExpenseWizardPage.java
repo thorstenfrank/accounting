@@ -17,37 +17,23 @@ package de.tfsw.accounting.ui.expense;
 
 import java.time.LocalDate;
 
-import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.ui.Messages;
+import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
 import de.tfsw.accounting.ui.expense.editing.ExpenseEditHelper;
-import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
-import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
  * @author thorsten
  *
  */
-class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperClient {
-	
-	/**
-	 * 
-	 */
-	private Expense expense;
+class ExpenseWizardPage extends AbstractExpenseWizardPage {
 	
 	/**
 	 * 
 	 */
 	ExpenseWizardPage() {
-		super(ExpenseWizardPage.class.getName());
-		this.expense = new Expense();
-		expense.setPaymentDate(LocalDate.now());
+		super(ExpenseWizardPage.class.getName(), new Expense());
+		((Expense)getExpense()).setPaymentDate(LocalDate.now());
 		setTitle(Messages.EditExpenseWizard_newTitle);
 		setDescription(Messages.EditExpenseWizard_newDesc);
 	}
@@ -57,79 +43,40 @@ class ExpenseWizardPage extends WizardPage implements ExpenseEditingHelperClient
 	 * @param expense
 	 */
 	ExpenseWizardPage(Expense expense) {
-		super(ExpenseWizardPage.class.getName());
-		this.expense = expense;
+		super(ExpenseWizardPage.class.getName(), expense);
 		setTitle(Messages.EditExpenseWizard_editTitle);
 		setDescription(Messages.EditExpenseWizard_editDesc);
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage#getHelper()
 	 */
 	@Override
-	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout(2, false);
-		composite.setLayout(layout);
-		
-		ExpenseEditHelper editHelper = new ExpenseEditHelper(expense, this);
-		
-		editHelper.createBasicSection(composite);
-		
-		editHelper.createPriceSection(composite);
-				
-		setControl(composite);
-		
-		checkIfPageComplete();
-	}	
-	
-	/**
-	 * {@inheritDoc}
-	 * @see ExpenseEditingHelperClient#modelHasChanged()
-	 */
-	@Override
-	public void modelHasChanged() {
-		checkIfPageComplete();
+	protected BaseExpenseEditHelper getHelper() {
+		return new ExpenseEditHelper(getExpense(), this);
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see ExpenseEditingHelperClient#createLabel(org.eclipse.swt.widgets.Composite, java.lang.String)
+	 * @see de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage#getExpense()
 	 */
 	@Override
-	public Label createLabel(Composite parent, String text) {
-		return WidgetHelper.createLabel(parent, text);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see ExpenseEditingHelperClient#createText(org.eclipse.swt.widgets.Composite, int)
-	 */
-	@Override
-	public Text createText(Composite parent, int style) {
-		return WidgetHelper.createSingleBorderText(parent, null);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
 	protected Expense getExpense() {
-		return expense;
+		return (Expense)super.getExpense();
 	}
-	
+
 	/**
 	 * 
 	 */
-	private void checkIfPageComplete() {
+	@Override
+	protected boolean checkIfPageComplete() {
+		Expense expense = getExpense();
 		if (expense.getDescription() != null && !expense.getDescription().isEmpty() &&
 			expense.getPaymentDate() != null && expense.getNetAmount() != null &&
 			expense.getExpenseType() != null) {
 			
-			setPageComplete(true);
+			return true;
 		} else {
-			setPageComplete(false);
+			return false;
 		}
 	}
 }
