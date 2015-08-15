@@ -87,7 +87,7 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 		boolean enabled = isDepreciationEnabled();
 		
 		depreciationMethod = createComboViewer(parent, SWT.READ_ONLY, Messages.labelDepreciationMethod, 
-				Expense.FIELD_DEPRECIATION_METHOD, DepreciationMethod.class, DepreciationMethod.values(), 
+				Expense.FIELD_DEPRECIATION_METHOD, DepreciationMethod.class, false, DepreciationMethod.values(), 
 				new GenericLabelProvider(DepreciationMethod.class, "getTranslatedString"));
 		depreciationMethod.getCombo().setEnabled(enabled);
 		

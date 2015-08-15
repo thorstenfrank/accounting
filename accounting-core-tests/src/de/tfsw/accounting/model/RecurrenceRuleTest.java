@@ -6,8 +6,6 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import de.tfsw.accounting.model.RecurrenceRule.Frequency;
-
 public class RecurrenceRuleTest {
 	
 	@Test

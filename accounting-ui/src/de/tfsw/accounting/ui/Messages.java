@@ -229,6 +229,21 @@ public class Messages extends NLS {
 	public static String NewTaxRateWizard_rate;
 	public static String NewTaxRateWizard_windowTitle;
 	
+	public static String RecurrenceRuleWizardPage_Desc;
+	public static String RecurrenceRuleWizardPage_Title;
+
+	public static String RecurringExpenseEditHelper_active;
+	public static String RecurringExpenseEditHelper_count;
+	public static String RecurringExpenseEditHelper_forever;
+	public static String RecurringExpenseEditHelper_frequency;
+	public static String RecurringExpenseEditHelper_interval;
+	public static String RecurringExpenseEditHelper_validFrom;
+
+	public static String RecurringExpenseWizard_Title;
+
+	public static String RecurringExpenseWizardPage_Desc;
+	public static String RecurringExpenseWizardPage_Title;
+
 	public static String ReportGenerationUtil_errorGeneratingInvoice;
 	public static String ReportGenerationUtil_errorNoReportingService;
 	public static String ReportGenerationUtil_successMsg;

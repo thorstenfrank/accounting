@@ -133,14 +133,14 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	 */
 	public void createBasicSection(Composite container) {
 		// TYPE
-		createComboViewer(container, SWT.READ_ONLY, Messages.labelExpenseType, Expense.FIELD_TYPE, ExpenseType.class, ExpenseType.values(), new GenericLabelProvider(ExpenseType.class, "getTranslatedString"));
+		createComboViewer(container, SWT.READ_ONLY, Messages.labelExpenseType, Expense.FIELD_TYPE, ExpenseType.class, true, ExpenseType.values(), new GenericLabelProvider(ExpenseType.class, "getTranslatedString"));
 				
 		// DESCRIPTION
 		createAndBindText(container, Messages.labelDescription, expense, Expense.FIELD_DESCRIPTION, false);
 
 		// CATEGORY
 		expenseCategories = AccountingUI.getAccountingService().getModelMetaInformation().getExpenseCategories();
-		ComboViewer catCombo = createComboViewer(container, SWT.DROP_DOWN, Messages.labelCategory, Expense.FIELD_CATEGORY, String.class, expenseCategories, StringLabelProvider.DEFAULT);
+		ComboViewer catCombo = createComboViewer(container, SWT.DROP_DOWN, Messages.labelCategory, Expense.FIELD_CATEGORY, String.class, true, expenseCategories, StringLabelProvider.DEFAULT);
 		catCombo.getCombo().addTraverseListener(new TraverseListener() {
 			
 			@Override
@@ -277,20 +277,8 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	}
 	
 	/**
-	 * 
-	 * @param parent
-	 * @param style
-	 * @param label
-	 * @param property
-	 * @param input
-	 * @param labelProvider
-	 * @return
-	 */
-	protected ComboViewer createComboViewer(Composite parent, int style, String label, String property, Class<?> contentType, Object input, LabelProvider labelProvider) {
-		return createComboViewer(parent, style, label, property, contentType, true, input, labelProvider);
-	}
-	
-	/**
+	 * Creates and binds a {@link ComboViewer} to the supplied property of this helper's {@link AbstractExpense} model
+	 * object.
 	 * 
 	 * @param parent
 	 * @param style
@@ -311,6 +299,31 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		viewer.setInput(input);
 		viewer.setLabelProvider(labelProvider);
 		bind(contentType, viewer, property, true);
+		return viewer;		
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param style
+	 * @param label
+	 * @param model
+	 * @param property
+	 * @param contentType
+	 * @param includeEmptyElement
+	 * @param input
+	 * @param labelProvider
+	 * @return
+	 */
+	protected ComboViewer createComboViewer(Composite parent, int style, String label, Object model, String property, Class<?> contentType, boolean includeEmptyElement, Object input, LabelProvider labelProvider) {
+		client.createLabel(parent, label);
+		ComboViewer viewer = new ComboViewer(parent, style);
+		viewer.setData(KEY_WIDGET_DATA, property);
+		WidgetHelper.grabHorizontal(viewer.getCombo());
+		viewer.setContentProvider(new CollectionContentProvider(includeEmptyElement));
+		viewer.setInput(input);
+		viewer.setLabelProvider(labelProvider);
+		bind(contentType, viewer, model, property, true);
 		return viewer;		
 	}
 	
@@ -339,6 +352,8 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	}
 	
 	/**
+	 * Binds to this helpers {@link AbstractExpense} model object. If you need to bind to a different model object,
+	 * use {@link #bind(Class, StructuredViewer, Object, String, boolean)} instead.
 	 * 
 	 * @param <T>
 	 * @param contentTypeClass

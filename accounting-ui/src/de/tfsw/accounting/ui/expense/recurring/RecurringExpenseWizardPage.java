@@ -17,6 +17,7 @@ package de.tfsw.accounting.ui.expense.recurring;
 
 import de.tfsw.accounting.model.AbstractExpense;
 import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage;
 import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
 
@@ -34,8 +35,8 @@ class RecurringExpenseWizardPage extends AbstractExpenseWizardPage {
 	RecurringExpenseWizardPage(RecurringExpense recurringExpense) {
 		super(RecurringExpenseWizardPage.class.getName(), recurringExpense);
 		this.helper = new RecurringExpenseEditHelper(recurringExpense, this);
-		setTitle("Expense Template");
-		setDescription("Define the template for a recurring expense");
+		setTitle(Messages.RecurringExpenseWizardPage_Title);
+		setDescription(Messages.RecurringExpenseWizardPage_Desc);
 		setPageComplete(checkIfPageComplete());
 	}
 	

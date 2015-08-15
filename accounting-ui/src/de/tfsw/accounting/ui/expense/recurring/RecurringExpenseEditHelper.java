@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
 
+import de.tfsw.accounting.model.Frequency;
 import de.tfsw.accounting.model.RecurrenceRule;
 import de.tfsw.accounting.model.RecurringExpense;
 import de.tfsw.accounting.ui.Messages;
@@ -59,31 +60,33 @@ class RecurringExpenseEditHelper extends BaseExpenseEditHelper {
 
 	protected void createRecurrenceSection(Composite container) {
 		RecurrenceRule rule = expense.getRule();
-
+		
+		System.out.println(rule.toString());
+		
 		GridDataFactory span2 = GridDataFactory.fillDefaults().span(2, 1);
 		
 		// ACTIVE
 		Button active = new Button(container, SWT.CHECK);
-		active.setText("Active");
+		active.setText(Messages.RecurringExpenseEditHelper_active);
 		getBindingCtx().bindValue(WidgetProperties.selection().observe(active),
 				PojoProperties.value(RecurringExpense.FIELD_ACTIVE).observe(expense));
 		span2.applyTo(active);
 		
 		// FIRST APPLICATION
-		getClient().createLabel(container, "First Application");
+		getClient().createLabel(container, Messages.RecurringExpenseEditHelper_validFrom);
 		first = new DateTime(container, SWT.DATE | SWT.DROP_DOWN | SWT.BORDER);
 		first.setData(KEY_WIDGET_DATA, RecurringExpense.FIELD_FIRST);
 		WidgetHelper.dateToWidget(expense.getFirstApplication(), first);
 		first.addSelectionListener(this);
 		
 		// INTERVAL
-		Spinner interval = createSpinner(container, SWT.WRAP, "Interval", rule, RecurrenceRule.FIELD_INTERVAL, false);
+		Spinner interval = createSpinner(container, SWT.WRAP, Messages.RecurringExpenseEditHelper_interval, rule, RecurrenceRule.FIELD_INTERVAL, false);
 		interval.setMinimum(1);
 		
 		// FREQUENCY
-		createComboViewer(container, SWT.READ_ONLY, "Frequency", RecurrenceRule.FIELD_FREQUENCY,
-				RecurrenceRule.Frequency.class, false, RecurrenceRule.Frequency.values(),
-				new GenericLabelProvider(RecurrenceRule.Frequency.class, "toString"));
+		createComboViewer(container, SWT.READ_ONLY, Messages.RecurringExpenseEditHelper_frequency, rule, 
+				RecurrenceRule.FIELD_FREQUENCY, Frequency.class, false, Frequency.values(),
+				new GenericLabelProvider(Frequency.class, "getTranslatedString")); //$NON-NLS-1$
 		
 		// RESTRICTIONS
 		Composite buttons = new Composite(container, SWT.NULL);
@@ -92,7 +95,7 @@ class RecurringExpenseEditHelper extends BaseExpenseEditHelper {
 		
 		// FOREVER
 		Button forever = new Button(buttons, SWT.RADIO);
-		forever.setText("Forever");
+		forever.setText(Messages.RecurringExpenseEditHelper_forever);
 		forever.setData(KEY_WIDGET_DATA, FOREVER);
 		forever.addSelectionListener(this);
 		
@@ -108,7 +111,7 @@ class RecurringExpenseEditHelper extends BaseExpenseEditHelper {
 		Button occurrence = new Button(buttons, SWT.RADIO);
 		occurrence.setData(KEY_WIDGET_DATA, OCCURRENCE);
 		occurrence.addSelectionListener(this);
-		count = createSpinner(buttons, SWT.WRAP, "Number of times", rule, RecurrenceRule.FIELD_COUNT, false);
+		count = createSpinner(buttons, SWT.WRAP, Messages.RecurringExpenseEditHelper_count, rule, RecurrenceRule.FIELD_COUNT, false);
 		count.setMinimum(0);
 		count.setMaximum(1000);
 		
@@ -154,4 +157,3 @@ class RecurringExpenseEditHelper extends BaseExpenseEditHelper {
 		}
 	}
 }
-

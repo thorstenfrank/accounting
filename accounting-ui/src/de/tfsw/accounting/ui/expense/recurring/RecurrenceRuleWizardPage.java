@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage;
 import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
 
@@ -37,8 +38,8 @@ public class RecurrenceRuleWizardPage extends AbstractExpenseWizardPage {
 	public RecurrenceRuleWizardPage(RecurringExpense expense) {
 		super(RecurrenceRuleWizardPage.class.getName(), expense);
 		this.helper = new RecurringExpenseEditHelper(expense, this);
-		setTitle("Recurrence Rules");
-		setDescription("Define the rules when and how often the template should be applied");
+		setTitle(Messages.RecurrenceRuleWizardPage_Title);
+		setDescription(Messages.RecurrenceRuleWizardPage_Desc);
 	}
 	
 	/**

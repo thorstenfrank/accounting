@@ -41,13 +41,6 @@ public class RecurrenceRule extends AbstractBaseEntity {
 	/** Property name for {@link #getInterval()}. */
 	public static final String FIELD_INTERVAL = "interval";
 	
-	/**
-	 * Frequency of application of a rule.
-	 */
-	public enum Frequency {
-		DAILY, WEEKLY, MONTHLY, YEARLY;
-	}
-	
 	private LocalDate until;
 	private Integer count;
 	private Frequency frequency;

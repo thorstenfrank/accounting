@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
 import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.ui.Messages;
 
 /**
  * @author Thorsten Frank
@@ -35,7 +36,7 @@ public class RecurringExpenseWizard extends Wizard implements IWorkbenchWizard {
 	 */
 	public RecurringExpenseWizard() {
 		setNeedsProgressMonitor(false);
-		setWindowTitle("Recurring Expense Wizard Window Title");
+		setWindowTitle(Messages.RecurringExpenseWizard_Title);
 		recurringExpense = new RecurringExpense();
 		recurringExpense.setActive(true);
 	}

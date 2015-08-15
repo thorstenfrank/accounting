@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import de.tfsw.accounting.BaseTestFixture;
-import de.tfsw.accounting.model.RecurrenceRule.Frequency;
 
 public class RecurringExpenseTest extends BaseTestFixture {
 

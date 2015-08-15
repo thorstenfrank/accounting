@@ -965,16 +965,17 @@
       </wizard>
       <wizard
             category="de.tfsw.accounting.ui.wizard"
+            class="de.tfsw.accounting.ui.expense.recurring.RecurringExpenseWizard"
+            icon="icons/date_add.png"
+            id="de.tfsw.accounting.ui.expense.recurring.RecurringExpenseWizard"
+            name="%new.recurringExpense.wizard.label">
+      </wizard>
+      <wizard
+            category="de.tfsw.accounting.ui.wizard"
             class="de.tfsw.accounting.ui.user.NewTaxRateWizard"
             icon="icons/cog_add.png"
             id="de.tfsw.accounting.ui.wizard.NewTaxRateWizard"
             name="%new.taxRate.wizard.label">
-      </wizard>
-      <wizard
-            category="de.tfsw.accounting.ui.wizard"
-            class="de.tfsw.accounting.ui.expense.recurring.RecurringExpenseWizard"
-            id="de.tfsw.accounting.ui.expense.recurring.RecurringExpenseWizard"
-            name="Recurring Expense">
       </wizard>
    </extension>
    <extension
