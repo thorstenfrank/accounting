@@ -35,6 +35,7 @@ import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.ModelMetaInformation;
 import de.tfsw.accounting.model.PaymentTerms;
+import de.tfsw.accounting.model.RecurringExpense;
 import de.tfsw.accounting.model.Revenue;
 import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.util.TimeFrame;
@@ -430,5 +431,25 @@ public interface AccountingService {
 	 * @return
 	 */
 	CurriculumVitae getCurriculumVitae();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	Set<RecurringExpense> getRecurringExpenses();
+	
+	/**
+	 * 
+	 * @param recurringExpense
+	 * @return
+	 */
+	@ModelChanging
+	RecurringExpense saveRecurringExpense(RecurringExpense recurringExpense);
+	
+	/**
+	 * 
+	 * @param recurringExpense
+	 */
+	void deleteRecurringExpense(RecurringExpense recurringExpense);
 }
 

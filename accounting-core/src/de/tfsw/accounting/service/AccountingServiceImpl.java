@@ -73,6 +73,7 @@ import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.ModelMetaInformation;
 import de.tfsw.accounting.model.PaymentTerms;
+import de.tfsw.accounting.model.RecurringExpense;
 import de.tfsw.accounting.model.Revenue;
 import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.model.internal.InvoiceSequencer;
@@ -1169,6 +1170,42 @@ public class AccountingServiceImpl implements AccountingService {
 		}
 	}
 	
+	/**
+	 * @see de.tfsw.accounting.AccountingService#getRecurringExpenses()
+	 */
+	@Override
+	public Set<RecurringExpense> getRecurringExpenses() {
+		Set<RecurringExpense> recurring = new HashSet<RecurringExpense>();
+		
+		try {
+			recurring.addAll(objectContainer.query(RecurringExpense.class));
+		} catch (Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		}
+		
+		return recurring;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.AccountingService#saveRecurringExpense(de.tfsw.accounting.model.RecurringExpense)
+	 */
+	@Override
+	public RecurringExpense saveRecurringExpense(RecurringExpense recurring) {
+		doStoreEntity(recurring);
+		return recurring;
+	}
+
+	/**
+	 * @see de.tfsw.accounting.AccountingService#deleteRecurringExpense(de.tfsw.accounting.model.RecurringExpense)
+	 */
+	@Override
+	public void deleteRecurringExpense(RecurringExpense recurring) {
+		LOG.info(String.format("Deleting recurring expense [%s / %s]", recurring.getDescription(), recurring.getRule().toString()));
+		doDeleteEntity(recurring);
+	}
+
 	/**
 	 * 
 	 * @param entity
