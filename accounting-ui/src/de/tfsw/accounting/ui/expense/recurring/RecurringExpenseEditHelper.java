@@ -61,8 +61,6 @@ class RecurringExpenseEditHelper extends BaseExpenseEditHelper {
 	protected void createRecurrenceSection(Composite container) {
 		RecurrenceRule rule = expense.getRule();
 		
-		System.out.println(rule.toString());
-		
 		GridDataFactory span2 = GridDataFactory.fillDefaults().span(2, 1);
 		
 		// ACTIVE

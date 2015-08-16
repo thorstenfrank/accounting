@@ -15,6 +15,9 @@
  */
 package de.tfsw.accounting;
 
+import java.lang.reflect.Field;
+
+import org.apache.log4j.Logger;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -25,6 +28,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+	private static final Logger LOG = Logger.getLogger(Messages.class);
+	
 	private static final String BUNDLE_NAME = "de.tfsw.accounting.messages"; //$NON-NLS-1$
 	
 	public static String FormatUtil_errorParsingDate;
@@ -102,12 +107,33 @@ public class Messages extends NLS {
 	public static String DateFormatPattern_MYD;
 	public static String DateFormatPattern_DYM;
 	public static String DateFormatPattern_YDM;
-	
+		
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
-
+	
 	private Messages() {
+	}
+	
+	private static final String FORMAT_KEY_NOT_FOUND = "!%s!";
+	
+	/**
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static String translate(Enum<?> e) {
+		final String name = new StringBuilder(e.getClass().getSimpleName())
+				.append(Constants.UNDERSCORE)
+				.append(e.name())
+				.toString();
+		try {
+			Field field = Messages.class.getDeclaredField(name);
+			return (String)field.get(null);
+		} catch (Exception ex) {
+			LOG.error(String.format("Error trying to get translation for key [%s]", name), ex);
+		}
+		return String.format(FORMAT_KEY_NOT_FOUND, name);
 	}
 }

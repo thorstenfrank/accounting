@@ -21,23 +21,10 @@ import de.tfsw.accounting.Messages;
  * Frequency of application of a rule.
  */
 public enum Frequency {
-	DAILY(Messages.Frequency_DAILY), 
-	WEEKLY(Messages.Frequency_WEEKLY), 
-	MONTHLY(Messages.Frequency_MONTHLY), 
-	YEARLY(Messages.Frequency_YEARLY);
-	
-	/**
-	 * Translated name of this payment type.
-	 */
-	private transient String translated;
-	
-	/**
-	 * 
-	 * @param translated
-	 */
-	private Frequency(String translated) {
-		this.translated = translated;
-	}
+	DAILY, 
+	WEEKLY, 
+	MONTHLY, 
+	YEARLY;
 	
 	/**
 	 * Returns a translated String describing this type. The locale used is the default locale derived from the
@@ -46,6 +33,6 @@ public enum Frequency {
 	 * @return a locale-sensitive string representation of this payment type
 	 */
 	public String getTranslatedString() {
-		return translated != null ? translated : this.name();
+		return Messages.translate(this);
 	}
 }
