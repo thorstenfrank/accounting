@@ -32,6 +32,8 @@ public interface IDs {
 	public static final String EDIT_INVOIDCE_ID = "de.tfsw.accounting.ui.invoice.InvoiceEditor"; //$NON-NLS-1$
 	public static final String VIEW_EXPENSES_ID = "de.tfsw.accounting.ui.expense.ExpensesView"; //$NON-NLS-1$
 	public static final String EDIT_EXPENSE_ID = "de.tfsw.accounting.ui.expense.ExpenseEditor"; //$NON-NLS-1$
+	public static final String VIEW_EXPENSE_TEMPLATES_ID = "de.tfsw.accounting.ui.expense.template.ExpenseTemplatesView"; //$NON-NLS-1$
+	public static final String EDIT_EXPENSE_TEMPLATE_ID = "de.tfsw.accounting.ui.expense.template.ExpenseTemplateEditor"; //$NON-NLS-1$
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMANDS / ACTIONS / EVENTS

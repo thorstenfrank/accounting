@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.tfsw.accounting.ui.expense.recurring;
+package de.tfsw.accounting.ui.expense.template;
 
 import de.tfsw.accounting.model.AbstractExpense;
-import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage;
 import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
@@ -25,18 +25,18 @@ import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
  * @author Thorsten Frank
  *
  */
-class RecurringExpenseWizardPage extends AbstractExpenseWizardPage {
+class ExpenseTemplateWizardPage extends AbstractExpenseWizardPage {
 	
-	private RecurringExpenseEditHelper helper;
+	private ExpenseTemplateEditHelper helper;
 	
 	/**
 	 * 
 	 */
-	RecurringExpenseWizardPage(RecurringExpense recurringExpense) {
-		super(RecurringExpenseWizardPage.class.getName(), recurringExpense);
-		this.helper = new RecurringExpenseEditHelper(recurringExpense, this);
-		setTitle(Messages.RecurringExpenseWizardPage_Title);
-		setDescription(Messages.RecurringExpenseWizardPage_Desc);
+	ExpenseTemplateWizardPage(ExpenseTemplate expenseTemplate) {
+		super(ExpenseTemplateWizardPage.class.getName(), expenseTemplate);
+		this.helper = new ExpenseTemplateEditHelper(expenseTemplate, this);
+		setTitle(Messages.ExpenseTemplateWizardPage_Title);
+		setDescription(Messages.ExpenseTemplateWizardPage_Desc);
 		setPageComplete(checkIfPageComplete());
 	}
 	
@@ -52,8 +52,8 @@ class RecurringExpenseWizardPage extends AbstractExpenseWizardPage {
 	 * @see de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage#getExpense()
 	 */
 	@Override
-	protected RecurringExpense getExpense() {
-		return (RecurringExpense) super.getExpense();
+	protected ExpenseTemplate getExpense() {
+		return (ExpenseTemplate) super.getExpense();
 	}
 
 	/**

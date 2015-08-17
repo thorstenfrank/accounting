@@ -13,38 +13,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.tfsw.accounting.ui.expense.recurring;
+package de.tfsw.accounting.ui.expense.template;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
-import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.AccountingException;
+import de.tfsw.accounting.model.ExpenseTemplate;
+import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.Messages;
 
 /**
  * @author Thorsten Frank
  *
  */
-public class RecurringExpenseWizard extends Wizard implements IWorkbenchWizard {
+public class ExpenseTemplateWizard extends Wizard implements IWorkbenchWizard {
 	
-	private RecurringExpense recurringExpense;
+	private ExpenseTemplate expenseTemplate;
 	
 	/**
 	 * 
 	 */
-	public RecurringExpenseWizard() {
+	public ExpenseTemplateWizard() {
 		setNeedsProgressMonitor(false);
-		setWindowTitle(Messages.RecurringExpenseWizard_Title);
-		recurringExpense = new RecurringExpense();
-		recurringExpense.setActive(true);
+		setWindowTitle(Messages.ExpenseTemplateWizard_Title);
+		expenseTemplate = new ExpenseTemplate();
+		expenseTemplate.setActive(true);
 	}
 
 	@Override
 	public void addPages() {
-		addPage(new RecurringExpenseWizardPage(recurringExpense));
-		addPage(new RecurrenceRuleWizardPage(recurringExpense));
+		addPage(new ExpenseTemplateWizardPage(expenseTemplate));
+		addPage(new RecurrenceRuleWizardPage(expenseTemplate));
 	}
 	
 	/**
@@ -60,6 +64,15 @@ public class RecurringExpenseWizard extends Wizard implements IWorkbenchWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		return false;
+		try {
+			AccountingUI.getAccountingService().saveExpenseTemplate(expenseTemplate);
+			return true;
+		} catch (AccountingException e) {
+        	MessageBox msgBox = new MessageBox(this.getShell(), SWT.ICON_ERROR | SWT.OK);
+        	msgBox.setMessage(Messages.labelError);
+        	msgBox.setText(e.getMessage());
+			msgBox.open();
+			return false;
+		}
 	}
 }

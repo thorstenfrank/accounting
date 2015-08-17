@@ -78,13 +78,19 @@ public abstract class AbstractTableView extends ViewPart implements IDoubleClick
 	 */
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		IHandlerService handlerService = 
-				(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
-			
-		try {
-			handlerService.executeCommand(getDoubleClickCommand(), new Event());
-		} catch (Exception e) {
-			getLogger().error(String.format("Error while running double-click command [%s]", getDoubleClickCommand()), e); //$NON-NLS-1$
+		final String command = getDoubleClickCommand();
+		
+		if (command == null) {
+			getLogger().warn("Double Click Command was <null>, aborting..."); //$NON-NLS-1$
+		} else {
+			IHandlerService handlerService = 
+					(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+				
+			try {
+				handlerService.executeCommand(getDoubleClickCommand(), new Event());
+			} catch (Exception e) {
+				getLogger().error(String.format("Error while running double-click command [%s]", getDoubleClickCommand()), e); //$NON-NLS-1$
+			}			
 		}
 	}
 	

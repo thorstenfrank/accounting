@@ -13,13 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.tfsw.accounting.ui.expense.recurring;
+package de.tfsw.accounting.ui.expense.template;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage;
 import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
@@ -30,14 +30,14 @@ import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
  */
 public class RecurrenceRuleWizardPage extends AbstractExpenseWizardPage {
 
-	private RecurringExpenseEditHelper helper;
+	private ExpenseTemplateEditHelper helper;
 	
 	/**
 	 * 
 	 */
-	public RecurrenceRuleWizardPage(RecurringExpense expense) {
+	public RecurrenceRuleWizardPage(ExpenseTemplate expense) {
 		super(RecurrenceRuleWizardPage.class.getName(), expense);
-		this.helper = new RecurringExpenseEditHelper(expense, this);
+		this.helper = new ExpenseTemplateEditHelper(expense, this);
 		setTitle(Messages.RecurrenceRuleWizardPage_Title);
 		setDescription(Messages.RecurrenceRuleWizardPage_Desc);
 	}

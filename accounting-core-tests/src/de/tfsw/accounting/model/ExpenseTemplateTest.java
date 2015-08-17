@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import de.tfsw.accounting.BaseTestFixture;
 
-public class RecurringExpenseTest extends BaseTestFixture {
+public class ExpenseTemplateTest extends BaseTestFixture {
 
 	private static final TaxRate TEST_TAX_RATE = new TaxRate("ShortName", "LongName", new BigDecimal("0.15"), true);
 	private static final BigDecimal TEST_AMOUNT = new BigDecimal("14.99");
@@ -27,7 +27,7 @@ public class RecurringExpenseTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testDefaultValues() {
-		RecurringExpense re = buildTestInstance();
+		ExpenseTemplate re = buildTestInstance();
 		
 		assertEquals(LocalDate.now(), re.getFirstApplication());
 		assertNotNull(re.getRule());
@@ -39,7 +39,7 @@ public class RecurringExpenseTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testMethodParamChecking() {
-		RecurringExpense re = buildTestInstance();
+		ExpenseTemplate re = buildTestInstance();
 		RecurrenceRule rule = re.getRule();
 		
 		try {
@@ -52,7 +52,7 @@ public class RecurringExpenseTest extends BaseTestFixture {
 	
 	@Test
 	public void testApply() {
-		RecurringExpense re = buildTestInstance();
+		ExpenseTemplate re = buildTestInstance();
 		re.setActive(false);
 		assertNull(re.apply());
 		
@@ -73,7 +73,7 @@ public class RecurringExpenseTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testAutomaticInactive() {
-		RecurringExpense re = buildTestInstance();
+		ExpenseTemplate re = buildTestInstance();
 		
 		// test count-based limits
 		re.setActive(true);
@@ -100,7 +100,7 @@ public class RecurringExpenseTest extends BaseTestFixture {
 	 */
 	@Test
 	public void testGetNextApplication() {
-		RecurringExpense re = buildTestInstance();
+		ExpenseTemplate re = buildTestInstance();
 		LocalDate expected = LocalDate.now().minusMonths(1);
 		re.setFirstApplication(expected);
 		
@@ -113,8 +113,8 @@ public class RecurringExpenseTest extends BaseTestFixture {
 	 * 
 	 * @return
 	 */
-	private RecurringExpense buildTestInstance() {
-		RecurringExpense re = new RecurringExpense();
+	private ExpenseTemplate buildTestInstance() {
+		ExpenseTemplate re = new ExpenseTemplate();
 		re.setActive(true);
 		re.setCategory(TEST_CATEGORY);
 		re.setDescription(TEST_DESCRIPTION);

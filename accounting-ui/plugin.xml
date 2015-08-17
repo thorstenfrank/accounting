@@ -98,6 +98,15 @@
                         value="de.tfsw.accounting.ui.wizard.NewExpenseWizard">
                   </parameter>
                </command>
+               <command
+                     commandId="org.eclipse.ui.newWizard"
+                     icon="icons/date_add.png"
+                     style="push">
+                  <parameter
+                        name="newWizardId"
+                        value="de.tfsw.accounting.ui.expense.template.ExpenseTemplateWizard">
+                  </parameter>
+               </command>
                <separator
                      name="newSubMenuSep1"
                      visible="true">
@@ -333,6 +342,16 @@
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
                      value="de.tfsw.accounting.ui.expense.ExpensesView">
+               </parameter>
+            </command>
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  icon="icons/date.png"
+                  label="%expenseTemplates"
+                  style="push">
+               <parameter
+                     name="org.eclipse.ui.views.showView.viewId"
+                     value="de.tfsw.accounting.ui.expense.template.ExpenseTemplatesView">
                </parameter>
             </command>
             <separator
@@ -583,25 +602,6 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpensesView">
-         <command
-               commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
-               icon="icons/tag_blue_add.png"
-               style="push">
-         </command>
-         <command
-               commandId="de.tfsw.accounting.ui.expense.ExportExpensesReport"
-               icon="icons/page_white_acrobat.png"
-               style="push">
-         </command>
-         <command
-               commandId="de.tfsw.accounting.ui.expenseView.menu.pulldown"
-               icon="icons/table_gear.png"
-               label="%command.changeExpensesViewFilter.name"
-               style="pulldown">
-         </command>
-      </menuContribution>
-      <menuContribution
             allPopups="false"
             locationURI="menu:de.tfsw.accounting.ui.expenseView.menu.pulldown">
          <command
@@ -639,6 +639,25 @@
                   name="timeFrame"
                   value="LAST_YEAR">
             </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpensesView">
+         <command
+               commandId="de.tfsw.accounting.ui.expense.NewExpenseCommand"
+               icon="icons/tag_blue_add.png"
+               style="push">
+         </command>
+         <command
+               commandId="de.tfsw.accounting.ui.expense.ExportExpensesReport"
+               icon="icons/page_white_acrobat.png"
+               style="push">
+         </command>
+         <command
+               commandId="de.tfsw.accounting.ui.expenseView.menu.pulldown"
+               icon="icons/table_gear.png"
+               label="%command.changeExpensesViewFilter.name"
+               style="pulldown">
          </command>
       </menuContribution>
       <menuContribution
@@ -692,6 +711,31 @@
                class="de.tfsw.accounting.ui.reports.DynamicReportMenu"
                id="de.tfsw.accounting.ui.reports.dynamicMenu1">
          </dynamic>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:de.tfsw.accounting.ui.expense.template.ExpenseTemplatesView">
+         <command
+               commandId="de.tfsw.accounting.ui.expense.template.NewExpenseTemplateCommand"
+               icon="icons/date_add.png"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:de.tfsw.accounting.ui.expense.template.ExpenseTemplatesView">
+         <command
+               commandId="de.tfsw.accounting.ui.expense.template.NewExpenseTemplateCommand"
+               icon="icons/date_add.png"
+               style="push">
+         </command>
+         <separator
+               name="expensesView.popupMenu.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateCommand"
+               icon="icons/date_delete.png"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -852,6 +896,21 @@
             id="de.tfsw.accounting.ui.expense.DeleteExpenseCommand"
             name="%command.deleteExpense.name">
       </command>
+      <category
+            id="de.tfsw.accounting.ui.expense.template"
+            name="%commandCategory.expense.template.name">
+      </category>
+      <command
+            categoryId="de.tfsw.accounting.ui.expense.template"
+            defaultHandler="de.tfsw.accounting.ui.expense.template.NewExpenseTemplateHandler"
+            id="de.tfsw.accounting.ui.expense.template.NewExpenseTemplateCommand"
+            name="%command.newExpenseTemplate.name">
+      </command>
+      <command
+            categoryId="de.tfsw.accounting.ui.expense.template"
+            id="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateCommand"
+            name="%command.deleteExpenseTemplate.name">
+      </command>
       <command
       		categoryId="de.tfsw.accounting.ui.expense"
       		defaultHandler="de.tfsw.accounting.ui.expense.ChangeExpensesViewFilterHandler"
@@ -939,6 +998,13 @@
             name="%view.expenses"
             restorable="true">
       </view>
+      <view
+            class="de.tfsw.accounting.ui.expense.template.ExpenseTemplatesView"
+            icon="icons/date.png"
+            id="de.tfsw.accounting.ui.expense.template.ExpenseTemplatesView"
+            name="%view.expenseTemplates"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
@@ -965,10 +1031,10 @@
       </wizard>
       <wizard
             category="de.tfsw.accounting.ui.wizard"
-            class="de.tfsw.accounting.ui.expense.recurring.RecurringExpenseWizard"
+            class="de.tfsw.accounting.ui.expense.template.ExpenseTemplateWizard"
             icon="icons/date_add.png"
-            id="de.tfsw.accounting.ui.expense.recurring.RecurringExpenseWizard"
-            name="%new.recurringExpense.wizard.label">
+            id="de.tfsw.accounting.ui.expense.template.ExpenseTemplateWizard"
+            name="%new.expenseTemplate.wizard.label">
       </wizard>
       <wizard
             category="de.tfsw.accounting.ui.wizard"
@@ -1055,6 +1121,34 @@
                </equals>
             </with>
          </or>
+      </definition>
+      <definition
+            id="selectionIsSingleExpenseTemplate">
+         <and>
+            <iterate
+                  ifEmpty="false">
+               <instanceof
+                     value="de.tfsw.accounting.model.ExpenseTemplate">
+               </instanceof>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </and>
+      </definition>
+      <definition
+            id="selectionIsSingleExpenseTemplate">
+         <and>
+            <iterate
+                  ifEmpty="false">
+               <instanceof
+                     value="de.tfsw.accounting.ui.expense.ExpenseWrapper">
+               </instanceof>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </and>
       </definition>
    </extension>
    <extension
@@ -1261,6 +1355,15 @@
          <enabledWhen>
             <reference
                   definitionId="selectionIsMultipleExpenses">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateHandler"
+            commandId="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsSingleExpenseTemplate">
             </reference>
          </enabledWhen>
       </handler>

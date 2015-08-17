@@ -73,7 +73,7 @@ import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.ModelMetaInformation;
 import de.tfsw.accounting.model.PaymentTerms;
-import de.tfsw.accounting.model.RecurringExpense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Revenue;
 import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.model.internal.InvoiceSequencer;
@@ -1171,39 +1171,39 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 	
 	/**
-	 * @see de.tfsw.accounting.AccountingService#getRecurringExpenses()
+	 * @see de.tfsw.accounting.AccountingService#getExpenseTemplates()
 	 */
 	@Override
-	public Set<RecurringExpense> getRecurringExpenses() {
-		Set<RecurringExpense> recurring = new HashSet<RecurringExpense>();
+	public Set<ExpenseTemplate> getExpenseTemplates() {
+		Set<ExpenseTemplate> templates = new HashSet<ExpenseTemplate>();
 		
 		try {
-			recurring.addAll(objectContainer.query(RecurringExpense.class));
+			templates.addAll(objectContainer.query(ExpenseTemplate.class));
 		} catch (Db4oIOException e) {
 			throwDb4oIoException(e);
 		} catch (DatabaseClosedException e) {
 			throwDbClosedException(e);
 		}
 		
-		return recurring;
+		return templates;
 	}
 
 	/**
-	 * @see de.tfsw.accounting.AccountingService#saveRecurringExpense(de.tfsw.accounting.model.RecurringExpense)
+	 * @see de.tfsw.accounting.AccountingService#saveExpenseTemplate(de.tfsw.accounting.model.ExpenseTemplate)
 	 */
 	@Override
-	public RecurringExpense saveRecurringExpense(RecurringExpense recurring) {
-		doStoreEntity(recurring);
-		return recurring;
+	public ExpenseTemplate saveExpenseTemplate(ExpenseTemplate template) {
+		doStoreEntity(template);
+		return template;
 	}
 
 	/**
-	 * @see de.tfsw.accounting.AccountingService#deleteRecurringExpense(de.tfsw.accounting.model.RecurringExpense)
+	 * @see de.tfsw.accounting.AccountingService#deleteExpenseTemplate(de.tfsw.accounting.model.ExpenseTemplate)
 	 */
 	@Override
-	public void deleteRecurringExpense(RecurringExpense recurring) {
-		LOG.info(String.format("Deleting recurring expense [%s / %s]", recurring.getDescription(), recurring.getRule().toString()));
-		doDeleteEntity(recurring);
+	public void deleteExpenseTemplate(ExpenseTemplate template) {
+		LOG.info(String.format("Deleting expense template [%s / %s]", template.getDescription(), template.getRule().toString()));
+		doDeleteEntity(template);
 	}
 
 	/**

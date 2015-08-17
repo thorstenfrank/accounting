@@ -25,7 +25,7 @@ import java.time.LocalDate;
  * @see Expense
  * @see RecurrenceRule
  */
-public class RecurringExpense extends AbstractExpense {
+public class ExpenseTemplate extends AbstractExpense {
 
 	/**
 	 * 
@@ -53,7 +53,7 @@ public class RecurringExpense extends AbstractExpense {
 	/**
 	 * 
 	 */
-	public RecurringExpense() {
+	public ExpenseTemplate() {
 		this.active = true;
 		this.firstApplication = LocalDate.now();
 		this.numberOfApplications = 0;

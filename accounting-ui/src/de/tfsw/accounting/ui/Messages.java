@@ -100,6 +100,9 @@ public class Messages extends NLS {
 	public static String DeleteExpenseCommand_confirmMessage;
 	public static String DeleteExpenseCommand_confirmText;
 	
+	public static String DeleteExpenseTemplateCommand_confirmMessage;
+	public static String DeleteExpenseTemplateCommand_confirmText;
+	
 	public static String DeleteInvoiceCommand_confirmMessage;
 	public static String DeleteInvoiceCommand_confirmText;
 	
@@ -232,17 +235,17 @@ public class Messages extends NLS {
 	public static String RecurrenceRuleWizardPage_Desc;
 	public static String RecurrenceRuleWizardPage_Title;
 
-	public static String RecurringExpenseEditHelper_active;
-	public static String RecurringExpenseEditHelper_count;
-	public static String RecurringExpenseEditHelper_forever;
-	public static String RecurringExpenseEditHelper_frequency;
-	public static String RecurringExpenseEditHelper_interval;
-	public static String RecurringExpenseEditHelper_validFrom;
+	public static String ExpenseTemplateEditHelper_active;
+	public static String ExpenseTemplateEditHelper_count;
+	public static String ExpenseTemplateEditHelper_forever;
+	public static String ExpenseTemplateEditHelper_frequency;
+	public static String ExpenseTemplateEditHelper_interval;
+	public static String ExpenseTemplateEditHelper_validFrom;
 
-	public static String RecurringExpenseWizard_Title;
+	public static String ExpenseTemplateWizard_Title;
 
-	public static String RecurringExpenseWizardPage_Desc;
-	public static String RecurringExpenseWizardPage_Title;
+	public static String ExpenseTemplateWizardPage_Desc;
+	public static String ExpenseTemplateWizardPage_Title;
 
 	public static String ReportGenerationUtil_errorGeneratingInvoice;
 	public static String ReportGenerationUtil_errorNoReportingService;
