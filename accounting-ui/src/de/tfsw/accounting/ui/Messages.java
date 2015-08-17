@@ -398,6 +398,7 @@ public class Messages extends NLS {
 	public static String iconsExpenses;
 	public static String iconsExpenseAdd;
 	public static String iconsExpenseEdit;
+	public static String iconsExpenseTemplateEdit;
 	public static String iconsReports;
 	public static String iconsIncomeStatement;
 	public static String iconsIncomeStatementDetails;

@@ -728,7 +728,16 @@
                style="push">
          </command>
          <separator
-               name="expensesView.popupMenu.separator1"
+               name="expenseTemplatesView.popupMenu.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.tfsw.accounting.ui.expense.template.EditExpenseTemplateCommand"
+               icon="icons/date_edit.png"
+               style="push">
+         </command>
+         <separator
+               name="expenseTemplatesView.popupMenu.separator2"
                visible="true">
          </separator>
          <command
@@ -767,6 +776,13 @@
             icon="icons/tag_blue_edit.png"
             id="de.tfsw.accounting.ui.expense.ExpenseEditor"
             name="%editor.expense.name">
+      </editor>
+      <editor
+            class="de.tfsw.accounting.ui.expense.template.ExpenseTemplateEditor"
+            default="false"
+            icon="icons/date_edit.png"
+            id="de.tfsw.accounting.ui.expense.template.ExpenseTemplateEditor"
+            name="%editor.expenseTemplate.name">
       </editor>
    </extension>
    <extension
@@ -905,6 +921,11 @@
             defaultHandler="de.tfsw.accounting.ui.expense.template.NewExpenseTemplateHandler"
             id="de.tfsw.accounting.ui.expense.template.NewExpenseTemplateCommand"
             name="%command.newExpenseTemplate.name">
+      </command>
+      <command
+            categoryId="de.tfsw.accounting.ui.expense.template"
+            id="de.tfsw.accounting.ui.expense.template.EditExpenseTemplateCommand"
+            name="%command.editExpenseTemplate.name">
       </command>
       <command
             categoryId="de.tfsw.accounting.ui.expense.template"
@@ -1361,6 +1382,15 @@
       <handler
             class="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateHandler"
             commandId="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsSingleExpenseTemplate">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.tfsw.accounting.ui.expense.template.EditExpenseTemplateHandler"
+            commandId="de.tfsw.accounting.ui.expense.template.EditExpenseTemplateCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsSingleExpenseTemplate">

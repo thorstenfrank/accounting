@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import de.tfsw.accounting.ui.AbstractTableSorter;
 import de.tfsw.accounting.ui.AbstractTableView;
 import de.tfsw.accounting.ui.AccountingUI;
+import de.tfsw.accounting.ui.IDs;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.ModelChangeListener;
 
@@ -121,7 +122,7 @@ public class ExpenseTemplatesView extends AbstractTableView implements ModelChan
 	 */
 	@Override
 	protected String getDoubleClickCommand() {
-		return null;
+		return IDs.CMD_EDIT_EXPENSE_TEMPLATE;
 	}
 	
 	/**

@@ -64,6 +64,9 @@ public interface IDs {
 	public static final String CMD_CHANGE_EXPENSES_VIEW_TIME_FRAME = "de.tfsw.accounting.ui.expense.ChangeExpensesViewTimeFrameCommand"; //$NON-NLS-1$
 	public static final String CMD_NEW_EXPENSE = "de.tfsw.accounting.ui.expense.NewExpenseCommand"; //$NON-NLS-1$
 	
+	// Expense Templates
+	public static final String CMD_EDIT_EXPENSE_TEMPLATE = "de.tfsw.accounting.ui.expense.template.EditExpenseTemplateCommand"; //$NON-NLS-1$
+	
 	// Reporting
 	public static final String CMD_OPEN_REVENUE_DIALOG = "de.tfsw.accounting.ui.revenue.OpenRevenueCommand"; //$NON-NLS-1$
 	public static final String CMD_OPEN_REVENUE_BY_YEAR_DIALOG = "de.tfsw.accounting.ui.revenue.RevenueByYearCommand"; //$NON-NLS-1$
