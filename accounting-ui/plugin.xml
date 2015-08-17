@@ -347,7 +347,7 @@
             <command
                   commandId="org.eclipse.ui.views.showView"
                   icon="icons/date.png"
-                  label="%expenseTemplates"
+                  label="%command.viewExpenseTemplates.label"
                   style="push">
                <parameter
                      name="org.eclipse.ui.views.showView.viewId"
