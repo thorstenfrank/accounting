@@ -450,6 +450,7 @@ public interface AccountingService {
 	 * 
 	 * @param recurringExpense
 	 */
+	@ModelChanging
 	void deleteRecurringExpense(RecurringExpense recurringExpense);
 }
 
