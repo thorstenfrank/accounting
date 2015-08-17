@@ -92,11 +92,11 @@ public abstract class AbstractAccountingHandler extends AbstractHandler {
 		
 		try {
 			doExecute(event);
-		} catch (Exception e) {
-			getLogger().error("Error executing command", e); //$NON-NLS-1$
+		} catch (Throwable t) {
+			getLogger().error("Error executing command", t); //$NON-NLS-1$
 			MessageBox msgBox = new MessageBox(getShell(event), SWT.ICON_ERROR | SWT.OK);
 			msgBox.setText(Messages.labelError);
-			msgBox.setMessage(e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.toString());
+			msgBox.setMessage(t.getLocalizedMessage() != null ? t.getLocalizedMessage() : t.toString());
 			msgBox.open();
 		}
 		
