@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -48,14 +49,30 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 		} catch (IllegalArgumentException e) {
 			assertEquals(rule, re.getRule());
 		}
+		
+		LocalDate firstAppl = re.getFirstApplication();
+		try {
+			re.setFirstApplication(null);
+			fail("Setting first application to null should have raised exception!");
+		} catch (IllegalArgumentException e) {
+			assertEquals(firstAppl, re.getFirstApplication());
+		}
 	}
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void testApply() {
 		ExpenseTemplate re = buildTestInstance();
+		
+		// turn off the master switch
+		// --> no expenses should be created regardless of the RecurrenceRule
 		re.setActive(false);
+		assertNull(re.getNextApplication());
 		assertNull(re.apply());
 		
+		// turn it on again
 		re.setActive(true);
 		
 		Expense expense = re.apply();
@@ -66,6 +83,33 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 		assertEquals(TEST_DESCRIPTION, expense.getDescription());
 		assertEquals(TEST_TAX_RATE, expense.getTaxRate());
 		assertEquals(TEST_TYPE, expense.getExpenseType());
+	}
+	
+	/**
+	 * Tests creating multiple expenses until the current date is reached.
+	 */
+	@Test
+	public void testApplyInThePast() {
+		ExpenseTemplate re = buildTestInstance();
+		re.getRule().setFrequency(Frequency.DAILY);
+		re.setFirstApplication(LocalDate.now().minusDays(5));
+		
+		Set<LocalDate> outstanding = re.getOutstandingApplications();
+		assertEquals(6, outstanding.size());
+		// just checking the ordering...
+		assertEquals(re.getFirstApplication(), outstanding.iterator().next());
+		
+		for (int i = 5; i >= 0; i--) {
+			assertEquals(i + 1, re.getNumberOfOutstandingApplications());
+			Expense exp = re.apply();
+			assertNotNull(exp);
+			assertEquals(LocalDate.now().minusDays(i), exp.getPaymentDate());
+			assertEquals(exp.getPaymentDate(), re.getLastApplication());
+		}
+		assertEquals(0, re.getNumberOfOutstandingApplications());
+		assertTrue(re.isActive());
+		assertNull(re.apply());
+		assertEquals(LocalDate.now().plusDays(1), re.getNextApplication());
 	}
 	
 	/**
@@ -104,9 +148,12 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 		LocalDate expected = LocalDate.now().minusMonths(1);
 		re.setFirstApplication(expected);
 		
-		expected = expected.plusDays(1);
 		re.getRule().setFrequency(Frequency.DAILY);
 		assertEquals(expected, re.getNextApplication());
+		
+		LocalDate future = LocalDate.now().plusMonths(6).plusDays(17);
+		re.setFirstApplication(future);
+		assertEquals(future, re.getNextApplication());
 	}
 	
 	/**
@@ -122,5 +169,5 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 		re.setNetAmount(TEST_AMOUNT);
 		re.setTaxRate(TEST_TAX_RATE);
 		return re;
-	}
+	}	
 }
