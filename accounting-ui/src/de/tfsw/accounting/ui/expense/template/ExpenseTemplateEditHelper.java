@@ -151,7 +151,10 @@ class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
 				count.setSelection(1);
 			}
 			expense.getRule().setCount(count.getSelection());
+			count.setEnabled(true);
 			untilDate.setEnabled(false);
+		} else if (RecurrenceRule.FIELD_INTERVAL.equals(origin)) {
+			System.out.println("INTERVAL IS NOW: " + expense.getRule().getInterval());
 		}
 	}
 }

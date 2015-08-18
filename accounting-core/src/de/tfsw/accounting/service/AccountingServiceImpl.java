@@ -256,6 +256,10 @@ public class AccountingServiceImpl implements AccountingService {
 		cvClass.cascadeOnUpdate(true);
 		cvClass.cascadeOnDelete(true);
 		
+		ObjectClass expenseTemplateClass = config.objectClass(ExpenseTemplate.class);
+		expenseTemplateClass.cascadeOnUpdate(true);
+		expenseTemplateClass.cascadeOnDelete(true);
+		
 		return config;
 	}
 

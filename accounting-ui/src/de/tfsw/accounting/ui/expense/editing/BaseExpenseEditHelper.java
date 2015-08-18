@@ -71,7 +71,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	private static final Logger LOG = Logger.getLogger(BaseExpenseEditHelper.class);
 
 	/** Key for identifying the widget that has fired an event. */
-	protected static final String KEY_WIDGET_DATA = "BaseExpenseEditingHelper.KEY_WIDGET_DATA"; //$NON-NLS-1$
+	protected static final String KEY_WIDGET_DATA = "ExpenseEditHelper.KEY_WIDGET_DATA"; //$NON-NLS-1$
 	
 	/** The model. */
 	private AbstractExpense expense;
@@ -342,6 +342,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 			client.createLabel(parent, label);	
 		}
 		Spinner spinner = new Spinner(parent, style);
+		spinner.setData(KEY_WIDGET_DATA, property);
 		spinner.setMinimum(0);
 		spinner.setMaximum(100);
 		spinner.setIncrement(1);
@@ -487,7 +488,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	private void extractOriginFromWidget(Widget widget) {
 		Object data = widget.getData(KEY_WIDGET_DATA);
 		if (data == null || !(data instanceof String)) {
-			LOG.warn(String.format("Illegal data stored in widget under key [%s] : [%s]", KEY_WIDGET_DATA, data));
+			LOG.warn(String.format("Illegal data stored in widget [%s] under key [%s] : [%s]", widget.toString(), KEY_WIDGET_DATA, data));
 		} else {
 			notifyModelChange((String) data);
 		}

@@ -51,6 +51,7 @@ import de.tfsw.accounting.BaseTestFixture;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.CurriculumVitae;
 import de.tfsw.accounting.model.Expense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.PaymentTerms;
@@ -140,8 +141,13 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		cvClassMock.cascadeOnUpdate(true);
 		cvClassMock.cascadeOnDelete(true);
 		
+		ObjectClass expenseTemplateClassMock = createMock(ObjectClass.class);
+		expect(configurationMock.objectClass(ExpenseTemplate.class)).andReturn(expenseTemplateClassMock);
+		expenseTemplateClassMock.cascadeOnUpdate(true);
+		expenseTemplateClassMock.cascadeOnDelete(true);
+		
 		initMocks = new Object[]{db4oServiceMock, configurationMock, userClassMock, userNameFieldMock, clientClassMock, 
-				clientNameMock, invoiceClassMock, invoicePositionsMock, invoiceNumberMock, cvClassMock};
+				clientNameMock, invoiceClassMock, invoicePositionsMock, invoiceNumberMock, cvClassMock, expenseTemplateClassMock};
 		
 		expect(db4oServiceMock.openFile(configurationMock, TEST_DB_FILE)).andReturn(ocMock);
 		
