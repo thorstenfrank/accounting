@@ -654,6 +654,11 @@
                style="push">
          </command>
          <command
+               commandId="de.tfsw.accounting.ui.expense.template.FindApplicableTemplatesHandler"
+               icon="icons/date_go.png"
+               style="push">
+         </command>
+         <command
                commandId="de.tfsw.accounting.ui.expenseView.menu.pulldown"
                icon="icons/table_gear.png"
                label="%command.changeExpensesViewFilter.name"
@@ -931,6 +936,12 @@
             categoryId="de.tfsw.accounting.ui.expense.template"
             id="de.tfsw.accounting.ui.expense.template.DeleteExpenseTemplateCommand"
             name="%command.deleteExpenseTemplate.name">
+      </command>
+      <command
+            categoryId="de.tfsw.accounting.ui.expense.template"
+            defaultHandler="de.tfsw.accounting.ui.expense.template.FindApplicableTemplatesHandler"
+            id="de.tfsw.accounting.ui.expense.template.FindApplicableTemplatesHandler"
+            name="%command.findApplicableExpenseTemplates.name">
       </command>
       <command
       		categoryId="de.tfsw.accounting.ui.expense"
