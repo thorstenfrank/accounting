@@ -51,8 +51,8 @@ class FindExpenseTemplatePredicate extends Predicate<ExpenseTemplate> {
 	public boolean match(ExpenseTemplate template) {
 		boolean match = true;
 		
-		if (active != null && active.equals(template.isActive())) {
-			match = false;
+		if (active != null) {
+			match = template.isApplicable();
 		}
 		
 		if (match && applicable != null) {
