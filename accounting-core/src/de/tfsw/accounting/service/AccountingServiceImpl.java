@@ -66,6 +66,7 @@ import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
 import de.tfsw.accounting.model.ExpenseImportParams;
 import de.tfsw.accounting.model.ExpenseImportResult;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.ExpenseType;
 import de.tfsw.accounting.model.IncomeStatement;
 import de.tfsw.accounting.model.Invoice;
@@ -73,7 +74,6 @@ import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.ModelMetaInformation;
 import de.tfsw.accounting.model.PaymentTerms;
-import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Revenue;
 import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.model.internal.InvoiceSequencer;
@@ -1188,6 +1188,24 @@ public class AccountingServiceImpl implements AccountingService {
 		return templates;
 	}
 
+	/**
+	 * @see de.tfsw.accounting.AccountingService#findApplicableExpenseTemplates()
+	 */
+	@Override
+	public Set<ExpenseTemplate> findApplicableExpenseTemplates() {
+		Set<ExpenseTemplate> templates = new HashSet<ExpenseTemplate>();
+		
+		try {
+			templates.addAll(objectContainer.query(new FindExpenseTemplatePredicate(true, true)));
+		} catch (Db4oIOException e) {
+			throwDb4oIoException(e);
+		} catch (DatabaseClosedException e) {
+			throwDbClosedException(e);
+		}
+		
+		return templates;
+	}
+	
 	/**
 	 * @see de.tfsw.accounting.AccountingService#saveExpenseTemplate(de.tfsw.accounting.model.ExpenseTemplate)
 	 */

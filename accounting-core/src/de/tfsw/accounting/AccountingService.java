@@ -440,6 +440,12 @@ public interface AccountingService {
 	
 	/**
 	 * 
+	 * @return
+	 */
+	Set<ExpenseTemplate> findApplicableExpenseTemplates();
+	
+	/**
+	 * 
 	 * @param expenseTemplate
 	 * @return
 	 */

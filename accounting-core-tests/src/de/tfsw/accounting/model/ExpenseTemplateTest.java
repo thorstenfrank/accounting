@@ -158,6 +158,30 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 	
 	/**
 	 * 
+	 */
+	@Test
+	public void testIsApplicable() {
+		ExpenseTemplate re = buildTestInstance();
+		assertTrue(re.isApplicable());
+		
+		re.setActive(false);
+		assertFalse(re.isApplicable());
+		
+		re.setActive(true);
+		re.setFirstApplication(LocalDate.now().plusDays(5));
+		assertFalse(re.isApplicable());
+		
+		re.setFirstApplication(LocalDate.now().minusDays(10));
+		assertTrue(re.isApplicable());
+		
+		re.setLastApplication(LocalDate.now().minusDays(5));
+		assertFalse(re.isApplicable());
+		re.getRule().setFrequency(Frequency.DAILY);
+		assertTrue(re.isApplicable());
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	private ExpenseTemplate buildTestInstance() {

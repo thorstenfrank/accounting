@@ -127,6 +127,18 @@ public class ExpenseTemplate extends AbstractExpense {
 		return expense;
 	}
 	
+	/**
+	 * @return <code>true</code> if {@link #isActive()} is <code>true</code> <b>and</b> 
+	 * 		   if {@link #getNextApplication()} is not in the future.
+	 */
+	public boolean isApplicable() {
+		if (active) {
+			return getNextApplication().isAfter(LocalDate.now()) == false;
+		}
+		
+		return false;
+	}
+	
 	/** 
 	 * @return the dates of all possible applications of this template
 	 */
