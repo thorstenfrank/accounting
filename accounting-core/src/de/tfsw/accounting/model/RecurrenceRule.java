@@ -44,7 +44,7 @@ public class RecurrenceRule extends AbstractBaseEntity {
 	private LocalDate until;
 	private Integer count;
 	private Frequency frequency;
-	private int interval = 1;
+	private int interval;
 	
 	/**
 	 * Equivalent to calling {@link #RecurrenceRule(Frequency.MONTHLY)}
@@ -54,10 +54,48 @@ public class RecurrenceRule extends AbstractBaseEntity {
 	}
 	
 	/**
+	 * Creates a new rule with the supplied frequency and an interval of 1.
+	 * 
 	 * @param frequency the {@link Frequency} with which this rule applies
 	 */
 	public RecurrenceRule(Frequency frequency) {
-		this.frequency = frequency;
+		this(frequency, 1);
+	}
+	
+	/**
+	 * Creates a new rule with the supplied frequency and interval.
+	 * 
+	 * @param frequency the desired {@link Frequency}, must not be <code>null</code>
+	 * @param interval the interval, must be greater than 0 
+	 * 
+	 * @see #setFrequency(Frequency)
+	 * @see #setInterval(int)
+	 */
+	public RecurrenceRule(Frequency frequency, int interval) {
+		setFrequency(frequency);
+		setInterval(interval);;
+	}
+	
+	/**
+	 * 
+	 * @param frequency
+	 * @param interval
+	 * @param count
+	 */
+	public RecurrenceRule(Frequency frequency, int interval, int count) {
+		this(frequency, interval);
+		setCount(count);
+	}
+	
+	/**
+	 * 
+	 * @param frequency
+	 * @param interval
+	 * @param until
+	 */
+	public RecurrenceRule(Frequency frequency, int interval, LocalDate until) {
+		this(frequency, interval);
+		setUntil(until);
 	}
 	
 	/**
@@ -87,6 +125,7 @@ public class RecurrenceRule extends AbstractBaseEntity {
 
 	/**
 	 * @param count the count to set, may be <code>null</code>, in which case the rule will apply without end
+	 * @throws IllegalArgumentException if the count is less than 1
 	 */
 	public void setCount(Integer count) {
 		if (count != null) {
@@ -110,8 +149,12 @@ public class RecurrenceRule extends AbstractBaseEntity {
 
 	/**
 	 * @param frequency the frequency to set
+	 * @throws IllegalArgumentException if the parameter is <code>null</code>
 	 */
 	public void setFrequency(Frequency frequency) {
+		if (frequency == null) {
+			throw new IllegalArgumentException("Frequency must not be null!");
+		}
 		this.frequency = frequency;
 	}
 
@@ -124,6 +167,7 @@ public class RecurrenceRule extends AbstractBaseEntity {
 
 	/**
 	 * @param interval the interval to set
+	 * @throws IllegalArgumentException if the interval is less than 1
 	 */
 	public void setInterval(int interval) {
 		if (interval < 1) {

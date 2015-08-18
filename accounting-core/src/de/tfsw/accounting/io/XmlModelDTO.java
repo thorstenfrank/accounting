@@ -19,6 +19,7 @@ import java.util.Set;
 
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.Expense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.User;
 
@@ -35,7 +36,9 @@ public class XmlModelDTO {
 	private Set<Invoice> invoices;
 	
 	private Set<Expense> expenses;
-
+	
+	private Set<ExpenseTemplate> expenseTemplates;
+	
 	/**
 	 * @return the user
 	 */
@@ -90,5 +93,19 @@ public class XmlModelDTO {
 	 */
 	public void setExpenses(Set<Expense> expenses) {
 		this.expenses = expenses;
+	}
+
+	/**
+	 * @return the expenseTemplates
+	 */
+	public Set<ExpenseTemplate> getExpenseTemplates() {
+		return expenseTemplates;
+	}
+
+	/**
+	 * @param expenseTemplates the expenseTemplates to set
+	 */
+	public void setExpenseTemplates(Set<ExpenseTemplate> expenseTemplates) {
+		this.expenseTemplates = expenseTemplates;
 	}
 }

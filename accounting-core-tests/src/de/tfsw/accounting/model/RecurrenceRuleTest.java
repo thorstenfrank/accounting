@@ -58,8 +58,16 @@ public class RecurrenceRuleTest {
 		try {
 			rule.setInterval(-1);
 			fail("Setting interval to a negative value should have raised exception");
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			assertEquals("Default value for interval should be one!", 1, rule.getInterval());
+		}
+		
+		try {
+			rule.setFrequency(Frequency.YEARLY);
+			rule.setFrequency(null);
+			fail("Setting rule to null should have raised an exception");
+		} catch (IllegalArgumentException e) {
+			assertEquals(Frequency.YEARLY, rule.getFrequency());
 		}
 	}
 	

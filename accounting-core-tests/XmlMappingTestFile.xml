@@ -18,7 +18,7 @@
         <iban>JUnitIBAN</iban>
     </bankAccount>
     <taxRates>
-        <taxRate>
+        <taxRate isVat="true">
             <abbreviation>JUT</abbreviation>
             <name>JUnitTax</name>
             <rate>0.15</rate>
@@ -54,7 +54,7 @@
                 <invoicePosition>
                     <quantity>100.5</quantity>
                     <pricePerUnit>55</pricePerUnit>
-                    <taxRate>
+                    <taxRate isVat="true">
                         <abbreviation>JUT</abbreviation>
                         <name>JUnitTax</name>
                         <rate>0.15</rate>
@@ -73,7 +73,7 @@
             <netAmount>20.23</netAmount>
             <paymentDate>2011-01-01</paymentDate>
             <taxRate>
-                <abbreviation>JUT</abbreviation>
+                <abbreviation isVat="true">JUT</abbreviation>
                 <name>JUnitTax</name>
                 <rate>0.15</rate>
             </taxRate>
@@ -84,7 +84,7 @@
             <expenseType>CAPEX</expenseType>
             <netAmount>100</netAmount>
             <paymentDate>2011-01-01</paymentDate>
-            <taxRate>
+            <taxRate isVat="true">
                 <abbreviation>JUT</abbreviation>
                 <name>JUnitTax</name>
                 <rate>0.15</rate>
@@ -102,4 +102,53 @@
             <category>ExpenseCategory</category>
         </expense>
     </expenses>
+	<expenseTemplates>
+		<template>
+			<description>JUnitTemplateDesc_1</description>
+			<expenseType>OPEX</expenseType>
+			<netAmount>10.55</netAmount>
+            <taxRate isVat="true">
+                <abbreviation>JUT</abbreviation>
+                <name>JUnitTax</name>
+                <rate>0.15</rate>
+            </taxRate>
+			<category>ExpenseCategory</category>
+			<rule>
+				<interval>1</interval>
+				<frequency>MONTHLY</frequency>
+			</rule>
+			<active>true</active>
+			<firstApplication>2015-01-01</firstApplication>
+			<lastApplication>2015-08-01</lastApplication>
+			<numberOfApplications>8</numberOfApplications>
+		</template>
+		<template>
+			<description>JUnitTemplateDesc_2</description>
+			<expenseType>CAPEX</expenseType>
+			<netAmount>150</netAmount>
+			<category>CapexCategory</category>
+			<rule>
+				<interval>2</interval>
+				<frequency>YEARLY</frequency>
+				<count>2</count>
+			</rule>
+			<active>false</active>
+			<firstApplication>2010-06-15</firstApplication>
+			<lastApplication>2014-06-15</lastApplication>
+			<numberOfApplications>2</numberOfApplications>
+		</template>
+		<template>
+			<description>JUnitTemplateDesc_3</description>
+			<expenseType>OTHER</expenseType>
+			<netAmount>0.69</netAmount>
+			<rule>
+				<interval>5</interval>
+				<frequency>WEEKLY</frequency>
+				<until>2020-06-01</until>
+			</rule>
+			<active>false</active>
+			<firstApplication>2015-01-01</firstApplication>
+			<numberOfApplications>0</numberOfApplications>
+		</template>
+	</expenseTemplates>
 </xmlUser>

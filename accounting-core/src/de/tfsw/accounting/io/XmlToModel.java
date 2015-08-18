@@ -29,11 +29,14 @@ import de.tfsw.accounting.io.xml.XmlBankAccount;
 import de.tfsw.accounting.io.xml.XmlClient;
 import de.tfsw.accounting.io.xml.XmlClients;
 import de.tfsw.accounting.io.xml.XmlExpense;
+import de.tfsw.accounting.io.xml.XmlExpenseTemplate;
+import de.tfsw.accounting.io.xml.XmlExpenseTemplates;
 import de.tfsw.accounting.io.xml.XmlExpenses;
 import de.tfsw.accounting.io.xml.XmlInvoice;
 import de.tfsw.accounting.io.xml.XmlInvoicePosition;
 import de.tfsw.accounting.io.xml.XmlInvoices;
 import de.tfsw.accounting.io.xml.XmlPaymentTerms;
+import de.tfsw.accounting.io.xml.XmlRecurrenceRule;
 import de.tfsw.accounting.io.xml.XmlTaxRate;
 import de.tfsw.accounting.io.xml.XmlTaxRates;
 import de.tfsw.accounting.io.xml.XmlUser;
@@ -42,11 +45,14 @@ import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.DepreciationMethod;
 import de.tfsw.accounting.model.Expense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.ExpenseType;
+import de.tfsw.accounting.model.Frequency;
 import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.PaymentTerms;
 import de.tfsw.accounting.model.PaymentType;
+import de.tfsw.accounting.model.RecurrenceRule;
 import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.User;
 
@@ -88,8 +94,11 @@ class XmlToModel {
     	// the invoices
     	model.setInvoices(convertInvoices(xmlUser.getInvoices()));
     	
-    	// and the expenses
+    	// the expenses
     	model.setExpenses(convertExpenses(xmlUser.getExpenses()));
+    	
+    	// expense templates
+    	model.setExpenseTemplates(convertExpenseTemplates(xmlUser.getExpenseTemplates()));
     	
     	return model;
     }
@@ -211,6 +220,57 @@ class XmlToModel {
 			LOG.debug("No expenses to convert."); //$NON-NLS-1$
 		}
 		return expenses;
+	}
+	
+	/**
+	 * 
+	 * @param xmlTemplates
+	 * @return
+	 */
+	private Set<ExpenseTemplate> convertExpenseTemplates(XmlExpenseTemplates xmlTemplates) {
+		Set<ExpenseTemplate> templates = null;
+		if (xmlTemplates != null && xmlTemplates.getTemplate().size() > 0) {
+			LOG.debug("Converting Expense Templates...");
+			
+			templates = new HashSet<ExpenseTemplate>(xmlTemplates.getTemplate().size());
+			for (XmlExpenseTemplate xmlTemplate : xmlTemplates.getTemplate()) {
+				LOG.debug("Converting Expense Template: " + xmlTemplate.getDescription());
+				ExpenseTemplate template = new ExpenseTemplate();
+				template.setActive(xmlTemplate.isActive());
+				template.setCategory(xmlTemplate.getDescription());
+				template.setDescription(xmlTemplate.getDescription());
+				template.setExpenseType(ExpenseType.valueOf(xmlTemplate.getExpenseType().name()));
+				template.setFirstApplication(convertDate(xmlTemplate.getFirstApplication()));
+				template.setLastApplication(convertDate(xmlTemplate.getLastApplication()));
+				template.setNetAmount(xmlTemplate.getNetAmount());
+				template.setNumberOfApplications(xmlTemplate.getNumberOfApplications());
+				template.setRule(convertRecurrenceRule(xmlTemplate.getRule()));
+				template.setTaxRate(findOrCreateTaxRate(xmlTemplate.getTaxRate()));
+				templates.add(template);
+			}
+		}
+		return templates;
+	}
+	
+	/**
+	 * 
+	 * @param xmlRule
+	 * @return
+	 */
+	private RecurrenceRule convertRecurrenceRule(XmlRecurrenceRule xmlRule) {
+		if (xmlRule != null) {
+			RecurrenceRule rule = new RecurrenceRule();
+			rule.setFrequency(Frequency.valueOf(xmlRule.getFrequency().name()));
+			rule.setInterval(xmlRule.getInterval());
+			if (xmlRule.getCount() != null) {
+				rule.setCount(xmlRule.getCount());
+			} else if (xmlRule.getUntil() != null) {
+				rule.setUntil(convertDate(xmlRule.getUntil()));
+			}
+			return rule;
+		}
+		
+		return null;
 	}
 	
 	/**

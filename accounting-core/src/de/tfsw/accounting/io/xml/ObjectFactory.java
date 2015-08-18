@@ -66,6 +66,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link XmlExpenseTemplate }
+     * 
+     */
+    public XmlExpenseTemplate createXmlExpenseTemplate() {
+        return new XmlExpenseTemplate();
+    }
+
+    /**
      * Create an instance of {@link XmlExpenses }
      * 
      */
@@ -130,6 +138,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link XmlRecurrenceRule }
+     * 
+     */
+    public XmlRecurrenceRule createXmlRecurrenceRule() {
+        return new XmlRecurrenceRule();
+    }
+
+    /**
      * Create an instance of {@link XmlInvoicePositions }
      * 
      */
@@ -143,6 +159,14 @@ public class ObjectFactory {
      */
     public XmlExpense createXmlExpense() {
         return new XmlExpense();
+    }
+
+    /**
+     * Create an instance of {@link XmlExpenseTemplates }
+     * 
+     */
+    public XmlExpenseTemplates createXmlExpenseTemplates() {
+        return new XmlExpenseTemplates();
     }
 
     /**

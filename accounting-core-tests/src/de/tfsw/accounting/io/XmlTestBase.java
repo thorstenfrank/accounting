@@ -76,7 +76,7 @@ class XmlTestBase extends BaseTestFixture {
 		ip.setDescription("JUnitInvoicePosition");
 		ip.setPricePerUnit(new BigDecimal("55"));
 		ip.setQuantity(new BigDecimal("100.5"));
-		ip.setTaxRate(invoice.getUser().getTaxRates().iterator().next());
+		ip.setTaxRate(DEFAULT_TAXRATE);
 		ip.setUnit("JUnitUnit");
 		
 		final List<InvoicePosition> invoicePositions = new ArrayList<InvoicePosition>();
@@ -99,7 +99,7 @@ class XmlTestBase extends BaseTestFixture {
 		expense.setNetAmount(new BigDecimal("20.23"));
 		expense.setPaymentDate(LocalDate.of(2011, 1, 1));
 		if (includeVAT) {
-			expense.setTaxRate(getTestUser().getTaxRates().iterator().next());
+			expense.setTaxRate(DEFAULT_TAXRATE);
 		}
 		return expense;
 	}
@@ -122,9 +122,8 @@ class XmlTestBase extends BaseTestFixture {
 			
 			assertNotNull(user.getTaxRates());
 			assertNotNull(xmlUser.getTaxRates());
-			TaxRate rate = user.getTaxRates().iterator().next();
-			XmlTaxRate xmlRate = xmlUser.getTaxRates().getTaxRate().get(0);
-			assertTaxRatesSame(rate, xmlRate);
+			assertEquals(1, xmlUser.getTaxRates().getTaxRate().size());
+			assertTaxRatesSame(DEFAULT_TAXRATE, xmlUser.getTaxRates().getTaxRate().get(0));
 		}
 	}
 	

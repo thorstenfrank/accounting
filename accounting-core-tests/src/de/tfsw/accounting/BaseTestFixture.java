@@ -51,12 +51,16 @@ public abstract class BaseTestFixture {
 	
 	protected static final String TEST_DB_FILE = "JUnitTestDbFile";
 	
+	protected static final TaxRate DEFAULT_TAXRATE = new TaxRate("JUT", "JUnitTax", new BigDecimal("0.15"), true);
+	
 	private static User testUser;
 	
 	private static Client testClient;
 	
 	private static AccountingContext testContext;
 
+	 
+	
 	/**
 	 * @return the testContext
 	 */
@@ -103,12 +107,8 @@ public abstract class BaseTestFixture {
 			ba.setIban("JUnitIBAN");
 			testUser.setBankAccount(ba);
 			
-			TaxRate rate = new TaxRate();
-			rate.setLongName("JUnitTax");
-			rate.setShortName("JUT");
-			rate.setRate(new BigDecimal("0.15"));
 			Set<TaxRate> rates = new HashSet<TaxRate>();
-			rates.add(rate);
+			rates.add(DEFAULT_TAXRATE);
 			
 			testUser.setTaxRates(rates);
 		}
@@ -159,13 +159,11 @@ public abstract class BaseTestFixture {
      * @return test revenue
      */
     protected static Revenue createTestRevenue() {
-	    TaxRate taxRate = getTestUser().getTaxRates().iterator().next();
-		
 		// INVOICE 1
 		InvoicePosition ip1 = new InvoicePosition();
 		ip1.setPricePerUnit(new BigDecimal("50"));
 		ip1.setQuantity(new BigDecimal("160"));
-		ip1.setTaxRate(taxRate);
+		ip1.setTaxRate(DEFAULT_TAXRATE);
 		
 		List<InvoicePosition> ipList1 = new ArrayList<InvoicePosition>();
 		ipList1.add(ip1);
@@ -229,7 +227,7 @@ public abstract class BaseTestFixture {
 		expense.setExpenseType(type);
 		expense.setNetAmount(new BigDecimal(netAmount));
 		if (useTax){
-			expense.setTaxRate(getTestUser().getTaxRates().iterator().next());
+			expense.setTaxRate(DEFAULT_TAXRATE);
 		}
 		return expense;
     }

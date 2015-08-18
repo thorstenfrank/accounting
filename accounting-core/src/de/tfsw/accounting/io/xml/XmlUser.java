@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for xmlUser complex type.
+ * <p>Java-Klasse für xmlUser complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
  * 
  * <pre>
  * &lt;complexType name="xmlUser">
@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="clients" type="{}xmlClients" minOccurs="0"/>
  *         &lt;element name="invoices" type="{}xmlInvoices" minOccurs="0"/>
  *         &lt;element name="expenses" type="{}xmlExpenses" minOccurs="0"/>
+ *         &lt;element name="expenseTemplates" type="{}xmlExpenseTemplates" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="taxId" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -43,7 +44,8 @@ import javax.xml.bind.annotation.XmlType;
     "taxRates",
     "clients",
     "invoices",
-    "expenses"
+    "expenses",
+    "expenseTemplates"
 })
 @XmlRootElement
 public class XmlUser {
@@ -55,13 +57,14 @@ public class XmlUser {
     protected XmlClients clients;
     protected XmlInvoices invoices;
     protected XmlExpenses expenses;
+    protected XmlExpenseTemplates expenseTemplates;
     @XmlAttribute(name = "name", required = true)
     protected String name;
     @XmlAttribute(name = "taxId")
     protected String taxId;
 
     /**
-     * Gets the value of the description property.
+     * Ruft den Wert der description-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -73,7 +76,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the description property.
+     * Legt den Wert der description-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -85,7 +88,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the address property.
+     * Ruft den Wert der address-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -97,7 +100,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the address property.
+     * Legt den Wert der address-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -109,7 +112,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the bankAccount property.
+     * Ruft den Wert der bankAccount-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -121,7 +124,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the bankAccount property.
+     * Legt den Wert der bankAccount-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -133,7 +136,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the taxRates property.
+     * Ruft den Wert der taxRates-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -145,7 +148,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the taxRates property.
+     * Legt den Wert der taxRates-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -157,7 +160,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the clients property.
+     * Ruft den Wert der clients-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -169,7 +172,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the clients property.
+     * Legt den Wert der clients-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -181,7 +184,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the invoices property.
+     * Ruft den Wert der invoices-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -193,7 +196,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the invoices property.
+     * Legt den Wert der invoices-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -205,7 +208,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the expenses property.
+     * Ruft den Wert der expenses-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -217,7 +220,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the expenses property.
+     * Legt den Wert der expenses-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -229,7 +232,31 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the name property.
+     * Ruft den Wert der expenseTemplates-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XmlExpenseTemplates }
+     *     
+     */
+    public XmlExpenseTemplates getExpenseTemplates() {
+        return expenseTemplates;
+    }
+
+    /**
+     * Legt den Wert der expenseTemplates-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XmlExpenseTemplates }
+     *     
+     */
+    public void setExpenseTemplates(XmlExpenseTemplates value) {
+        this.expenseTemplates = value;
+    }
+
+    /**
+     * Ruft den Wert der name-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -241,7 +268,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the name property.
+     * Legt den Wert der name-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
@@ -253,7 +280,7 @@ public class XmlUser {
     }
 
     /**
-     * Gets the value of the taxId property.
+     * Ruft den Wert der taxId-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -265,7 +292,7 @@ public class XmlUser {
     }
 
     /**
-     * Sets the value of the taxId property.
+     * Legt den Wert der taxId-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is

@@ -27,6 +27,7 @@
     		<xs:element name="clients" type="xmlClients" minOccurs="0" maxOccurs="1" />
     		<xs:element name="invoices" type="xmlInvoices" minOccurs="0" maxOccurs="1" />
     		<xs:element name="expenses" type="xmlExpenses" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="expenseTemplates" type="xmlExpenseTemplates" minOccurs="0" maxOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required"/>
     	<xs:attribute name="taxId" type="xs:string" use="optional"/>
@@ -168,6 +169,59 @@
     		<xs:element name="depreciationMethod" type="xmlDepreciationMethod" minOccurs="0" maxOccurs="1" />
     		<xs:element name="depreciationPeriodInYears" type="xs:int" minOccurs="0" maxOccurs="1" />
     		<xs:element name="salvageValue" type="xs:decimal" minOccurs="0" maxOccurs="1" />
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="xmlFrequency">
+    	<xs:restriction base="xs:string">
+    		<xs:enumeration value="DAILY"/>
+    		<xs:enumeration value="WEEKLY"/>
+    		<xs:enumeration value="MONTHLY"/>
+    		<xs:enumeration value="YEARLY"/>
+    	</xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="xmlRecurrenceRule">
+    	<xs:sequence>
+    		<xs:element name="interval" minOccurs="1" maxOccurs="1" nillable="false">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:int">
+    					<xs:minExclusive value="1"></xs:minExclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="frequency" type="xmlFrequency" minOccurs="1" maxOccurs="1" nillable="false"/>
+    		<xs:choice>
+				<xs:element name="count" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minExclusive value="1"></xs:minExclusive>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="until" type="xs:date" maxOccurs="1" />
+    		</xs:choice>
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="xmlExpenseTemplates">
+    	<xs:sequence>
+    		<xs:element name="template" type="xmlExpenseTemplate" minOccurs="1" maxOccurs="unbounded" />
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="xmlExpenseTemplate">
+    	<xs:sequence>
+    		<xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1" />
+    		<xs:element name="expenseType" type="xmlExpenseType" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="netAmount" type="xs:decimal" minOccurs="1" maxOccurs="1" />
+    		<xs:element name="taxRate" type="xmlTaxRate" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    		<xs:element name="rule" type="xmlRecurrenceRule" minOccurs="1" maxOccurs="1" />
+    		<xs:element name="active" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+    		<xs:element name="firstApplication" type="xs:date" maxOccurs="1" />
+    		<xs:element name="lastApplication" type="xs:date" maxOccurs="1" />
+    		<xs:element name="numberOfApplications" type="xs:int" minOccurs="1" maxOccurs="1" />
     	</xs:sequence>
     </xs:complexType>
 </xs:schema>

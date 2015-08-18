@@ -30,14 +30,18 @@ import de.tfsw.accounting.io.xml.XmlClient;
 import de.tfsw.accounting.io.xml.XmlClients;
 import de.tfsw.accounting.io.xml.XmlDepreciationMethod;
 import de.tfsw.accounting.io.xml.XmlExpense;
+import de.tfsw.accounting.io.xml.XmlExpenseTemplate;
+import de.tfsw.accounting.io.xml.XmlExpenseTemplates;
 import de.tfsw.accounting.io.xml.XmlExpenseType;
 import de.tfsw.accounting.io.xml.XmlExpenses;
+import de.tfsw.accounting.io.xml.XmlFrequency;
 import de.tfsw.accounting.io.xml.XmlInvoice;
 import de.tfsw.accounting.io.xml.XmlInvoicePosition;
 import de.tfsw.accounting.io.xml.XmlInvoicePositions;
 import de.tfsw.accounting.io.xml.XmlInvoices;
 import de.tfsw.accounting.io.xml.XmlPaymentTerms;
 import de.tfsw.accounting.io.xml.XmlPaymentType;
+import de.tfsw.accounting.io.xml.XmlRecurrenceRule;
 import de.tfsw.accounting.io.xml.XmlTaxRate;
 import de.tfsw.accounting.io.xml.XmlTaxRates;
 import de.tfsw.accounting.io.xml.XmlUser;
@@ -45,9 +49,11 @@ import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.Expense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.PaymentTerms;
+import de.tfsw.accounting.model.RecurrenceRule;
 import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.User;
 
@@ -113,6 +119,8 @@ class ModelToXml {
 		}
 		
 		convertExpenses(model.getExpenses());
+		
+		convertExpenseTemplates(model.getExpenseTemplates());
 		
 		return xmlUser;
 	}
@@ -291,6 +299,55 @@ class ModelToXml {
 			
 			xmlUser.setExpenses(xmlExpenses);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param templates
+	 */
+	private void convertExpenseTemplates(Set<ExpenseTemplate> templates) {
+		if (templates != null && templates.size() > 0) {
+			XmlExpenseTemplates xmlTemplates = new XmlExpenseTemplates();
+			for (ExpenseTemplate template : templates) {
+				XmlExpenseTemplate xmlTemplate = new XmlExpenseTemplate();
+				xmlTemplate.setActive(template.isActive());
+				xmlTemplate.setCategory(template.getCategory());
+				xmlTemplate.setDescription(template.getDescription());
+				if (template.getExpenseType() != null) {
+					xmlTemplate.setExpenseType(XmlExpenseType.fromValue(template.getExpenseType().name()));
+				}
+				xmlTemplate.setFirstApplication(convertDate(template.getFirstApplication()));
+				xmlTemplate.setLastApplication(convertDate(template.getLastApplication()));
+				xmlTemplate.setNetAmount(template.getNetAmount());
+				xmlTemplate.setNumberOfApplications(template.getNumberOfApplications());
+				xmlTemplate.setRule(convertRecurrenceRule(template.getRule()));
+				xmlTemplate.setTaxRate(converTaxRate(template.getTaxRate()));
+			}
+			xmlUser.setExpenseTemplates(xmlTemplates);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param rule
+	 * @return
+	 */
+	private XmlRecurrenceRule convertRecurrenceRule(RecurrenceRule rule) {
+		XmlRecurrenceRule xmlRule = null;
+		
+		if (rule != null) {
+			xmlRule = new XmlRecurrenceRule();
+			if (rule.getCount() != null) {
+				xmlRule.setCount(rule.getCount());
+			}
+			xmlRule.setFrequency(XmlFrequency.fromValue(rule.getFrequency().name()));
+			xmlRule.setInterval(rule.getInterval());
+			if (rule.getUntil() != null) {
+				xmlRule.setUntil(convertDate(rule.getUntil()));
+			}
+		}
+		
+		return xmlRule;
 	}
 	
 	/**
