@@ -15,8 +15,6 @@
  */
 package de.tfsw.accounting.ui.expense.template;
 
-import org.eclipse.core.databinding.beans.PojoProperties;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,9 +23,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
 
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Frequency;
 import de.tfsw.accounting.model.RecurrenceRule;
-import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
 import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
@@ -43,6 +41,9 @@ class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
 	private static final String FOREVER = "Button.Forever"; //$NON-NLS-1$
 	private static final String UNTIL = "Button.Until"; //$NON-NLS-1$
 	private static final String OCCURRENCE = "Button.Occurrence"; //$NON-NLS-1$
+	private static final int MIN_INTERVAL = 1;
+	private static final int MIN_COUNT = 1;
+	
 	
 	private ExpenseTemplate expense;
 	private DateTime first;
@@ -64,11 +65,8 @@ class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
 		GridDataFactory span2 = GridDataFactory.fillDefaults().span(2, 1);
 		
 		// ACTIVE
-		Button active = new Button(container, SWT.CHECK);
-		active.setText(Messages.ExpenseTemplateEditHelper_active);
-		getBindingCtx().bindValue(WidgetProperties.selection().observe(active),
-				PojoProperties.value(ExpenseTemplate.FIELD_ACTIVE).observe(expense));
-		span2.applyTo(active);
+		span2.applyTo(createButton(
+				container, Messages.ExpenseTemplateEditHelper_active, SWT.CHECK, expense, ExpenseTemplate.FIELD_ACTIVE, false));
 		
 		// FIRST APPLICATION
 		getClient().createLabel(container, Messages.ExpenseTemplateEditHelper_validFrom);
@@ -78,8 +76,8 @@ class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
 		first.addSelectionListener(this);
 		
 		// INTERVAL
-		Spinner interval = createSpinner(container, SWT.WRAP, Messages.ExpenseTemplateEditHelper_interval, rule, RecurrenceRule.FIELD_INTERVAL, false);
-		interval.setMinimum(1);
+		createSpinner(container, SWT.WRAP, Messages.ExpenseTemplateEditHelper_interval, rule,
+				RecurrenceRule.FIELD_INTERVAL, false).setMinimum(MIN_INTERVAL);
 		
 		// FREQUENCY
 		createComboViewer(container, SWT.READ_ONLY, Messages.ExpenseTemplateEditHelper_frequency, rule, 
@@ -147,14 +145,12 @@ class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
 			count.setEnabled(false);
 		} else if (OCCURRENCE.equals(origin)) {
 			// the first time this radio button is selected, the spinner's value is 0, which is an illegal argument for rule.setCount()
-			if (count.getSelection() <= 0) {
-				count.setSelection(1);
+			if (count.getSelection() < MIN_COUNT) {
+				count.setSelection(MIN_COUNT);
 			}
 			expense.getRule().setCount(count.getSelection());
 			count.setEnabled(true);
 			untilDate.setEnabled(false);
-		} else if (RecurrenceRule.FIELD_INTERVAL.equals(origin)) {
-			System.out.println("INTERVAL IS NOW: " + expense.getRule().getInterval());
 		}
 	}
 }

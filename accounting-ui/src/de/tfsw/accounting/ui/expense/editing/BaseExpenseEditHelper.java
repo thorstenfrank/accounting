@@ -38,6 +38,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -261,6 +262,24 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	}
 	
 	/**
+	 * 
+	 * @param parent
+	 * @param label
+	 * @param style
+	 * @param model
+	 * @param property
+	 * @param isBean
+	 * @return
+	 */
+	protected Button createButton(Composite parent, String label, int style, Object model, String property, boolean isBean) {
+		Button button = new Button(parent, style);
+		button.setText(label);
+		button.setData(KEY_WIDGET_DATA, property);
+		bind(button, model, property, isBean);
+		return button;
+	}
+	
+	/**
 	 * Creates and binds.
 	 * 
 	 * @param parent
@@ -346,8 +365,8 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		spinner.setMinimum(0);
 		spinner.setMaximum(100);
 		spinner.setIncrement(1);
-		IObservableValue pojoObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
-		bindingCtx.bindValue(WidgetProperties.selection().observe(spinner), pojoObservable);
+		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
+		bindingCtx.bindValue(WidgetProperties.selection().observe(spinner), modelObservable);
 		spinner.addSelectionListener(this);
 		return spinner;
 	}
@@ -370,11 +389,11 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	 * 
 	 * @param contentTypeClass
 	 * @param viewer
-	 * @param pojo
+	 * @param model
 	 * @param property
 	 * @param addSelectionListener
 	 */
-	protected <T> void bind(Class<T> contentTypeClass, StructuredViewer viewer, Object pojo, String property, boolean addSelectionListener) {
+	protected <T> void bind(Class<T> contentTypeClass, StructuredViewer viewer, Object model, String property, boolean addSelectionListener) {
 		UpdateValueStrategy from = new UpdateValueStrategy();
 		from.setConverter(new FromStructuredSelectionConverter(contentTypeClass));
 		UpdateValueStrategy to = new UpdateValueStrategy();
@@ -382,7 +401,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		
 		bindingCtx.bindValue(
 				ViewersObservables.observeSinglePostSelection(viewer), 
-				PojoProperties.value(property).observe(pojo), 
+				PojoProperties.value(property).observe(model), 
 				from, to);
 		
 		if (addSelectionListener) {
@@ -393,16 +412,28 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	/**
 	 * 
 	 * @param text
-	 * @param pojo
+	 * @param model
 	 * @param property
 	 * @param isBean
 	 */
-	protected void bind(Text text, Object pojo, String property, boolean isBean) {
+	protected void bind(Text text, Object model, String property, boolean isBean) {
 		IObservableValue swtObservable = WidgetProperties.text(SWT.Modify).observe(text);
-		IObservableValue pojoObservable = isBean ? BeanProperties.value(property).observe(pojo) : PojoProperties.value(property).observe(pojo);
-		bindingCtx.bindValue(swtObservable, pojoObservable);
+		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
+		bindingCtx.bindValue(swtObservable, modelObservable);
 		text.addKeyListener(this);
-		//pojoObservable.addValueChangeListener(this);
+		//modelObservable.addValueChangeListener(this);
+	}
+	
+	/**
+	 * 
+	 * @param button
+	 * @param model
+	 * @param property
+	 * @param isBean
+	 */
+	protected void bind(Button button, Object model, String property, boolean isBean) {
+		bindingCtx.bindValue(WidgetProperties.selection().observe(button),PojoProperties.value(property).observe(model));
+		button.addSelectionListener(this);
 	}
 	
 	/**
@@ -417,16 +448,16 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	/**
 	 * 
 	 * @param text
-	 * @param pojo
+	 * @param model
 	 * @param property
 	 * @param isBean
 	 */
-	protected void bindMonetaryText(Text text, Object pojo, String property, boolean isBean) {
+	protected void bindMonetaryText(Text text, Object model, String property, boolean isBean) {
 		IObservableValue swtObservable = WidgetProperties.text(SWT.Modify).observe(text);
-		IObservableValue pojoObservable = isBean ? BeanProperties.value(property).observe(pojo) : PojoProperties.value(property).observe(pojo);
-		bindingCtx.bindValue(swtObservable, pojoObservable, toPrice, fromPrice);
+		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
+		bindingCtx.bindValue(swtObservable, modelObservable, toPrice, fromPrice);
 		text.addKeyListener(this);
-		//pojoObservable.addValueChangeListener(this);
+		//modelObservable.addValueChangeListener(this);
 	}
 	
 	/**
