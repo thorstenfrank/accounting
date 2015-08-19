@@ -17,6 +17,10 @@ package de.tfsw.accounting.ui.expense;
 
 import java.io.File;
 
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -34,6 +38,8 @@ import de.tfsw.accounting.model.ExpenseImportParams.DateFormatPattern;
 import de.tfsw.accounting.model.ExpenseImportParams.DecimalMark;
 import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.Messages;
+import de.tfsw.accounting.ui.util.CollectionContentProvider;
+import de.tfsw.accounting.ui.util.GenericLabelProvider;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
@@ -101,7 +107,7 @@ class ImportWizardPageOne extends WizardPage {
         setPageComplete(false);
         setControl(composite);
 	}
-
+	
 	/**
      * @param parent
      * @return
@@ -176,16 +182,16 @@ class ImportWizardPageOne extends WizardPage {
 	 */
 	private void buildCustomDatePatternSelector(Composite parent) {
         WidgetHelper.createLabel(parent, Messages.ImportExpensesWizard_datePattern);
-		final Combo customDatePatternCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		for (DateFormatPattern pattern : DateFormatPattern.values()) {
-			customDatePatternCombo.add(pattern.getTranslation());
-		}
-		customDatePatternCombo.select(0);
-				
-		customDatePatternCombo.addSelectionListener(new SelectionAdapter() {
+		final ComboViewer customDatePatternCombo = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		customDatePatternCombo.setContentProvider(CollectionContentProvider.NO_EMPTY);
+		customDatePatternCombo.setLabelProvider(new GenericLabelProvider(DateFormatPattern.class, "getTranslation"));
+		customDatePatternCombo.setInput(DateFormatPattern.values());
+		customDatePatternCombo.setSelection(new StructuredSelection(params.getDateFormatPattern()));
+		customDatePatternCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				
+			public void selectionChanged(SelectionChangedEvent event) {
+				DateFormatPattern pattern = (DateFormatPattern)((StructuredSelection)event.getSelection()).getFirstElement();
+				params.setDateFormatPattern(pattern);
 			}
 		});
 	}
