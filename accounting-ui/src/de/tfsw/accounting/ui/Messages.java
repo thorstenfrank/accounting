@@ -49,7 +49,9 @@ public class Messages extends NLS {
 	
 	public static String AddressWizardPage_desc;
 	public static String AddressWizardPage_title;
-
+	
+	public static String ApplyTemplatesWizard_title;
+	
 	public static String CancelInvoiceCommand_confirmMessage;
 	public static String CancelInvoiceCommand_confirmText;
 
@@ -69,6 +71,9 @@ public class Messages extends NLS {
 	public static String ChooseReportCommand_message;
 	public static String ChooseReportCommand_title;
 	
+	public static String ChooseTemplatesWizardPage_desc;
+	public static String ChooseTemplatesWizardPage_title;
+
 	public static String ClientEditorInput_tooltip;
 	
 	public static String ClientNameWizardPage_title;
@@ -125,6 +130,26 @@ public class Messages extends NLS {
 	public static String ExpenseEditor_DepreciationCalculatedTitle;
 	public static String ExpenseEditor_DepreciationCalculatedMessage;
 	
+	public static String ExpenseTemplateEditHelper_active;
+	public static String ExpenseTemplateEditHelper_count;
+	public static String ExpenseTemplateEditHelper_forever;
+	public static String ExpenseTemplateEditHelper_frequency;
+	public static String ExpenseTemplateEditHelper_interval;
+	public static String ExpenseTemplateEditHelper_validFrom;
+
+	public static String ExpenseTemplateEditor_title;
+	public static String ExpenseTemplateEditor_sectionTemplate;
+	public static String ExpenseTemplateEditor_sectionRule;
+	public static String ExpenseTemplateEditor_sectionSummary;
+	public static String ExpenseTemplateEditor_numberOfApplications;
+	public static String ExpenseTemplateEditor_lastApplication;	
+	public static String ExpenseTemplateEditor_nextApplication;
+	
+	public static String ExpenseTemplateWizard_Title;
+
+	public static String ExpenseTemplateWizardPage_Desc;
+	public static String ExpenseTemplateWizardPage_Title;
+	
 	public static String ExpensesView_title;
 	public static String ExpensesView_allExpenses;
 	public static String ExpensesView_statusLine;
@@ -138,6 +163,9 @@ public class Messages extends NLS {
 	public static String ExportModelToXmlWizard_finishedTitle;
 	public static String ExportModelToXmlWizard_finishedMsg;
 	
+	public static String FindApplicableTemplatesHandler_noTemplatesMsg;
+	public static String FindApplicableTemplatesHandler_noTemplatesTitle;
+
 	public static String FindInvoiceCommand_inputMessage;
 	public static String FindInvoiceCommand_inputTitle;
 	public static String FindInvoiceCommand_noresultMessage;
@@ -234,18 +262,6 @@ public class Messages extends NLS {
 	
 	public static String RecurrenceRuleWizardPage_Desc;
 	public static String RecurrenceRuleWizardPage_Title;
-
-	public static String ExpenseTemplateEditHelper_active;
-	public static String ExpenseTemplateEditHelper_count;
-	public static String ExpenseTemplateEditHelper_forever;
-	public static String ExpenseTemplateEditHelper_frequency;
-	public static String ExpenseTemplateEditHelper_interval;
-	public static String ExpenseTemplateEditHelper_validFrom;
-
-	public static String ExpenseTemplateWizard_Title;
-
-	public static String ExpenseTemplateWizardPage_Desc;
-	public static String ExpenseTemplateWizardPage_Title;
 
 	public static String ReportGenerationUtil_errorGeneratingInvoice;
 	public static String ReportGenerationUtil_errorNoReportingService;

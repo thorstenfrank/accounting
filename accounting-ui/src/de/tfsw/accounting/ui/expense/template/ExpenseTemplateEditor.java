@@ -16,6 +16,7 @@
 package de.tfsw.accounting.ui.expense.template;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -25,10 +26,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.AbstractAccountingEditor;
 import de.tfsw.accounting.ui.AccountingUI;
+import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
 import de.tfsw.accounting.ui.util.WidgetHelper;
+import de.tfsw.accounting.util.FormatUtil;
 
 /**
  * @author Thorsten Frank
@@ -38,21 +42,24 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 
 	private FormToolkit toolkit;
 	private ScrolledForm form;
+	private Text nextApplicationDate;
 	
 	/**
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		ExpenseTemplateEditHelper helper = new ExpenseTemplateEditHelper(getEditorInput().getExpenseTemplate(), this);
+		ExpenseTemplate template = getEditorInput().getExpenseTemplate();
+		ExpenseTemplateEditHelper helper = new ExpenseTemplateEditHelper(template, this);
 		
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
-		form.setText("Form Title");
+		form.setText(Messages.ExpenseTemplateEditor_title);
 		form.getBody().setLayout(new GridLayout(2, true));
 		
 		createTemplateSection(helper);
 		createRecurrenceSection(helper);
+		createSummarySection();
 		
 		form.getToolBarManager().update(true);
 		
@@ -65,7 +72,7 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 	 */
 	private void createTemplateSection(ExpenseTemplateEditHelper helper) {
 		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
-		section.setText("Template Section Text");
+		section.setText(Messages.ExpenseTemplateEditor_sectionTemplate);
 		WidgetHelper.grabHorizontal(section);
 		
 		Composite sectionClient = toolkit.createComposite(section);
@@ -82,7 +89,7 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 	 */
 	private void createRecurrenceSection(ExpenseTemplateEditHelper helper) {
 		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
-		section.setText("Recurrence Section Text");
+		section.setText(Messages.ExpenseTemplateEditor_sectionRule);
 		WidgetHelper.grabHorizontal(section);
 		
 		Composite sectionClient = toolkit.createComposite(section);
@@ -91,6 +98,42 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 		helper.createRecurrenceSection(sectionClient);
 		
 		section.setClient(sectionClient);
+	}
+	
+	/**
+	 * 
+	 */
+	private void createSummarySection() {
+		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
+		section.setText(Messages.ExpenseTemplateEditor_sectionSummary);
+		WidgetHelper.grabHorizontal(section);
+		
+		Composite sectionClient = toolkit.createComposite(section);
+		sectionClient.setLayout(new GridLayout(2, false));
+		
+		ExpenseTemplate template = getEditorInput().getExpenseTemplate();
+		
+		createReadOnlyText(sectionClient, Integer.toString(template.getNumberOfApplications()), Messages.ExpenseTemplateEditor_numberOfApplications);
+		createReadOnlyText(sectionClient, FormatUtil.formatDate(template.getLastApplication()), Messages.ExpenseTemplateEditor_lastApplication);
+		nextApplicationDate = createReadOnlyText(sectionClient, FormatUtil.formatDate(template.getNextApplication()), Messages.ExpenseTemplateEditor_nextApplication);
+		
+		section.setClient(sectionClient);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param style
+	 * @param text
+	 * @return
+	 */
+	private Text createReadOnlyText(Composite parent, String text, String label) {
+		createLabel(parent, label);
+		Text widget = createText(parent, SWT.BORDER | SWT.READ_ONLY);
+		widget.setText(text);
+		widget.setEnabled(false);
+		widget.setEditable(false);
+		return widget; 
 	}
 	
 	/**
@@ -120,6 +163,7 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 	@Override
 	public void modelHasChanged() {
 		setIsDirty(true);
+		nextApplicationDate.setText(FormatUtil.formatDate(getEditorInput().getExpenseTemplate().getNextApplication()));
 	}
 
 	/**

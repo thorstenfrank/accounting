@@ -15,16 +15,17 @@
  */
 package de.tfsw.accounting.ui.expense.template;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.wizard.WizardDialog;
 
 import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.AbstractAccountingHandler;
 import de.tfsw.accounting.ui.AccountingUI;
+import de.tfsw.accounting.ui.Messages;
 
 /**
  * @author Thorsten Frank
@@ -40,11 +41,16 @@ public class FindApplicableTemplatesHandler extends AbstractAccountingHandler {
 	@Override
 	protected void doExecute(ExecutionEvent event) throws ExecutionException {
 		Set<ExpenseTemplate> templates = AccountingUI.getAccountingService().findApplicableExpenseTemplates();
-		LOG.debug("Number of applicable templates found: " + templates.size());
-		for (ExpenseTemplate template : templates) {
-			for (LocalDate date : template.getOutstandingApplications()) {
-				LOG.debug(String.format("Template [%s] can be applied on [%s]", template.getDescription(), date));
-			}
+		LOG.debug("Number of applicable templates found: " + templates.size()); //$NON-NLS-1$
+		
+		if (templates.size() < 1) {
+			showWarningMessage(event, 
+					Messages.FindApplicableTemplatesHandler_noTemplatesMsg, 
+					Messages.FindApplicableTemplatesHandler_noTemplatesTitle, 
+					false);
+		} else {
+			WizardDialog dlg = new WizardDialog(getShell(event), new ApplyTemplatesWizard(templates));
+			dlg.open();			
 		}
 	}
 
