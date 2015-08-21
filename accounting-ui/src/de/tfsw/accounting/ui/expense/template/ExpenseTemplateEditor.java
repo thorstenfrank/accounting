@@ -26,6 +26,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.AbstractAccountingEditor;
 import de.tfsw.accounting.ui.AccountingUI;
@@ -114,7 +115,10 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 		ExpenseTemplate template = getEditorInput().getExpenseTemplate();
 		
 		createReadOnlyText(sectionClient, Integer.toString(template.getNumberOfApplications()), Messages.ExpenseTemplateEditor_numberOfApplications);
-		createReadOnlyText(sectionClient, FormatUtil.formatDate(template.getLastApplication()), Messages.ExpenseTemplateEditor_lastApplication);
+		
+		String lastApplication = template.getLastApplication() != null ? FormatUtil.formatDate(template.getLastApplication()) : Constants.HYPHEN;
+		createReadOnlyText(sectionClient, lastApplication, Messages.ExpenseTemplateEditor_lastApplication);
+		
 		nextApplicationDate = createReadOnlyText(sectionClient, FormatUtil.formatDate(template.getNextApplication()), Messages.ExpenseTemplateEditor_nextApplication);
 		
 		section.setClient(sectionClient);
