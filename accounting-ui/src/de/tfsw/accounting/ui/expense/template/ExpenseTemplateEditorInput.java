@@ -48,8 +48,9 @@ public class ExpenseTemplateEditorInput implements IEditorInput {
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public <T> T getAdapter(Class<T> adapter) {
+	public Object getAdapter(Class adapter) {
 		return null;
 	}
 
