@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
 import de.tfsw.accounting.AccountingException;
+import de.tfsw.accounting.model.AbstractExpense;
 import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.AccountingUI;
 import de.tfsw.accounting.ui.Messages;
@@ -39,12 +40,26 @@ public class ExpenseTemplateWizard extends Wizard implements IWorkbenchWizard {
 	 * 
 	 */
 	public ExpenseTemplateWizard() {
+		this(null);
+	}
+	
+	/**
+	 * 
+	 * @param copyFrom
+	 */
+	public ExpenseTemplateWizard(AbstractExpense copyFrom) {
 		setNeedsProgressMonitor(false);
 		setWindowTitle(Messages.ExpenseTemplateWizard_Title);
 		expenseTemplate = new ExpenseTemplate();
-		expenseTemplate.setActive(true);
+		if (copyFrom != null) {
+			expenseTemplate.setCategory(copyFrom.getCategory());
+			expenseTemplate.setDescription(copyFrom.getDescription());
+			expenseTemplate.setExpenseType(copyFrom.getExpenseType());
+			expenseTemplate.setNetAmount(copyFrom.getNetAmount());
+			expenseTemplate.setTaxRate(copyFrom.getTaxRate());
+		}
 	}
-
+	
 	@Override
 	public void addPages() {
 		addPage(new ExpenseTemplateWizardPage(expenseTemplate));

@@ -700,6 +700,15 @@
                icon="icons/tag_blue_delete.png"
                style="push">
          </command>
+         <separator
+               name="expensesView.popupMenu.separator3"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.tfsw.accounting.ui.expense.ConvertToTemplateCommand"
+               icon="icons/date_link.png"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:de.tfsw.accounting.ui.expense.ExpenseEditor">
@@ -916,6 +925,11 @@
             categoryId="de.tfsw.accounting.ui.expense"
             id="de.tfsw.accounting.ui.expense.DeleteExpenseCommand"
             name="%command.deleteExpense.name">
+      </command>
+      <command
+            categoryId="de.tfsw.accounting.ui.expense"
+            id="de.tfsw.accounting.ui.expense.ConvertToTemplateCommand"
+            name="%command.convertToTemplate.name">
       </command>
       <category
             id="de.tfsw.accounting.ui.expense.template"
@@ -1366,6 +1380,15 @@
       <handler
             class="de.tfsw.accounting.ui.expense.CopyExpenseHandler"
             commandId="de.tfsw.accounting.ui.expense.CopyExpenseCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="selectionIsSingleExpense">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.tfsw.accounting.ui.expense.ConvertToTemplateHandler"
+            commandId="de.tfsw.accounting.ui.expense.ConvertToTemplateCommand">
          <enabledWhen>
             <reference
                   definitionId="selectionIsSingleExpense">
