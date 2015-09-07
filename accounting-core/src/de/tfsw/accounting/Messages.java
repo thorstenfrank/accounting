@@ -119,9 +119,21 @@ public class Messages extends NLS {
 	private static final String FORMAT_KEY_NOT_FOUND = "!%s!";
 	
 	/**
+	 * Translates an enum value. This method works only if there is a static variable by the name of
+	 * <code>[e.getClass().getSimpleName()]_[e.name()]</code> defined in this class.
 	 * 
-	 * @param e
-	 * @return
+	 * <p>
+	 * Example: <code>SomeEnum_ENUMVALUE</code>
+	 * </p>
+	 * 
+	 * <p>
+	 * If there is no field with the defined name, the name of the enum is returned with preceding and trailing
+	 * exlamation marks.
+	 * </p>
+	 * 
+	 * @param e the enumeration value to translate
+	 * 
+	 * @return the translation of the supplied enum value, or an error string if no translation could be found
 	 */
 	public static String translate(Enum<?> e) {
 		final String name = new StringBuilder(e.getClass().getSimpleName())

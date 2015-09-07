@@ -30,25 +30,13 @@ public enum DepreciationMethod {
 	/**
 	 * Straightline depreciation/amortisation.
 	 */
-	STRAIGHTLINE(Messages.DepreciationMethod_STRAIGHTLINE),
+	STRAIGHTLINE,
 	
 	/**
 	 * Immediate Write-Off
 	 */
-	FULL(Messages.DepreciationMethod_FULL);
-	
-	/**
-	 * Translated name.
-	 */
-	private String translated;
-
-	/**
-	 * @param translated
-	 */
-	private DepreciationMethod(String translated) {
-		this.translated = translated;
-	}
-	
+	FULL;
+		
 	/**
 	 * Returns a translated String describing this depreciation methods. 
 	 * The locale used is the default locale derived from the framework.
@@ -56,6 +44,6 @@ public enum DepreciationMethod {
 	 * @return a locale-sensitive string representation of this expense type
 	 */
 	public String getTranslatedString() {
-		return translated != null ? translated : this.name();
+		return Messages.translate(this);
 	}
 }

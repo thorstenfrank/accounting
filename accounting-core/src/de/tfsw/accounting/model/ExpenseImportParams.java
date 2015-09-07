@@ -56,27 +56,25 @@ public class ExpenseImportParams implements Serializable {
      */
     public enum DateFormatPattern {
     	
-    	DMY(Messages.DateFormatPattern_DMY, 0, 1, 2), 
-    	MDY(Messages.DateFormatPattern_MDY, 1, 0, 2), 
-    	YMD(Messages.DateFormatPattern_YMD, 2, 1, 0), 
-    	MYD(Messages.DateFormatPattern_MYD, 2, 0, 1), 
-    	DYM(Messages.DateFormatPattern_DYM, 0, 2, 1), 
-    	YDM(Messages.DateFormatPattern_YDM, 1, 2, 0);
+    	DMY(0, 1, 2), 
+    	MDY(1, 0, 2), 
+    	YMD(2, 1, 0), 
+    	MYD(2, 0, 1), 
+    	DYM(0, 2, 1), 
+    	YDM(1, 2, 0);
     	
-    	private String translation;
     	private int dayOrder;
     	private int monthOrder;
     	private int yearOrder;
     	
-    	private DateFormatPattern(String translation, int day, int month, int year) {
-    		this.translation = translation;
+    	private DateFormatPattern(int day, int month, int year) {
     		this.dayOrder = day;
     		this.monthOrder = month;
     		this.yearOrder = year;
     	}
     	
 		public String getTranslation() {
-			return translation;
+			return Messages.translate(this);
 		}
 		
 		public int getDayOrder() {

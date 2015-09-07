@@ -33,46 +33,33 @@ public enum InvoiceState implements Serializable {
 	/**
 	 * An invoice that is fresh, i.e. has just been instantiated but never saved to persistence.
 	 */
-	UNSAVED(Messages.InvoiceState_UNSAVED),
+	UNSAVED,
 	
 	/**
 	 * An invoice that has been saved to persistence, but not been sent.
 	 */
-	CREATED(Messages.InvoiceState_CREATED),
+	CREATED,
 	
 	/**
 	 * An invoice that has been sent to its client.
 	 */
-	SENT(Messages.InvoiceState_SENT),
+	SENT,
 	
 	/**
 	 * An invoice that was sent but has a due date in the past.
 	 */
-	OVERDUE(Messages.InvoiceState_OVERDUE),
+	OVERDUE,
 	
 	/**
 	 * An invoice that has been sent and then cancelled. This is a terminal state.
 	 */
-	CANCELLED(Messages.InvoiceState_CANCELLED),
+	CANCELLED,
 	
 	/**
 	 * An invoice that was sent and then paid, regardless of whether the payment was made within the legal time frame
 	 * or after it has already become overdue. This is a terminal state.
 	 */
-	PAID(Messages.InvoiceState_PAID);
-	
-	/**
-	 * translated name of this state
-	 */
-	private String translated;
-		
-	/**
-	 * Creates a new {@link InvoiceState}.
-     * @param translated translated name of this state
-     */
-    private InvoiceState(String translated) {
-	    this.translated = translated;
-    }
+	PAID;
 
 	/**
 	 * Returns a translated String describing this state. The locale used is the default locale derived from the
@@ -81,6 +68,6 @@ public enum InvoiceState implements Serializable {
 	 * @return a locale-sensitive string representation of this invoice state
 	 */
 	public String getTranslatedString() {
-		return translated != null ? translated : this.name();
+		return Messages.translate(this);
 	}
 }

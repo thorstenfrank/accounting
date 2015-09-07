@@ -28,24 +28,12 @@ import de.tfsw.accounting.Messages;
 public enum PaymentType implements Serializable {
 
 	/**
-	 * Credit purchase, Zielkauf.
+	 * Credit purchase (German: Zielkauf).
+	 * 
 	 * Net payments are payments of the total due amount of an invoice, usually by way of bank transfer.
 	 */
-	TRADE_CREDIT(Messages.PaymentType_TRADE_CREDIT);
+	TRADE_CREDIT;
 	
-	/**
-	 * Translated name of this payment type.
-	 */
-	private String translated;
-		
-	/**
-	 * Creates a new {@link PaymentType}.
-     * @param translated translated name of this payment type
-     */
-    private PaymentType(String translated) {
-	    this.translated = translated;
-    }
-
 	/**
 	 * Returns a translated String describing this type. The locale used is the default locale derived from the
 	 * framework.
@@ -53,6 +41,6 @@ public enum PaymentType implements Serializable {
 	 * @return a locale-sensitive string representation of this payment type
 	 */
 	public String getTranslatedString() {
-		return translated != null ? translated : this.name();
+		return Messages.translate(this);
 	}
 }
