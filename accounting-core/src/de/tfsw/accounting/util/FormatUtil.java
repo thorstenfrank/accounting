@@ -292,6 +292,9 @@ public final class FormatUtil {
      * @return
      */
     public static String formatDate(Locale locale, LocalDate date) {
+    	if (date == null) {
+    		return Constants.HYPHEN;
+    	}
     	return getDateFormatter(locale).format(date);
     }
     

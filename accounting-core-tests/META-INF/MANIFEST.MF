@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: accounting-core-tests
 Bundle-SymbolicName: de.tfsw.accounting.core-tests;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.4.1.qualifier
 Bundle-Vendor: tfsw.de
-Fragment-Host: de.tfsw.accounting.core;bundle-version="1.4.0"
+Fragment-Host: de.tfsw.accounting.core;bundle-version="1.4.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: de.tfsw.accounting.test-harness;bundle-version="1.0.0",
  org.junit;bundle-version="4.11.0"

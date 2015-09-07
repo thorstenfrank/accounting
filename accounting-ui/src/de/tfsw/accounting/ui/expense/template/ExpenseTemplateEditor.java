@@ -16,8 +16,12 @@
 package de.tfsw.accounting.ui.expense.template;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -26,7 +30,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.AbstractAccountingEditor;
 import de.tfsw.accounting.ui.AccountingUI;
@@ -44,6 +47,8 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 	private FormToolkit toolkit;
 	private ScrolledForm form;
 	private Text nextApplicationDate;
+	private Text lastApplication;
+	private Text numberOfApplications;
 	
 	/**
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -56,11 +61,11 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
 		form.setText(Messages.ExpenseTemplateEditor_title);
-		form.getBody().setLayout(new GridLayout(2, true));
+		form.getBody().setLayout(new GridLayout(3, false));
 		
 		createTemplateSection(helper);
 		createRecurrenceSection(helper);
-		createSummarySection();
+		createSummarySection(helper);
 		
 		form.getToolBarManager().update(true);
 		
@@ -103,8 +108,9 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 	
 	/**
 	 * 
+	 * @param helper
 	 */
-	private void createSummarySection() {
+	private void createSummarySection(ExpenseTemplateEditHelper helper) {
 		Section section = toolkit.createSection(form.getBody(), Section.TITLE_BAR);
 		section.setText(Messages.ExpenseTemplateEditor_sectionSummary);
 		WidgetHelper.grabHorizontal(section);
@@ -112,32 +118,52 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 		Composite sectionClient = toolkit.createComposite(section);
 		sectionClient.setLayout(new GridLayout(2, false));
 		
-		ExpenseTemplate template = getEditorInput().getExpenseTemplate();
+		numberOfApplications = createReadOnlyText(sectionClient, Messages.ExpenseTemplateEditor_numberOfApplications);
+		lastApplication = createReadOnlyText(sectionClient, Messages.ExpenseTemplateEditor_lastApplication);
+		nextApplicationDate = createReadOnlyText(sectionClient, Messages.ExpenseTemplateEditor_nextApplication);
 		
-		createReadOnlyText(sectionClient, Integer.toString(template.getNumberOfApplications()), Messages.ExpenseTemplateEditor_numberOfApplications);
+		updateSummary();
 		
-		String lastApplication = template.getLastApplication() != null ? FormatUtil.formatDate(template.getLastApplication()) : Constants.HYPHEN;
-		createReadOnlyText(sectionClient, lastApplication, Messages.ExpenseTemplateEditor_lastApplication);
-		
-		nextApplicationDate = createReadOnlyText(sectionClient, FormatUtil.formatDate(template.getNextApplication()), Messages.ExpenseTemplateEditor_nextApplication);
+		Button reset = new Button(sectionClient, SWT.PUSH);
+		reset.setText("Reset Template");
+		reset.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (MessageDialog.openConfirm(
+						getSite().getShell(), 
+						Messages.ExpenseTemplateEditor_resetConfirmTitle, 
+						Messages.ExpenseTemplateEditor_resetConfirmMessage)) {
+					
+					getEditorInput().getExpenseTemplate().reset();
+					modelHasChanged();
+				}
+			}
+		});
 		
 		section.setClient(sectionClient);
 	}
 	
 	/**
 	 * 
+	 */
+	private void updateSummary() {
+		ExpenseTemplate template = getEditorInput().getExpenseTemplate();
+		nextApplicationDate.setText(FormatUtil.formatDate(template.getNextApplication()));
+		lastApplication.setText(FormatUtil.formatDate(template.getLastApplication()));
+		numberOfApplications.setText(Integer.toString(template.getNumberOfApplications()));
+	}
+	
+	/**
+	 * 
 	 * @param parent
-	 * @param style
-	 * @param text
+	 * @param label
 	 * @return
 	 */
-	private Text createReadOnlyText(Composite parent, String text, String label) {
-		createLabel(parent, label);
-		Text widget = createText(parent, SWT.BORDER | SWT.READ_ONLY);
-		widget.setText(text);
-		widget.setEnabled(false);
-		widget.setEditable(false);
-		return widget; 
+	private Text createReadOnlyText(Composite parent, String label) {
+		new Label(parent, SWT.NONE).setText(label);
+		Text text = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
+		WidgetHelper.grabHorizontal(text);
+		return text;
 	}
 	
 	/**
@@ -167,7 +193,7 @@ public class ExpenseTemplateEditor extends AbstractAccountingEditor implements E
 	@Override
 	public void modelHasChanged() {
 		setIsDirty(true);
-		nextApplicationDate.setText(FormatUtil.formatDate(getEditorInput().getExpenseTemplate().getNextApplication()));
+		updateSummary();
 	}
 
 	/**
