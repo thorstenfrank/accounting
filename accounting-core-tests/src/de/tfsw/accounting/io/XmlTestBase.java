@@ -31,20 +31,24 @@ import de.tfsw.accounting.io.xml.XmlAddress;
 import de.tfsw.accounting.io.xml.XmlBankAccount;
 import de.tfsw.accounting.io.xml.XmlClient;
 import de.tfsw.accounting.io.xml.XmlExpense;
+import de.tfsw.accounting.io.xml.XmlExpenseTemplate;
 import de.tfsw.accounting.io.xml.XmlInvoice;
 import de.tfsw.accounting.io.xml.XmlInvoicePosition;
 import de.tfsw.accounting.io.xml.XmlPaymentTerms;
 import de.tfsw.accounting.io.xml.XmlPaymentType;
+import de.tfsw.accounting.io.xml.XmlRecurrenceRule;
 import de.tfsw.accounting.io.xml.XmlTaxRate;
 import de.tfsw.accounting.io.xml.XmlUser;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.Expense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.ExpenseType;
 import de.tfsw.accounting.model.Invoice;
 import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.PaymentTerms;
+import de.tfsw.accounting.model.RecurrenceRule;
 import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.User;
 
@@ -304,5 +308,28 @@ class XmlTestBase extends BaseTestFixture {
 			assertEquals(rate.getShortName(), xmlRate.getAbbreviation());
 			assertEquals(rate.getRate(), xmlRate.getRate());
 		}
+	}
+	
+	/**
+	 * 
+	 * @param template
+	 * @param xmlTemplate
+	 */
+	protected void assertTemplateEquals(ExpenseTemplate template, XmlExpenseTemplate xmlTemplate) {
+		assertEquals(template.getCategory(), xmlTemplate.getCategory());
+		assertEquals(template.getDescription(), xmlTemplate.getDescription());
+		assertEquals(template.getExpenseType().name(), xmlTemplate.getExpenseType().name());
+		assertDatesSame(template.getFirstApplication(), xmlTemplate.getFirstApplication());
+		assertDatesSame(template.getLastApplication(), xmlTemplate.getLastApplication());
+		assertAreEqual(template.getNetAmount(), xmlTemplate.getNetAmount());
+		assertEquals(template.getNumberOfApplications(), xmlTemplate.getNumberOfApplications());
+		assertTaxRatesSame(template.getTaxRate(), xmlTemplate.getTaxRate());
+		RecurrenceRule rule = template.getRule();
+		XmlRecurrenceRule xmlRule = xmlTemplate.getRule();
+		
+		assertEquals(rule.getCount(), xmlRule.getCount());
+		assertEquals(rule.getFrequency().name(), xmlRule.getFrequency().name());
+		assertEquals(rule.getInterval(), xmlRule.getInterval());
+		assertDatesSame(rule.getUntil(), xmlRule.getUntil());
 	}
 }

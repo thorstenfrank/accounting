@@ -1033,6 +1033,7 @@ public class AccountingServiceImpl implements AccountingService {
     	model.setClients(getClients());
     	model.setInvoices(findInvoices());
     	model.setExpenses(getExpensesAsSet(null));
+    	model.setExpenseTemplates(getExpenseTemplates());
     	AccountingXmlImportExport.exportModelToXml(model, targetFileName);
     }
     
@@ -1095,6 +1096,14 @@ public class AccountingServiceImpl implements AccountingService {
     		}
     	} else {
     		LOG.info("No expenses to import"); //$NON-NLS-1$
+    	}
+    	
+    	final Set<ExpenseTemplate> importedTemplates = importResult.getExpenseTemplates();
+    	if (importedTemplates != null && !importedTemplates.isEmpty()) {
+    		LOG.info("Now saving imported ExpenseTEmplates: " + importedTemplates.size()); //$NON-NLS-1$
+    		for (ExpenseTemplate template : importedTemplates) {
+    			objectContainer.store(template);
+    		}
     	}
     	
     	objectContainer.commit();

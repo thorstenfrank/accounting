@@ -21,6 +21,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,16 +30,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.tfsw.accounting.io.AccountingXmlImportExport;
-import de.tfsw.accounting.io.ModelToXml;
-import de.tfsw.accounting.io.XmlModelDTO;
 import de.tfsw.accounting.io.xml.XmlExpense;
 import de.tfsw.accounting.io.xml.XmlUser;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.DepreciationMethod;
 import de.tfsw.accounting.model.Expense;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.ExpenseType;
+import de.tfsw.accounting.model.Frequency;
 import de.tfsw.accounting.model.Invoice;
+import de.tfsw.accounting.model.RecurrenceRule;
 import de.tfsw.accounting.model.User;
 
 /**
@@ -99,11 +101,21 @@ public class ModelToXmlTest extends XmlTestBase {
 		capex.setSalvageValue(BigDecimal.ONE);
 		expenses.add(capex);
 		
+		final Set<ExpenseTemplate> templates = new HashSet<ExpenseTemplate>();
+		RecurrenceRule rule = new RecurrenceRule(Frequency.MONTHLY, 1);
+		ExpenseTemplate template = new ExpenseTemplate(true, LocalDate.now().with(TemporalAdjusters.firstDayOfYear()), rule);
+		template.setCategory("Template_Cat");
+		template.setDescription("Template_Desc");
+		template.setExpenseType(ExpenseType.OPEX);
+		template.setNetAmount(new BigDecimal("44.99"));
+		templates.add(template);
+		
 		XmlModelDTO model = new XmlModelDTO();
 		model.setUser(user);
 		model.setClients(clients);
 		model.setInvoices(invoices);
 		model.setExpenses(expenses);
+		model.setExpenseTemplates(templates);
 		
 		XmlUser xmlUser = modelToXml.convertToXml(model);
 		assertUserSame(user, xmlUser);
@@ -130,6 +142,10 @@ public class ModelToXmlTest extends XmlTestBase {
 				break;
 			}
 		}
+		
+		assertNotNull(xmlUser.getExpenseTemplates());
+		assertEquals(1, xmlUser.getExpenseTemplates().getTemplate().size());
+		assertTemplateEquals(template, xmlUser.getExpenseTemplates().getTemplate().get(0));
 		
 		// test writing to XML
 		AccountingXmlImportExport.exportModelToXml(model, XML_TEST_FILE);
