@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.BaseTestFixture;
 
 public class ExpenseTemplateTest extends BaseTestFixture {
@@ -203,6 +204,30 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 		et.setDescription("heppes_{year_long}{month}");
 		e = et.apply();
 		assertEquals("heppes_201504", e.getDescription());
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void testApplyWithParam() {
+		ExpenseTemplate et = buildTestInstance();
+		
+		try {
+			et.apply(LocalDate.now().plusDays(1));
+			fail("Tried to apply template in the future, should have caught exception!");
+		} catch (AccountingException e) {
+			// good...
+		}
+		
+		LocalDate now = LocalDate.now(); 
+		
+		et.setFirstApplication(now.minusMonths(2));
+		
+		Expense e = et.apply(now.minusMonths(1));
+		assertEquals(e.getPaymentDate(), et.getLastApplication());
+		
+		assertNull(et.apply(null));
 	}
 	
 	/**

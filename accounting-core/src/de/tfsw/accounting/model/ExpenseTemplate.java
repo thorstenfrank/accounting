@@ -21,6 +21,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import de.tfsw.accounting.AccountingException;
+import de.tfsw.accounting.Messages;
+
 /**
  * Definition of {@link Expense} objects to be created based on a template and recurrence rule. 
  * 
@@ -97,11 +100,13 @@ public class ExpenseTemplate extends AbstractExpense {
 	}
 	
 	/**
-	 * Creates a new {@link Expense} based on this template's base information (e.g. description, net amount, etc.).
+	 * This is a shortcut for {@link #apply(LocalDate)} using {@link #getNextApplication()} as a parameter.
 	 * 
 	 * <p>
 	 * If this template is not active, or invalid according to the rules defined in the {@link RecurrenceRule} of this 
-	 * template at the time this method is called, <code>null</code> is returned.
+	 * template at the time this method is called, <code>null</code> is returned. In contract to 
+	 * {@link #apply(LocalDate)}, this method will not throw an exception if the next application date is in the 
+	 * future, it will simply return <code>null</code>.
 	 * </p>
 	 * 
 	 * @return a new {@link Expense} based on this template, or <code>null</code> if this template is inactive or invalid
@@ -110,29 +115,58 @@ public class ExpenseTemplate extends AbstractExpense {
 	 * @see #getNextApplication()
 	 */
 	public Expense apply() {
-		Expense expense = null;
-		
-		LocalDate nextApp = getNextApplication();
-		
-		// only create a template if this template is active and the next application date
-		// is not in the future
-		if (nextApp != null && nextApp.isBefore(LocalDate.now().plusDays(1))) {
-			expense = new Expense();
-			expense.setCategory(getCategory());
-			expense.setExpenseType(getExpenseType());
-			expense.setNetAmount(getNetAmount());
-			expense.setPaymentDate(nextApp);			
-			expense.setTaxRate(getTaxRate());
-			setDescription(expense);
-			
-			// update counters / trackers / active state
-			lastApplication = expense.getPaymentDate();
-			numberOfApplications++;
-			
-			updateActiveState();
+		try {
+			return applyInternal(getNextApplication());
+		} catch (AccountingException e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Creates a new {@link Expense} based on this template's base information (e.g. description, net amount, etc.).
+	 * 
+	 * <p>
+	 * This template's {@link #getLastApplication()} will be set to the supplied <code>paymentDate</code>.
+	 * </p>
+	 * 
+	 * @param paymentDate the desired {@link Expense#getPaymentDate()}, must not be <code>null</code> and must not be
+	 * 					  future
+	 * 
+	 * @return an {@link Expense} based on this template or <code>null</code> if the supplied date was <code>null</code>
+	 * 
+	 * @throws AccountingException if the supplied date is in the future
+	 */
+	public Expense apply(LocalDate paymentDate) {
+		updateActiveState();
+		return applyInternal(paymentDate);
+	}
+	
+	/**
+	 * 
+	 * @param paymentDate
+	 * @return
+	 */
+	private Expense applyInternal(LocalDate paymentDate) {
+		if (!active || paymentDate == null) {
+			return null;
+		} else if (paymentDate.isAfter(LocalDate.now())) {
+			throw new AccountingException(Messages.bind(Messages.ExpenseTemplate_errorDateInFuture, paymentDate));
 		}
 		
-		return expense;
+		Expense expense = new Expense();
+		expense = new Expense();
+		expense.setCategory(getCategory());
+		expense.setExpenseType(getExpenseType());
+		expense.setNetAmount(getNetAmount());
+		expense.setPaymentDate(paymentDate);			
+		expense.setTaxRate(getTaxRate());
+		setDescription(expense);
+		
+		lastApplication = paymentDate;
+		numberOfApplications++;
+		updateActiveState();
+		
+		return expense;		
 	}
 	
 	/**
@@ -280,8 +314,14 @@ public class ExpenseTemplate extends AbstractExpense {
 	}
 
 	/**
+	 * Activates or de-activates this template. 
 	 * 
-	 * 
+	 * <p>
+	 * Simply calling <code>setActive(true)</code> on an inactive template may have no effect, as the active state is 
+	 * dynamically computed before and after every application, based on whether the {@link RecurrenceRule} of this 
+	 * template is limited either by the number of applications or an end date. In other words, to revive an inactive 
+	 * template, make sure to change either of these limiting factors as well.
+	 *  
 	 * @param active <code>true</code> if this template should be activated
 	 */
 	public void setActive(boolean active) {

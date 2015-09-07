@@ -69,6 +69,8 @@ public class Messages extends NLS {
 	public static String ExpenseImporter_WarningInvalidType;
 	public static String ExpenseImporter_ErrorReadingFile;
 	
+	public static String ExpenseTemplate_errorDateInFuture;
+	
 	public static String Frequency_DAILY;
 	public static String Frequency_WEEKLY;
 	public static String Frequency_MONTHLY;

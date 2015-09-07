@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -71,7 +73,7 @@ class ChooseTemplatesWizardPage extends WizardPage {
 		selectedTemplates = new HashSet<ConcreteTemplateInstance>();
 		
 		for (ExpenseTemplate template : templates) {
-			Set<ConcreteTemplateInstance> concretes = new HashSet<ChooseTemplatesWizardPage.ConcreteTemplateInstance>();
+			SortedSet<ConcreteTemplateInstance> concretes = new TreeSet<ChooseTemplatesWizardPage.ConcreteTemplateInstance>();
 			for (LocalDate date : template.getOutstandingApplications()) {
 				ConcreteTemplateInstance instance = new ConcreteTemplateInstance(template, date);
 				concretes.add(instance);
@@ -96,17 +98,11 @@ class ChooseTemplatesWizardPage extends WizardPage {
 		AccountingService service = AccountingUI.getAccountingService();
 		
 		for (ExpenseTemplate template : map.keySet()) {
-			LOG.debug("Now applying template: " + template.getDescription() + " / " + template.getNumberOfOutstandingApplications()); //$NON-NLS-1$ //$NON-NLS-2$
-			Set<LocalDate> selectedDates = map.get(template);
-			Expense expense = template.apply();
-			while (expense != null) {
-				if (selectedDates.contains(expense.getPaymentDate())) {
-					LOG.info(String.format("Expense [%s] created for [%s]", expense.getDescription(), expense.getPaymentDate().toString())); //$NON-NLS-1$
-					service.saveExpense(expense);
-				} else {
-					LOG.info(String.format("Expense [%s] ignored for [%s]", expense.getDescription(), expense.getPaymentDate().toString())); //$NON-NLS-1$
-				}
-				expense = template.apply();
+			LOG.debug("Now applying template: " + template.getDescription() + " / " + template.getNumberOfOutstandingApplications()); //$NON-NLS-1$ //$NON-NLS-2$			
+			for (LocalDate selectedDate : map.get(template)) {
+				Expense expense = template.apply(selectedDate);
+				LOG.info(String.format("Expense [%s] created for [%s]", expense.getDescription(), expense.getPaymentDate().toString())); //$NON-NLS-1$
+				service.saveExpense(expense);
 			}
 			
 			LOG.debug("Done saving expenses, now saving template..."); //$NON-NLS-1$
@@ -311,13 +307,25 @@ class ChooseTemplatesWizardPage extends WizardPage {
 	/**
 	 * 
 	 */
-	private class ConcreteTemplateInstance {
+	private class ConcreteTemplateInstance implements Comparable<ConcreteTemplateInstance> {
 		private ExpenseTemplate template;
 		private LocalDate date;
 		
 		ConcreteTemplateInstance(ExpenseTemplate template, LocalDate date) {
 			this.template = template;
 			this.date = date;
+		}
+
+		/**
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
+		@Override
+		public int compareTo(ConcreteTemplateInstance o) {
+			int val = template.getDescription().compareTo(o.template.getDescription());
+			if (val == 0) {
+				val = date.compareTo(o.date);
+			}
+			return val;
 		}
 	}
 }
