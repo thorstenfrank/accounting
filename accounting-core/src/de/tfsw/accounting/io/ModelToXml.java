@@ -310,6 +310,7 @@ class ModelToXml {
 			XmlExpenseTemplates xmlTemplates = new XmlExpenseTemplates();
 			for (ExpenseTemplate template : templates) {
 				XmlExpenseTemplate xmlTemplate = new XmlExpenseTemplate();
+				xmlTemplates.getTemplate().add(xmlTemplate);
 				xmlTemplate.setActive(template.isActive());
 				xmlTemplate.setCategory(template.getCategory());
 				xmlTemplate.setDescription(template.getDescription());
