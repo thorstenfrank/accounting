@@ -2,13 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.tfsw.accounting</groupId>
 	<artifactId>de.tfsw.accounting.parent</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>0.22.0</tycho.version>
+		<tycho.version>0.23.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<luna-repo.url>http://download.eclipse.org/releases/luna</luna-repo.url>
+		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
 	</properties>
 
 	<modules>
@@ -31,11 +31,10 @@
 
 	<repositories>
 		<repository>
-			<id>luna</id>
-			<url>${luna-repo.url}</url>
+			<id>mars</id>
+			<url>${mars-repo.url}</url>
 			<layout>p2</layout>
 		</repository>
-
 	</repositories>
 
 	<build>
