@@ -224,8 +224,18 @@ public class ExpenseTemplate extends AbstractExpense {
 	}
 	
 	/**
+	 * Returns the date this template can next be applied, or <code>null</code> if this template is inactive.
 	 * 
-	 * @return
+	 * <p>
+	 * The next application date is calculated in reference to {@link #getLastApplication()} 
+	 * (or {@link #getFirstApplication() if the former is <code>null</code>} and the interval and frequency defined by 
+	 * this template's {@link RecurrenceRule}. Also taken into consideration are either the maximum number of 
+	 * applications or a defined end date of the rule, if either one of these has been set.
+	 * </p>
+	 * 
+	 * @return the next possible application date of this template or <code>null</code> if it is inactive
+	 * 
+	 * @see RecurrenceRule
 	 */
 	public LocalDate getNextApplication() {
 		updateActiveState();
@@ -272,8 +282,29 @@ public class ExpenseTemplate extends AbstractExpense {
 				break;
 			}
 			
+			if (rule.getUntil() != null && rule.getUntil().isBefore(next)) {
+				return null;
+			}
+			
 			return next;
 		}
+	}
+	
+	/**
+	 * Resets this template's number of applications and the last application date, and activates this template if it
+	 * was previously de-activated. This template will then be in the same pristine state as when it was originally 
+	 * created, and {@link #getNextApplication()} will be equal to {@link #getFirstApplication()}.
+	 * 
+	 * @see #getNumberOfApplications()
+	 * @see #getLastApplication()
+	 */
+	public void reset() {
+		setLastApplication(null);
+		setNumberOfApplications(0);
+		if (!active) {
+			setActive(true);
+		}
+		updateActiveState();
 	}
 	
 	/**
@@ -285,7 +316,7 @@ public class ExpenseTemplate extends AbstractExpense {
 				active = numberOfApplications < rule.getCount();
 			} else if (rule.getUntil() != null)  {
 				active = rule.getUntil().isAfter(lastApplication != null ? lastApplication : LocalDate.now());
-			}			
+			}
 		}
 	}
 	

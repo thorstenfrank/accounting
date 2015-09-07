@@ -207,7 +207,7 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 	}
 	
 	/**
-	 * 
+	 * Test for {@link ExpenseTemplate#apply(LocalDate)}
 	 */
 	@Test
 	public void testApplyWithParam() {
@@ -228,6 +228,25 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 		assertEquals(e.getPaymentDate(), et.getLastApplication());
 		
 		assertNull(et.apply(null));
+	}
+	
+	/**
+	 * Test for {@link ExpenseTemplate#reset()}
+	 */
+	@Test
+	public void testReset() {
+		ExpenseTemplate et = buildTestInstance();
+		
+		et.setFirstApplication(LocalDate.now().minusMonths(1));
+		
+		assertNotNull(et.apply());
+		assertNotNull(et.apply());
+		assertNull(et.apply());
+		
+		et.reset();
+		Expense afterReset = et.apply();
+		assertNotNull(afterReset);
+		assertEquals(et.getFirstApplication(), afterReset.getPaymentDate());
 	}
 	
 	/**

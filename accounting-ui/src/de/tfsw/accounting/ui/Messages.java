@@ -144,6 +144,8 @@ public class Messages extends NLS {
 	public static String ExpenseTemplateEditor_numberOfApplications;
 	public static String ExpenseTemplateEditor_lastApplication;	
 	public static String ExpenseTemplateEditor_nextApplication;
+	public static String ExpenseTemplateEditor_resetConfirmTitle;
+	public static String ExpenseTemplateEditor_resetConfirmMessage;
 	
 	public static String ExpenseTemplateWizard_Title;
 
