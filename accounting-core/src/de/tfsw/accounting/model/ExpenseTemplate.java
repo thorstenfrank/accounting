@@ -16,6 +16,7 @@
 package de.tfsw.accounting.model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,6 +46,13 @@ public class ExpenseTemplate extends AbstractExpense {
 	public static final String FIELD_FIRST = "firstApplication";
 	/** Property name of {@link #getLastApplication()}. */
 	public static final String FIELD_LAST = "lastApplication";
+	
+	/** Placeholder patterns. */
+	private static final PlaceholderPattern[] PLACEHOLDERS = {
+		new PlaceholderPattern("{month}", "MM"),
+		new PlaceholderPattern("{year}", "yy"),
+		new PlaceholderPattern("{year_long}", "yyyy"),
+	};
 	
 	// RRULE
 	private RecurrenceRule rule;
@@ -111,11 +119,11 @@ public class ExpenseTemplate extends AbstractExpense {
 		if (nextApp != null && nextApp.isBefore(LocalDate.now().plusDays(1))) {
 			expense = new Expense();
 			expense.setCategory(getCategory());
-			expense.setDescription(getDescription());
 			expense.setExpenseType(getExpenseType());
 			expense.setNetAmount(getNetAmount());
 			expense.setPaymentDate(nextApp);			
 			expense.setTaxRate(getTaxRate());
+			setDescription(expense);
 			
 			// update counters / trackers / active state
 			lastApplication = expense.getPaymentDate();
@@ -125,6 +133,24 @@ public class ExpenseTemplate extends AbstractExpense {
 		}
 		
 		return expense;
+	}
+	
+	/**
+	 * 
+	 * @param expense
+	 */
+	private void setDescription(Expense expense) {		
+		String desc = this.getDescription();
+		
+		for (PlaceholderPattern pattern : PLACEHOLDERS) {
+			if (pattern.isApplicable(desc)) {
+				desc = desc.replace(
+						pattern.placeholder, 
+						expense.getPaymentDate().format(DateTimeFormatter.ofPattern(pattern.pattern)));
+			}
+		}
+		
+		expense.setDescription(desc);
 	}
 	
 	/**
@@ -337,5 +363,24 @@ public class ExpenseTemplate extends AbstractExpense {
 	 */
 	public void setLastApplication(LocalDate lastApplication) {
 		this.lastApplication = lastApplication;
+	}
+	
+	/**
+	 * 
+	 * @author Thorsten Frank
+	 *
+	 */
+	private static class PlaceholderPattern {
+		private String placeholder;
+		private String pattern;
+		
+		private PlaceholderPattern(String placeholder, String pattern) {
+			this.placeholder = placeholder;
+			this.pattern = pattern;
+		}
+		
+		private boolean isApplicable(String text) {
+			return text.contains(placeholder);
+		}
 	}
 }

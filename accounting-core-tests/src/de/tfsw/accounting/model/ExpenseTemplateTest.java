@@ -182,6 +182,31 @@ public class ExpenseTemplateTest extends BaseTestFixture {
 	
 	/**
 	 * 
+	 */
+	@Test
+	public void testDescriptionPlaceholders() {
+		ExpenseTemplate et = buildTestInstance();
+		et.setDescription("Some {month} test");
+		et.setFirstApplication(LocalDate.of(2015, 1, 24));
+		
+		Expense e = et.apply();
+		assertEquals("Some 01 test", e.getDescription());
+		
+		et.setDescription("{year} changed description");
+		e = et.apply();
+		assertEquals("15 changed description", e.getDescription());
+		
+		et.setDescription("Some Expense {month}/{year}");
+		e = et.apply();
+		assertEquals("Some Expense 03/15", e.getDescription());
+		
+		et.setDescription("heppes_{year_long}{month}");
+		e = et.apply();
+		assertEquals("heppes_201504", e.getDescription());
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	private ExpenseTemplate buildTestInstance() {
