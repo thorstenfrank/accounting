@@ -92,26 +92,32 @@ public class ReportingServiceImpl implements ReportingService {
 			
 			@Override
 			public void startingReportGeneration() {
+				LOG.debug(String.format("Starting Report Generation: [%s] to file [%s]", reportId, fileLocation));
 			}
 			
 			@Override
 			public void loadingTemplate() {
+				LOG.debug("Loading template: " + reportId);
 			}
 			
 			@Override
 			public void fillingReport() {
+				LOG.debug("Filling report: " + reportId);
 			}
 			
 			@Override
 			public void exportingReport() {
+				LOG.debug("Exporting report: " + reportId);
 			}
 			
 			@Override
 			public void exportFinished() {
+				LOG.debug("Finished export: " + reportId);
 			}
 			
 			@Override
 			public void addingReportParameters() {
+				LOG.debug("Adding report params: " + reportId);
 			}
 		});
 	}

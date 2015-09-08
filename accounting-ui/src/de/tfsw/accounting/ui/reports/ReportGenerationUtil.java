@@ -46,6 +46,7 @@ public class ReportGenerationUtil {
 
 	/** */
 	private static final Logger LOG = Logger.getLogger(ReportGenerationUtil.class);
+	private static final Logger MONITOR_LOG = Logger.getLogger(ReportProgressMonitor.class);
 	
 	private static final String SEPARATOR = System.getProperty("file.separator"); //$NON-NLS-1$
 	
@@ -243,7 +244,6 @@ public class ReportGenerationUtil {
 	 *
 	 */
 	private class ReportProgressMonitor implements IRunnableWithProgress, ReportGenerationMonitor {
-		
 		/** */
 		private IProgressMonitor monitor;
 		
@@ -255,6 +255,7 @@ public class ReportGenerationUtil {
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			this.monitor = monitor;
 			
+			MONITOR_LOG.debug("Calling reporting service...");
 			reportingService.generateReport(handler.getReportId(), handler.getModelObject(), targetFileName, this);
 						
 			monitor.worked(1);
@@ -267,6 +268,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void startingReportGeneration() {
+			MONITOR_LOG.debug(String.format("Starting report generation [%s] to file [%s]", handler.getReportId(), targetFileName));
 			monitor.beginTask(Messages.ReportProgressMonitor_startingReportGeneration, 5);
 			monitor.worked(1);
 		}
@@ -277,6 +279,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void loadingTemplate() {
+			MONITOR_LOG.debug("Loading template " + handler.getReportId());
 		    monitor.subTask(Messages.ReportProgressMonitor_loadingTemplate);
 		    monitor.worked(1);
 		}
@@ -287,6 +290,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void addingReportParameters() {
+			MONITOR_LOG.debug("Adding report parameters");
 		    monitor.subTask(Messages.ReportProgressMonitor_addingReportParameters);
 		    monitor.worked(1);
 		}
@@ -297,6 +301,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void fillingReport() {
+			MONITOR_LOG.debug("Filling report");
 			monitor.subTask(Messages.ReportProgressMonitor_fillingReport);
 			monitor.worked(1);
 		}
@@ -307,6 +312,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void exportingReport() {
+			MONITOR_LOG.debug("Exporting report to " + targetFileName);
 		    monitor.subTask(Messages.ReportProgressMonitor_exportingReportToFile);
 		    monitor.worked(1);
 		}
@@ -317,6 +323,7 @@ public class ReportGenerationUtil {
 		 */
 		@Override
 		public void exportFinished() {
+			MONITOR_LOG.debug(String.format("Finished export of report [%s] to file [%s]", handler.getReportId(), targetFileName));
 			monitor.subTask(Messages.ReportProgressMonitor_exportFinished);
 			monitor.done();
 		}
