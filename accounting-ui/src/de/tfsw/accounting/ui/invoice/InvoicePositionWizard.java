@@ -17,11 +17,11 @@ package de.tfsw.accounting.ui.invoice;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -157,10 +157,10 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			Button revenueRelevant = new Button(composite, SWT.CHECK);
 			revenueRelevant.setText(Messages.labelRevenueRelevant);
 			revenueRelevant.setEnabled(editable);
-			IObservableValue revenueWidgetObservable = SWTObservables.observeSelection(revenueRelevant);
+			IObservableValue revenueWidgetObservable = WidgetProperties.selection().observe(revenueRelevant);
 			bindingContext.bindValue(
-					revenueWidgetObservable, 
-					PojoObservables.observeValue(position, InvoicePosition.FIELD_REVENUE_RELEVANT));
+					revenueWidgetObservable,
+					PojoProperties.value(InvoicePosition.FIELD_REVENUE_RELEVANT).observe(position));
 			revenueWidgetObservable.addValueChangeListener(this);
 			
 			// QUANTITY
@@ -168,8 +168,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			Text quantity = WidgetHelper.createSingleBorderText(composite, null);
 			quantity.setEnabled(editable);
 			
-			IObservableValue quantityWidgetObservable = SWTObservables.observeText(quantity, SWT.Modify);
-			IObservableValue quantityPojoObservable = PojoObservables.observeValue(position, InvoicePosition.FIELD_QUANTITY);
+			IObservableValue quantityWidgetObservable = WidgetProperties.text(SWT.Modify).observe(quantity);
+			IObservableValue quantityPojoObservable = PojoProperties.value(InvoicePosition.FIELD_QUANTITY).observe(position);
 			UpdateValueStrategy toQuantity = new UpdateValueStrategy();
 			toQuantity.setConverter(StringToBigDecimalConverter.getInstance());
 			UpdateValueStrategy fromQuantity = new UpdateValueStrategy();
@@ -181,10 +181,10 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			WidgetHelper.createLabel(composite, Messages.labelUnit);
 			Text unit = WidgetHelper.createSingleBorderText(composite, null);
 			unit.setEnabled(editable);
-			IObservableValue unitWidgetObservable = SWTObservables.observeText(unit, SWT.Modify);
+			IObservableValue unitWidgetObservable = WidgetProperties.text(SWT.Modify).observe(unit);
 			bindingContext.bindValue(
 					unitWidgetObservable, 
-					PojoObservables.observeValue(position, InvoicePosition.FIELD_UNIT));
+					PojoProperties.value(InvoicePosition.FIELD_UNIT).observe(position));
 			unitWidgetObservable.addValueChangeListener(this);
 			
 			// PRICE PER UNIT
@@ -192,8 +192,8 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			Text pricePerUnit = WidgetHelper.createSingleBorderText(composite, null);
 			pricePerUnit.setEnabled(editable);
 			
-			IObservableValue priceWidgetObservable = SWTObservables.observeText(pricePerUnit, SWT.Modify);
-			IObservableValue pricePojoObservable = PojoObservables.observeValue(position, InvoicePosition.FIELD_PRICE_PER_UNIT);
+			IObservableValue priceWidgetObservable = WidgetProperties.text(SWT.Modify).observe(pricePerUnit);
+			IObservableValue pricePojoObservable = PojoProperties.value(InvoicePosition.FIELD_PRICE_PER_UNIT).observe(position);
 			UpdateValueStrategy toPrice = new UpdateValueStrategy();
 			toPrice.setConverter(StringToBigDecimalConverter.getInstance());
 			UpdateValueStrategy fromPrice = new UpdateValueStrategy();
@@ -236,10 +236,10 @@ class InvoicePositionWizard extends Wizard implements Constants {
 			Text description = new Text(composite, SWT.MULTI | SWT.BORDER);
 			description.setEnabled(editable);
 			description.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(200, 100).create());
-			IObservableValue descriptionWidgetObservable = SWTObservables.observeText(description, SWT.Modify);
+			IObservableValue descriptionWidgetObservable = WidgetProperties.text(SWT.Modify).observe(description);
 			bindingContext.bindValue(
 					descriptionWidgetObservable, 
-					PojoObservables.observeValue(position, InvoicePosition.FIELD_DESCRIPTION));
+					PojoProperties.value(InvoicePosition.FIELD_DESCRIPTION).observe(position));
 			descriptionWidgetObservable.addValueChangeListener(this);			
 			
 			setControl(composite);

@@ -7,6 +7,6 @@
   	<relativePath>../accounting-parent</relativePath>
   </parent>
   <artifactId>de.tfsw.accounting.ui</artifactId>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

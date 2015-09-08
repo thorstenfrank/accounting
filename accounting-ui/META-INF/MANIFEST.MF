@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: accounting-ui
 Bundle-SymbolicName: de.tfsw.accounting.ui; singleton:=true
-Bundle-Version: 1.4.1.qualifier
+Bundle-Version: 1.4.2.qualifier
 Bundle-Activator: de.tfsw.accounting.ui.AccountingUI
 Bundle-Vendor: tfsw.de
 Require-Bundle: org.eclipse.ui,

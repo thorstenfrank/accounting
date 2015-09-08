@@ -17,11 +17,12 @@ package de.tfsw.accounting.elster.ui.wizard;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.elster.ElsterDTO;
@@ -96,8 +97,8 @@ abstract class AbstractElsterWizardPage extends WizardPage {
 	 */
 	protected Binding createBinding(Text text, String property) {
 		return bindingContext.bindValue(
-				SWTObservables.observeText(text), 
-				BeansObservables.observeValue(getDTO(), property));
+				WidgetProperties.text(SWT.Modify).observe(text),
+				BeanProperties.value(property).observe(getDTO()));
 	}
 	
 	/**
@@ -110,6 +111,6 @@ abstract class AbstractElsterWizardPage extends WizardPage {
 	protected Binding createBinding(StructuredViewer viewer, String property) {
 		return bindingContext.bindValue(
 				ViewersObservables.observeSingleSelection(viewer), 
-				BeansObservables.observeValue(getDTO(), property));
+				BeanProperties.value(property).observe(getDTO()));
 	}
 }

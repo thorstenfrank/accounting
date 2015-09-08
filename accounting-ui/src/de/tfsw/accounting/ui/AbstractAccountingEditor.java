@@ -21,9 +21,9 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -259,8 +259,8 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	protected Binding createBindings(Text text, Object modelObject, String propertyName) {
 		text.addFocusListener(this);
 		text.addKeyListener(this);
-		IObservableValue widgetObservable = SWTObservables.observeText(text, SWT.Modify);
-		IObservableValue pojoObservable = PojoObservables.observeValue(modelObject, propertyName);
+		IObservableValue widgetObservable = WidgetProperties.text(SWT.Modify).observe(text);
+		IObservableValue pojoObservable = PojoProperties.value(propertyName).observe(modelObject);
 		return bindingContext.bindValue(widgetObservable, pojoObservable);
 	}
 	
@@ -275,8 +275,8 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	protected void createBindings(Text text, Object modelObject, String propertyName, UpdateValueStrategy toModel, 
 			UpdateValueStrategy fromModel) {
 		
-		IObservableValue widgetObservable = SWTObservables.observeText(text, SWT.Modify);
-		IObservableValue pojoObservable = PojoObservables.observeValue(modelObject, propertyName);
+		IObservableValue widgetObservable = WidgetProperties.text(SWT.Modify).observe(text);
+		IObservableValue pojoObservable = PojoProperties.value(propertyName).observe(modelObject);
 		bindingContext.bindValue(widgetObservable, pojoObservable, toModel, fromModel);
 		text.addFocusListener(this);
 		text.addKeyListener(this);
