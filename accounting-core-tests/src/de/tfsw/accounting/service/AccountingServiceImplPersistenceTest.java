@@ -103,11 +103,6 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		// this is only a safetly blanket
-		// service should have been properly shut down when stopping the service
-		AccountingServiceImpl service = (AccountingServiceImpl) AccountingCore.getAccountingService();
-		service.shutDown();
-		
 		File daFile = new File(TEST_DB_FILE);
 		if (daFile.exists()) {
 			LOG.debug("Deleting test DB file");

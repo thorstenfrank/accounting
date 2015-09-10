@@ -15,7 +15,6 @@
  */
 package de.tfsw.accounting;
 
-import java.util.Hashtable;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -25,8 +24,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.db4o.osgi.Db4oService;
-
-import de.tfsw.accounting.service.AccountingServiceImpl;
 
 /**
  * The activator for the <code>accounting-core</code> plugin.
@@ -46,8 +43,6 @@ public class AccountingCore implements BundleActivator {
 	
 	/** Bundle context. */
 	private static BundleContext context;
-
-	private static AccountingServiceImpl accountingServiceImpl;
 	
 	/**
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -61,25 +56,12 @@ public class AccountingCore implements BundleActivator {
 		LOG.debug("User Location: " + Platform.getUserLocation().getURL().toString() );
 		
 		// for debug purposes...
-		//dumpEnvironment();
+		if (System.getProperty("accounting.dump.env") != null) {
+			dumpEnvironment();
+		}
 		
 		AccountingCore.context = bundleContext;
-		
-		ServiceReference<Db4oService> reference = context.getServiceReference(Db4oService.class);
-		if (reference == null) {
-			LOG.error("Cannot find DB4o service!"); //$NON-NLS-1$
-			// FIXME the bundle cannot properly start without the persistence service, so don't swallow this silently!
-		} else {
-			Db4oService service = context.getService(reference);
-			
-			accountingServiceImpl = new AccountingServiceImpl(service);
-						
-			LOG.info("Now registering new AccountingService implementation for DB4o service");
-			context.registerService(
-					AccountingService.class.getName(), 
-					accountingServiceImpl, 
-					new Hashtable<String, String>());
-		}
+		makeSureDb4oGetsStarted();
 	}
 
 	/**
@@ -87,12 +69,30 @@ public class AccountingCore implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("STOP CORE: " + bundleContext.getBundle().getSymbolicName()); //$NON-NLS-1$
-		if (accountingServiceImpl != null) {
-			accountingServiceImpl.shutDown();
-		}
 		AccountingCore.context = null;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static AccountingService getAccountingService() {
+		ServiceReference<AccountingService> ref = context.getServiceReference(AccountingService.class);
+		return context.getService(ref);
+	}
+	
+	/**
+	 * This needs to be done in order for the Db4o plugin to be started, otherwise the service never gets
+	 * registered.
+	 */
+	private void makeSureDb4oGetsStarted() {
+		ServiceReference<Db4oService> reference = context.getServiceReference(Db4oService.class);
+		if (reference == null) {
+			LOG.error("Cannot find DB4o service reference!"); //$NON-NLS-1$
+			throw new AccountingException("Cannot find Db4oService, cannot start AccountingCore!");
+		}
+	}
+	
 	/**
 	 * Simple blurts out all system properties.
 	 */
@@ -103,13 +103,5 @@ public class AccountingCore implements BundleActivator {
 			sb.append(key).append("=").append(sysProps.get(key)).append("\n");
 		}
 		LOG.debug(sb.toString());
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static AccountingService getAccountingService() {
-		return accountingServiceImpl;
 	}
 }

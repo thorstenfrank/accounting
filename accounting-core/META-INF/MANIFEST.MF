@@ -17,10 +17,14 @@ Export-Package: de.tfsw.accounting,
  org.apache.commons.logging,
  org.apache.log4j
 Require-Bundle: org.eclipse.core.runtime,
- db4o_osgi;bundle-version="8.0.249"
+ db4o_osgi;bundle-version="8.0.249",
+ org.eclipse.equinox.ds;bundle-version="1.4.300",
+ org.eclipse.equinox.util;bundle-version="1.0.500",
+ org.eclipse.osgi.services;bundle-version="3.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/log4j-1.2.13.jar,
  lib/commons-beanutils-1.8.3.jar,
  lib/commons-logging-1.1.jar,
  .
+Service-Component: OSGI-INF/accountingServiceComponent.xml

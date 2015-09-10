@@ -78,6 +78,9 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	private static final DummyObjectSet<Invoice> DUMMY_INVOICES = new DummyObjectSet<Invoice>();
 	
+	/** */
+	private Db4oService db4oServiceMock;
+	
 	/** DB4o mock. */
 	private ObjectContainer ocMock;
 	
@@ -92,9 +95,9 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		Db4oService db4oServiceMock = createMock(Db4oService.class);
+		db4oServiceMock = createMock(Db4oService.class);
 		ocMock = createMock(ObjectContainer.class);
-		serviceUnderTest = new AccountingServiceImpl(db4oServiceMock);
+		serviceUnderTest = new AccountingServiceImpl();
 		
 		// init mock behavior
 		Configuration configurationMock = createMock(Configuration.class);
@@ -155,6 +158,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		expect(ocMock.query(Invoice.class)).andReturn(DUMMY_INVOICES);
 		
 		replay(initMocks);
+		
+		serviceUnderTest.bindDb4oService(db4oServiceMock);
 	}
 
 	/**
@@ -210,14 +215,14 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		replay(ocMock);
 		
 		try {
+			// unknown instance, shouldn't have any effect
+			serviceUnderTest.unbindDb4oService(null);
+			
 			serviceUnderTest.init(getTestContext());
-			serviceUnderTest.shutDown();
+			serviceUnderTest.unbindDb4oService(db4oServiceMock);
 		} catch (AccountingException e) {
 			fail("Unexpected exception during shutdown");
 		}
-		
-		// subsequent calls to shutDown() shouldn't do anything
-		serviceUnderTest.shutDown();
 	}
 	
 	/**

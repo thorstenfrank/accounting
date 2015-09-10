@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2011, 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ import de.tfsw.accounting.util.FormatUtil;
 import de.tfsw.accounting.util.TimeFrame;
 
 /**
- * Implementation of the {@link AccountingService} that used DB4o for
+ * Implementation of the {@link AccountingService} that uses DB4o for
  * persistence.
  * 
  * @author thorsten frank
@@ -106,15 +106,44 @@ public class AccountingServiceImpl implements AccountingService {
 	private ModelMetaInformationImpl modelMetaInformation;
 	
 	/**
-	 * Creates a new instance of this service implementation.
 	 * 
-	 * @param db4oService
 	 */
-	public AccountingServiceImpl(Db4oService db4oService) {
-		this.db4oService = db4oService;
+	public AccountingServiceImpl() {
+		LOG.info("AccountingServiceImpl created"); //$NON-NLS-1$
 		this.initialised = false;
 	}
-
+	
+	/**
+	 * @param db4oService the db4oService to set
+	 */
+	protected synchronized void bindDb4oService(Db4oService db4oService) {
+		if (db4oService != null) {
+			
+			
+			if (this.db4oService != null) {
+				LOG.warn("Db4oService is being replaced!"); //$NON-NLS-1$
+			} else {
+				LOG.info("Db4o service is being bound"); //$NON-NLS-1$
+			}
+			
+			this.db4oService = db4oService;
+			this.initialised = false;
+		}
+	}
+	
+	/**
+	 * @return the db4oService
+	 */
+	protected synchronized void unbindDb4oService(Db4oService db4oService) {
+		LOG.info("Db4o service is being unbound");
+		if (this.db4oService == db4oService) {
+			shutDown();
+			this.db4oService = null;
+		} else {
+			LOG.warn("Unkonwn Db4o service instance, will ignore unbind");
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -266,8 +295,8 @@ public class AccountingServiceImpl implements AccountingService {
 	/**
 	 * Properly shuts down the service.
 	 */
-	public void shutDown() {
-		LOG.info("shutDown"); //$NON-NLS-1$
+	private void shutDown() {
+		LOG.info("shutting down db4o"); //$NON-NLS-1$		
 
 		if (!initialised) {
 			LOG.info("Service not initialised, nothing to do here!"); //$NON-NLS-1$
@@ -1321,37 +1350,6 @@ public class AccountingServiceImpl implements AccountingService {
 			LOG.error("Error while deleting entity: " + entity, e); //$NON-NLS-1$
 			objectContainer.rollback();			
 			throw e;
-		}
-	}
-	
-	/**
-	 * 
-	 * @param entities
-	 */
-	private void doDeleteEntities(Collection<? extends AbstractBaseEntity> entities, boolean commit) {
-		try {
-			for (Object entity : entities) {
-				if (entity != null) {
-					objectContainer.delete(entity);
-				}
-			}
-			
-			if (commit) {
-				objectContainer.commit();
-			}
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		} catch (DatabaseReadOnlyException e) {
-			throwDbReadOnlyException(e);
-		} catch(Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (Db4oException e) {
-			LOG.error("Error while trying to store multiple entities", e); //$NON-NLS-1$
-			objectContainer.rollback();
-			if (e instanceof UniqueFieldValueConstraintViolationException) {
-				throw e;
-			}
-			throw new AccountingException("Unknown exception: " + e.toString(), e);
 		}
 	}
 	
