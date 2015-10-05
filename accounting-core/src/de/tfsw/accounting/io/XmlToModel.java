@@ -237,7 +237,7 @@ class XmlToModel {
 				LOG.debug("Converting Expense Template: " + xmlTemplate.getDescription());
 				ExpenseTemplate template = new ExpenseTemplate();
 				template.setActive(xmlTemplate.isActive());
-				template.setCategory(xmlTemplate.getDescription());
+				template.setCategory(xmlTemplate.getCategory());
 				template.setDescription(xmlTemplate.getDescription());
 				template.setExpenseType(ExpenseType.valueOf(xmlTemplate.getExpenseType().name()));
 				template.setFirstApplication(convertDate(xmlTemplate.getFirstApplication()));
