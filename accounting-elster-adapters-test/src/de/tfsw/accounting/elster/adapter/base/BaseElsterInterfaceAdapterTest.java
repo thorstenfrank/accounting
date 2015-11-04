@@ -18,6 +18,7 @@ package de.tfsw.accounting.elster.adapter.base;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 import org.junit.Before;
@@ -33,8 +34,6 @@ import de.tfsw.accounting.elster.ElsterDTO;
  *
  */
 public class BaseElsterInterfaceAdapterTest {
-
-	private YearMonth filingPeriod;
 	
 	/**
 	 * 
@@ -46,7 +45,6 @@ public class BaseElsterInterfaceAdapterTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		filingPeriod = YearMonth.now().minusMonths(1);
 		adapter = new BaseElsterInterfaceAdapter();
 	}
 
@@ -59,16 +57,36 @@ public class BaseElsterInterfaceAdapterTest {
 	}
 
 	/**
+	 * Test method for {@link de.tfsw.accounting.elster.adapter.base.BaseElsterInterfaceAdapter#getVersion()}.
+	 */
+	@Test
+	public void testGetVersion() {
+		assertEquals("201501", adapter.getVersion(new TestDTO(YearMonth.of(2015, 1))));
+		assertEquals("201501", adapter.getVersion(new TestDTO(YearMonth.of(2015, 5))));
+		assertEquals("201501", adapter.getVersion(new TestDTO(YearMonth.of(2015, 12))));
+		assertEquals("201601", adapter.getVersion(new TestDTO(YearMonth.of(2016, 1))));
+		assertEquals("201601", adapter.getVersion(new TestDTO(YearMonth.of(2016, 5))));
+	}
+	
+	/**
 	 * Test method for {@link de.tfsw.accounting.elster.adapter.base.BaseElsterInterfaceAdapter#mapToInterfaceModel(de.tfsw.accounting.elster.ElsterDTO)}.
 	 */
 	@Test
 	public void testMapToInterfaceModel() {
-		TestDTO dto = new TestDTO();
+		doTestMapping(new TestDTO(YearMonth.of(2015, 5)));
+		doTestMapping(new TestDTO(YearMonth.of(2015, 12)));
+		doTestMapping(new TestDTO(YearMonth.of(2016, 7)));
+	}
+	
+	/**
+	 * 
+	 * @param dto
+	 */
+	private void doTestMapping(TestDTO dto) {
 		UstaAnmeldungssteuernCType usta = adapter.mapToInterfaceModel(dto);
 		assertNotNull(usta);
 		assertEquals(dto.getCreationDate(), usta.getErstellungsdatum());
 		assertEquals("UStVA", usta.getArt());
-		assertEquals("201501", usta.getVersion());
 		assertNull(usta.getDatenLieferant());
 		assertNotNull(usta.getSteuerfall());
 		
@@ -181,14 +199,6 @@ public class BaseElsterInterfaceAdapterTest {
 	}
 	
 	/**
-	 * Test method for {@link de.tfsw.accounting.elster.adapter.base.BaseElsterInterfaceAdapter#getVersion()}.
-	 */
-	@Test
-	public void testGetVersion() {
-		assertEquals("201501", adapter.getVersion());
-	}
-
-	/**
 	 * 
 	 * @author Thorsten Frank
 	 *
@@ -196,9 +206,12 @@ public class BaseElsterInterfaceAdapterTest {
 	@SuppressWarnings("serial")
 	private class TestDTO extends ElsterDTO {
 
-		private TestDTO() {
+		private YearMonth filingPeriod;
+		
+		private TestDTO(YearMonth filingPeriod) {
 			super();
-			setCreationDate("20150302");
+			this.filingPeriod = filingPeriod;
+			setCreationDateBasedOnFilingPeriod();
 			setCompanyCity("JUnitCity");
 			setCompanyCountry("Deutschland");
 			setCompanyEmail("me@myself.com");
@@ -212,8 +225,17 @@ public class BaseElsterInterfaceAdapterTest {
 			setRevenue19(new BigDecimal("1000"));
 			setRevenue19tax(new BigDecimal("190"));
 			setTaxSum(new BigDecimal("66.55"));
-			setTimeFrameMonth("03");
-			setTimeFrameYear("2015");
+			setTimeFrameMonth(String.format("%02d", getFilingPeriod().getMonthValue()));
+			setTimeFrameYear(String.format("%04d", getFilingPeriod().getYear()));
+		}
+		
+		/**
+		 * Sets this DTO's creation date as the tenth of the month after the filing period.
+		 */
+		private void setCreationDateBasedOnFilingPeriod() {
+			LocalDate creation = LocalDate.of(filingPeriod.getYear(), filingPeriod.getMonth(), 10).plusMonths(1);
+			setCreationDate(String.format("%04d%02d%02d", 
+					creation.getYear(), creation.getMonthValue(), creation.getDayOfMonth()));
 		}
 		
 		/**
@@ -231,7 +253,5 @@ public class BaseElsterInterfaceAdapterTest {
 		protected String generateTaxNumber() {
 			return "JUnitTaxNumberGenerated";
 		}
-		
-	}
-	
+	}	
 }
