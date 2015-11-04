@@ -25,14 +25,15 @@ import de.tfsw.accounting.elster.ElsterInterfaceAdapter;
  * Base implementation of the {@link ElsterInterfaceAdapter} interface valid from January 2015 onwards.
  * 
  * <p>
- * Newer implementations may subclass - if they have no structural changes, all that is needed is to override 
- * {@link #getVersion()}.
+ * As long as the ELSTER XML interface remains structurally stable, this adapter will be able to create valid messages.
  * </p>
  * 
  * @author Thorsten Frank
  */
 public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAnmeldungssteuernCType> {
 
+	private static final String VERSION_FORMAT = "%04d01";
+	
 	/**
 	 * 
 	 */
@@ -41,21 +42,44 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 	/**
 	 * 
 	 */
-	private static final String VERSION = "201501"; //$NON-NLS-1$
-	
-	/**
-	 * 
-	 */
 	private static final String TYPE = "UStVA"; //$NON-NLS-1$
 	
 	/**
+	 * This base adapter is valid starting January 2015.
+	 * 
+	 * @return <code>YearMonth.of(2015, 1)</code>
+	 * 
 	 * @see de.tfsw.accounting.elster.ElsterInterfaceAdapter#validFrom()
 	 */
 	@Override
 	public YearMonth validFrom() {
 		return VALID_FROM;
 	}
-
+	
+	/**
+	 * Returns the version string of this interface adapter, defined in the XML schema as
+	 * 
+	 * <pre>
+	 * &lt;complexType name="usta_AnmeldungssteuernCType">
+	 *     ...
+	 *     &lt;attribute name="version" use="required">
+	 *     ...
+	 * </pre> 
+	 * 
+	 * <p>
+	 * This method dynamically builds the version string using the format <pre>yyyymm</pre>. While the format is not
+	 * officially documented as such, all previous versions of the ELSTER interface have used it, so until that
+	 * changes (or the XSD changes structurally), this adapter will work just fine.
+	 * </p>
+	 * 
+	 * @param dto data source
+	 * 
+	 * @return the interface version this adapter is currently working under
+	 */	
+	protected String getVersion(ElsterDTO dto) {
+		return String.format(VERSION_FORMAT, dto.getFilingPeriod().getYear());
+	}
+	
 	/**
 	 * @see de.tfsw.accounting.elster.ElsterInterfaceAdapter#mapToInterfaceModel(de.tfsw.accounting.elster.ElsterDTO)
 	 */
@@ -63,7 +87,7 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 	public UstaAnmeldungssteuernCType mapToInterfaceModel(ElsterDTO data) {
 		UstaAnmeldungssteuernCType anmeldungssteuern = new UstaAnmeldungssteuernCType();
 		anmeldungssteuern.setArt(TYPE);
-		anmeldungssteuern.setVersion(getVersion());
+		anmeldungssteuern.setVersion(getVersion(data));
 		anmeldungssteuern.setErstellungsdatum(data.getCreationDate());
 		
 		UstaSteuerfallCType steuerfall = new UstaSteuerfallCType();
@@ -109,26 +133,5 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 		steuerfall.setUmsatzsteuervoranmeldung(ustva);
 		
 		return anmeldungssteuern;
-	}
-
-	/**
-	 * Returns the version string of this interface adapter, defined in the XML schema as
-	 * 
-	 * <pre>
-	 * &lt;complexType name="usta_AnmeldungssteuernCType">
-	 *     ...
-	 *     &lt;attribute name="version" use="required">
-	 *     ...
-	 * </pre> 
-	 * 
-	 * <p>
-	 * Normally, this is the only relevant change from one xsd version to the next, so newer versions can ideally 
-	 * subclass and override this method and be done. 
-	 * </p>
-	 * 
-	 * @return
-	 */
-	protected String getVersion() {
-		return VERSION;
 	}
 }
