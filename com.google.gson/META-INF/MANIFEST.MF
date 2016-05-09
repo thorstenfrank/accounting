@@ -20,3 +20,4 @@ Built-By: jleitch
 Bundle-Description: Google Gson library
 Bundle-ContactAddress: http://code.google.com/p/google-gson/
 Archiver-Version: Plexus Archiver
+Bundle-ActivationPolicy: lazy
