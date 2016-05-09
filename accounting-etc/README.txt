@@ -36,6 +36,21 @@ Open icon_256.xcf in Gimp - select "File/Export As..." and choose "../accounting
 # MacOs X
 ##########
 
-TODO
+1) Create a folder named "accounting.iconset"
+2) Export the following images as PNG into the folder:
+    icon_16x16.png
+    icon_16x16@2x.png (Resolution 32x32)
+    icon_32x32.png
+    icon_32x32@2x.png (64x64)
+    icon_128x128.png
+    icon_128x128@2x.png (256x256)
+    icon_256x256.png
+    icon_256x256@2x.png (512x512)
+    icon_512x512.png
+    icon_512x512@2x.png (1024x1024)
+3) Open a terminal, run "iconutil -c icns -o accounting.icns <iconset filename>" where <iconset_filename> is the folder you exported the PNGs into
+4) Copy the resulting file accounting.icns to accounting-products/icons
+
+Further info:
 http://andrius.velykis.lt/2012/10/creating-icons-for-eclipse-rcp-launcher/
 https://developer.apple.com/library/mac/documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/Optimizing/Optimizing.html#//apple_ref/doc/uid/TP40012302-CH7-SW3
