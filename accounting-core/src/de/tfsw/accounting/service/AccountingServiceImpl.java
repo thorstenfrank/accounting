@@ -48,6 +48,8 @@ import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
 import com.db4o.query.Query;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingContextFactory;
@@ -96,6 +98,8 @@ public class AccountingServiceImpl implements AccountingService {
 	
 	private static final String INVOICE_SEQUENCER_SEMAPHORE = "INVOICE_SEQUENCER_SEMAPHORE";
 	private static final int SEMAPHORE_WAIT_TIMEOUT = 1000;
+
+	private Gson gson;
 	
 	private boolean initialised;
 
@@ -110,6 +114,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	public AccountingServiceImpl() {
 		LOG.info("AccountingServiceImpl created"); //$NON-NLS-1$
+		this.gson = new GsonBuilder().create();
 		this.initialised = false;
 	}
 	
@@ -322,9 +327,6 @@ public class AccountingServiceImpl implements AccountingService {
 	public User saveCurrentUser(User user) {
 		LOG.debug("saveCurrentUser"); //$NON-NLS-1$
 		doStoreEntity(user);
-		if (user != null) {
-			BUSINESS_LOG.info("Saved user " + user.getName()); //$NON-NLS-1$
-		}
 		return user;
 	}
 
@@ -384,7 +386,6 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		try {
 			doStoreEntity(client);
-			BUSINESS_LOG.info("Saved client: " + client.getName()); //$NON-NLS-1$
 		} catch (UniqueFieldValueConstraintViolationException e) {
 			if (e.getMessage().endsWith(Client.FIELD_NAME)) {
 				LOG.error("A client with this name already exists: " + client.getName()); //$NON-NLS-1$
@@ -411,7 +412,6 @@ public class AccountingServiceImpl implements AccountingService {
 		// TODO make sure a client can only be deleted when there are no invoices left...
 		LOG.info(String.format("Deleting client [%s]", client.getName()));
 		doDeleteEntity(client);
-		BUSINESS_LOG.info("Deleted client: " + client.getName()); //$NON-NLS-1$
 	}
 
 	/**
@@ -474,6 +474,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 * 
 	 */
 	private void updateInvoiceSequencer(String invoiceNumber) {
+		// FIXME make this flexible
 		final int year = new Integer(invoiceNumber.substring(2, 6));
 		final int number = new Integer(invoiceNumber.substring(7));
 		
@@ -488,7 +489,6 @@ public class AccountingServiceImpl implements AccountingService {
 				sequencer.setCurrentSequenceNumber(number);
 				LOG.info("Updating sequencer: "+sequencer.toString()); //$NON-NLS-1$
 				doStoreEntity(sequencer);
-				BUSINESS_LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
 			}			
 		} finally {
 			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
@@ -516,8 +516,6 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		// check if an invoice with that number already exists
 		validateInvoiceNumberNotYetUsed(invoiceNumber);
-		
-		BUSINESS_LOG.info("Creating new invoice (not yet persistent!): " + invoiceNumber); //$NON-NLS-1$
 		
 		// create invoice
 		Invoice invoice = new Invoice();
@@ -571,7 +569,7 @@ public class AccountingServiceImpl implements AccountingService {
 			throw new AccountingException(Messages.AccountingService_errorUnknownUser);
 		}
 		
-		InvoiceState state = invoice.getState();
+		final InvoiceState state = invoice.getState();
 		if (!InvoiceState.UNSAVED.equals(state) && !InvoiceState.CREATED.equals(state)) {
 			LOG.error("Cannot save an invoice that is beyond state CREATED. Was: " + state); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorCannotSaveInvoice);
@@ -585,8 +583,6 @@ public class AccountingServiceImpl implements AccountingService {
 		}
 
 		doStoreEntity(invoice);
-
-		BUSINESS_LOG.info("Saved invoice: " + invoice.getNumber()); //$NON-NLS-1$
 		
 		// update model meta info if necessary
 		if (invoice.getInvoiceDate() != null && modelMetaInformation.getOldestKnownInvoiceDate().isAfter(invoice.getInvoiceDate())) {
@@ -636,8 +632,6 @@ public class AccountingServiceImpl implements AccountingService {
 
 		invoice.setSentDate(sentDate);
 		doStoreEntity(invoice);
-
-		BUSINESS_LOG.info("Invoice has been sent: " + invoice.getNumber()); //$NON-NLS-1$
 		
 		return invoice;
 	}
@@ -665,8 +659,6 @@ public class AccountingServiceImpl implements AccountingService {
     	invoice.setPaymentDate(paymentDate);
     	doStoreEntity(invoice);
     	
-    	BUSINESS_LOG.info("Invoice has been paid: " + invoice.getNumber()); //$NON-NLS-1$
-    	
 	    return invoice;
     }
 
@@ -690,8 +682,6 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	invoice.setCancelledDate(LocalDate.now());
     	doStoreEntity(invoice);
-    	
-    	BUSINESS_LOG.info("Invoice was cancelled: " + invoice.getNumber()); //$NON-NLS-1$
     	
 	    return invoice;
     }
@@ -727,8 +717,6 @@ public class AccountingServiceImpl implements AccountingService {
 		}
 
 		doDeleteEntity(invoice);
-		
-		BUSINESS_LOG.info("Invoice was deleted: " + invoice.getNumber()); //$NON-NLS-1$
 	}
 
 	/**
@@ -766,7 +754,6 @@ public class AccountingServiceImpl implements AccountingService {
      */
     @Override
     public Invoice copyInvoice(Invoice invoice, String invoiceNumber) {
-    	BUSINESS_LOG.info(String.format("Copying invoice [%s] to new invoice [%s]", invoice.getNumber(), invoiceNumber)); //$NON-NLS-1$
     	Invoice copy = createNewInvoice(invoiceNumber, invoice.getClient());
     	
     	if (invoice.getPaymentTerms() != null) {
@@ -926,7 +913,6 @@ public class AccountingServiceImpl implements AccountingService {
     @Override
     public Expense saveExpense(Expense expense) {
     	doStoreEntity(expense);
-    	BUSINESS_LOG.info(String.format("Saved expense [%s]", expense.getDescription())); //$NON-NLS-1$
     	checkAndUpdateMetaInfo(expense);
 	    return expense;
     }
@@ -939,7 +925,6 @@ public class AccountingServiceImpl implements AccountingService {
     public Collection<Expense> saveExpenses(Collection<Expense> expenses) {
     	doStoreEntities(expenses);
     	for (Expense expense : expenses) {
-    		BUSINESS_LOG.info(String.format("Saved expense [%s]", expense.getDescription())); //$NON-NLS-1$
     		checkAndUpdateMetaInfo(expense);
     	}
 	    return expenses;
@@ -1011,7 +996,6 @@ public class AccountingServiceImpl implements AccountingService {
 	@Override
 	public void deleteExpense(Expense expense) {
 		doDeleteEntity(expense);
-		BUSINESS_LOG.info(String.format("Deleted expense [%s]", expense.getDescription())); //$NON-NLS-1$
 	}
 	
 	/**
@@ -1077,8 +1061,7 @@ public class AccountingServiceImpl implements AccountingService {
     		throw new AccountingException("Cannot import into an existing DB!");
     	}
     	
-    	BUSINESS_LOG.info(String.format("Importing data from XML file [%s] to DB file [%s]", sourceXmlFile, dbFileLocation)); //$NON-NLS-1$
-    	LOG.info("Importing from " + sourceXmlFile); //$NON-NLS-1$
+    	LOG.info("Importing data from XML file:" + sourceXmlFile); //$NON-NLS-1$
     	XmlModelDTO importResult = AccountingXmlImportExport.importModelFromXml(sourceXmlFile);
     	
     	final String userName = importResult.getUser().getName();
@@ -1090,17 +1073,12 @@ public class AccountingServiceImpl implements AccountingService {
     	
     	// save all entities imported from XML...
     	LOG.info("Now saving imported user to DB file");
-    	objectContainer.store(importResult.getUser());
-    	
-    	BUSINESS_LOG.info("Saved imported user " + importResult.getUser().getName()); //$NON-NLS-1$
+    	doStoreEntity(importResult.getUser());
     	
     	final Set<Client> importedClients = importResult.getClients();
     	if (importedClients != null && !importedClients.isEmpty()) {
     		LOG.info("Now saving imported clients: " + importedClients.size()); //$NON-NLS-1$
-    		for (Client client : importedClients) {
-    			objectContainer.store(client);
-    			BUSINESS_LOG.info("Saved imported client " + client.getName());
-    		}
+    		doStoreEntities(importedClients);
     	} else {
     		LOG.info("No clients to import"); //$NON-NLS-1$
     	}
@@ -1108,10 +1086,7 @@ public class AccountingServiceImpl implements AccountingService {
     	final Set<Invoice> importedInvoices = importResult.getInvoices();
     	if (importedInvoices != null && !importedInvoices.isEmpty()) {
     		LOG.info("Now saving imported Invoices to DB file: " + importedInvoices.size()); //$NON-NLS-1$
-    		for (Invoice invoice : importedInvoices) {
-    			objectContainer.store(invoice);
-    			BUSINESS_LOG.info("Saved imported invoice: " + invoice.getNumber()); //$NON-NLS-1$
-    		}
+    		doStoreEntities(importedInvoices);
     	} else {
     		LOG.info("No invoices to import"); //$NON-NLS-1$
     	}
@@ -1119,10 +1094,7 @@ public class AccountingServiceImpl implements AccountingService {
     	final Set<Expense> importedExpenses = importResult.getExpenses();
     	if (importedExpenses != null && !importedExpenses.isEmpty()) {
     		LOG.info("Now saving imported Expenses to DB file: " + importedExpenses.size()); //$NON-NLS-1$
-    		for (Expense expense : importedExpenses) {
-    			objectContainer.store(expense);
-    			BUSINESS_LOG.info("Saved imported expense " + expense.getDescription()); //$NON-NLS-1$
-    		}
+    		doStoreEntities(importedExpenses);
     	} else {
     		LOG.info("No expenses to import"); //$NON-NLS-1$
     	}
@@ -1130,9 +1102,7 @@ public class AccountingServiceImpl implements AccountingService {
     	final Set<ExpenseTemplate> importedTemplates = importResult.getExpenseTemplates();
     	if (importedTemplates != null && !importedTemplates.isEmpty()) {
     		LOG.info("Now saving imported ExpenseTEmplates: " + importedTemplates.size()); //$NON-NLS-1$
-    		for (ExpenseTemplate template : importedTemplates) {
-    			objectContainer.store(template);
-    		}
+    		doStoreEntities(importedTemplates);
     	}
     	
     	objectContainer.commit();
@@ -1267,12 +1237,21 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	/**
+	 * Shortcut for <code>doStoreEntity(entity, true)</code>
+	 * @param entity
+	 */
+	private void doStoreEntity(final AbstractBaseEntity entity) {
+		doStoreEntity(entity, true);
+	}
+	
+	/**
 	 * 
 	 * @param entity
+	 * @param commit
 	 * @throws AccountingException
 	 * @throws Db4oException
 	 */
-	private void doStoreEntity(Object entity) {
+	private void doStoreEntity(final AbstractBaseEntity entity, final boolean commit) {
 		if (entity == null) {
 			LOG.warn("Call to doStoreEntity with param [null]!"); //$NON-NLS-1$
 			return;
@@ -1280,7 +1259,10 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		try {
 			objectContainer.store(entity);
-			objectContainer.commit();
+			if (commit) {
+				objectContainer.commit();	
+			}
+			businessLog("SAVE", entity);
 		} catch (DatabaseClosedException e) {
 			throwDbClosedException(e);
 		} catch (DatabaseReadOnlyException e) {
@@ -1303,10 +1285,8 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	private void doStoreEntities(Collection<? extends AbstractBaseEntity> entities) {
 		try {
-			for (Object entity : entities) {
-				if (entity != null) {
-					objectContainer.store(entity);
-				}
+			for (final AbstractBaseEntity entity : entities) {
+				doStoreEntity(entity, false);
 			}
 			objectContainer.commit();
 		} catch (DatabaseClosedException e) {
@@ -1331,7 +1311,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 * @throws AccountingException
 	 * @throws Db4oException
 	 */
-	private void doDeleteEntity(Object entity) {
+	private void doDeleteEntity(AbstractBaseEntity entity) {
 		if (entity == null) {
 			LOG.warn("Call to doDeleteEntity with param [null]!"); //$NON-NLS-1$
 			return;
@@ -1340,6 +1320,7 @@ public class AccountingServiceImpl implements AccountingService {
 		try {
 			objectContainer.delete(entity);
 			objectContainer.commit();
+			businessLog("DELETE", entity);
 		} catch (Db4oIOException e) {
 			throwDb4oIoException(e);
 		} catch (DatabaseClosedException e) {
@@ -1351,6 +1332,18 @@ public class AccountingServiceImpl implements AccountingService {
 			objectContainer.rollback();			
 			throw e;
 		}
+	}
+	
+	/**
+	 * 
+	 * @param operation
+	 * @param entity
+	 */
+	private void businessLog(final String operation, final AbstractBaseEntity entity) {
+		final StringBuilder sb = new StringBuilder(entity.getClass().getName());
+		sb.append(" ::: ").append(operation).append(" ::: ");
+		sb.append(gson.toJson(entity));
+		BUSINESS_LOG.info(sb.toString());
 	}
 	
 	/**

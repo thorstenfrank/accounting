@@ -27,6 +27,7 @@
 		<module>../accounting-test-harness</module>
 		<module>../accounting-ui</module>
 		<module>../db4o_osgi</module>
+		<module>../com.google.gson</module>
 	</modules>
 
 	<repositories>
