@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="%product.name" uid="accounting" id="de.tfsw.accounting.ui.product" application="de.tfsw.accounting.ui.application" version="1.4.1" useFeatures="true" includeLaunchers="true">
+<product name="%product.name" uid="accounting" id="de.tfsw.accounting.ui.product" application="de.tfsw.accounting.ui.application" version="1.5" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="aboutimage.png"/>
@@ -27,7 +27,7 @@
       startupForegroundColor="000000" />
    <launcher name="accounting">
       <linux icon="icons/icon.xpm"/>
-      <macosx icon="/de.tfsw.accounting.product/icons/accounting.icns"/>
+      <macosx icon="icons/accounting.icns"/>
       <solaris/>
       <win useIco="true">
          <ico path="icons/accounting.ico"/>
