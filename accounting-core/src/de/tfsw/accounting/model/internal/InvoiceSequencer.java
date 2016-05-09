@@ -15,13 +15,13 @@
  */
 package de.tfsw.accounting.model.internal;
 
-import java.io.Serializable;
+import de.tfsw.accounting.model.AbstractBaseEntity;
 
 /**
  * @author thorsten
  *
  */
-public class InvoiceSequencer implements Serializable {
+public class InvoiceSequencer extends AbstractBaseEntity {
 
 	/**
 	 * 
