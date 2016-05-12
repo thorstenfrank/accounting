@@ -22,7 +22,8 @@ import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.Constants;
 
@@ -34,7 +35,7 @@ import de.tfsw.accounting.Constants;
 public class TimeFrame {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(TimeFrame.class);
+	private static final Logger LOG = LogManager.getLogger(TimeFrame.class);
 	
 	/**
 	 * Start (inclusive).

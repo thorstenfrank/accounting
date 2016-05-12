@@ -17,7 +17,8 @@ package de.tfsw.accounting;
 
 import java.lang.reflect.Field;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -28,7 +29,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-	private static final Logger LOG = Logger.getLogger(Messages.class);
+	private static final Logger LOG = LogManager.getLogger(Messages.class);
 	
 	private static final String BUNDLE_NAME = "de.tfsw.accounting.messages"; //$NON-NLS-1$
 	

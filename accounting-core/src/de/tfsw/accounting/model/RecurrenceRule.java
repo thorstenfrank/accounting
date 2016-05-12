@@ -17,7 +17,8 @@ package de.tfsw.accounting.model;
 
 import java.time.LocalDate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Partial RFC 2445 RRULE implementation that supports date-based values, i.e. no time-based ones. 
@@ -30,7 +31,7 @@ public class RecurrenceRule extends AbstractBaseEntity {
 	/**	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = Logger.getLogger(RecurrenceRule.class);
+	private static final Logger LOG = LogManager.getLogger(RecurrenceRule.class);
 	
 	/** Property name for {@link #getUntil()}. */
 	public static final String FIELD_UNTIL = "until";

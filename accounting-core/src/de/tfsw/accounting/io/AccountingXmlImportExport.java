@@ -21,7 +21,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.Messages;
@@ -33,7 +34,7 @@ import de.tfsw.accounting.io.xml.XmlUser;
  */
 public class AccountingXmlImportExport {
 
-	private static final Logger LOG = Logger.getLogger(AccountingXmlImportExport.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingXmlImportExport.class);
 	
 	/**
 	 * 

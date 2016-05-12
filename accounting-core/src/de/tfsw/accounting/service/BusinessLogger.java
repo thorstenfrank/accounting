@@ -18,7 +18,8 @@ package de.tfsw.accounting.service;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,7 +45,7 @@ class BusinessLogger {
 	private static final String SEPARATOR = " :|: ";
 	
 	/** */
-	private static final Logger BUSINESS_LOG = Logger.getLogger(BusinessLogger.class); //$NON-NLS-1$
+	private static final Logger BUSINESS_LOG = LogManager.getLogger(BusinessLogger.class); //$NON-NLS-1$
 
 	/** */
 	private static final Gson GSON = new GsonBuilder()

@@ -17,7 +17,8 @@ package de.tfsw.accounting;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -39,7 +40,7 @@ public class AccountingCore implements BundleActivator {
 	public static final String PLUGIN_ID = "de.tfsw.accounting.core"; //$NON-NLS-1$
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(AccountingCore.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingCore.class);
 	
 	/** Bundle context. */
 	private static BundleContext context;

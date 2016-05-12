@@ -29,7 +29,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
@@ -91,7 +92,7 @@ import de.tfsw.accounting.util.TimeFrame;
 public class AccountingServiceImpl implements AccountingService {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(AccountingServiceImpl.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingServiceImpl.class);
 	
 	private static final String INVOICE_SEQUENCER_SEMAPHORE = "INVOICE_SEQUENCER_SEMAPHORE";
 	private static final int SEMAPHORE_WAIT_TIMEOUT = 1000;

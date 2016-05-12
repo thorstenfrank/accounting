@@ -29,7 +29,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -60,7 +61,7 @@ import de.tfsw.accounting.util.TimeFrame;
  */
 public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 
-	private static final Logger LOG = Logger.getLogger(AccountingServiceImplPersistenceTest.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingServiceImplPersistenceTest.class);
 	
 	private static final Invoice INVOICE1 = new Invoice();
 		

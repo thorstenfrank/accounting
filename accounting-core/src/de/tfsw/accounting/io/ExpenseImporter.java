@@ -27,7 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.Constants;
@@ -47,7 +48,7 @@ public class ExpenseImporter {
 
 	private static final String NON_DIGITS = "[^\\d]";
 
-	private static final Logger LOG = Logger.getLogger(ExpenseImporter.class);
+	private static final Logger LOG = LogManager.getLogger(ExpenseImporter.class);
 	
 	//private static final String DEFAULT_ENCODING = "ISO-8859-1"; //$NON-NLS-1$
 	

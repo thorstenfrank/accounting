@@ -22,7 +22,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.model.AnnualDepreciation;
 import de.tfsw.accounting.model.Expense;
@@ -41,7 +42,7 @@ class StraightlineDepreciation implements Depreciation {
     /**
      * 
      */
-    private static final Logger LOG = Logger.getLogger(StraightlineDepreciation.class);
+    private static final Logger LOG = LogManager.getLogger(StraightlineDepreciation.class);
     
     /**
      * 

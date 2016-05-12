@@ -27,7 +27,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.Constants;
@@ -43,7 +44,7 @@ public final class FormatUtil {
 	/**
 	 * 
 	 */
-    private static final Logger LOG = Logger.getLogger(FormatUtil.class);
+    private static final Logger LOG = LogManager.getLogger(FormatUtil.class);
 
     /**
      * 

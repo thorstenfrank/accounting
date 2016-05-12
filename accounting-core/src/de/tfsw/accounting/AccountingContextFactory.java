@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A factory to create instances of {@link AccountingContext}.
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
 public final class AccountingContextFactory {
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(AccountingContextFactory.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingContextFactory.class);
 	
 	/**
 	 * The default instance of this factory.
