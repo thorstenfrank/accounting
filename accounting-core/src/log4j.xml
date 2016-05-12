@@ -33,17 +33,18 @@
 			<param name="ConversionPattern" value="%d %m%n" />
 		</layout>
 	</appender>
+	
+	<logger name="de.tfsw.accounting.service.BusinessLogger">
+		<level value="info" />
+		<appender-ref ref="business.log" />
+	</logger>
+	
 
 	<logger name="de.tfsw.accounting">
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
 
-	<logger name="business_log">
-		<level value="info" />
-		<appender-ref ref="business.log" />
-	</logger>
-	
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="debug.log" />

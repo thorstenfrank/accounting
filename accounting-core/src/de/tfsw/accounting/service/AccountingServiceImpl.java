@@ -48,8 +48,6 @@ import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
 import com.db4o.query.Query;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingContextFactory;
@@ -80,6 +78,7 @@ import de.tfsw.accounting.model.Revenue;
 import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.model.internal.InvoiceSequencer;
 import de.tfsw.accounting.model.internal.ModelMetaInformationImpl;
+import de.tfsw.accounting.service.BusinessLogger.Operation;
 import de.tfsw.accounting.util.FormatUtil;
 import de.tfsw.accounting.util.TimeFrame;
 
@@ -94,12 +93,8 @@ public class AccountingServiceImpl implements AccountingService {
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(AccountingServiceImpl.class);
 	
-	private static final Logger BUSINESS_LOG = Logger.getLogger("business_log"); //$NON-NLS-1$
-	
 	private static final String INVOICE_SEQUENCER_SEMAPHORE = "INVOICE_SEQUENCER_SEMAPHORE";
 	private static final int SEMAPHORE_WAIT_TIMEOUT = 1000;
-
-	private Gson gson;
 	
 	private boolean initialised;
 
@@ -114,7 +109,6 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	public AccountingServiceImpl() {
 		LOG.info("AccountingServiceImpl created"); //$NON-NLS-1$
-		this.gson = new GsonBuilder().create();
 		this.initialised = false;
 	}
 	
@@ -1262,7 +1256,7 @@ public class AccountingServiceImpl implements AccountingService {
 			if (commit) {
 				objectContainer.commit();	
 			}
-			businessLog("SAVE", entity);
+			BusinessLogger.log(Operation.SAVE, entity);
 		} catch (DatabaseClosedException e) {
 			throwDbClosedException(e);
 		} catch (DatabaseReadOnlyException e) {
@@ -1320,7 +1314,7 @@ public class AccountingServiceImpl implements AccountingService {
 		try {
 			objectContainer.delete(entity);
 			objectContainer.commit();
-			businessLog("DELETE", entity);
+			BusinessLogger.log(Operation.DELETE, entity);
 		} catch (Db4oIOException e) {
 			throwDb4oIoException(e);
 		} catch (DatabaseClosedException e) {
@@ -1332,18 +1326,6 @@ public class AccountingServiceImpl implements AccountingService {
 			objectContainer.rollback();			
 			throw e;
 		}
-	}
-	
-	/**
-	 * 
-	 * @param operation
-	 * @param entity
-	 */
-	private void businessLog(final String operation, final AbstractBaseEntity entity) {
-		final StringBuilder sb = new StringBuilder(entity.getClass().getName());
-		sb.append(" ::: ").append(operation).append(" ::: ");
-		sb.append(gson.toJson(entity));
-		BUSINESS_LOG.info(sb.toString());
 	}
 	
 	/**
