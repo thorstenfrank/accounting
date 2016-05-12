@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.user;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -30,7 +31,7 @@ import de.tfsw.accounting.ui.Messages;
  */
 public class MultiPageUserEditor extends MultiPageEditorPart {
 
-	private static final Logger LOG = Logger.getLogger(MultiPageUserEditor.class);
+	private static final Logger LOG = LogManager.getLogger(MultiPageUserEditor.class);
 	
 	private UserEditor userEditor;
 	private CVEditor cvEditor;

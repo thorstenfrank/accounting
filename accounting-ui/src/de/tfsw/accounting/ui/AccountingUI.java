@@ -18,7 +18,8 @@ package de.tfsw.accounting.ui;
 import java.io.File;
 import java.lang.reflect.Proxy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -36,7 +37,7 @@ public class AccountingUI extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "de.tfsw.accounting.ui"; //$NON-NLS-1$
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(AccountingUI.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingUI.class);
 		
 	/** The shared instance. */
 	private static AccountingUI plugin;

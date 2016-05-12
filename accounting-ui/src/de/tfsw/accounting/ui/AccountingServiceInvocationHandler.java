@@ -21,7 +21,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.osgi.util.tracker.ServiceTracker;
 
 import de.tfsw.accounting.AccountingContext;
@@ -35,7 +36,7 @@ import de.tfsw.accounting.ModelChanging;
  */
 final class AccountingServiceInvocationHandler implements InvocationHandler {
 
-	private static final Logger LOG = Logger.getLogger(AccountingServiceInvocationHandler.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingServiceInvocationHandler.class);
 	
 	/** */
 	private Set<ModelChangeListener> modelChangeListeners; 

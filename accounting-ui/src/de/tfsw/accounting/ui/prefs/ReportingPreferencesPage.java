@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.prefs;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 
@@ -28,7 +29,7 @@ public class ReportingPreferencesPage extends AbstractAccountingPreferencesPage 
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ReportingPreferencesPage.class);
+	private static final Logger LOG = LogManager.getLogger(ReportingPreferencesPage.class);
 	
 	/**
 	 * 

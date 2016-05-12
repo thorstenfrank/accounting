@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.expense;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -59,7 +60,7 @@ import de.tfsw.accounting.util.FormatUtil;
  */
 public class ExpenseEditor extends AbstractAccountingEditor implements ExpenseEditingHelperClient {
 
-	private static final Logger LOG = Logger.getLogger(ExpenseEditor.class);
+	private static final Logger LOG = LogManager.getLogger(ExpenseEditor.class);
 	
 	// form 
 	private FormToolkit toolkit;

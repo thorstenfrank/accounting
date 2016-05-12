@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui.util;
 
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.Constants;
 
@@ -27,7 +28,7 @@ import de.tfsw.accounting.Constants;
  */
 public class GenericLabelProvider extends StringLabelProvider {
 	
-	private static final Logger LOG = Logger.getLogger(GenericLabelProvider.class);
+	private static final Logger LOG = LogManager.getLogger(GenericLabelProvider.class);
 	
 	private Class<?> targetClass;
 	

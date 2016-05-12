@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.revenue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.ui.AbstractTableSorter;
 
@@ -26,7 +27,7 @@ import de.tfsw.accounting.ui.AbstractTableSorter;
 public class InvoiceTableSorter extends AbstractTableSorter<InvoiceWrapper> {
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(InvoiceTableSorter.class);
+	private static final Logger LOG = LogManager.getLogger(InvoiceTableSorter.class);
 	
 	/**
 	 * 

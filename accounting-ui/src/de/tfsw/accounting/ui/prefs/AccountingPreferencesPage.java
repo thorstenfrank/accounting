@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.prefs;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -33,7 +34,7 @@ public class AccountingPreferencesPage extends AbstractAccountingPreferencesPage
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(AccountingPreferencesPage.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingPreferencesPage.class);
 	
 	/**
 	 * 

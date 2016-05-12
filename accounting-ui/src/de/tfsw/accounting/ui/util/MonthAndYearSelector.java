@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -51,7 +52,7 @@ import de.tfsw.accounting.util.TimeFrameType;
  */
 public class MonthAndYearSelector {
 	
-	private static final Logger LOG = Logger.getLogger(MonthAndYearSelector.class);
+	private static final Logger LOG = LogManager.getLogger(MonthAndYearSelector.class);
 	
 	private static final int SELECTION_WHOLE_YEAR = 0;
 	

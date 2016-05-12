@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
@@ -27,7 +28,7 @@ import de.tfsw.accounting.ui.user.UserEditorInput;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final Logger LOG = Logger.getLogger(ApplicationWorkbenchAdvisor.class);
+	private static final Logger LOG = LogManager.getLogger(ApplicationWorkbenchAdvisor.class);
 	
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         return new ApplicationWorkbenchWindowAdvisor(configurer);

@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.user;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
@@ -31,7 +32,7 @@ import de.tfsw.accounting.ui.reports.ReportGenerationUtil;
  */
 public class ReferencesExportHandler extends AbstractAccountingHandler implements ReportGenerationHandler {
 
-	private static final Logger LOG = Logger.getLogger(ReferencesExportHandler.class);
+	private static final Logger LOG = LogManager.getLogger(ReferencesExportHandler.class);
 	
 	/**
 	 * @see de.tfsw.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)

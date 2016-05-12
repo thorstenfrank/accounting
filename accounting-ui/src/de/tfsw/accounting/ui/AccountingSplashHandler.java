@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui;
 
 import java.io.FileNotFoundException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -57,7 +58,7 @@ import de.tfsw.accounting.ui.setup.SetupWizard;
 public class AccountingSplashHandler extends AbstractSplashHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(AccountingSplashHandler.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingSplashHandler.class);
 		
 	/** Flag to signal init state. */
 	private boolean initialised = false;

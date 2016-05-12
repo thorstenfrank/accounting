@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.invoice;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -32,7 +33,7 @@ import de.tfsw.accounting.ui.Messages;
 public class FindInvoiceHandler extends EditInvoiceHandler {
 
 	/** */
-	private static final Logger LOG = Logger.getLogger(FindInvoiceHandler.class);
+	private static final Logger LOG = LogManager.getLogger(FindInvoiceHandler.class);
 	
 	@Override
 	protected Invoice getInvoiceToEdit(ExecutionEvent event) {

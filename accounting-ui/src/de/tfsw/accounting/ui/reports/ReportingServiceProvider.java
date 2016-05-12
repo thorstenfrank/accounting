@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.reports;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.reporting.ReportingService;
 
@@ -26,7 +27,7 @@ import de.tfsw.accounting.reporting.ReportingService;
  */
 public class ReportingServiceProvider {
 
-	private static final Logger LOG = Logger.getLogger(ReportingServiceProvider.class);
+	private static final Logger LOG = LogManager.getLogger(ReportingServiceProvider.class);
 	
 	private static ReportingServiceProvider instance;
 	

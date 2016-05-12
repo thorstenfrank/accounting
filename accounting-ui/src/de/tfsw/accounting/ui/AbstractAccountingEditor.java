@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui;
 
 import java.util.EventObject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -63,7 +64,7 @@ public abstract class AbstractAccountingEditor extends EditorPart implements Foc
 	public AbstractAccountingEditor() {
 		super();
 		if (LOG == null) {
-			LOG = Logger.getLogger(getClass());
+			LOG = LogManager.getLogger(getClass());
 		}
 		LOG.debug("Creating new editor of type: " + getClass().getName()); //$NON-NLS-1$
 	}

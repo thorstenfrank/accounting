@@ -22,7 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -73,7 +74,7 @@ class UserEditor extends AbstractAccountingEditor {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".UserEditor"; //$NON-NLS-1$
 	
-	private static final Logger LOG = Logger.getLogger(UserEditor.class);
+	private static final Logger LOG = LogManager.getLogger(UserEditor.class);
 	
 	private static final int COLUMN_TAX_RATE_ABBREVIATION = 0;
 	private static final int COLUMN_TAX_RATE_NAME = 1;

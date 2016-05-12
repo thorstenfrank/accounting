@@ -20,7 +20,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -61,8 +62,8 @@ public class InvoiceView extends AbstractTableView implements ModelChangeListene
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceView"; //$NON-NLS-1$
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(InvoiceView.class);
-	private static final Logger SORTER_LOG = Logger.getLogger(InvoiceViewTableSorter.class);
+	private static final Logger LOG = LogManager.getLogger(InvoiceView.class);
+	private static final Logger SORTER_LOG = LogManager.getLogger(InvoiceViewTableSorter.class);
 	
 	/**
 	 * 

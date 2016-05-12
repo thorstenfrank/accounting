@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.invoice;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -40,7 +41,7 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
 public class CopyInvoiceFromSelectionHandler extends AbstractInvoiceHandler implements Constants {
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(CopyInvoiceFromSelectionHandler.class);
+	private static final Logger LOG = LogManager.getLogger(CopyInvoiceFromSelectionHandler.class);
 	
 	private String copyInvoiceNumber;
 	

@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.invoice;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
@@ -31,7 +32,7 @@ import de.tfsw.accounting.ui.reports.ReportGenerationUtil;
 public class ExportInvoiceFromSelectionHandler extends AbstractInvoiceHandler implements ReportGenerationHandler {
 
 	/** */
-	private static final Logger LOG = Logger.getLogger(ExportInvoiceFromSelectionHandler.class);	
+	private static final Logger LOG = LogManager.getLogger(ExportInvoiceFromSelectionHandler.class);	
 	
 	private Invoice currentInvoice;
 	

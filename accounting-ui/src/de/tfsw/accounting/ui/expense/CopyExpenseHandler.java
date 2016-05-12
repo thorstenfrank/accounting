@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.expense;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
@@ -28,7 +29,7 @@ import de.tfsw.accounting.model.Expense;
 public class CopyExpenseHandler extends AbstractExpenseHandler {
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(CopyExpenseHandler.class);
+	private static final Logger LOG = LogManager.getLogger(CopyExpenseHandler.class);
 	
 	/**
 	 * {@inheritDoc}

@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
@@ -46,7 +47,7 @@ import de.tfsw.accounting.util.TimeFrame;
  */
 public class ChangeInvoicesFilterHandler extends AbstractTimeFrameSelectionHandler {
 
-	private static final Logger LOG = Logger.getLogger(ChangeInvoicesFilterHandler.class);
+	private static final Logger LOG = LogManager.getLogger(ChangeInvoicesFilterHandler.class);
 	
 	private Set<InvoiceState> stateSelection;
 	

@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
@@ -66,7 +67,7 @@ class CVEditor extends AbstractAccountingEditor implements ModelChangeListener {
 
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".CVEditor"; //$NON-NLS-1$
 	
-	private static final Logger LOG = Logger.getLogger(CVEditor.class);
+	private static final Logger LOG = LogManager.getLogger(CVEditor.class);
 	
 	/**
 	 * Used for the "new entry" popup dialog

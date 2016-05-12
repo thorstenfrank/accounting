@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.expense.editing;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -39,7 +40,7 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
  */
 public class ExpenseEditHelper extends BaseExpenseEditHelper {
 
-	private static final Logger LOG = Logger.getLogger(ExpenseEditHelper.class);
+	private static final Logger LOG = LogManager.getLogger(ExpenseEditHelper.class);
 	
 	// model object
 	private Expense expense;

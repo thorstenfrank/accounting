@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.reports;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -45,7 +46,7 @@ public class ChooseReportHandler extends AbstractAccountingHandler {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ChooseReportHandler.class);
+	private static final Logger LOG = LogManager.getLogger(ChooseReportHandler.class);
 	
 	private Composite mainComposite;
 	

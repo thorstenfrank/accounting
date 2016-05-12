@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.expense.template;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.AbstractTableSorter;
@@ -26,7 +27,7 @@ import de.tfsw.accounting.ui.AbstractTableSorter;
  */
 class ExpenseTemplateTableSorter extends AbstractTableSorter<ExpenseTemplate> {
 	
-	private static final Logger LOG = Logger.getLogger(ExpenseTemplateTableSorter.class);
+	private static final Logger LOG = LogManager.getLogger(ExpenseTemplateTableSorter.class);
 	
 	protected static final int COL_ACTIVE = 0;
 	protected static final int COL_FIRST_APPLICATION = 1;

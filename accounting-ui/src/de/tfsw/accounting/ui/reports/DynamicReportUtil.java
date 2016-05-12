@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui.reports;
 
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -32,7 +33,7 @@ import de.tfsw.accounting.ui.IDs;
  */
 public class DynamicReportUtil {
 
-	private static final Logger LOG = Logger.getLogger(DynamicReportUtil.class);
+	private static final Logger LOG = LogManager.getLogger(DynamicReportUtil.class);
 	
 	public static final String COMMAND_ID = "commandId"; //$NON-NLS-1$
 	

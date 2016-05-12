@@ -18,7 +18,8 @@ package de.tfsw.accounting.ui.client;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -48,7 +49,7 @@ public class ClientsView extends ViewPart implements IDoubleClickListener, Model
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientsView"; //$NON-NLS-1$
 	
-	private static final Logger LOG = Logger.getLogger(ClientsView.class);
+	private static final Logger LOG = LogManager.getLogger(ClientsView.class);
 	
 	private IContextActivation contextActivation;
 	

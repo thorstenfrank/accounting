@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui.expense.editing;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
@@ -69,7 +70,7 @@ import de.tfsw.accounting.util.CalculationUtil;
 public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyListener, SelectionListener {
 
 	/** */
-	private static final Logger LOG = Logger.getLogger(BaseExpenseEditHelper.class);
+	private static final Logger LOG = LogManager.getLogger(BaseExpenseEditHelper.class);
 
 	/** Key for identifying the widget that has fired an event. */
 	protected static final String KEY_WIDGET_DATA = "ExpenseEditHelper.KEY_WIDGET_DATA"; //$NON-NLS-1$

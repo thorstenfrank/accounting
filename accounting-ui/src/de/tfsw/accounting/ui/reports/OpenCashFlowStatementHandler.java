@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.reports;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
@@ -30,7 +31,7 @@ public class OpenCashFlowStatementHandler extends AbstractAccountingHandler {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(OpenCashFlowStatementHandler.class);
+	private static final Logger LOG = LogManager.getLogger(OpenCashFlowStatementHandler.class);
 	
 	/**
 	 * {@inheritDoc}.

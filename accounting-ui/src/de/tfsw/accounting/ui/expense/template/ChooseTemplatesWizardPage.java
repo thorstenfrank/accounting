@@ -24,7 +24,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -54,7 +55,7 @@ import de.tfsw.accounting.util.FormatUtil;
  */
 class ChooseTemplatesWizardPage extends WizardPage {
 	
-	private static final Logger LOG = Logger.getLogger(ChooseTemplatesWizardPage.class);
+	private static final Logger LOG = LogManager.getLogger(ChooseTemplatesWizardPage.class);
 	
 	private static final String ROOT_ELEMENT = ChooseTemplatesWizardPage.class.getName();
 		

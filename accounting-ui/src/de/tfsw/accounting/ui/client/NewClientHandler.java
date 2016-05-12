@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.client;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -29,7 +30,7 @@ import de.tfsw.accounting.ui.AbstractAccountingHandler;
 public class NewClientHandler extends AbstractAccountingHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(NewClientHandler.class);
+	private static final Logger LOG = LogManager.getLogger(NewClientHandler.class);
 	
 	/**
      * {@inheritDoc}.

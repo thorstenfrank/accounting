@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.expense;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -29,7 +30,7 @@ import de.tfsw.accounting.ui.expense.template.ExpenseTemplateWizard;
  */
 public class ConvertToTemplateHandler extends AbstractExpenseHandler {
 
-	private static final Logger LOG = Logger.getLogger(ConvertToTemplateHandler.class);
+	private static final Logger LOG = LogManager.getLogger(ConvertToTemplateHandler.class);
 	
 	/**
 	 * @see de.tfsw.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)

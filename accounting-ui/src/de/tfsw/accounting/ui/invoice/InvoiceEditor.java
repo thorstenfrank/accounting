@@ -20,7 +20,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -84,7 +85,7 @@ public class InvoiceEditor extends AbstractAccountingEditor implements Constants
 
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".InvoiceEditor"; //$NON-NLS-1$
 	
-	private static final Logger LOG = Logger.getLogger(InvoiceEditor.class);
+	private static final Logger LOG = LogManager.getLogger(InvoiceEditor.class);
 
 	// Column indices for the invoice position table
 	private static final int COLUMN_INDEX_REVENUE_RELEVANT = 0;

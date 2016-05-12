@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui.expense;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IViewPart;
@@ -35,7 +36,7 @@ import de.tfsw.accounting.ui.reports.ReportGenerationUtil;
  */
 public class ExportExpensesReportHandler extends AbstractAccountingHandler {
 
-	private static final Logger LOG = Logger.getLogger(ExportExpensesReportHandler.class);
+	private static final Logger LOG = LogManager.getLogger(ExportExpensesReportHandler.class);
 
 	private ExpenseCollection expenseCollection;
 	

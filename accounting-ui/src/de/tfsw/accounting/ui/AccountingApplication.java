@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -27,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AccountingApplication implements IApplication {
 
-	private static final Logger LOG = Logger.getLogger(AccountingApplication.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingApplication.class);
 	
 	/**
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)

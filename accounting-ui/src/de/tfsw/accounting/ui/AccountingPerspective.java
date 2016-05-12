@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
@@ -27,7 +28,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class AccountingPerspective implements IPerspectiveFactory {
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(AccountingPerspective.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingPerspective.class);
 	
 	/**
 	 * ID of this perspective.

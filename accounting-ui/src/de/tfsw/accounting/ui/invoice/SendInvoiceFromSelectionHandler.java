@@ -17,7 +17,8 @@ package de.tfsw.accounting.ui.invoice;
 
 import java.time.LocalDate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
@@ -45,7 +46,7 @@ import de.tfsw.accounting.util.FormatUtil;
 public class SendInvoiceFromSelectionHandler extends AbstractInvoiceHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(SendInvoiceFromSelectionHandler.class);
+	private static final Logger LOG = LogManager.getLogger(SendInvoiceFromSelectionHandler.class);
 	
 	private LocalDate sentDate;
 	

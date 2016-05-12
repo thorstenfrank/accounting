@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.user;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PartInitException;
@@ -32,7 +33,7 @@ import de.tfsw.accounting.ui.IDs;
  */
 public class OpenUserEditorHandler extends AbstractAccountingHandler {
 
-	private static final Logger LOG = Logger.getLogger(OpenUserEditorHandler.class);
+	private static final Logger LOG = LogManager.getLogger(OpenUserEditorHandler.class);
 	
 	private static final String ERROR_MSG = "Error opening user editor"; //$NON-NLS-1$
 	

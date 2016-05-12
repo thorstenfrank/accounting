@@ -18,7 +18,8 @@ package de.tfsw.accounting.ui.expense;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -51,7 +52,7 @@ import de.tfsw.accounting.util.TimeFrameType;
  */
 public class ExpensesView extends AbstractTableView implements ModelChangeListener {
 	
-	private static final Logger LOG = Logger.getLogger(ExpensesView.class);
+	private static final Logger LOG = LogManager.getLogger(ExpensesView.class);
 	
 	private TableViewer tableViewer;
 	private ExpenseTableSorter sorter;

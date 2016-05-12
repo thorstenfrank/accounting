@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.user;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PartInitException;
@@ -28,7 +29,7 @@ import de.tfsw.accounting.ui.AbstractAccountingHandler;
  * @since 1.2
  */
 public class OpenCvEditorHandler extends AbstractAccountingHandler {
-	private static final Logger LOG = Logger.getLogger(OpenCvEditorHandler.class);
+	private static final Logger LOG = LogManager.getLogger(OpenCvEditorHandler.class);
 	
 	/**
 	 * @see de.tfsw.accounting.ui.AbstractAccountingHandler#doExecute(org.eclipse.core.commands.ExecutionEvent)

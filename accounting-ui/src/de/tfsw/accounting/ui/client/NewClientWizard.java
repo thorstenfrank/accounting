@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.client;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -45,7 +46,7 @@ public class NewClientWizard extends Wizard implements IWorkbenchWizard {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(NewClientWizard.class);
+	private static final Logger LOG = LogManager.getLogger(NewClientWizard.class);
 	
 	/**
 	 * Name page.

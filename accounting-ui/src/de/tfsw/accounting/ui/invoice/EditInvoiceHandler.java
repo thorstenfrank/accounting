@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.invoice;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,7 +34,7 @@ import de.tfsw.accounting.ui.Messages;
 public class EditInvoiceHandler extends AbstractInvoiceHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(EditInvoiceHandler.class);
+	private static final Logger LOG = LogManager.getLogger(EditInvoiceHandler.class);
 	
 	/**
 	 * 

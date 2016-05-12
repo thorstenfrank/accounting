@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.invoice;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -45,7 +46,7 @@ public class NewInvoiceWizard extends Wizard implements IWorkbenchWizard {
 	protected static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".NewInvoiceWizard"; //$NON-NLS-1$
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(NewInvoiceWizard.class);
+	private static final Logger LOG = LogManager.getLogger(NewInvoiceWizard.class);
 	
 	/**
 	 * 

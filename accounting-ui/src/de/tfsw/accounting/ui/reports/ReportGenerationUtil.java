@@ -18,7 +18,8 @@ package de.tfsw.accounting.ui.reports;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -45,8 +46,8 @@ import de.tfsw.accounting.util.TimeFrame;
 public class ReportGenerationUtil {
 
 	/** */
-	private static final Logger LOG = Logger.getLogger(ReportGenerationUtil.class);
-	private static final Logger MONITOR_LOG = Logger.getLogger(ReportProgressMonitor.class);
+	private static final Logger LOG = LogManager.getLogger(ReportGenerationUtil.class);
+	private static final Logger MONITOR_LOG = LogManager.getLogger(ReportProgressMonitor.class);
 	
 	private static final String SEPARATOR = System.getProperty("file.separator"); //$NON-NLS-1$
 	

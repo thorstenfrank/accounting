@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Platform;
@@ -53,7 +54,7 @@ import de.tfsw.accounting.ui.Messages;
 public class LanguageSelectionHandler extends AbstractAccountingHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(LanguageSelectionHandler.class);
+	private static final Logger LOG = LogManager.getLogger(LanguageSelectionHandler.class);
 	
 	/**
 	 * 

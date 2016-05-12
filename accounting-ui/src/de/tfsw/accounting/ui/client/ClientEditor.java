@@ -18,7 +18,8 @@ package de.tfsw.accounting.ui.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -54,7 +55,7 @@ public class ClientEditor extends AbstractAccountingEditor {
 	
 	private static final String HELP_CONTEXT_ID = AccountingUI.PLUGIN_ID + ".ClientEditor"; //$NON-NLS-1$
 	
-	private static final Logger LOG = Logger.getLogger(ClientEditor.class);
+	private static final Logger LOG = LogManager.getLogger(ClientEditor.class);
 	
 	private FormToolkit toolkit;
 	

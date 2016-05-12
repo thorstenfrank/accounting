@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.ui.client;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -38,7 +39,7 @@ import de.tfsw.accounting.ui.Messages;
 public class DeleteClientHandler extends AbstractClientHandler {
 
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(DeleteClientHandler.class);
+	private static final Logger LOG = LogManager.getLogger(DeleteClientHandler.class);
 	
 	/**
 	 * 
