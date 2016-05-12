@@ -4,7 +4,8 @@ Bundle-Name: Accounting Logging
 Bundle-SymbolicName: de.tfsw.accounting.logging;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: log4j-api-2.5.jar,
- log4j-core-2.5.jar
+ log4j-core-2.5.jar,
+ .
 Bundle-Vendor: tfsw.de
 Export-Package: org.apache.logging.log4j,
  org.apache.logging.log4j.core,
