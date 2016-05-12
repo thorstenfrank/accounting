@@ -1,0 +1,20 @@
+Logging support for the accounting bundles.
+Provides log4j2
+
+Apache Log4j
+Copyright 1999-2014 Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+ResolverUtil.java
+Copyright 2005-2006 Tim Fennell
+
+Dumbster SMTP test server
+Copyright 2004 Jason Paul Kitchen
+
+TypeUtil.java
+Copyright 2002-2012 Ramnivas Laddad, Juergen Hoeller, Chris Beams
+
+Modified for use within the accounting application
+(c) by Thorsten Frank (accounting@tfsw.de)

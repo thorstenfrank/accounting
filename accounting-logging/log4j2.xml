@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Properties>
+    <Property name="debug_log_file">${sys:user.home}/.accounting/accounting.log</Property>
+    <Property name="business_log_file">${sys:user.home}/.accounting/audit.log</Property>
+  </Properties>
+	<Appenders>
+	    <Appender type="File" name="accounting_log" fileName="${debug_log_file}">
+	      <Layout type="PatternLayout">
+	        <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n"</Pattern>
+	      </Layout>
+	    </Appender>
+	    <Appender type="File" name="business_log" fileName="${business_log_file}">
+	      <Layout type="PatternLayout">
+	        <Pattern>%d{HH:mm:ss.SSS} %msg%n</Pattern>
+	      </Layout>
+	    </Appender>
+	</Appenders>
+	<Loggers>
+		<Logger name="de.tfsw.accounting.service.BusinessLogger" level="info" additivity="false">
+			<AppenderRef ref="business_log" />
+		</Logger>
+		<Logger name="de.tfsw.accounting" level="trace">
+			<AppenderRef ref="accounting_log" />
+		</Logger>
+		<Root level="error">
+			<AppenderRef ref="accounting_log" />
+		</Root>
+	</Loggers>
+</Configuration>
