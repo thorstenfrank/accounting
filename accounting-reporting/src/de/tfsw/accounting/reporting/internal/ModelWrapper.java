@@ -26,7 +26,8 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.Expense;
@@ -48,7 +49,7 @@ public class ModelWrapper {
 
 	private static final String GET = "get"; //$NON-NLS-1$
 	
-	private static final Logger LOG = Logger.getLogger(ModelWrapper.class);
+	private static final Logger LOG = LogManager.getLogger(ModelWrapper.class);
 	
 	private Object model;
 	

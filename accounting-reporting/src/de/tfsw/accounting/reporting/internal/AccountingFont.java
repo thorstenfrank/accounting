@@ -9,7 +9,8 @@ import java.io.InputStream;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.fonts.SimpleFontFace;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * {@link SimpleFontFace} can't deal with pathnames in an RCP application, so this simple subclass takes care of
@@ -23,7 +24,7 @@ public class AccountingFont extends SimpleFontFace {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(AccountingFont.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingFont.class);
 	
 	private String fontPath;
 	private Font font;

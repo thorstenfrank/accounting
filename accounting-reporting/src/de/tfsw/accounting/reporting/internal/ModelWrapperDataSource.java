@@ -22,7 +22,8 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author thorsten
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 class ModelWrapperDataSource implements JRDataSource {
 
-	private static final Logger LOG = Logger.getLogger(ModelWrapperDataSource.class);
+	private static final Logger LOG = LogManager.getLogger(ModelWrapperDataSource.class);
 
 	private Collection<ModelWrapper> wrapper;
 	

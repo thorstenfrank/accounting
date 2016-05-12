@@ -18,7 +18,8 @@ package de.tfsw.accounting.reporting.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -34,7 +35,7 @@ public class ReportingServiceImpl implements ReportingService {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ReportingServiceImpl.class);
+	private static final Logger LOG = LogManager.getLogger(ReportingServiceImpl.class);
 
 	private static final String REPORT_EXTENSION_ID = "de.tfsw.accounting.reporting.reports"; //$NON-NLS-1$
 	

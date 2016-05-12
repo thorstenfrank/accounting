@@ -34,7 +34,8 @@ import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.reporting.ReportGenerationMonitor;
@@ -45,7 +46,7 @@ import de.tfsw.accounting.reporting.ReportGenerationMonitor;
  */
 public class JasperReportGenerator implements JRDataSource {
 
-	private static final Logger LOG = Logger.getLogger(JasperReportGenerator.class);
+	private static final Logger LOG = LogManager.getLogger(JasperReportGenerator.class);
 	
 	private static final Map<String, JRAbstractExporter> EXPORTER_MAP = new HashMap<String, JRAbstractExporter>();
 	
