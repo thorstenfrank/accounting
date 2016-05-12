@@ -29,7 +29,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
@@ -58,7 +59,7 @@ class ElsterDTOBuilder {
 	/**
 	 * 
 	 */
-	private static final Logger LOG = Logger.getLogger(ElsterDTOBuilder.class);
+	private static final Logger LOG = LogManager.getLogger(ElsterDTOBuilder.class);
 	
 	/**
 	 * Standard 19% german VAT rate.

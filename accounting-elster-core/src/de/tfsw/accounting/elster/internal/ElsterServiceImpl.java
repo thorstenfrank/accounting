@@ -33,7 +33,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -60,7 +61,7 @@ public class ElsterServiceImpl implements ElsterService {
 	/**
 	 * Logger.
 	 */
-	private static final Logger LOG = Logger.getLogger(ElsterServiceImpl.class);
+	private static final Logger LOG = LogManager.getLogger(ElsterServiceImpl.class);
 
 	/**
 	 * Default encoding used for the resulting XML as defined by the ELSTER interface spec.

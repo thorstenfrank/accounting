@@ -15,7 +15,8 @@
  */
 package de.tfsw.accounting.elster.internal;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.elster.Bundesland;
@@ -30,7 +31,7 @@ import de.tfsw.accounting.elster.Bundesland;
 class DefaultTaxNumberConverter implements TaxNumberConverter {
 
 	/** Logging instance */
-	private static final Logger LOG = Logger.getLogger(DefaultTaxNumberConverter.class);
+	private static final Logger LOG = LogManager.getLogger(DefaultTaxNumberConverter.class);
 		
 	/**
 	 * @see TaxNumberConverter#convertToInterfaceFormat(Bundesland, java.lang.String)
