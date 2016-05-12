@@ -5,16 +5,12 @@
     <Property name="business_log_file">${sys:user.home}/.accounting/audit.log</Property>
   </Properties>
 	<Appenders>
-	    <Appender type="File" name="accounting_log" fileName="${debug_log_file}">
-	      <Layout type="PatternLayout">
-	        <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n"</Pattern>
-	      </Layout>
-	    </Appender>
-	    <Appender type="File" name="business_log" fileName="${business_log_file}">
-	      <Layout type="PatternLayout">
-	        <Pattern>%d{HH:mm:ss.SSS} %msg%n</Pattern>
-	      </Layout>
-	    </Appender>
+	    <File name="accounting_log" fileName="${debug_log_file}">
+	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n" />
+	    </File>
+	    <File name="business_log" fileName="${business_log_file}">
+	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n" />
+	    </File>
 	</Appenders>
 	<Loggers>
 		<Logger name="de.tfsw.accounting.service.BusinessLogger" level="info" additivity="false">
