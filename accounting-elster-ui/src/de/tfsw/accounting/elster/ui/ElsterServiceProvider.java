@@ -15,6 +15,9 @@
  */
 package de.tfsw.accounting.elster.ui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.tfsw.accounting.elster.ElsterService;
 
 /**
@@ -23,6 +26,8 @@ import de.tfsw.accounting.elster.ElsterService;
  */
 public class ElsterServiceProvider {
 
+	private static final Logger LOG = LogManager.getLogger(ElsterServiceProvider.class);
+	
 	private ElsterService elsterService;
 		
 	/**
@@ -38,6 +43,7 @@ public class ElsterServiceProvider {
 	 * @param elsterService
 	 */
 	public synchronized void setElsterService(ElsterService elsterService) {
+		LOG.info("ElsterService was bound"); //$NON-NLS-1$
 		this.elsterService = elsterService;
 		ElsterUI.getDefault().registerElsterServiceProvider(this);
 	}
@@ -49,6 +55,7 @@ public class ElsterServiceProvider {
 	 */
 	public synchronized void unsetElsterService(ElsterService elsterService) {
 		if (this.elsterService == elsterService) {
+			LOG.info("ElsterService was unbound"); //$NON-NLS-1$
 			this.elsterService = null;
 			ElsterUI.getDefault().unregisterElsterServiceProvider(this);
 		}

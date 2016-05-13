@@ -56,6 +56,8 @@ public class AccountingCore implements BundleActivator {
 		LOG.debug("Instance Location: " + Platform.getInstanceLocation().getURL().toString() );
 		LOG.debug("User Location: " + Platform.getUserLocation().getURL().toString() );
 		
+		LOG.warn("**************HEPPES: " + System.getProperty("accounting.log.path"));
+		
 		// for debug purposes...
 		if (System.getProperty("accounting.dump.env") != null) {
 			dumpEnvironment();

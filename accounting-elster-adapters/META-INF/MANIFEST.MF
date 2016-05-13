@@ -2,8 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Accounting ELSTER Adapters
 Bundle-SymbolicName: de.tfsw.accounting.elster.adapters;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.1.qualifier
 Bundle-Vendor: tfsw.de
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: de.tfsw.accounting.elster.core;bundle-version="1.0.0"
+Require-Bundle: de.tfsw.accounting.elster.core;bundle-version="1.1.1",
+ de.tfsw.accounting.logging;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

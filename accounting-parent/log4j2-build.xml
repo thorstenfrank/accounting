@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="DEBUG">
   <Properties>
-    <Property name="logBaseDir">${sys:user.home}/.accounting</Property>
-    <Property name="debug_log_file">${logBaseDir}/accounting.log</Property>
-    <Property name="business_log_file">${logBaseDir}/audit.log</Property>
+    <Property name="debug_log_file">${sys:accounting.log.path}/accounting-test.log</Property>
+    <Property name="business_log_file">${sys:accounting.log.path}/audit-test.log</Property>
   </Properties>
 	<Appenders>
 	    <File name="accounting_log" fileName="${debug_log_file}">
@@ -20,7 +19,7 @@
 		<Logger name="de.tfsw.accounting" level="debug" additivity="false">
 			<AppenderRef ref="accounting_log" />
 		</Logger>
-		<Root level="error">
+		<Root level="trace">
 			<AppenderRef ref="accounting_log" />
 		</Root>
 	</Loggers>

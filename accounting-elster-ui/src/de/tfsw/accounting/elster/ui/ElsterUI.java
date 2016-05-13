@@ -1,5 +1,7 @@
 package de.tfsw.accounting.elster.ui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -18,6 +20,8 @@ public class ElsterUI extends AbstractUIPlugin {
 	 */
 	public static final String PLUGIN_ID = "de.tfsw.accounting.elster.ui"; //$NON-NLS-1$
 
+	private static final Logger LOG = LogManager.getLogger(ElsterUI.class);
+	
 	/**
 	 * The shared instance
 	 */
@@ -33,6 +37,7 @@ public class ElsterUI extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
+		LOG.info("ELSTER UI plugin startup");
 		super.start(context);
 		plugin = this;
 	}
@@ -42,6 +47,7 @@ public class ElsterUI extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		LOG.info("ELSTER UI plugin stop");
 		plugin = null;
 		super.stop(context);
 	}

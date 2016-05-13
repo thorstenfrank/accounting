@@ -18,6 +18,8 @@ package de.tfsw.accounting.elster.ui.wizard;
 import java.lang.reflect.InvocationTargetException;
 import java.time.YearMonth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
@@ -30,6 +32,8 @@ import de.tfsw.accounting.elster.ui.ElsterUI;
  *
  */
 public class ElsterExportWizard extends Wizard {
+	
+	private static final Logger LOG = LogManager.getLogger(ElsterExportWizard.class);
 	
 	/**
 	 * 
@@ -185,6 +189,7 @@ public class ElsterExportWizard extends Wizard {
 	 * @throws InvocationTargetException 
 	 */
 	private void performExport() throws InvocationTargetException, InterruptedException {
+		LOG.info("Exporting Elster XML {} to file {}", elsterDTO.getFilingPeriod(), targetFileName);
 		getContainer().run(false, false, new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {

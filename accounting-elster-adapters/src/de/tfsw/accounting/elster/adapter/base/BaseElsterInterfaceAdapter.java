@@ -18,6 +18,9 @@ package de.tfsw.accounting.elster.adapter.base;
 import java.math.RoundingMode;
 import java.time.YearMonth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.tfsw.accounting.elster.ElsterDTO;
 import de.tfsw.accounting.elster.ElsterInterfaceAdapter;
 
@@ -32,6 +35,8 @@ import de.tfsw.accounting.elster.ElsterInterfaceAdapter;
  */
 public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAnmeldungssteuernCType> {
 
+	private static final Logger LOG = LogManager.getLogger(BaseElsterInterfaceAdapter.class);
+	
 	private static final String VERSION_FORMAT = "%04d01";
 	
 	/**
@@ -85,6 +90,7 @@ public class BaseElsterInterfaceAdapter implements ElsterInterfaceAdapter<UstaAn
 	 */
 	@Override
 	public UstaAnmeldungssteuernCType mapToInterfaceModel(ElsterDTO data) {
+		LOG.info("Mapping Elster data [{}] to interface model", data.getFilingPeriod());
 		UstaAnmeldungssteuernCType anmeldungssteuern = new UstaAnmeldungssteuernCType();
 		anmeldungssteuern.setArt(TYPE);
 		anmeldungssteuern.setVersion(getVersion(data));
