@@ -33,8 +33,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
@@ -47,7 +45,6 @@ import org.eclipse.swt.widgets.Widget;
 
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.model.AbstractExpense;
-import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseType;
 import de.tfsw.accounting.model.Price;
 import de.tfsw.accounting.model.TaxRate;
@@ -67,7 +64,7 @@ import de.tfsw.accounting.util.CalculationUtil;
  * @author Thorsten Frank
  *
  */
-public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyListener, SelectionListener {
+public class BaseExpenseEditHelper implements ISelectionChangedListener, SelectionListener {
 
 	/** */
 	private static final Logger LOG = LogManager.getLogger(BaseExpenseEditHelper.class);
@@ -135,14 +132,14 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	 */
 	public void createBasicSection(Composite container) {
 		// TYPE
-		createComboViewer(container, SWT.READ_ONLY, Messages.labelExpenseType, Expense.FIELD_TYPE, ExpenseType.class, true, ExpenseType.values(), new GenericLabelProvider(ExpenseType.class, "getTranslatedString"));
+		createComboViewer(container, SWT.READ_ONLY, Messages.labelExpenseType, AbstractExpense.FIELD_TYPE, ExpenseType.class, true, ExpenseType.values(), new GenericLabelProvider(ExpenseType.class, "getTranslatedString"));
 				
 		// DESCRIPTION
-		createAndBindText(container, Messages.labelDescription, expense, Expense.FIELD_DESCRIPTION, false);
+		createAndBindText(container, Messages.labelDescription, expense, AbstractExpense.FIELD_DESCRIPTION, false);
 
 		// CATEGORY
 		expenseCategories = AccountingUI.getAccountingService().getModelMetaInformation().getExpenseCategories();
-		ComboViewer catCombo = createComboViewer(container, SWT.DROP_DOWN, Messages.labelCategory, Expense.FIELD_CATEGORY, String.class, true, expenseCategories, StringLabelProvider.DEFAULT);
+		ComboViewer catCombo = createComboViewer(container, SWT.DROP_DOWN, Messages.labelCategory, AbstractExpense.FIELD_CATEGORY, String.class, true, expenseCategories, StringLabelProvider.DEFAULT);
 		catCombo.getCombo().addTraverseListener(new TraverseListener() {
 			
 			@Override
@@ -177,9 +174,9 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		// TAX RATE
 		client.createLabel(container, Messages.labelTaxRate);
 		ComboViewer taxRateCombo = 
-				WidgetHelper.createTaxRateCombo(container, bindingCtx, expense, Expense.FIELD_TAX_RATE);
-		taxRateCombo.setData(KEY_WIDGET_DATA, Expense.FIELD_TAX_RATE);
-		bind(TaxRate.class, taxRateCombo, Expense.FIELD_TAX_RATE, true);
+				WidgetHelper.createTaxRateCombo(container, bindingCtx, expense, AbstractExpense.FIELD_TAX_RATE);
+		taxRateCombo.setData(KEY_WIDGET_DATA, AbstractExpense.FIELD_TAX_RATE);
+		bind(TaxRate.class, taxRateCombo, AbstractExpense.FIELD_TAX_RATE, true);
 		
 		// TAX AMOUNT
 		Text taxAmount = createText(container, Messages.labelTaxes, Price.FIELD_TAX);
@@ -193,6 +190,19 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	
 	/**
 	 * 
+	 * @param widget
+	 */
+	protected void notifyModelChange(Widget widget) {
+		Object data = widget.getData(KEY_WIDGET_DATA);
+		if (data == null || !(data instanceof String)) {
+			LOG.warn(String.format("Illegal data stored in widget [%s] under key [%s] : [%s]", widget.toString(), KEY_WIDGET_DATA, data));
+		} else {
+			notifyModelChange((String) data);
+		}
+	}
+	
+	/**
+	 * @param origin
 	 */
 	protected void notifyModelChange(String origin) {
 		if (origin == null) {
@@ -202,7 +212,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		
 		LOG.debug(String.format("MODEL_CHANGE: [%s]", origin));
 		
-		if (Expense.FIELD_TAX_RATE.equals(origin)) {
+		if (AbstractExpense.FIELD_TAX_RATE.equals(origin)) {
 			recalculatePrice();
 		} else if (Price.FIELD_NET.equals(origin) || Price.FIELD_GROSS.equals(origin)) {
 			priceCalculationBase = origin;
@@ -421,8 +431,9 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 		IObservableValue swtObservable = WidgetProperties.text(SWT.Modify).observe(text);
 		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
 		bindingCtx.bindValue(swtObservable, modelObservable);
-		text.addKeyListener(this);
-		//modelObservable.addValueChangeListener(this);
+		swtObservable.addValueChangeListener(
+			event -> notifyModelChange((String) text.getData(KEY_WIDGET_DATA)) 
+		);
 	}
 	
 	/**
@@ -453,12 +464,13 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	 * @param property
 	 * @param isBean
 	 */
-	protected void bindMonetaryText(Text text, Object model, String property, boolean isBean) {
+	protected void bindMonetaryText(final Text text, Object model, String property, boolean isBean) {
 		IObservableValue swtObservable = WidgetProperties.text(SWT.Modify).observe(text);
 		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
 		bindingCtx.bindValue(swtObservable, modelObservable, toPrice, fromPrice);
-		text.addKeyListener(this);
-		//modelObservable.addValueChangeListener(this);
+		swtObservable.addValueChangeListener(
+				event -> notifyModelChange((String)text.getData(KEY_WIDGET_DATA))
+		);
 	}
 	
 	/**
@@ -473,35 +485,17 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 			LOG.debug(String.format("SELECTION for property [%s] is [%s]", origin, selection));
 			notifyModelChange(origin);			
 		} else if (event.getSource() instanceof Widget) {
-			extractOriginFromWidget((Widget) event.getSource());
+			notifyModelChange((Widget) event.getSource());
 		}
 	}
-	
-	/**
-	 * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-	 */
-	@Override
-	public void keyPressed(KeyEvent e) {
-	}
-	
-	/**
-	 * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-	 */
-	@Override
-	public void keyReleased(KeyEvent e) {
-		if (e.getSource() instanceof Widget) {
-			extractOriginFromWidget((Widget) e.getSource());
-		}
 		
-	}
-	
 	/**
 	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 	 */
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() instanceof Widget) {
-			extractOriginFromWidget((Widget) e.getSource());
+			notifyModelChange(((Widget) e.getSource()));
 		}
 	}
 
@@ -512,30 +506,4 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, KeyList
 	public void widgetDefaultSelected(SelectionEvent e) {
 		widgetSelected(e);
 	}
-
-	/**
-	 * 
-	 * @param widget
-	 */
-	private void extractOriginFromWidget(Widget widget) {
-		Object data = widget.getData(KEY_WIDGET_DATA);
-		if (data == null || !(data instanceof String)) {
-			LOG.warn(String.format("Illegal data stored in widget [%s] under key [%s] : [%s]", widget.toString(), KEY_WIDGET_DATA, data));
-		} else {
-			notifyModelChange((String) data);
-		}
-	}
-//
-//	/**
-//	 * @see org.eclipse.core.databinding.observable.value.IValueChangeListener#handleValueChange(org.eclipse.core.databinding.observable.value.ValueChangeEvent)
-//	 */
-//	@Override
-//	public void handleValueChange(ValueChangeEvent event) {
-//		if (event.getSource() instanceof ISWTObservable) {
-//			notifyModelChange(getOriginFromWidget(((ISWTObservableValue) event.getSource()).getWidget()));
-//		} else {
-//			LOG.warn(String.format("Unknown value change source: [%s]", event.getSource().toString()));
-//		}
-//		
-//	}
 }
