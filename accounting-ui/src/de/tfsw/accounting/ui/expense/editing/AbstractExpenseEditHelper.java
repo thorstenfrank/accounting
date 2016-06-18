@@ -61,6 +61,15 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
 import de.tfsw.accounting.util.CalculationUtil;
 
 /**
+ * A (base) helper class for building editors of {@link AbstractExpense} model objects.
+ * 
+ * <p>
+ * This class provides ways for a client (i.e. another class using a helper instance) to easily create visual editing
+ * representations of a supplied expense model object. The view and model are bound via JFace data binding and other
+ * event-based mechanisms. The client is notified of changes made by user to the UI (and thus the model) via the
+ * callback interface {@link ExpenseEditingHelperClient}. 
+ * </p>
+ * 
  * @author Thorsten Frank
  *
  */
