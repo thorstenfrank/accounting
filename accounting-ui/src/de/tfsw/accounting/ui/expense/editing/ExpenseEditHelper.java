@@ -38,7 +38,7 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
  * @author Thorsten Frank
  *
  */
-public class ExpenseEditHelper extends BaseExpenseEditHelper {
+public class ExpenseEditHelper extends AbstractExpenseEditHelper {
 
 	private static final Logger LOG = LogManager.getLogger(ExpenseEditHelper.class);
 	
@@ -60,7 +60,7 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 	}
 
 	/**
-	 * @see de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper#createBasicSection(org.eclipse.swt.widgets.Composite)
+	 * @see de.tfsw.accounting.ui.expense.editing.AbstractExpenseEditHelper#createBasicSection(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createBasicSection(Composite container) {
@@ -73,7 +73,7 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				expense.setPaymentDate(WidgetHelper.widgetToDate(paymentDate));
-				notifyModelChange(Expense.FIELD_PAYMENT_DATE);
+				checkIfModelChanged(Expense.FIELD_PAYMENT_DATE);
 			}
 		});
 		
@@ -101,10 +101,10 @@ public class ExpenseEditHelper extends BaseExpenseEditHelper {
 	}
 	
 	/**
-	 * @see de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper#notifiyModelChangeInternal(java.lang.String)
+	 * @see de.tfsw.accounting.ui.expense.editing.AbstractExpenseEditHelper#notifiyModelChanged(java.lang.String)
 	 */
 	@Override
-	protected void notifiyModelChangeInternal(String origin) {
+	protected void notifiyModelChanged(String origin) {
 		if (Expense.FIELD_TYPE.equals(origin)) {
 			LOG.debug("Expense_Type changed, now enabling/disabling depreciation widgets");
 			enableOrDisableDepreciation();

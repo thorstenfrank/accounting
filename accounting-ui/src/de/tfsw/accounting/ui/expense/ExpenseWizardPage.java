@@ -19,7 +19,7 @@ import java.time.LocalDate;
 
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.ui.Messages;
-import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
+import de.tfsw.accounting.ui.expense.editing.AbstractExpenseEditHelper;
 import de.tfsw.accounting.ui.expense.editing.ExpenseEditHelper;
 
 /**
@@ -52,7 +52,7 @@ class ExpenseWizardPage extends AbstractExpenseWizardPage {
 	 * @see de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage#getHelper()
 	 */
 	@Override
-	protected BaseExpenseEditHelper getHelper() {
+	protected AbstractExpenseEditHelper getHelper() {
 		return new ExpenseEditHelper(getExpense(), this);
 	}
 

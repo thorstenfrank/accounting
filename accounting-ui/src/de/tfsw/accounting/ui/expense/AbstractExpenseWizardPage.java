@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.model.AbstractExpense;
-import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
+import de.tfsw.accounting.ui.expense.editing.AbstractExpenseEditHelper;
 import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
@@ -72,8 +72,8 @@ public abstract class AbstractExpenseWizardPage extends WizardPage implements Ex
 	 * {@link #postCreateControl(Composite)} afterwards, so subclasses need only override this method if they need a
 	 * completely different layout.
 	 *  
-	 * @see BaseExpenseEditHelper#createBasicSection(Composite)
-	 * @see BaseExpenseEditHelper#createPriceSection(Composite)
+	 * @see AbstractExpenseEditHelper#createBasicSection(Composite)
+	 * @see AbstractExpenseEditHelper#createPriceSection(Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -81,7 +81,7 @@ public abstract class AbstractExpenseWizardPage extends WizardPage implements Ex
 		GridLayout layout = new GridLayout(2, false);
 		composite.setLayout(layout);
 		
-		BaseExpenseEditHelper editHelper = getHelper();
+		AbstractExpenseEditHelper editHelper = getHelper();
 		
 		editHelper.createBasicSection(composite);
 		
@@ -96,7 +96,7 @@ public abstract class AbstractExpenseWizardPage extends WizardPage implements Ex
 	 * 
 	 * @return
 	 */
-	protected abstract BaseExpenseEditHelper getHelper();
+	protected abstract AbstractExpenseEditHelper getHelper();
 	
 	/**
 	 * Called by {@link #createControl(Composite)} after the common UI elements have been built.

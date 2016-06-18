@@ -19,7 +19,7 @@ import de.tfsw.accounting.model.AbstractExpense;
 import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.ui.Messages;
 import de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage;
-import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
+import de.tfsw.accounting.ui.expense.editing.AbstractExpenseEditHelper;
 
 /**
  * @author Thorsten Frank
@@ -44,7 +44,7 @@ class ExpenseTemplateWizardPage extends AbstractExpenseWizardPage {
 	 * @see de.tfsw.accounting.ui.expense.AbstractExpenseWizardPage#getHelper()
 	 */
 	@Override
-	protected BaseExpenseEditHelper getHelper() {
+	protected AbstractExpenseEditHelper getHelper() {
 		return helper;
 	}
 	

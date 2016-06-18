@@ -27,7 +27,7 @@ import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Frequency;
 import de.tfsw.accounting.model.RecurrenceRule;
 import de.tfsw.accounting.ui.Messages;
-import de.tfsw.accounting.ui.expense.editing.BaseExpenseEditHelper;
+import de.tfsw.accounting.ui.expense.editing.AbstractExpenseEditHelper;
 import de.tfsw.accounting.ui.expense.editing.ExpenseEditingHelperClient;
 import de.tfsw.accounting.ui.util.GenericLabelProvider;
 import de.tfsw.accounting.ui.util.WidgetHelper;
@@ -36,7 +36,7 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
  * @author Thorsten Frank
  *
  */
-class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
+class ExpenseTemplateEditHelper extends AbstractExpenseEditHelper {
 	
 	private static final String FOREVER = "Button.Forever"; //$NON-NLS-1$
 	private static final String UNTIL = "Button.Until"; //$NON-NLS-1$
@@ -129,7 +129,7 @@ class ExpenseTemplateEditHelper extends BaseExpenseEditHelper {
 	}
 	
 	@Override
-	protected void notifiyModelChangeInternal(String origin) {
+	protected void notifiyModelChanged(String origin) {
 		if (RecurrenceRule.FIELD_UNTIL.equals(origin)) {
 			expense.getRule().setUntil(WidgetHelper.widgetToDate(untilDate));
 		} else if (ExpenseTemplate.FIELD_FIRST.equals(origin)) {

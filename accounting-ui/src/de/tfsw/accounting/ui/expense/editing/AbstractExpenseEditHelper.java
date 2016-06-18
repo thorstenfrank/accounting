@@ -64,10 +64,10 @@ import de.tfsw.accounting.util.CalculationUtil;
  * @author Thorsten Frank
  *
  */
-public class BaseExpenseEditHelper implements ISelectionChangedListener, SelectionListener {
+public abstract class AbstractExpenseEditHelper implements ISelectionChangedListener, SelectionListener {
 
 	/** */
-	private static final Logger LOG = LogManager.getLogger(BaseExpenseEditHelper.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractExpenseEditHelper.class);
 
 	/** Key for identifying the widget that has fired an event. */
 	protected static final String KEY_WIDGET_DATA = "ExpenseEditHelper.KEY_WIDGET_DATA"; //$NON-NLS-1$
@@ -93,7 +93,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 	 * @param expense
 	 * @param client
 	 */
-	public BaseExpenseEditHelper(AbstractExpense expense, ExpenseEditingHelperClient client) {
+	public AbstractExpenseEditHelper(AbstractExpense expense, ExpenseEditingHelperClient client) {
 		this.expense = expense;
 		this.client = client;
 		
@@ -192,19 +192,19 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 	 * 
 	 * @param widget
 	 */
-	protected void notifyModelChange(Widget widget) {
+	protected void checkIfModelChanged(Widget widget) {
 		Object data = widget.getData(KEY_WIDGET_DATA);
 		if (data == null || !(data instanceof String)) {
 			LOG.warn(String.format("Illegal data stored in widget [%s] under key [%s] : [%s]", widget.toString(), KEY_WIDGET_DATA, data));
 		} else {
-			notifyModelChange((String) data);
+			checkIfModelChanged((String) data);
 		}
 	}
 	
 	/**
 	 * @param origin
 	 */
-	protected void notifyModelChange(String origin) {
+	protected void checkIfModelChanged(String origin) {
 		if (origin == null) {
 			LOG.warn("Origin was null, model change notification aborted"); //$NON-NLS-1$
 			return;
@@ -219,17 +219,20 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 			recalculatePrice();
 		}
 		
-		notifiyModelChangeInternal(origin);
+		// TODO add a check if the model really differs from the original
 		
+		notifiyModelChanged(origin);
 		client.modelHasChanged();
 	}
 	
 	/**
-	 * Subclasses may override this method. Default implementation is empty.
+	 * Subclasses may override this method if they want to react to events perceived as model changes.
 	 * 
-	 * @param origin
+	 * @param origin the field name that caused the change. Changes usually occur through UI view changes which are
+	 * 		  		 directly updated into the model object. This parameter signals which one that was, e.g.
+	 * 				 {@link AbstractExpense#FIELD_CATEGORY}
 	 */
-	protected void notifiyModelChangeInternal(String origin) {
+	protected void notifiyModelChanged(String origin) {
 		
 	}
 	
@@ -432,7 +435,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
 		bindingCtx.bindValue(swtObservable, modelObservable);
 		swtObservable.addValueChangeListener(
-			event -> notifyModelChange((String) text.getData(KEY_WIDGET_DATA)) 
+			event -> checkIfModelChanged((String) text.getData(KEY_WIDGET_DATA)) 
 		);
 	}
 	
@@ -469,7 +472,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 		IObservableValue modelObservable = isBean ? BeanProperties.value(property).observe(model) : PojoProperties.value(property).observe(model);
 		bindingCtx.bindValue(swtObservable, modelObservable, toPrice, fromPrice);
 		swtObservable.addValueChangeListener(
-				event -> notifyModelChange((String)text.getData(KEY_WIDGET_DATA))
+				event -> checkIfModelChanged((String)text.getData(KEY_WIDGET_DATA))
 		);
 	}
 	
@@ -483,9 +486,9 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 			origin = ((StructuredViewer) event.getSource()).getData(KEY_WIDGET_DATA).toString();			
 			Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
 			LOG.debug(String.format("SELECTION for property [%s] is [%s]", origin, selection));
-			notifyModelChange(origin);			
+			checkIfModelChanged(origin);			
 		} else if (event.getSource() instanceof Widget) {
-			notifyModelChange((Widget) event.getSource());
+			checkIfModelChanged((Widget) event.getSource());
 		}
 	}
 		
@@ -495,7 +498,7 @@ public class BaseExpenseEditHelper implements ISelectionChangedListener, Selecti
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() instanceof Widget) {
-			notifyModelChange(((Widget) e.getSource()));
+			checkIfModelChanged(((Widget) e.getSource()));
 		}
 	}
 
