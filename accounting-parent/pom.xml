@@ -2,13 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.tfsw.accounting</groupId>
 	<artifactId>de.tfsw.accounting.parent</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>0.25.0</tycho.version>
+		<tycho.version>1.2.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
+		<eclipse-repo.url>http://download.eclipse.org/releases/oxygen</eclipse-repo.url>
 	</properties>
 
 	<modules>
@@ -33,8 +33,8 @@
 
 	<repositories>
 		<repository>
-			<id>mars</id>
-			<url>${mars-repo.url}</url>
+			<id>eclipse-repo</id>
+			<url>${eclipse-repo.url}</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>

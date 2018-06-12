@@ -4,7 +4,7 @@
   <parent>
   	<artifactId>de.tfsw.accounting.parent</artifactId>
   	<groupId>de.tfsw.accounting</groupId>
-  	<version>1.2.0-SNAPSHOT</version>
+  	<version>1.3.0-SNAPSHOT</version>
   	<relativePath>../accounting-parent</relativePath>
   </parent>
   
