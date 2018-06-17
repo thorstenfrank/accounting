@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="%product.name" uid="accounting" id="de.tfsw.accounting.ui.product" application="de.tfsw.accounting.ui.application" version="1.6.0" useFeatures="true" includeLaunchers="true">
+<product name="%product.name" uid="accounting" id="de.tfsw.accounting.ui.e4.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="2.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="aboutimage.png"/>
@@ -21,7 +21,7 @@
    <windowImages i16="icons/accounting_16.png" i32="icons/accounting_32.png" i48="icons/accounting_48.png" i64="icons/accounting_64.png" i128="icons/accounting_128.png" i256="icons/accounting_256.png"/>
 
    <splash
-      location="de.tfsw.accounting.ui"
+      location="de.tfsw.accounting.ui.e4"
       startupProgressRect="0,280,465,15"
       startupMessageRect="7,10,440,20"
       startupForegroundColor="000000" />
@@ -233,15 +233,16 @@
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.e4.rcp"/>
    </features>
 
    <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <property name="osgi.instance.area.default" value="@user.home/.accounting" />
+      <property name="osgi.instance.area.default" value="@user.home/.accountinge4" />
    </configurations>
 
    <preferencesInfo>

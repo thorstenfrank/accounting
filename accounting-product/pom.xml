@@ -7,7 +7,7 @@
 		<relativePath>../accounting-parent</relativePath>
 	</parent>
 	<artifactId>de.tfsw.accounting.product</artifactId>
-	<version>1.6.0</version>
+	<version>2.0.0</version>
 	<packaging>eclipse-repository</packaging>
 
 	<properties>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            name="%product.name"
+            application="org.eclipse.e4.ui.workbench.swt.E4Application">
+         <property
+               name="lifeCycleURI"
+               value="bundleclass://de.tfsw.accounting.ui.e4/de.tfsw.accounting.ui.AccountingUIe4LifeCycle">
+         </property>
+         <property
+               name="appName"
+               value="%product.name">
+         </property>
+         <property
+               name="aboutImage"
+               value="aboutimage.png">
+         </property>
+         <property
+               name="aboutText"
+               value="%aboutTextBla">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/accounting_16.png,icons/accounting_32.png,icons/accounting_48.png,icons/accounting_64.png,icons/accounting_128.png,icons/accounting_256.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,10,440,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="0,280,465,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
