@@ -10,7 +10,7 @@
             application="org.eclipse.e4.ui.workbench.swt.E4Application">
          <property
                name="lifeCycleURI"
-               value="bundleclass://de.tfsw.accounting.ui.e4/de.tfsw.accounting.ui.AccountingUIe4LifeCycle">
+               value="bundleclass://de.tfsw.accounting.ui.e4/de.tfsw.accounting.ui.AccountingE4UILifeCycle">
          </property>
          <property
                name="appName"

@@ -21,10 +21,7 @@
    <windowImages i16="icons/accounting_16.png" i32="icons/accounting_32.png" i48="icons/accounting_48.png" i64="icons/accounting_64.png" i128="icons/accounting_128.png" i256="icons/accounting_256.png"/>
 
    <splash
-      location="de.tfsw.accounting.ui.e4"
-      startupProgressRect="0,280,465,15"
-      startupMessageRect="7,10,440,20"
-      startupForegroundColor="000000" />
+      location="de.tfsw.accounting.ui.e4" />
    <launcher name="accounting">
       <linux icon="icons/icon.xpm"/>
       <macosx icon="icons/accounting.icns"/>
@@ -33,6 +30,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>

@@ -15,9 +15,9 @@ import org.eclipse.e4.ui.workbench.lifecycle.ProcessRemovals;
  * this class.
  **/
 @SuppressWarnings("restriction")
-public class AccountingUIe4LifeCycle {
+public class AccountingE4UILifeCycle {
 
-	private static final Logger LOG = LogManager.getLogger(AccountingUIe4LifeCycle.class);
+	private static final Logger LOG = LogManager.getLogger(AccountingE4UILifeCycle.class);
 	
 	@PostContextCreate
 	void postContextCreate(IEclipseContext workbenchContext) {
