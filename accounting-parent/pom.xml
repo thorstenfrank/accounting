@@ -26,7 +26,7 @@
 		<module>../accounting-product</module>
 		<module>../accounting-reporting</module>
 		<module>../accounting-test-harness</module>
-		<module>../accounting-ui</module>
+		<module>../accounting-ui-e4</module>
 		<module>../db4o_osgi</module>
 		<module>../com.google.gson</module>
 	</modules>
@@ -62,7 +62,7 @@
 				<configuration>
 					<resolver>p2</resolver>
 					<environments>
-						<environment>
+						<!-- environment>
 							<os>linux</os>
 							<ws>gtk</ws>
 							<arch>x86</arch>
@@ -81,7 +81,7 @@
 							<os>win32</os>
 							<ws>win32</ws>
 							<arch>x86_64</arch>
-						</environment>
+						</environment-->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
