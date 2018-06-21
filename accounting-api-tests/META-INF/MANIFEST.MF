@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Accounting API tests
+Bundle-SymbolicName: de.tfsw.accounting.api-tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: tfsw.de
+Fragment-Host: de.tfsw.accounting.api;bundle-version="1.0.0"
+Automatic-Module-Name: de.tfsw.accounting.api.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.12.0"

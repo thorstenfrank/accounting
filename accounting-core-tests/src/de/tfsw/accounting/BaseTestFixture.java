@@ -64,16 +64,9 @@ public abstract class BaseTestFixture {
 	/**
 	 * @return the testContext
 	 */
-	@SuppressWarnings("serial")
 	protected static AccountingContext getTestContext() {
 		if (testContext == null) {
-			testContext = new AccountingContext() {
-				@Override
-				public String getUserName() { return TEST_USER_NAME;}
-				
-				@Override
-				public String getDbFileName() { return TEST_DB_FILE;}
-			};			
+			testContext = new AccountingContext(TEST_USER_NAME, TEST_DB_FILE);		
 		}
 		return testContext;
 	}

@@ -15,6 +15,7 @@
 
 	<modules>
 		<module>../accounting-api</module>
+		<module>../accounting-api-tests</module>
 		<module>../accounting-core</module>
 		<module>../accounting-core-tests</module>
 		<module>../accounting-elster-core</module>

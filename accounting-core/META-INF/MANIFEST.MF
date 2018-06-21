@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.util;bundle-version="1.0.500",
  org.eclipse.osgi.services;bundle-version="3.5.0",
  com.google.gson;bundle-version="2.6.2",
- de.tfsw.accounting.logging;bundle-version="1.0.0"
+ de.tfsw.accounting.logging;bundle-version="1.0.0",
+ de.tfsw.accounting.api;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-beanutils-1.8.3.jar,

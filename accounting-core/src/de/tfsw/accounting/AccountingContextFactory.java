@@ -15,25 +15,11 @@
  */
 package de.tfsw.accounting;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
- * A factory to create instances of {@link AccountingContext}.
- * 
- * <p>Clients of the <code>accounting-core</code> plugin should use this factory to create a context, which in turn
- * needs to be used to init the {@link AccountingService}.</p>
- * 
- * <p>While this class is not technically a Singleton, the static methods use a default
- * instance of this class, so there is no need to instantiate another factory.</p>
- * 
- * @author thorsten frank
- * @see #buildContext(String, String)
+ * @deprecated use {@link AccountingContext} directly
  */
+@Deprecated
 public final class AccountingContextFactory {
-	
-	/** Logger. */
-	private static final Logger LOG = LogManager.getLogger(AccountingContextFactory.class);
 	
 	/**
 	 * The default instance of this factory.
@@ -59,102 +45,6 @@ public final class AccountingContextFactory {
 	 * @return
 	 */
 	private AccountingContext doBuildContext(String userName, String dbFileName) {
-		AccountingContextImpl ctx = new AccountingContextImpl();
-		
-		checkMandatoryValue("userName", userName);
-		ctx.setUserName(userName);
-		
-		checkMandatoryValue("dbFileLocation", dbFileName);
-		ctx.setDbFileName(dbFileName);
-		
-		return ctx;
-	}
-	
-	/**
-	 * Checks that <code>value</code> is neither <code>null</code> nor empty.
-	 * If that is not the case, a new {@link AccountingException} is thrown.
-	 * 
-	 * @param key the key of the property to check
-	 * @param value the value to check
-	 */
-	private void checkMandatoryValue(String key, String value) {
-		if (value == null || value.isEmpty()) {
-			LOG.error("Missing mandatory context property: " + key);
-			throw new AccountingException(
-					Messages.bind(Messages.AccountingContextFactory_errorMissingContextProperty, key));
-		}
-	}
-	
-	/** 
-	 * A simple implementation of the {@link AccountingContext} interface.
-	 * 
-	 * <p> This is a private inner class to force clients to use the factory for creating context instances.</p> 
-	 */
-	private class AccountingContextImpl implements AccountingContext {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -3938465616389538289L;
-		
-		private String userName;
-		private String dbFileName;
-
-		@Override
-		public String getUserName() {
-			return userName;
-		}
-		
-		private void setUserName(String userName) {
-			this.userName = userName;
-		}
-		
-		@Override
-		public String getDbFileName() {
-			return dbFileName;
-		}
-		
-		private void setDbFileName(String dbFileName) {
-			this.dbFileName = dbFileName;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((dbFileName == null) ? 0 : dbFileName.hashCode());
-			result = prime * result
-					+ ((userName == null) ? 0 : userName.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			AccountingContext other = (AccountingContext) obj;
-
-			if (dbFileName == null) {
-				if (other.getDbFileName() != null) {
-					return false;
-				}
-			} else if (!dbFileName.equals(other.getDbFileName())) {
-				return false;
-			}
-			
-			if (userName == null) {
-				if (other.getUserName() != null) {
-					return false;
-				}
-			} else if (!userName.equals(other.getUserName())) {
-				return false;
-			}
-				
-			return true;
-		}		
+		return new AccountingContext(userName, dbFileName);
 	}
 }
