@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Accounting API
+Bundle-SymbolicName: de.tfsw.accounting.api
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: tfsw.de
+Automatic-Module-Name: de.tfsw.accounting-api
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
