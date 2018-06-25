@@ -40,14 +40,18 @@ public class AccountingContext implements Serializable {
 	private String dbFileName;
 	
 	/**
-	 * @param userName {@link #getUserName()}
-	 * @param dbFileName {@link #getDbFileName()}
+	 * Creates a new context.
+	 * 
+	 * @param userName {@link #getUserName()}, must not be empty
+	 * @param dbFileName {@link #getDbFileName()}, must not be empty
+	 * @throws AccountingException if a parameter is <code>null</code> or empty
 	 */
 	public AccountingContext(String userName, String dbFileName) {
 		if (userName == null || userName.isEmpty()) {
 			throw new AccountingException("User name must not be empty");
 		}
 		
+		// TODO add a check if the value actually is a valid file path
 		if (dbFileName == null || dbFileName.isEmpty()) {
 			throw new AccountingException("DB file name must not be empty");
 		}

@@ -5,4 +5,5 @@
       <provide interface="de.tfsw.accounting.AccountingService"/>
    </service>
    <reference bind="bindDb4oService" cardinality="1..1" interface="com.db4o.osgi.Db4oService" name="Db4oService" policy="static" unbind="unbindDb4oService"/>
+   <reference bind="bindEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
 </scr:component>

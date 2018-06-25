@@ -27,10 +27,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 import com.db4o.ObjectContainer;
 import com.db4o.config.BigMathSupport;
@@ -81,6 +85,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	/** */
 	private Db4oService db4oServiceMock;
 	
+	private EventAdmin eventAdminMock;
+	
 	/** DB4o mock. */
 	private ObjectContainer ocMock;
 	
@@ -97,6 +103,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	public void setUp() throws Exception {
 		db4oServiceMock = createMock(Db4oService.class);
 		ocMock = createMock(ObjectContainer.class);
+		eventAdminMock = createMock(EventAdmin.class);
 		serviceUnderTest = new AccountingServiceImpl();
 		
 		// init mock behavior
@@ -149,7 +156,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		expenseTemplateClassMock.cascadeOnUpdate(true);
 		expenseTemplateClassMock.cascadeOnDelete(true);
 		
-		initMocks = new Object[]{db4oServiceMock, configurationMock, userClassMock, userNameFieldMock, clientClassMock, 
+		initMocks = new Object[]{db4oServiceMock, eventAdminMock, configurationMock, userClassMock, userNameFieldMock, clientClassMock, 
 				clientNameMock, invoiceClassMock, invoicePositionsMock, invoiceNumberMock, cvClassMock, expenseTemplateClassMock};
 		
 		expect(db4oServiceMock.openFile(configurationMock, TEST_DB_FILE)).andReturn(ocMock);
@@ -157,9 +164,15 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		expect(ocMock.query(Expense.class)).andReturn(DUMMY_EXPENSES);
 		expect(ocMock.query(Invoice.class)).andReturn(DUMMY_INVOICES);
 		
+		final Map<String, Object> props = new HashMap<>();
+		props.put(AccountingService.EVENT_PROPERTY_INIT_SERVICE, serviceUnderTest);
+		Event expected = new Event(AccountingService.EVENT_TOPIC_SERVICE_INIT, props);
+		eventAdminMock.postEvent(expected);
+		
 		replay(initMocks);
 		
 		serviceUnderTest.bindDb4oService(db4oServiceMock);
+		serviceUnderTest.bindEventAdmin(eventAdminMock);
 	}
 
 	/**
@@ -169,6 +182,7 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 	public void tearDown() throws Exception {
 		verify(initMocks);
 		verify(ocMock);
+		verify(eventAdminMock);
 		
 		assertNotNull(serviceUnderTest.getModelMetaInformation());
 		assertNotNull(serviceUnderTest.getModelMetaInformation().getOldestKnownExpenseDate());

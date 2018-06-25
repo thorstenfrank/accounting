@@ -55,23 +55,7 @@ import de.tfsw.accounting.util.TimeFrame;
  * @author thorsten frank
  *
  */
-public interface AccountingService {
-
-	/**
-	 * Initialises this service with the supplied context, which contains the necessary minimal information needed to
-	 * use this service.
-	 * 
-	 * <p>This method must be the very first call by a client. Subsequent calls to this method will have no effect.
-	 * Until this method finishes processing successfully, all calls to other methods of this service will fail with an
-	 * exception.</p>
-	 * 
-	 * @param context the context to use for init of this service - must <b>NOT</b> be <code>null</code>, and all
-	 * 		  properties of the context need to be non-empty
-	 * 
-	 * @throws AccountingException if the supplied context or one of its properties are <code>null</code>, or if the 
-	 * 		   database cannot be opened
-	 */
-	void init(AccountingContext context);
+public interface AccountingService extends AccountingInitService {
 	
 	/**
 	 * Returns the {@link User} denoted by the name contained in the {@link AccountingContext} that was used to
@@ -386,22 +370,6 @@ public interface AccountingService {
 	 * @see #importModelFromXml(String, String)
 	 */
 	void exportModelToXml(String targetFileName);
-	
-	/**
-	 * Creates a new database that is filled with the information provided in the XML file.
-	 * 
-	 * <p>The XML source file must adhere to the schema definition <code>AccountingModel.xsd</code> and should be
-	 * created using {@link #exportModelToXml(String)}.</p> 
-	 * 
-	 * @param sourceXmlFile  the XML file to import
-	 * @param dbFileLocation location of the DB file where imported information will be stored
-	 * 
-	 * @return the context to use filled with imported data
-	 * 
-	 * @see #exportModelToXml(String)
-	 */
-	@ModelChanging
-	AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation);
 	
 	/**
 	 * Imports expenses from a comma-separated-values file.

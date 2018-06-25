@@ -23,14 +23,20 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
@@ -103,6 +109,8 @@ public class AccountingServiceImpl implements AccountingService {
 	private Db4oService db4oService;
 	private ObjectContainer objectContainer;
 
+	private EventAdmin eventAdmin;
+	
 	private ModelMetaInformationImpl modelMetaInformation;
 	
 	/**
@@ -132,7 +140,7 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 	
 	/**
-	 * @return the db4oService
+	 * @param the db4oService
 	 */
 	protected synchronized void unbindDb4oService(Db4oService db4oService) {
 		LOG.info("Db4o service is being unbound");
@@ -142,6 +150,19 @@ public class AccountingServiceImpl implements AccountingService {
 		} else {
 			LOG.warn("Unkonwn Db4o service instance, will ignore unbind");
 		}
+	}
+	
+	protected synchronized void bindEventAdmin(EventAdmin eventAdmin) {
+		this.eventAdmin = eventAdmin;
+		LOG.info("Binding EventAdmin");
+		final Map<String, Object> properties = new HashMap<>();
+		properties.put(EVENT_PROPERTY_INIT_SERVICE, this);
+		eventAdmin.postEvent(new Event(EVENT_TOPIC_SERVICE_INIT, properties));
+	}
+	
+	@PostConstruct
+	public void postConstruct() {
+		LOG.info("POST CONSTRUCT!");
 	}
 	
 	/**

@@ -16,7 +16,8 @@
 package de.tfsw.accounting;
 
 /**
- * Base exception thrown by the public class of this plugin.
+ * Base exception for the application.
+ * 
  * @author thorsten
  *
  */
