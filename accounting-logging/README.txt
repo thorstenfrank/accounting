@@ -1,5 +1,12 @@
 Logging support for the accounting bundles.
-Provides log4j2
+Re-exports log4j for use by other plugins and provides default log configurations.
+
+The default log configuration simply writes to stdout (using log4j-test.xml, which is used by default by
+log4j). This file is omitted during the build/export (see build.properties), so that when running the application
+in a production environment, logs are written to files in user.home/.accounting.
+
+Different log configurations can be used by applying the "log4j.configurationFile" system property, as is the
+case e.g. during maven surefire tests (see accounting-parent POM for details) 
 
 Apache Log4j
 Copyright 1999-2014 Apache Software Foundation
