@@ -1,28 +1,27 @@
 package de.tfsw.accounting.ui;
 
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
-import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 import org.eclipse.e4.ui.workbench.lifecycle.ProcessAdditions;
 import org.eclipse.e4.ui.workbench.lifecycle.ProcessRemovals;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Monitor;
-import org.eclipse.swt.widgets.Shell;
-import org.osgi.service.event.EventHandler;
+
+import de.tfsw.accounting.AccountingInitService;
+import de.tfsw.accounting.AccountingService;
+import de.tfsw.accounting.ui.setup.ApplicationInit;
 
 /**
- * This is a stub implementation containing e4 LifeCycle annotated methods.<br />
- * There is a corresponding entry in <em>plugin.xml</em> (under the
- * <em>org.eclipse.core.runtime.products' extension point</em>) that references
- * this class.
+ * Accounting UI application life cycle listener. Primarily responsible for ensuring the application can
+ * start up properly.
+ * 
+ * @author Thorsten Frank
+ * @since 2.0
  **/
 @SuppressWarnings("restriction")
 public class AccountingE4UILifeCycle {
@@ -30,41 +29,34 @@ public class AccountingE4UILifeCycle {
 	private static final Logger LOG = LogManager.getLogger(AccountingE4UILifeCycle.class);
 	
 	@PostContextCreate
-	void postContextCreate(IApplicationContext context, IEventBroker eventBroker, Display display) {
+	void postContextCreate(IEclipseContext eclipseContext) {
 		LOG.debug("PostContextCreate");
-		
-		EventHandler handler = event -> {LOG.debug("Event: {}", event);};
-		
-		eventBroker.subscribe(UIEvents.UILifeCycle.ACTIVATE, handler);
-		eventBroker.subscribe(UIEvents.UILifeCycle.APP_STARTUP_COMPLETE, handler);
-		
-		final Shell shell = new Shell(SWT.SHELL_TRIM);
-	    MessageBox msgBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK | SWT.CANCEL);
-	    msgBox.setText("Some text");
-	    msgBox.setMessage("Some message");
-	    
-	    context.applicationRunning();
-	    
-	    setLocation(display, shell);
-	    
-	    if (SWT.OK == msgBox.open()) {
-	    	LOG.info("Now starting the application...");
-	    	
-	    } else {
-	    	LOG.warn("This isn't working for me...");
+
+		// make sure the splash screen comes down
+	    eclipseContext.get(IApplicationContext.class).applicationRunning();
+
+	    final Consumer<AccountingInitService> consumer = ApplicationInit.runApplicationSetup(eclipseContext);
+	    if (consumer == null) {
+	    	LOG.warn("Application setup failed, aborting startup");
 	    	System.exit(-1);
+	    } else {
+	    	LOG.debug("Scheduling init for later...");
+		    eclipseContext.get(IEventBroker.class).subscribe(AccountingService.EVENT_TOPIC_SERVICE_INIT, event -> {
+		    	LOG.debug("Received event from service, now running init");
+				final AccountingInitService service = (AccountingInitService) event.
+						getProperty(AccountingService.EVENT_PROPERTY_INIT_SERVICE);
+				if (service == null) {
+					LOG.warn("No AccountingService instance available from event properties!");
+				} else {
+					LOG.info("AccountingService online, now initializing context...");
+					
+					// TODO in case of an error while running app init, show a dialog and exit...
+					consumer.accept(service);
+				}
+		    });
+
 	    }
-
 	}
-
-    private void setLocation(Display display, Shell shell) {
-        Monitor monitor = display.getPrimaryMonitor();
-        Rectangle monitorRect = monitor.getBounds();
-        Rectangle shellRect = shell.getBounds();
-        int x = monitorRect.x + (monitorRect.width - shellRect.width) / 2;
-        int y = monitorRect.y + (monitorRect.height - shellRect.height) / 2;
-        shell.setLocation(x, y);
-    }
     
 	@PreSave
 	void preSave(IEclipseContext workbenchContext) {
