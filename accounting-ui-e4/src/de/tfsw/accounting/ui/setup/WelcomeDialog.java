@@ -81,7 +81,7 @@ final class WelcomeDialog extends TitleAreaDialog {
 		layout.marginRight = 10;
 		layout.marginBottom = 10;
 		
-		composite.setLayout(new GridLayout());
+		composite.setLayout(layout);
 		addButton(composite, SetupMode.CREATE_NEW, true);
 		addButton(composite, SetupMode.USE_EXISTING, false);
 		addButton(composite, SetupMode.IMPORT_XML, false);
