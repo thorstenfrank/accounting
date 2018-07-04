@@ -17,6 +17,9 @@ Require-Bundle: javax.inject;bundle-version="0.0.0",
  de.tfsw.accounting.core;bundle-version="1.6.0",
  de.tfsw.accounting.logging;bundle-version="1.0.0",
  org.eclipse.e4.core.services;bundle-version="2.1.0",
- org.eclipse.osgi.services;bundle-version="3.6.0"
-Automatic-Module-Name: de.tfsw.accounting.ui
+ org.eclipse.osgi.services;bundle-version="3.6.0",
+ org.eclipse.ui.forms;bundle-version="3.7.101"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: javax.annotation;version="1.0.0";resolution:=optional,
+  javax.inject;version="1.0.0"
+Automatic-Module-Name: de.tfsw.accounting.ui

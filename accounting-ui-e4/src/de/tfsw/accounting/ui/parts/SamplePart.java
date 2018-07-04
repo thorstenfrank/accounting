@@ -53,7 +53,7 @@ public class SamplePart {
 
 		tableViewer = new TableViewer(parent);
 
-		tableViewer.setContentProvider(ArrayContentProvider.getInstance());;
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setInput(createInitialDataModel());
 		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 	}
