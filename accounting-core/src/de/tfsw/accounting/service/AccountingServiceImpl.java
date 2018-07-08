@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -374,6 +375,11 @@ public class AccountingServiceImpl implements AccountingService {
 		return user;
 	}
 
+	@Override
+	public Set<String> getClientNames() {
+		return objectContainer.query(Client.class).stream().map(Client::getName).collect(Collectors.toSet());
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 * @see de.tfsw.accounting.AccountingService#getClients()

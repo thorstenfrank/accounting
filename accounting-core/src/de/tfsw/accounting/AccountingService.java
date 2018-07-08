@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2011 ,2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,37 +53,10 @@ import de.tfsw.accounting.util.TimeFrame;
  * 
  * @author thorsten frank
  *
+ * @deprecated to be removed once the migration to separate services is complete
  */
-public interface AccountingService extends AccountingInitService, UserService {
-	
-	/**
-	 * Returns all {@link Client} instances.
-	 * 
-	 * @return all clients known to the system
-	 */
-	Set<Client> getClients();
-	
-	/**
-	 * Saves the supplied {@link Client} to persistence.
-	 * 
-	 * <p>This method applies to both new and changed existing instances.</p>
-	 * 
-	 * @param client the {@link Client} to save
-	 * 
-	 * @return the saved instance - clients should use this for any further work
-	 */
-	@ModelChanging
-	Client saveClient(Client client);
-	
-	/**
-	 * Removes the supplied client permanently from persistence.
-	 * 
-	 * <p>This method will throw an {@link AccountingException} if there are saved invoices connected to this cient.</p>
-	 * 
-	 * @param client the {@link Client} instance to delete
-	 */
-	@ModelChanging
-	void deleteClient(Client client);
+@Deprecated
+public interface AccountingService extends AccountingInitService, UserService, ClientService {
 	
 	/**
 	 * Returns the next (sequential) invoice number.

@@ -17,8 +17,6 @@ package de.tfsw.accounting.model;
 
 import java.io.Serializable;
 
-import de.tfsw.accounting.Messages;
-
 /**
  * Describes how a payment is to be made.
  * 
@@ -41,6 +39,6 @@ public enum PaymentType implements Serializable {
 	 * @return a locale-sensitive string representation of this payment type
 	 */
 	public String getTranslatedString() {
-		return Messages.translate(this);
+		return name(); // TODO i18n Messages.translate(this);
 	}
 }
