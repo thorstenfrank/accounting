@@ -28,6 +28,7 @@ import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
 import de.tfsw.accounting.model.ExpenseImportParams;
 import de.tfsw.accounting.model.ExpenseImportResult;
+import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.ExpenseType;
 import de.tfsw.accounting.model.IncomeStatement;
 import de.tfsw.accounting.model.Invoice;
@@ -35,9 +36,7 @@ import de.tfsw.accounting.model.InvoicePosition;
 import de.tfsw.accounting.model.InvoiceState;
 import de.tfsw.accounting.model.ModelMetaInformation;
 import de.tfsw.accounting.model.PaymentTerms;
-import de.tfsw.accounting.model.ExpenseTemplate;
 import de.tfsw.accounting.model.Revenue;
-import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.util.TimeFrame;
 
 /**
@@ -55,28 +54,7 @@ import de.tfsw.accounting.util.TimeFrame;
  * @author thorsten frank
  *
  */
-public interface AccountingService extends AccountingInitService {
-	
-	/**
-	 * Returns the {@link User} denoted by the name contained in the {@link AccountingContext} that was used to
-	 * initialize this service.
-	 * 
-	 * @return the current session's user, or <code>null</code> if none exists in persistence
-	 * @throws AccountingException if a technical error occurred while accessing persistence
-	 */
-	User getCurrentUser();
-	
-	/**
-	 * Saves the current user to persistence. 
-	 * 
-	 * <p>Saving includes the user's configured tax rates, bank account and address.</p>
-	 * 
-	 * @param user the {@link User} to save
-	 * 
-	 * @return the saved instance - clients should use this for any further work 
-	 */
-	@ModelChanging
-	User saveCurrentUser(User user);
+public interface AccountingService extends AccountingInitService, UserService {
 	
 	/**
 	 * Returns all {@link Client} instances.

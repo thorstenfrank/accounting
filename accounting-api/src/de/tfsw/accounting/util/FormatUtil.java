@@ -27,12 +27,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.Constants;
-import de.tfsw.accounting.Messages;
 
 /**
  * A utility class for formatting and parsing numbers, currencies and dates in a locale-sensitive way. 
@@ -40,11 +36,11 @@ import de.tfsw.accounting.Messages;
  * @author thorsten frank
  */
 public final class FormatUtil {
-
-	/**
-	 * 
-	 */
-    private static final Logger LOG = LogManager.getLogger(FormatUtil.class);
+//
+//	/**
+//	 * 
+//	 */
+//    private static final Logger LOG = LogManager.getLogger(FormatUtil.class);
 
     /**
      * 
@@ -217,8 +213,9 @@ public final class FormatUtil {
     	try {
 			return (BigDecimal)getNumberFormatter(locale).parse(value);
 		} catch (ParseException e) {
-			LOG.error(String.format("Unparseable decimal value [%s] using locale [%s]", value, locale.toString()), e); //$NON-NLS-1$
-			throw new AccountingException(Messages.bind(Messages.FormatUtil_errorParsingDecimal, value), e);
+//			LOG.error(String.format("Unparseable decimal value [%s] using locale [%s]", value, locale.toString()), e); //$NON-NLS-1$
+//			throw new AccountingException(Messages.bind(Messages.FormatUtil_errorParsingDecimal, value), e);
+			throw new AccountingException("Error parsing decimal: " + value, e);
 		}
     }
     
@@ -263,8 +260,9 @@ public final class FormatUtil {
         	Number numberValue = getPercentFormatter(locale).parse(value);
             return new BigDecimal(numberValue.toString());
         } catch (ParseException e) {
-            LOG.error("Unparseable percentage value: " + value, e); //$NON-NLS-1$
-            throw new AccountingException(Messages.bind(Messages.FormatUtil_errorParsingPercentage, value), e);
+//            LOG.error("Unparseable percentage value: " + value, e); //$NON-NLS-1$
+//            throw new AccountingException(Messages.bind(Messages.FormatUtil_errorParsingPercentage, value), e);
+        	throw new AccountingException("Error parsing percentage: " + value, e);
         }
     }
     

@@ -13,6 +13,9 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 
 public abstract class AbstractEditorOpeningView {
 
+	public static final String EDITOR_PARTSTACK_ID = "de.tfsw.accounting.ui.partstack.editors";
+	public static final String KEY_ELEMENT_ID = "editedElementId";
+	
 	protected final Logger log = LogManager.getLogger(getClass().getName());
 	
 	@Inject
@@ -24,22 +27,24 @@ public abstract class AbstractEditorOpeningView {
 	@Inject
 	private MApplication app;
 	
-	protected void openExistingOrCreateNew(String name) {
+	/**
+	 * 
+	 * @param name
+	 */
+	protected void openExistingOrCreateNew(String elementName, String targetEditorId) {
 		MPart part = partService.getParts().stream()
-				.filter(p -> isThisThePart(p, name))
+				.filter(p -> isThisThePart(p, elementName, targetEditorId))
 				.findFirst()
-				.orElseGet(() -> createPart(name));
+				.orElseGet(() -> createPart(elementName, targetEditorId));
 		
 		partService.showPart(part, PartState.ACTIVATE);
 	}
 	
-	private boolean isThisThePart(MPart part, String name) {
+	private boolean isThisThePart(MPart part, String name, String targetEditorId) {
 		boolean result = false;
-		if ("de.tfsw.accounting.ui.part.clienteditor".equals(part.getElementId())) {
-			log.debug("Checking part with correct ID");
-			String value = part.getProperties().get("wuppdi");
-			log.debug("Property wuppdi: {}", value);
-			result = name.equals(value);
+		if (targetEditorId.equals(part.getElementId())) {
+			String editedElementId = part.getProperties().get(KEY_ELEMENT_ID);
+			result = name.equals(editedElementId);
 		} else {
 			log.debug("Different id: {}", part.getElementId());
 		}
@@ -47,12 +52,12 @@ public abstract class AbstractEditorOpeningView {
 		return result;
 	}
 	
-	private MPart createPart(String name) {
+	private MPart createPart(String name, String targetEditorId) {
 		log.debug("Part not found, creating new: {}", name);
-		MPart part = partService.createPart("de.tfsw.accounting.ui.part.clienteditor");
+		MPart part = partService.createPart(targetEditorId);
 		part.setVisible(true);
-		part.getProperties().put("wuppdi", name);
-		MPartStack partStack = (MPartStack) modelService.find("de.tfsw.accounting.ui.partstack.editors", app);
+		part.getProperties().put(KEY_ELEMENT_ID, name);
+		MPartStack partStack = (MPartStack) modelService.find(EDITOR_PARTSTACK_ID, app);
 		partStack.getChildren().add(part);
 		return part;
 	}

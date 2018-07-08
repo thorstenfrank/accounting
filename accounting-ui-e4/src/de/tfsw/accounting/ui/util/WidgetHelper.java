@@ -18,6 +18,7 @@ package de.tfsw.accounting.ui.util;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -29,6 +30,8 @@ import org.eclipse.swt.widgets.Text;
 public final class WidgetHelper {
 
 	private static final GridDataFactory GRAB_HORIZONTAL = GridDataFactory.fillDefaults().grab(true, false);
+	
+	private static final GridDataFactory GRAB_BOTH = GridDataFactory.fillDefaults().grab(true, true);
 	
 	/**
 	 * Creates a new label with the specified parent and text.
@@ -62,11 +65,29 @@ public final class WidgetHelper {
 		if (text != null) {
 			theText.setText(text);
 		}
-		GRAB_HORIZONTAL.applyTo(theText);
+		grabBoth(theText);
 		
 		return theText;
 	}
 
+	/**
+	 * The same as <code>GridDataFactory.fillDefaults().grab(true, false).applyTo(control)</code>.
+	 * 
+	 * @param control the {@link Control} to apply the grid layout data to
+	 */
+	public static void grabHorizontal(Control control) {
+		GRAB_HORIZONTAL.applyTo(control);
+	}
+	
+	/**
+	 * The same as <code>GridDataFactory.fillDefaults().grab(true, true).applyTo(control)</code>.
+	 * 
+	 * @param control the {@link Control} to apply the grid layout data to
+	 */
+	public static void grabBoth(Control control) {
+		GRAB_BOTH.applyTo(control);
+	}
+	
 	/** */
 	private WidgetHelper() {
 		// ...

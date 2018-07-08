@@ -21,7 +21,6 @@ import org.eclipse.jface.wizard.Wizard;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingInitService;
-import de.tfsw.accounting.ui.util.AccountingPreferences;
 
 /**
  * Simple base class for setup wizards.
@@ -45,7 +44,6 @@ abstract class AbstractSetupWizard extends Wizard {
 	Consumer<AccountingInitService> buildFunctionForWhenServiceComesOnline() {
 		return service -> {
 			service.init(context);
-			AccountingPreferences.storeContext(context);
 		};
 	}
 	

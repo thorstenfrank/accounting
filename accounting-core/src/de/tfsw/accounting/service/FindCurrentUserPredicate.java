@@ -15,6 +15,9 @@
  */
 package de.tfsw.accounting.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.db4o.query.Predicate;
 
 import de.tfsw.accounting.AccountingContext;
@@ -31,6 +34,8 @@ class FindCurrentUserPredicate extends Predicate<User> {
 	 * 
 	 */
 	private static final long serialVersionUID = -1325854897879815773L;
+	
+	private static final Logger LOG = LogManager.getLogger(FindCurrentUserPredicate.class);
 	
 	/** The context. */
 	private AccountingContext context;
@@ -53,7 +58,7 @@ class FindCurrentUserPredicate extends Predicate<User> {
 		if (candidate == null) {
 			return false;
 		}
-		
+		LOG.debug("Comparing user: {}", candidate.getName());
 		return context.getUserName().equals(candidate.getName());
 	}
 

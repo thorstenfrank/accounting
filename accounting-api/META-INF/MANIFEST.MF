@@ -7,4 +7,6 @@ Bundle-Vendor: tfsw.de
 Automatic-Module-Name: de.tfsw.accounting.api
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: de.tfsw.accounting
+Export-Package: de.tfsw.accounting,
+ de.tfsw.accounting.model,
+ de.tfsw.accounting.util

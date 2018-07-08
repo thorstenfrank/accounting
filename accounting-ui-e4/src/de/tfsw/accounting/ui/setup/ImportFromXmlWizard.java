@@ -28,10 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
-import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingInitService;
 import de.tfsw.accounting.Constants;
-import de.tfsw.accounting.ui.util.AccountingPreferences;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
@@ -74,8 +72,7 @@ final class ImportFromXmlWizard extends AbstractSetupWizard {
 	@Override
 	Consumer<AccountingInitService> buildFunctionForWhenServiceComesOnline() {
 		return service -> {
-			final AccountingContext context = service.importModelFromXml(xmlFile, dbFile);
-			AccountingPreferences.storeContext(context);
+			service.importModelFromXml(xmlFile, dbFile);
 		};
 	}
 	

@@ -1,6 +1,6 @@
 package de.tfsw.accounting.ui.setup;
 
-public class Messages {
+public final class Messages {
 
 	public String wuppdi;
 	

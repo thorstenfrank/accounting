@@ -13,6 +13,7 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import de.tfsw.accounting.ui.AbstractEditorOpeningView;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
@@ -21,6 +22,8 @@ import de.tfsw.accounting.ui.util.WidgetHelper;
  */
 public class ClientEditor {
 
+	public static final String PART_ID = "de.tfsw.accounting.ui.part.clienteditor";
+	
 	private static final Logger LOG = LogManager.getLogger(ClientEditor.class);
 	
 	@Inject
@@ -30,7 +33,7 @@ public class ClientEditor {
 	
 	@PostConstruct
 	public void createComposite(Composite parent) {
-		this.name = part == null ? "NULL!" : part.getProperties().get("wuppdi");
+		this.name = part == null ? "NULL!" : part.getProperties().get(AbstractEditorOpeningView.KEY_ELEMENT_ID);
 		LOG.debug("Creating composite for {}", name);
 		LOG.debug("Part details: {}", part.getElementId());
 		parent.setLayout(new GridLayout());

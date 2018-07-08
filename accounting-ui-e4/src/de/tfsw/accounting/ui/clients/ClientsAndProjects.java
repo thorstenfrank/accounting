@@ -58,15 +58,15 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 			if (event.getSelection() instanceof TreeSelection) {
 				TreeSelection ts = (TreeSelection) event.getSelection();
 				log.debug("DoubleClick from tree: {}", ts);
-				
-				if (ts.getFirstElement() instanceof TestClient) {
-					String name = ((TestClient) ts.getFirstElement()).name;
+				Object element = ts.getFirstElement();
+				if (element instanceof TestClient) {
+					String name = ((TestClient) element).name;
 					log.debug("Opening client editor for: {}", name);
-					openExistingOrCreateNew(name);
-				} else if (ts.getFirstElement() instanceof TestProject) {
-					log.debug("Project: {}", ((TestProject) ts.getFirstElement()).name);
+					openExistingOrCreateNew(name, ClientEditor.PART_ID);
+				} else if (element instanceof TestProject) {
+					log.debug("Project: {}", ((TestProject) element).name);
 				} else {
-					log.debug("Unkown type: {}", ts.getFirstElement().getClass().getName());
+					log.debug("Unkown type: {}", element.getClass().getName());
 				}
 				
 				
@@ -75,7 +75,7 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 			}
 		});
 	}
-		
+	
 	@Focus
 	public void focusGained() {
 		viewer.getTree().setFocus();

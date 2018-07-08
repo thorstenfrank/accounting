@@ -215,6 +215,7 @@ public class AccountingServiceImpl implements AccountingService {
 		// set this service to initialised - only after all necessary processing
 		// finished successfully
 		initialised = true;
+		eventAdmin.postEvent(ContextInitialisedEventImpl.create(context));
 	}
 
 	/**
@@ -362,7 +363,7 @@ public class AccountingServiceImpl implements AccountingService {
 			if (userList != null && userList.size() == 1) {
 				user = userList.get(0);
 			} else {
-				LOG.warn("Cannot identify current user, list size is " + userList.size()); //$NON-NLS-1$
+				LOG.warn("No user found for context name: {}", context.getUserName()); //$NON-NLS-1$
 			}
 		} catch (Db4oIOException e) {
 			throwDb4oIoException(e);

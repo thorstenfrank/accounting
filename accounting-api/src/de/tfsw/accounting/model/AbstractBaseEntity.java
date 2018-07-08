@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 , 2014 Thorsten Frank (accounting@tfsw.de).
+ *  Copyright 2014 Thorsten Frank (accounting@tfsw.de).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,22 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package de.tfsw.accounting;
+package de.tfsw.accounting.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
 
 /**
- * This annotation is used by methods in {@link AccountingService} to denote changes to the model.
- *  
- * @author thorsten
- * @deprecated to be deleted
+ * Abstract base class for all entity classes, reserved for future use.
+ * 
+ * @author Thorsten Frank
+ * 
+ * @since 1.2
+ *
  */
-@Deprecated
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface ModelChanging {
+public class AbstractBaseEntity implements Serializable {
+
+	/**
+	 * Serial Version UID.
+	 */
+	private static final long serialVersionUID = 1L;
 
 }

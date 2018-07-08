@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Shell;
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.AccountingInitService;
-import de.tfsw.accounting.AccountingService;
 import de.tfsw.accounting.ui.util.AccountingPreferences;
 
 /**
@@ -86,14 +85,10 @@ public final class ApplicationInit {
 		final IMessageFactoryService mfs = eclipseContext.get(IMessageFactoryService.class);
 		final ResourceBundleProvider rbp = eclipseContext.get(ResourceBundleProvider.class);
 		
-		Locale locale = eclipseContext.get(Locale.class);
+		Locale locale = (Locale) eclipseContext.get(TranslationService.LOCALE);
 		if (locale == null) {
-			LOG.info("No locale found by class");
-			locale = (Locale) eclipseContext.get(TranslationService.LOCALE);
-			if (locale == null) {
-				LOG.info("No locale found by name, using default");
-				locale = Locale.getDefault();
-			}
+			LOG.debug("No locale found in context, using default");
+			locale = Locale.getDefault();
 		}
 		
 		final Messages messages = mfs.getMessageInstance(locale, Messages.class, rbp);
@@ -115,7 +110,7 @@ public final class ApplicationInit {
 				service.init(accountingContext);
 			};
 		} catch (AccountingException e) {
-			LOG.warn("Couldn't instantiate context from preferences, assuming none exist", e);
+			LOG.warn("Couldn't instantiate context from preferences, assuming none exist");
 		}
 		
 		return result;
@@ -127,6 +122,8 @@ public final class ApplicationInit {
 	 * @return
 	 */
 	private Consumer<AccountingInitService> initFromUserInput(final Display display, final Messages messages) {
+		LOG.debug("Creating setup wizard");
+		
 		final Shell shell = createShell(display);
 		final WelcomeDialog welcomeDialog = new WelcomeDialog(shell, messages);
 		Consumer<AccountingInitService> result = null;

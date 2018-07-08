@@ -23,6 +23,7 @@
               <children xsi:type="menu:HandledToolItem" xmi:id="_TMEWIH7QEeiz06OzottI9A" elementId="accounting-ui-e4.handledtoolitem.go3" label="Go3" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/report.png" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
             </toolbar>
           </children>
+          <children xsi:type="basic:Part" xmi:id="_LinFkIA9Eei-bZK88il_qQ" elementId="de.tfsw.accounting.ui.part.user" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.user.UserEditor" label="%userEditor" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/user_suit.png" closeable="true"/>
         </children>
       </children>
       <children xsi:type="basic:PartSashContainer" xmi:id="_64cAsH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partsashcontainer.primary-right" containerData="5000" horizontal="true">

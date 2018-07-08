@@ -2,6 +2,7 @@ package de.tfsw.accounting.ui.parts;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -20,8 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import de.tfsw.accounting.AccountingService;
-
 public class SamplePart {
 
 	private static final Logger LOG = LogManager.getLogger(SamplePart.class);
@@ -32,8 +31,8 @@ public class SamplePart {
 	@Inject
 	private MDirtyable dirty;
 
-	@Inject
-	private AccountingService accountingService;
+//	@Inject
+//	private AccountingService accountingService;
 	
 	@PostConstruct
 	public void createComposite(Composite parent) {
