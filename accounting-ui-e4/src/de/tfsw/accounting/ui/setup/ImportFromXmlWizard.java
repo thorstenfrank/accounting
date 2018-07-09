@@ -127,7 +127,7 @@ final class ImportFromXmlWizard extends AbstractSetupWizard {
 				updateIsPageComplete();    			
     		}));
     		
-    		WidgetHelper.createLabel(composite, messages.setupWizards_dataFileLabel);
+    		WidgetHelper.createLabel(composite, messages.setupWizards_dataFileLabelNew);
     		final Text dbFileText = WidgetHelper.createSingleBorderText(
     				composite,
     				ApplicationInit.buildDefaultDbFileLocation());

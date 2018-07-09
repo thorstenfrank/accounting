@@ -82,7 +82,8 @@ class UserNameAndDbFileWizardPage extends WizardPage {
 		WidgetHelper.createLabel(composite, null);
 		
 		// Data file
-		WidgetHelper.createLabel(composite, messages.setupWizards_dataFileLabel);
+		WidgetHelper.createLabel(composite, 
+				newFile ? messages.setupWizards_dataFileLabelNew : messages.setupWizards_dataFileLabelExisting);
 		
 		dbFile = WidgetHelper.createSingleBorderText(
 				composite, 
