@@ -9,7 +9,7 @@
 	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n" />
 	    </File>
 	    <File name="business_log" fileName="${business_log_file}">
-	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n" />
+	      <PatternLayout pattern="%msg%n" />
 	    </File>
 	</Appenders>
 	<Loggers>

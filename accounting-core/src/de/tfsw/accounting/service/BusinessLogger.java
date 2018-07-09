@@ -16,6 +16,7 @@
 package de.tfsw.accounting.service;
 
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.LocalDate;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,15 +42,14 @@ class BusinessLogger {
 	static enum Operation {
 		SAVE, DELETE;
 	}
-	
-	private static final String SEPARATOR = " :|: ";
-	
+		
 	/** */
 	private static final Logger BUSINESS_LOG = LogManager.getLogger(BusinessLogger.class); //$NON-NLS-1$
 
 	/** */
 	private static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+			.registerTypeAdapter(Instant.class, new InstantSerializer())
 			.create();
 	
 	/**
@@ -58,22 +58,58 @@ class BusinessLogger {
 	 * @param entity
 	 */
 	static void log(Operation operation, final AbstractBaseEntity entity) {
-		final StringBuilder sb = new StringBuilder(entity.getClass().getName());
-		sb.append(SEPARATOR).append(operation).append(SEPARATOR);
-		sb.append(GSON.toJson(entity));
-		BUSINESS_LOG.info(sb.toString());
+		WriteOperation op = new WriteOperation();
+		op.setEntity(entity);
+		op.setOperation(operation);
+		op.setTimestamp(Instant.now());
+		BUSINESS_LOG.info(GSON.toJson(op));
 	}
 	
-	/**
-	 * 
-	 * @author Thorsten Frank
-	 *
-	 */
 	private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
 		
 		@Override
 		public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
 			return new JsonPrimitive(src.toString());
+		}
+	}
+	
+	private static class InstantSerializer implements JsonSerializer<Instant> {
+		@Override
+		public JsonElement serialize(Instant src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonPrimitive(src.toString());
+		}
+	}
+	
+	static class WriteOperation {
+		private Operation operation;
+		private Instant timestamp;
+		private String type;
+		private AbstractBaseEntity entity;
+		
+		public Operation getOperation() {
+			return operation;
+		}
+		public void setOperation(Operation operation) {
+			this.operation = operation;
+		}
+		public Instant getTimestamp() {
+			return timestamp;
+		}
+		public void setTimestamp(Instant timestamp) {
+			this.timestamp = timestamp;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public AbstractBaseEntity getEntity() {
+			return entity;
+		}
+		public void setEntity(AbstractBaseEntity entity) {
+			this.type = entity.getClass().getName();
+			this.entity = entity;
 		}
 	}
 }
