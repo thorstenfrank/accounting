@@ -52,12 +52,10 @@ public final class WidgetHelper {
 
 	/**
 	 * Creates a simple text field with styles {@link SWT#SINGLE} and
-	 * {@link SWT#BORDER}.
+	 * {@link SWT#BORDER}. Will grab horizontally in a grid layout.
 	 * 
-	 * @param parent
-	 *            parent composite
-	 * @param text
-	 *            text for the widget, may be <code>null</code>
+	 * @param parent parent composite
+	 * @param text text for the widget, may be <code>null</code>
 	 * @return the {@link Text}
 	 */
 	public static Text createSingleBorderText(Composite parent, String text) {
@@ -65,7 +63,7 @@ public final class WidgetHelper {
 		if (text != null) {
 			theText.setText(text);
 		}
-		grabBoth(theText);
+		grabHorizontal(theText);
 		
 		return theText;
 	}

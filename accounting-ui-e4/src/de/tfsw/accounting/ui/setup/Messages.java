@@ -13,7 +13,8 @@ public final class Messages {
 	
 	public String createNewWizard_windowTitle;
 
-	public String setupWizards_dataFileLabel;
+	public String setupWizards_dataFileLabelNew;
+	public String setupWizards_dataFileLabelExisting;
 	public String setupWizards_dataFileSelectText;
 	public String setupWizards_errorDataFileExists;
 	
