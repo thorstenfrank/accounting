@@ -3,7 +3,9 @@ Accounting Product
 
 Contains the Eclipse RCP product definition.
 
-Since switching to a feature-based product, the following plugins are missing from the previous config:
+# Notes
+
+1) Since switching to a feature-based product, the following plugins are missing from the previous config:
 
 <plugin id="org.eclipse.ui.forms"/>
 
@@ -24,4 +26,6 @@ Also missing, but that hasn't caused any problems so far:
 
 <plugin id="org.eclipse.osgi.util"/>
 
- 
+2) Since the introduction of the accounting-api project, and placing the service interfaces there, the product config 
+needs to include an auto-start configuration for the accounting-core bundle, otherwise the service impl never gets
+created and cannot be injected into the UI parts.
