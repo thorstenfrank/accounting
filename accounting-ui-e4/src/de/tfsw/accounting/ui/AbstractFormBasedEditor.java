@@ -3,6 +3,8 @@
  */
 package de.tfsw.accounting.ui;
 
+import java.text.Normalizer.Form;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -14,14 +16,14 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.model.application.ui.MDirtyable;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.Form;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
@@ -34,9 +36,12 @@ public abstract class AbstractFormBasedEditor {
 
 	private final Logger log = LogManager.getLogger(getClass());
 	
-	private FormToolkit toolkit;
-	private ScrolledForm form;
+//	private FormToolkit toolkit;
+//	private ScrolledForm form;
 	private DataBindingContext bindingContext;
+	
+	@Inject
+	private MPart part;
 	
 	@Inject
 	private MDirtyable dirtyable;
@@ -45,20 +50,22 @@ public abstract class AbstractFormBasedEditor {
 	public void initControl(Composite parent) {
 		log.debug("PostCreate from superclass!");
 		
-		this.toolkit = new FormToolkit(parent.getDisplay());
-		this.form = toolkit.createScrolledForm(parent);
+//		this.toolkit = new FormToolkit(parent.getDisplay());
+//		this.form = toolkit.createScrolledForm(parent);
 		this.bindingContext = new DataBindingContext();
+//		
+//		createControl(form.getBody());
+//		
+//		toolkit.decorateFormHeading(form.getForm());
+//		form.reflow(true);
 		
-		createControl(form.getBody());
-		
-		toolkit.decorateFormHeading(form.getForm());
-		form.reflow(true);
+		createControl(parent);
 	}
 	
 	@Focus
 	public void onFocus() {
 		log.debug("Focus gained");
-		form.getBody().setFocus();
+//		form.getBody().setFocus();
 	}
 	
 	/**
@@ -67,6 +74,20 @@ public abstract class AbstractFormBasedEditor {
 	 * @param parent the equivalent of {@link Form#getBody()}
 	 */
 	protected abstract void createControl(Composite parent);
+	
+	/**
+	 * {@link MPart#setLabel(String)}
+	 */
+	protected void setPartLabel(final String label) {
+		this.part.setLabel(label);
+	}
+	
+	/**
+	 * {@link MPart#getProperties()}
+	 */
+	protected String getPartProperty(final String key) {
+		return part.getProperties().get(key);
+	}
 	
 	/**
 	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}.
@@ -79,7 +100,8 @@ public abstract class AbstractFormBasedEditor {
 	 * @return the {@link Text}
 	 */
 	protected Text createText(Composite parent, String text) {
-		Text textField = getToolkit().createText(parent, text, SWT.SINGLE | SWT.BORDER);
+		Text textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//				getToolkit().createText(parent, text, SWT.SINGLE | SWT.BORDER);
 		WidgetHelper.grabHorizontal(textField);
 		return textField;
 	}
@@ -112,7 +134,9 @@ public abstract class AbstractFormBasedEditor {
 	 * @return
 	 */
 	protected Text createTextWithLabel(Composite parent, String label, String text, Object modelObject, String propertyName) {
-		toolkit.createLabel(parent, label);
+		Label labelWidget = new Label(parent, SWT.BORDER);
+		labelWidget.setText(label);
+		//toolkit.createLabel(parent, label);
 		return createText(parent, text, modelObject, propertyName);
 	}
 	
@@ -125,8 +149,8 @@ public abstract class AbstractFormBasedEditor {
 	@SuppressWarnings("unchecked")
 	protected Binding createBindings(Text text, Object modelObject, String propertyName) {
 //		text.addFocusListener(this);
-//		text.addKeyListener(this);
-		text.addKeyListener(KeyListener.keyReleasedAdapter(e -> setDirty(true)));
+//		text.addKeyListener(KeyListener.keyReleasedAdapter(e -> setDirty(true)));
+		text.addModifyListener(e -> setDirty(true));
 		return bindingContext.bindValue(
 				WidgetProperties.text(SWT.Modify).observe(text), 
 				PojoProperties.value(propertyName).observe(modelObject));
@@ -151,20 +175,20 @@ public abstract class AbstractFormBasedEditor {
 //		text.addFocusListener(this);
 //		text.addKeyListener(this);
 	}
-	
-	/**
-	 * @return the toolkit
-	 */
-	protected FormToolkit getToolkit() {
-		return toolkit;
-	}
-
-	/**
-	 * @return the form
-	 */
-	protected ScrolledForm getForm() {
-		return form;
-	}
+//	
+//	/**
+//	 * @return the toolkit
+//	 */
+//	protected FormToolkit getToolkit() {
+//		return toolkit;
+//	}
+//
+//	/**
+//	 * @return the form
+//	 */
+//	protected ScrolledForm getForm() {
+//		return form;
+//	}
 
 	/**
 	 * @return
@@ -179,6 +203,7 @@ public abstract class AbstractFormBasedEditor {
 	 * @see org.eclipse.e4.ui.model.application.ui.MDirtyable#setDirty(boolean)
 	 */
 	protected void setDirty(boolean value) {
+		log.debug("Dirty status changing to {}", value);
 		dirtyable.setDirty(value);
 	}
 	

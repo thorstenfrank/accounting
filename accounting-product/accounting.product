@@ -224,13 +224,10 @@
    </plugins>
 
    <features>
-      <feature id="de.tfsw.accounting.feature"/>
-      <feature id="de.tfsw.accounting.elster.feature"/>
-      <feature id="org.eclipse.rcp"/>
-      <feature id="org.eclipse.emf.common"/>
+      <feature id="de.tfsw.accounting.feature" version="1.5.0.qualifier"/>
+      <feature id="org.eclipse.e4.rcp" version="1.6.3.v20180329-0507"/>
       <feature id="org.eclipse.emf.ecore"/>
-      <feature id="org.eclipse.help"/>
-      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.emf.common"/>
    </features>
 
    <configurations>

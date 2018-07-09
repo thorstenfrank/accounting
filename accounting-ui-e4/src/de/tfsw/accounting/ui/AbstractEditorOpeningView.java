@@ -45,15 +45,17 @@ public abstract class AbstractEditorOpeningView {
 		if (targetEditorId.equals(part.getElementId())) {
 			String editedElementId = part.getProperties().get(KEY_ELEMENT_ID);
 			result = name.equals(editedElementId);
-		} else {
-			log.debug("Different id: {}", part.getElementId());
+		}
+		
+		if (result) {
+			log.debug("Re-using existing open part found for editor id [{}] and name [{}]", targetEditorId, name);
 		}
 		
 		return result;
 	}
 	
 	private MPart createPart(String name, String targetEditorId) {
-		log.debug("Part not found, creating new: {}", name);
+		log.debug("Creating new editor with id [{}]for element [{}]", targetEditorId, name);
 		MPart part = partService.createPart(targetEditorId);
 		part.setVisible(true);
 		part.getProperties().put(KEY_ELEMENT_ID, name);
