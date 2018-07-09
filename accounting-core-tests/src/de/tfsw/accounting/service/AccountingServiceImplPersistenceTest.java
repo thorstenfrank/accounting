@@ -41,6 +41,7 @@ import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.AccountingService;
 import de.tfsw.accounting.BaseTestFixture;
 import de.tfsw.accounting.Messages;
+import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.Expense;
 import de.tfsw.accounting.model.ExpenseCollection;
@@ -210,43 +211,58 @@ public class AccountingServiceImplPersistenceTest extends BaseTestFixture {
 	@Test
 	public void testClient() {
 		// make sure the setup was ok - the default test client should be in the DB
-		Set<Client> clients = serviceUnderTest.getClients();
-		assertNotNull(clients);
-		assertEquals(1, clients.size());
-		assertEquals(getTestClient(), clients.iterator().next());
+		Set<String> clientNames = serviceUnderTest.getClientNames();
+		assertNotNull(clientNames);
+		assertEquals(1, clientNames.size());
+		assertEquals(getTestClient().getName(), clientNames.iterator().next());
+		
+		assertEquals(getTestClient(), serviceUnderTest.getClient(getTestClient().getName()));
 		
 		// save another client
 		Client client = new Client();
 		client.setName("The Client");
 		client = serviceUnderTest.saveClient(client);
-		clients = serviceUnderTest.getClients();
-		assertEquals(2, clients.size());
-		for (Client saved : clients) {
-			if (!getTestClient().equals(saved)) {
-				assertEquals(client, saved);
+		clientNames = serviceUnderTest.getClientNames();
+		assertEquals(2, clientNames.size());
+		for (String saved : clientNames) {
+			Client c = serviceUnderTest.getClient(saved);
+			if (!getTestClient().equals(c)) {
+				assertEquals(client, c);
 			}
 		}
 		
 		// check Unique name constraint
 		Client another = new Client();
 		another.setName(client.getName());
+		another.setClientNumber("007");
+		another.setAddress(new Address());
+		another.getAddress().setCity("Anothercity");
+		another.getAddress().setEmail("them@their.server.com");
+		another.getAddress().setStreet("Another Street 17");
 		try {
 			serviceUnderTest.saveClient(another);
 			fail("Should have caught exception because of unique key violation");
 			
 			// make sure the client wasn't saved
-			clients = serviceUnderTest.getClients();
-			assertEquals(2, clients.size());
+			clientNames = serviceUnderTest.getClientNames();
+			assertEquals(2, clientNames.size());
+			
+			final Client anotherFromDB = serviceUnderTest.getClient(another.getName());
+			assertEquals(another, anotherFromDB);
+			assertEquals(another.getClientNumber(), anotherFromDB.getClientNumber());
+			assertEquals(another.getAddress().getCity(), anotherFromDB.getAddress().getCity());
+			assertEquals(another.getAddress().getEmail(), anotherFromDB.getAddress().getEmail());
+			assertEquals(another.getAddress().getStreet(), anotherFromDB.getAddress().getStreet());
 		} catch (AccountingException e) {
 			// this is what we want
 		}
 		
 		// check delete...
 		serviceUnderTest.deleteClient(client);
-		clients = serviceUnderTest.getClients();
-		assertNotNull(clients);
-		assertEquals(1, clients.size());
-		assertEquals(getTestClient(), clients.iterator().next());
+		clientNames = serviceUnderTest.getClientNames();
+		assertNotNull(clientNames);
+		assertEquals(1, clientNames.size());
+		assertEquals(getTestClient().getName(), clientNames.iterator().next());
 	}
 	
 	/**

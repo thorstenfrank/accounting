@@ -31,8 +31,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +53,7 @@ import com.db4o.ext.Db4oException;
 import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
-import com.db4o.query.Query;
+import com.db4o.query.Predicate;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingContextFactory;
@@ -159,11 +157,6 @@ public class AccountingServiceImpl implements AccountingService {
 		final Map<String, Object> properties = new HashMap<>();
 		properties.put(EVENT_PROPERTY_INIT_SERVICE, this);
 		eventAdmin.postEvent(new Event(EVENT_TOPIC_SERVICE_INIT, properties));
-	}
-	
-	@PostConstruct
-	public void postConstruct() {
-		LOG.info("POST CONSTRUCT!");
 	}
 	
 	/**
@@ -337,9 +330,7 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * 
-	 * @see de.tfsw.accounting.AccountingService#saveCurrentUser(de.tfsw.accounting.model.User)
 	 */
 	@Override
 	public User saveCurrentUser(User user) {
@@ -350,54 +341,47 @@ public class AccountingServiceImpl implements AccountingService {
 
 	/**
 	 * 
-	 * {@inheritDoc}
-	 * 
-	 * @see de.tfsw.accounting.AccountingService#getCurrentUser()
 	 */
 	@Override
 	public User getCurrentUser() {
 		LOG.debug("getCurrentUser"); //$NON-NLS-1$
 		User user = null;
-
-		try {
-			ObjectSet<User> userList = objectContainer.query(new FindCurrentUserPredicate(context));
-			if (userList != null && userList.size() == 1) {
-				user = userList.get(0);
-			} else {
-				LOG.warn("No user found for context name: {}", context.getUserName()); //$NON-NLS-1$
-			}
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
+		ObjectSet<User> userList = runFindQuery(new FindCurrentUserPredicate(context));
+		if (userList != null && userList.size() == 1) {
+			user = userList.get(0);
+		} else {
+			LOG.warn("No user found for context name: {}", context.getUserName()); //$NON-NLS-1$
 		}
 
 		return user;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public Set<String> getClientNames() {
-		return objectContainer.query(Client.class).stream().map(Client::getName).collect(Collectors.toSet());
+		return runFindQuery(Client.class).stream().map(Client::getName).collect(Collectors.toSet());
 	}
 	
+	@Override
+	public Client getClient(String name) {
+		ObjectSet<Client> clients = runFindQuery(new FindClientByNamePredicate(name));
+		
+		if (clients != null && clients.size() == 1) {
+			return clients.get(0);
+		}
+		
+		return null;
+	}
+
 	/**
 	 * {@inheritDoc}.
 	 * @see de.tfsw.accounting.AccountingService#getClients()
 	 */
 	@Override
 	public Set<Client> getClients() {
-		
-		Set<Client> clients = new HashSet<Client>();
-		
-		try {
-			clients.addAll(objectContainer.query(Client.class));
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		}
-		
-		return clients;
+		return new HashSet<Client>(runFindQuery(Client.class));
 	}
 
 	/**
@@ -471,11 +455,8 @@ public class AccountingServiceImpl implements AccountingService {
 	 * @return
 	 */
 	private InvoiceSequencer getInvoiceSequencer() {
-		if (objectContainer.ext().setSemaphore(INVOICE_SEQUENCER_SEMAPHORE, SEMAPHORE_WAIT_TIMEOUT)) {
-			Query query = objectContainer.query();
-			query.constrain(InvoiceSequencer.class);
-			
-			ObjectSet<InvoiceSequencer> set = query.execute();
+		if (objectContainer.ext().setSemaphore(INVOICE_SEQUENCER_SEMAPHORE, SEMAPHORE_WAIT_TIMEOUT)) {			
+			ObjectSet<InvoiceSequencer> set = runFindQuery(InvoiceSequencer.class);
 			
 			InvoiceSequencer sequencer = null;
 			
@@ -752,20 +733,15 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("getInvoice: " + invoiceNumber); //$NON-NLS-1$
 		Invoice invoice = null;
 
-		try {
-			ObjectSet<Invoice> invoiceList = objectContainer.query(new GetInvoicePredicate(invoiceNumber));
-			
-			if (invoiceList == null || invoiceList.size() < 1) {
-				invoice = null;
-			} else if (invoiceList.size() == 1) {
-				invoice = invoiceList.get(0);
-			} else if (invoiceList.size() > 1) {
-				LOG.warn("Should have found 1 invoice, but found instead: " + invoiceList.size()); //$NON-NLS-1$
-			}
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
+		ObjectSet<Invoice> invoiceList = runFindQuery(new GetInvoicePredicate(invoiceNumber));
+		
+		if (invoiceList == null || invoiceList.size() < 1) {
+			invoice = null;
+		} else if (invoiceList.size() == 1) {
+			invoice = invoiceList.get(0);
+		} else if (invoiceList.size() > 1) {
+			LOG.warn("Should have found 1 invoice, but found instead: " + invoiceList.size()); //$NON-NLS-1$
+			invoiceList.forEach(i -> LOG.debug("Found invoice: {}", i.getNumber()));
 		}
 
 		return invoice;
@@ -819,17 +795,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<Invoice> findInvoices(TimeFrame timeFrame, InvoiceState... states) {
-		Set<Invoice> invoices = new HashSet<Invoice>();
-
-		try {
-			invoices.addAll(objectContainer.query(new FindInvoicesPredicate(context, timeFrame, states)));
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		}
-
-		return invoices;
+		return new HashSet<Invoice>(runFindQuery(new FindInvoicesPredicate(context, timeFrame, states)));
 	}
 
 	/**
@@ -986,29 +952,20 @@ public class AccountingServiceImpl implements AccountingService {
      */
     private Set<Expense> getExpensesAsSet(TimeFrame timeFrame, ExpenseType...types) {
     	Set<Expense> expenses = null;
-    	try {
-    		expenses = new TreeSet<Expense>(new Comparator<Expense>() {
-				@Override
-				public int compare(Expense o1, Expense o2) {
-					int result = o1.getPaymentDate().compareTo(o2.getPaymentDate());
+		expenses = new TreeSet<Expense>(new Comparator<Expense>() {
+			@Override
+			public int compare(Expense o1, Expense o2) {
+				int result = o1.getPaymentDate().compareTo(o2.getPaymentDate());
+				if (result == 0) {
+					result = o1.getDescription().compareTo(o2.getDescription());
 					if (result == 0) {
-						result = o1.getDescription().compareTo(o2.getDescription());
-						if (result == 0) {
-							result = o1.equals(o2) ? 0 : -1;
-						}
+						result = o1.equals(o2) ? 0 : -1;
 					}
-					return result;
 				}
-			});
-    		
-    		ObjectSet<Expense> result = objectContainer.query(new FindExpensesPredicate(timeFrame, types));
-    		
-    		expenses.addAll(result);
-        } catch (Db4oIOException e) {
-        	throwDb4oIoException(e);
-        } catch (DatabaseClosedException e) {
-        	throwDbClosedException(e);
-        }
+				return result;
+			}
+		});
+		expenses.addAll(runFindQuery(new FindExpensesPredicate(timeFrame, types)));
     	return expenses;
     }
     
@@ -1174,7 +1131,7 @@ public class AccountingServiceImpl implements AccountingService {
 	public CurriculumVitae getCurriculumVitae() {
 		CurriculumVitae cv = null;
 		
-		ObjectSet<CurriculumVitae> cvSet = objectContainer.query(CurriculumVitae.class);
+		ObjectSet<CurriculumVitae> cvSet = runFindQuery(CurriculumVitae.class);
 		
 		if (cvSet.size() == 1) {
 			cv = cvSet.get(0);
@@ -1195,7 +1152,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	private void cleanupCvEntries(CurriculumVitae cv) {
 		Collection<CVEntry> known = cv.getReferences() != null ? cv.getReferences() : new ArrayList<CVEntry>();
-		for (CVEntry entry : objectContainer.query(CVEntry.class)) {
+		for (CVEntry entry : runFindQuery(CVEntry.class)) {
 			if (known.contains(entry)) {
 				LOG.debug("CleanupCVEntries - KNOWN: " + entry.getTitle());
 			} else {
@@ -1210,17 +1167,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<ExpenseTemplate> getExpenseTemplates() {
-		Set<ExpenseTemplate> templates = new HashSet<ExpenseTemplate>();
-		
-		try {
-			templates.addAll(objectContainer.query(ExpenseTemplate.class));
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		}
-		
-		return templates;
+		return new HashSet<ExpenseTemplate>(runFindQuery(ExpenseTemplate.class));
 	}
 
 	/**
@@ -1259,6 +1206,29 @@ public class AccountingServiceImpl implements AccountingService {
 		doDeleteEntity(template);
 	}
 
+	/**
+	 * 
+	 * @param targetType
+	 * @return
+	 */
+	private <T> ObjectSet<T> runFindQuery(Class<T> targetType) {
+		try {
+			return objectContainer.query(targetType);
+		} catch (Db4oIOException | DatabaseClosedException e) {
+			LOG.error("Error accessing DB", e);
+			throw new AccountingException("Error accessing data", e);
+		}
+	}
+	
+	private <T> ObjectSet<T> runFindQuery(Predicate<T> predicate) {
+		try {
+			return objectContainer.query(predicate);
+		} catch (Db4oIOException | DatabaseClosedException e) {
+			LOG.error("Error accessing DB", e);
+			throw new AccountingException("Error accessing data", e);
+		}
+	}
+	
 	/**
 	 * Shortcut for <code>doStoreEntity(entity, true)</code>
 	 * @param entity

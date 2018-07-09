@@ -52,6 +52,7 @@ import com.db4o.osgi.Db4oService;
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.AccountingService;
 import de.tfsw.accounting.BaseTestFixture;
+import de.tfsw.accounting.ContextInitialisedEvent;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.CurriculumVitae;
 import de.tfsw.accounting.model.Expense;
@@ -168,6 +169,8 @@ public class AccountingServiceImplTest extends BaseTestFixture {
 		props.put(AccountingService.EVENT_PROPERTY_INIT_SERVICE, serviceUnderTest);
 		Event expected = new Event(AccountingService.EVENT_TOPIC_SERVICE_INIT, props);
 		eventAdminMock.postEvent(expected);
+		
+		eventAdminMock.postEvent(anyObject(ContextInitialisedEventImpl.class));
 		
 		replay(initMocks);
 		

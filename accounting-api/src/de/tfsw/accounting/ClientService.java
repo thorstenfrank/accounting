@@ -25,14 +25,28 @@ import de.tfsw.accounting.model.Client;
  */
 public interface ClientService {
 	
+	/**
+	 * Returns the unique names of all known {@link Client} entities.
+	 * 
+	 * @return {@link Client#getName()}
+	 */
 	Set<String> getClientNames();
 	
 	/**
 	 * Returns all {@link Client} instances.
 	 * 
 	 * @return all clients known to the system
+	 * @deprecated use {@link #getClientNames()} instead
 	 */
 	Set<Client> getClients();
+	
+	/**
+	 * Returns the {@link Client} with the supplied name.
+	 * 
+	 * @param name the {@link Client#getName()} to search for
+	 * @return the {@link Client} with the supplied name or <code>null</code> if none exists with that name
+	 */
+	Client getClient(String name);
 	
 	/**
 	 * Saves the supplied {@link Client} to persistence.
