@@ -5,22 +5,22 @@
       <children xsi:type="basic:PartSashContainer" xmi:id="_6YeuQH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partsashcontainer.primary-left" containerData="5000" horizontal="true">
         <children xsi:type="basic:PartStack" xmi:id="_83XykH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partstack.clients" containerData="3000">
           <children xsi:type="basic:Part" xmi:id="_wrpnIH6wEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.part.clients" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.clients.ClientsAndProjects" label="Clients and Projects" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group.png">
-            <toolbar xmi:id="_Ba9dEH6xEeiNSeqapqKydg" elementId="accounting-ui-e4.toolbar.0"/>
+            <toolbar xmi:id="_Ba9dEH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.toolbar.0"/>
           </children>
         </children>
         <children xsi:type="basic:PartStack" xmi:id="_9VOMMH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partstack.editors" containerData="7000">
           <children xsi:type="basic:Part" xmi:id="_JQDUkH6yEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.part.overview" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.overview.OverviewPart" label="Overview" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/report.png" closeable="true">
-            <menus xmi:id="_l1nEIH7QEeiz06OzottI9A" elementId="accounting-ui-e4.menu.viewmenu" label="View Menu">
+            <menus xmi:id="_l1nEIH7QEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.menu.viewmenu" label="View Menu">
               <tags>ViewMenu</tags>
-              <children xsi:type="menu:HandledMenuItem" xmi:id="_ozi04H7QEeiz06OzottI9A" elementId="accounting-ui-e4.handledmenuitem.0" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/tag_blue.png" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
+              <children xsi:type="menu:HandledMenuItem" xmi:id="_ozi04H7QEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.handledmenuitem.0" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/tag_blue.png" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
             </menus>
-            <toolbar xmi:id="_xHT3UH7PEeiz06OzottI9A" elementId="accounting-ui-e4.toolbar.3">
-              <children xsi:type="menu:DirectToolItem" xmi:id="_0DSgQH7PEeiz06OzottI9A" elementId="accounting-ui-e4.directtoolitem.go" label="Go" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/date.png" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.AboutHandler"/>
-              <children xsi:type="menu:HandledToolItem" xmi:id="_NldS8H7QEeiz06OzottI9A" elementId="accounting-ui-e4.handledtoolitem.go2" label="Go2" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group.png" command="_6wlLhsgZEeSyMNYR5xypkQ">
-                <menu xmi:id="_VUlFUH7REeiz06OzottI9A" elementId="accounting-ui-e4.menu.0"/>
+            <toolbar xmi:id="_xHT3UH7PEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.toolbar.3">
+              <children xsi:type="menu:DirectToolItem" xmi:id="_0DSgQH7PEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.directtoolitem.go" label="Go" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/date.png" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.AboutHandler"/>
+              <children xsi:type="menu:HandledToolItem" xmi:id="_NldS8H7QEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.handledtoolitem.go2" label="Go2" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group.png" command="_6wlLhsgZEeSyMNYR5xypkQ">
+                <menu xmi:id="_VUlFUH7REeiz06OzottI9A" elementId="de.tfsw.accounting.ui.menu.0"/>
               </children>
-              <children xsi:type="menu:ToolBarSeparator" xmi:id="_StF7IH7QEeiz06OzottI9A" elementId="accounting-ui-e4.toolbarseparator.0"/>
-              <children xsi:type="menu:HandledToolItem" xmi:id="_TMEWIH7QEeiz06OzottI9A" elementId="accounting-ui-e4.handledtoolitem.go3" label="Go3" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/report.png" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
+              <children xsi:type="menu:ToolBarSeparator" xmi:id="_StF7IH7QEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.toolbarseparator.0"/>
+              <children xsi:type="menu:HandledToolItem" xmi:id="_TMEWIH7QEeiz06OzottI9A" elementId="de.tfsw.accounting.ui.handledtoolitem.go3" label="Go3" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/report.png" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
             </toolbar>
           </children>
           <children xsi:type="basic:Part" xmi:id="_LinFkIA9Eei-bZK88il_qQ" elementId="de.tfsw.accounting.ui.part.user" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.user.UserEditor" label="%userEditor" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/user_suit.png" closeable="true"/>
@@ -29,10 +29,10 @@
       <children xsi:type="basic:PartSashContainer" xmi:id="_64cAsH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partsashcontainer.primary-right" containerData="5000" horizontal="true">
         <children xsi:type="basic:PartStack" xmi:id="_9r_tcH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partstack.expenses">
           <children xsi:type="basic:Part" xmi:id="_b-aGkH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.part.expenses" label="Expenses" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/tag_blue.png">
-            <toolbar xmi:id="_zpYuIH6xEeiNSeqapqKydg" elementId="accounting-ui-e4.toolbar.1"/>
+            <toolbar xmi:id="_zpYuIH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.toolbar.1"/>
           </children>
           <children xsi:type="basic:Part" xmi:id="_r_xRYH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.part.expensetemplates" label="Expense Templates" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/date.png">
-            <toolbar xmi:id="_z9brgH6xEeiNSeqapqKydg" elementId="accounting-ui-e4.toolbar.2"/>
+            <toolbar xmi:id="_z9brgH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.toolbar.2"/>
           </children>
         </children>
         <children xsi:type="basic:PartStack" xmi:id="_-IYugH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partstack.invoices">
@@ -72,7 +72,7 @@
     <children xmi:id="_6wlLe8gZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
   <descriptors xmi:id="_SfpdUH-GEeibicp0Giq64Q" elementId="de.tfsw.accounting.ui.part.clienteditor" label="Client" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group.png" allowMultiple="true" closeable="true" dirtyable="true" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.clients.ClientEditor">
-    <toolbar xmi:id="_VMjIcH-GEeibicp0Giq64Q" elementId="accounting-ui-e4.toolbar.5"/>
+    <toolbar xmi:id="_VMjIcH-GEeibicp0Giq64Q" elementId="de.tfsw.accounting.ui.toolbar.5"/>
   </descriptors>
   <commands xmi:id="_6wlLfMgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
   <commands xmi:id="_6wlLgMgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.file.open" commandName="openCommand"/>

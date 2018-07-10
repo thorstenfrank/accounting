@@ -1,5 +1,6 @@
 package de.tfsw.accounting.ui.clients;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -48,7 +49,8 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 			}
 			
 		});
-		viewer.setInput(clientService.getClients());
+				
+		viewer.setInput(Arrays.asList(new Client("Ois"), new Client("Zwoi"), new Client("Drei")));
 		viewer.addDoubleClickListener(event -> {
 			if (event.getSelection() instanceof TreeSelection) {
 				TreeSelection ts = (TreeSelection) event.getSelection();

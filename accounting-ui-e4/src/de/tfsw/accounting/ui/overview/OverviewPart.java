@@ -5,7 +5,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.eclipse.e4.ui.di.Focus;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 public class OverviewPart {
 
@@ -14,6 +17,11 @@ public class OverviewPart {
 
 	@PostConstruct
 	public void postConstruct(Composite parent) {
+		parent.setLayout(new GridLayout(2, false));
+		
+		Label label = new Label(parent, SWT.NONE);
+		label.setText("Wuppdi, oida!");
+		
 //		toolkit = new FormToolkit(parent.getDisplay());
 //		
 //		form = toolkit.createScrolledForm(parent);

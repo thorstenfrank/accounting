@@ -19,16 +19,20 @@ import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
- * Base class for editor parts using JFace forms.
+ * This used to be a base class for editors using the Forms toolkit. This no longer seems to be supported
+ * in e4, because... well, you know - it was a good featue. So now we have to do everything manually and also
+ * style the editors using CSS.
  * 
  * @author thorsten
  */
@@ -36,8 +40,6 @@ public abstract class AbstractFormBasedEditor {
 
 	private final Logger log = LogManager.getLogger(getClass());
 	
-//	private FormToolkit toolkit;
-//	private ScrolledForm form;
 	private DataBindingContext bindingContext;
 	
 	@Inject
@@ -46,26 +48,32 @@ public abstract class AbstractFormBasedEditor {
 	@Inject
 	private MDirtyable dirtyable;
 	
+	private ScrolledComposite content;
+	
 	@PostConstruct
 	public void initControl(Composite parent) {
 		log.debug("PostCreate from superclass!");
 		
-//		this.toolkit = new FormToolkit(parent.getDisplay());
-//		this.form = toolkit.createScrolledForm(parent);
 		this.bindingContext = new DataBindingContext();
-//		
-//		createControl(form.getBody());
-//		
-//		toolkit.decorateFormHeading(form.getForm());
-//		form.reflow(true);
 		
-		createControl(parent);
+		parent.setLayout(new FillLayout());
+		
+		this.content = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		
+		content.setExpandHorizontal(true);
+		content.setExpandVertical(true);
+		Composite client = new Composite(content, SWT.NULL);		
+		createControl(client);
+		client.setData("org.eclipse.e4.ui.css.CssClassName", "editorWindow");
+		WidgetHelper.grabBoth(client);
+		content.setContent(client);
+		content.setMinSize(client.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 	
 	@Focus
 	public void onFocus() {
 		log.debug("Focus gained");
-//		form.getBody().setFocus();
+		this.content.setFocus();
 	}
 	
 	/**
@@ -90,6 +98,32 @@ public abstract class AbstractFormBasedEditor {
 	}
 	
 	/**
+	 * 
+	 * @param parent
+	 * @param text
+	 * @return
+	 */
+	protected Group createGroup(Composite parent, String text) {
+		final Group group = new Group(parent, SWT.SHADOW_OUT);
+		group.setText(text);
+		group.setLayout(new GridLayout(2, false));
+		WidgetHelper.grabBoth(group);
+		return group;
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param text
+	 * @return
+	 */
+	protected Label createLabel(Composite parent, String text) {
+		final Label label = new Label(parent, SWT.NONE);
+		label.setText(text);
+		return label;
+	}
+	
+	/**
 	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}.
 	 * 
 	 * <p>The created text is configured to grab all available horizontal space using 
@@ -100,8 +134,7 @@ public abstract class AbstractFormBasedEditor {
 	 * @return the {@link Text}
 	 */
 	protected Text createText(Composite parent, String text) {
-		Text textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
-//				getToolkit().createText(parent, text, SWT.SINGLE | SWT.BORDER);
+		final Text textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		WidgetHelper.grabHorizontal(textField);
 		return textField;
 	}
@@ -119,7 +152,7 @@ public abstract class AbstractFormBasedEditor {
 	 * @return the newly created and bound {@link Text}
 	 */
 	protected Text createText(Composite parent, String text, Object modelObject, String propertyName) {
-		Text textField = createText(parent, text);	
+		final Text textField = createText(parent, text);	
 		createBindings(textField, modelObject, propertyName);
 		return textField;
 	}
@@ -134,9 +167,7 @@ public abstract class AbstractFormBasedEditor {
 	 * @return
 	 */
 	protected Text createTextWithLabel(Composite parent, String label, String text, Object modelObject, String propertyName) {
-		Label labelWidget = new Label(parent, SWT.BORDER);
-		labelWidget.setText(label);
-		//toolkit.createLabel(parent, label);
+		createLabel(parent, label);
 		return createText(parent, text, modelObject, propertyName);
 	}
 	
@@ -148,8 +179,6 @@ public abstract class AbstractFormBasedEditor {
 	 */
 	@SuppressWarnings("unchecked")
 	protected Binding createBindings(Text text, Object modelObject, String propertyName) {
-//		text.addFocusListener(this);
-//		text.addKeyListener(KeyListener.keyReleasedAdapter(e -> setDirty(true)));
 		text.addModifyListener(e -> setDirty(true));
 		return bindingContext.bindValue(
 				WidgetProperties.text(SWT.Modify).observe(text), 
@@ -165,30 +194,13 @@ public abstract class AbstractFormBasedEditor {
 	 * @param fromModel
 	 */
 	@SuppressWarnings("unchecked")
-	protected Binding createBindings(
-			Text text, Object modelObject, String propertyName, UpdateValueStrategy toModel, UpdateValueStrategy fromModel) {
+	protected Binding createBindings(Text text, Object modelObject, String propertyName, UpdateValueStrategy toModel, UpdateValueStrategy fromModel) {
 		return bindingContext.bindValue(
 				WidgetProperties.text(SWT.Modify).observe(text), 
 				PojoProperties.value(propertyName).observe(modelObject), 
 				toModel, 
 				fromModel);
-//		text.addFocusListener(this);
-//		text.addKeyListener(this);
 	}
-//	
-//	/**
-//	 * @return the toolkit
-//	 */
-//	protected FormToolkit getToolkit() {
-//		return toolkit;
-//	}
-//
-//	/**
-//	 * @return the form
-//	 */
-//	protected ScrolledForm getForm() {
-//		return form;
-//	}
 
 	/**
 	 * @return
@@ -203,8 +215,10 @@ public abstract class AbstractFormBasedEditor {
 	 * @see org.eclipse.e4.ui.model.application.ui.MDirtyable#setDirty(boolean)
 	 */
 	protected void setDirty(boolean value) {
-		log.debug("Dirty status changing to {}", value);
-		dirtyable.setDirty(value);
+		if (value != isDirty()) {
+			log.debug("Dirty status changing to {}", value);
+			dirtyable.setDirty(value);			
+		}
 	}
 	
 }

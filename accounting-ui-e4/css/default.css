@@ -1,7 +1,15 @@
-Group Label {
-	font-size: 8;
+.editorWindow {
+	/*background-color: #e3efff;*/
+	background-color: #f0f4f0;
 }
 
-Group {
-	background-color: #e3efff #c1d5ef; 
+ScrolledComposite Group {
+	font-weight: bold;
+	/*background-color: #e3efff #c1d5ef;*/
+	background-color: #F0F4F9;
+}
+
+Group Label {
+	font-size: 8;
+	background-color: inherit;
 }

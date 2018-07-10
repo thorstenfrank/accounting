@@ -57,6 +57,20 @@ public class Client extends AbstractBaseEntity {
 	
 	/**
 	 * 
+	 */
+	public Client() {
+		// 
+	}
+	
+	/**
+	 * @param name
+	 */
+	public Client(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * 
 	 * @return the name of the client
 	 */
 	public String getName() {

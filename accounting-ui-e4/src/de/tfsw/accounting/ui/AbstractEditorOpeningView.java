@@ -36,7 +36,6 @@ public abstract class AbstractEditorOpeningView {
 				.filter(p -> isThisThePart(p, elementName, targetEditorId))
 				.findFirst()
 				.orElseGet(() -> createPart(elementName, targetEditorId));
-		
 		partService.showPart(part, PartState.ACTIVATE);
 	}
 	
