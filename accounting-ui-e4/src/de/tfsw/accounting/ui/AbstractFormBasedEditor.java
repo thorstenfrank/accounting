@@ -3,6 +3,8 @@
  */
 package de.tfsw.accounting.ui;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.Normalizer.Form;
 
 import javax.annotation.PostConstruct;
@@ -19,9 +21,15 @@ import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -49,7 +57,7 @@ public abstract class AbstractFormBasedEditor {
 	@Inject
 	private MDirtyable dirtyable;
 	
-	private ScrolledComposite content;
+	private ScrolledComposite scrollable;
 	
 	@PostConstruct
 	public void initControl(Composite parent) {
@@ -59,22 +67,102 @@ public abstract class AbstractFormBasedEditor {
 		
 		parent.setLayout(new FillLayout());
 		
-		this.content = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		this.scrollable = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		
-		content.setExpandHorizontal(true);
-		content.setExpandVertical(true);
-		Composite client = new Composite(content, SWT.NULL);		
-		createControl(client);
-		client.setData("org.eclipse.e4.ui.css.CssClassName", "editorWindow");
+		scrollable.setExpandHorizontal(true);
+		scrollable.setExpandVertical(true);
+		
+		Composite client = new Composite(scrollable, SWT.NULL);
+		client.setLayout(new GridLayout());
 		WidgetHelper.grabBoth(client);
-		content.setContent(client);
-		content.setMinSize(client.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		client.setData("org.eclipse.e4.ui.css.CssClassName", "editorWindow");
+		
+		createHeader(client);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(new Label(client, SWT.SEPARATOR | SWT.HORIZONTAL));
+		
+		Composite content = new Composite(client, SWT.NULL);
+		WidgetHelper.grabBoth(content);
+		content.setData("org.eclipse.e4.ui.css.CssClassName", "editorWindow");
+		createControl(content);
+		
+		scrollable.setContent(client);
+		scrollable.setMinSize(client.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	}
+	
+	/**
+	 * This is pretty much just stolen from {@link TitleAreaDialog}'s createHeader() method.
+	 * @param parent
+	 */
+	private void createHeader(Composite parent) {
+		Composite header = new Composite(parent, SWT.NONE);
+		header.setLayout(new FormLayout());
+		header.setData("org.eclipse.e4.ui.css.CssClassName", "editorHeader");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
+		
+		final int horizontalSpacing = 5;
+		final int verticalSpacing = 5;
+		
+		Label titleImageLabel = new Label(header, SWT.CENTER);
+		try {
+			titleImageLabel.setImage(
+				ImageDescriptor.createFromURL(
+						new URL("platform:/plugin/de.tfsw.accounting.ui/icons/editheader.png"))
+				.createImage());
+		} catch (MalformedURLException e) {
+			log.warn("Problems getting image", e);
+		}		
+		FormData imageData = new FormData();
+		imageData.top = new FormAttachment(0, 0);
+		imageData.right = new FormAttachment(100, 0);
+		titleImageLabel.setLayoutData(imageData);
+		
+		Label titleLabel = new Label(header, SWT.LEFT);
+		titleLabel.setText(getEditorHeader());
+		titleLabel.setData("org.eclipse.e4.ui.css.CssClassName", "editorTitle");
+		FormData titleData = new FormData();
+		titleData.top = new FormAttachment(0, 5);
+		titleData.right = new FormAttachment(titleImageLabel);
+		titleData.left = new FormAttachment(0, 5);
+		titleLabel.setLayoutData(titleData);
+		
+		Label messageImageLabel = new Label(header, SWT.CENTER);
+		FormData messageImageData = new FormData();
+		messageImageData.top = new FormAttachment(titleLabel, 5);
+		messageImageData.left = new FormAttachment(0, 5);
+		messageImageLabel.setLayoutData(messageImageData);
+		
+		// Message label @ bottom, center
+		Label messageLabel = new Label(header, SWT.NONE);
+		messageLabel.setText("Lorem Ipsum Dolerat Compendianum \n ad infinitum rhabarberis");
+		messageLabel.setData("org.eclipse.e4.ui.css.CssClassName", "editorDesc");
+		FormData messageLabelData = new FormData();
+		messageLabelData.top = new FormAttachment(titleLabel, verticalSpacing);
+		messageLabelData.right = new FormAttachment(titleImageLabel);
+		messageLabelData.left = new FormAttachment(messageImageLabel,
+				horizontalSpacing);
+		messageLabelData.height = messageLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+		messageLabel.setLayoutData(messageLabelData);
+		
+		// Filler labels
+		Label leftFillerLabel = new Label(header, SWT.CENTER);
+		Label bottomFillerLabel =new Label(header, SWT.CENTER);
+		FormData fillerData = new FormData();
+		fillerData.left = new FormAttachment(0, horizontalSpacing);
+		fillerData.top = new FormAttachment(messageImageLabel, 0);
+		fillerData.bottom = new FormAttachment(messageLabel, 0, SWT.BOTTOM);
+		bottomFillerLabel.setLayoutData(fillerData);
+		FormData data = new FormData();
+		data.top = new FormAttachment(messageImageLabel, 0, SWT.TOP);
+		data.left = new FormAttachment(0, 0);
+		data.bottom = new FormAttachment(messageImageLabel, 0, SWT.BOTTOM);
+		data.right = new FormAttachment(messageImageLabel, 0);
+		leftFillerLabel.setLayoutData(data);
 	}
 	
 	@Focus
 	public void onFocus() {
 		log.debug("Focus gained");
-		this.content.setFocus();
+		this.scrollable.setFocus();
 	}
 	
 	/**
@@ -83,6 +171,12 @@ public abstract class AbstractFormBasedEditor {
 	 * @param parent the equivalent of {@link Form#getBody()}
 	 */
 	protected abstract void createControl(Composite parent);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected abstract String getEditorHeader();
 	
 	/**
 	 * {@link MPart#setLabel(String)}
@@ -224,6 +318,6 @@ public abstract class AbstractFormBasedEditor {
 
 	@PreDestroy
 	public void disposeComposite() {
-		this.content.dispose();
+		this.scrollable.dispose();
 	}
 }

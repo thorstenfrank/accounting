@@ -113,6 +113,11 @@ public class UserEditor extends AbstractFormBasedEditor {
 		setDirty(needsSave);
 	}
 	
+	@Override
+	protected String getEditorHeader() {
+		return messages.userEditorHeader;
+	}
+	
 	/**
 	 * 
 	 * @param user

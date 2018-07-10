@@ -3,10 +3,26 @@
 	background-color: #f0f4f0;
 }
 
+.editorHeader {
+	background-color: white; /*#f0f4f9;*/
+}
+
+.editorTitle {
+	font-size: 22;
+	font-weight: bold;
+	background-color: white;
+}
+
+.editorDesc {
+	font-size: 10;
+	background-color: white;
+}
+
 ScrolledComposite Group {
 	font-weight: bold;
 	/*background-color: #e3efff #c1d5ef;*/
-	background-color: #F0F4F9;
+	/*background-color: #F0F4F9;*/
+	background-color: white;
 }
 
 Group Label {

@@ -39,6 +39,11 @@ public class ClientEditor extends AbstractFormBasedEditor {
 		parent.setLayout(new GridLayout(2, false));
 	}
 	
+	@Override
+	protected String getEditorHeader() {
+		return "Client Editor";
+	}
+	
 //	private void createBasicInfoSection(Client client) {
 //		final FormToolkit toolkit = getToolkit();
 //		Section basicSection = toolkit.createSection(getForm().getBody(), Section.TITLE_BAR);
