@@ -3,8 +3,6 @@
  */
 package de.tfsw.accounting.ui;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.Normalizer.Form;
 
 import javax.annotation.PostConstruct;
@@ -23,7 +21,6 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -103,14 +100,7 @@ public abstract class AbstractFormBasedEditor {
 		final int verticalSpacing = 5;
 		
 		Label titleImageLabel = new Label(header, SWT.CENTER);
-		try {
-			titleImageLabel.setImage(
-				ImageDescriptor.createFromURL(
-						new URL("platform:/plugin/de.tfsw.accounting.ui/icons/editheader.png"))
-				.createImage());
-		} catch (MalformedURLException e) {
-			log.warn("Problems getting image", e);
-		}		
+		titleImageLabel.setImage(WidgetHelper.createImageFromFile("icons/editheader.png"));
 		FormData imageData = new FormData();
 		imageData.top = new FormAttachment(0, 0);
 		imageData.right = new FormAttachment(100, 0);

@@ -15,8 +15,15 @@
  */
 package de.tfsw.accounting.ui.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -29,9 +36,35 @@ import org.eclipse.swt.widgets.Text;
  */
 public final class WidgetHelper {
 
+	private static final Logger LOG = LogManager.getLogger(WidgetHelper.class);
+	
 	private static final GridDataFactory GRAB_HORIZONTAL = GridDataFactory.fillDefaults().grab(true, false);
 	
 	private static final GridDataFactory GRAB_BOTH = GridDataFactory.fillDefaults().grab(true, true);
+	
+	/**
+	 * Attempts to retrieve an {@link Image} from a file within this bundle.
+	 * 
+	 * Examples:
+	 * <pre>
+	 * createImageFromFile("root_of_bundle.png");
+	 * createImageFromFile("icons/abouticon.gif");
+	 * </pre>
+	 * 
+	 * @param relativePath must not start with a slash ("/") character
+	 * @return the {@link Image} or <code>null</code> if no image can be retrieved
+	 */
+	public static Image createImageFromFile(final String relativePath) {
+		Image result = null;
+		try {
+			result = ImageDescriptor
+					.createFromURL(new URL("platform:/plugin/de.tfsw.accounting.ui/" + relativePath))
+					.createImage();
+		} catch (MalformedURLException e) {
+			LOG.warn("Problems getting image", e);
+		}
+		return result;
+	}
 	
 	/**
 	 * Creates a new label with the specified parent and text.
