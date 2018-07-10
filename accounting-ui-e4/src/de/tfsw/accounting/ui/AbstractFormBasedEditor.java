@@ -6,6 +6,7 @@ package de.tfsw.accounting.ui;
 import java.text.Normalizer.Form;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -220,5 +221,9 @@ public abstract class AbstractFormBasedEditor {
 			dirtyable.setDirty(value);			
 		}
 	}
-	
+
+	@PreDestroy
+	public void disposeComposite() {
+		this.content.dispose();
+	}
 }

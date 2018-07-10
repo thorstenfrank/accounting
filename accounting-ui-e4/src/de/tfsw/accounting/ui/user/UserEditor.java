@@ -6,6 +6,7 @@ package de.tfsw.accounting.ui.user;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,6 +53,8 @@ import de.tfsw.accounting.util.FormatUtil;
  *
  */
 public class UserEditor extends AbstractFormBasedEditor {
+	
+	public static final String PART_ID = "de.tfsw.accounting.ui.part.user";
 	
 	private static final Logger LOG = LogManager.getLogger(UserEditor.class);
 	
@@ -219,6 +222,12 @@ public class UserEditor extends AbstractFormBasedEditor {
 		}
 		
 		setDirty(false);
+	}
+	
+	@PreDestroy
+	public void cleanup() {
+		this.currentUser = null;
+		this.taxRateViewer.getTable().dispose();
 	}
 	
 	/**

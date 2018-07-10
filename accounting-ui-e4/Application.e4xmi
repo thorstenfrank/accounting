@@ -54,6 +54,7 @@
       <children xsi:type="menu:ToolBar" xmi:id="_6wlLlsgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_6wlLl8gZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handleditem.trimbar.top.open" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/sample.png" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_6wlLmMgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handleditem.trimbar.top.save" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/save_edit.png" command="_6wlLg8gZEeSyMNYR5xypkQ"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_Qb7JgIRREeiZHKjZraMHLQ" elementId="de.tfsw.accounting.ui.toolbar.main.openUserEditor" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/user_suit.png" command="_B8LicIRREeiZHKjZraMHLQ"/>
       </children>
     </trimBars>
   </children>
@@ -61,6 +62,7 @@
   <handlers xmi:id="_6wlLgcgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handler.openCommand" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.OpenHandler" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
   <handlers xmi:id="_6wlLhMgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handler.saveCommand" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.SaveHandler" command="_6wlLg8gZEeSyMNYR5xypkQ"/>
   <handlers xmi:id="_6wlLh8gZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handler.aboutCommand" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.AboutHandler" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
+  <handlers xmi:id="_HSUgsIRREeiZHKjZraMHLQ" elementId="de.tfsw.accounting.ui.handler.user.openEditor" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.user.OpenUserEditorHandler" command="_B8LicIRREeiZHKjZraMHLQ"/>
   <bindingTables xmi:id="_6wlLfsgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.bindingtable" bindingContext="_6wlLecgZEeSyMNYR5xypkQ">
     <bindings xmi:id="_6wlLf8gZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.keybinding.m1q" keySequence="M1+Q" command="_6wlLfMgZEeSyMNYR5xypkQ"/>
     <bindings xmi:id="_6wlLgsgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.keybinding.m1o" keySequence="M1+O" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
@@ -78,6 +80,7 @@
   <commands xmi:id="_6wlLgMgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.file.open" commandName="openCommand"/>
   <commands xmi:id="_6wlLg8gZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
   <commands xmi:id="_6wlLhsgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
+  <commands xmi:id="_B8LicIRREeiZHKjZraMHLQ" elementId="de.tfsw.accounting.ui.command.user.openEditor" commandName="openUserEditorCommand"/>
   <addons xmi:id="_6wlLcsgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_6wlLc8gZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_6wlLdMgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
