@@ -25,7 +25,7 @@ public class AboutHandler {
 			public void create() {
 				super.create();
 				setTitle("About Title");
-				setTitleImage(WidgetHelper.createImageFromFile("aboutimage.png"));
+				setTitleImage(WidgetHelper.createImageFromFile("icons/aboutimage.png"));
 				setMessage("About Message");//\nAbout Message\nAbout Message");
 			}
 			
