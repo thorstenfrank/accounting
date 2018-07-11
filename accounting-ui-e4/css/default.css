@@ -1,20 +1,20 @@
 .editorWindow {
 	/*background-color: #e3efff;*/
-	background-color: #f0f4f0;
+	background-color: white; /*#f0f4f0;*/
 }
 
 .editorHeader {
-	background-color: white; /*#f0f4f9;*/
+	background-color: white;
 }
 
 .editorTitle {
-	font-size: 22;
+	font-size: 18;
 	font-weight: bold;
 	background-color: white;
 }
 
 .editorDesc {
-	font-size: 10;
+	font-size: 9;
 	background-color: white;
 }
 

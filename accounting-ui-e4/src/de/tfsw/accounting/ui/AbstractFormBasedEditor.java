@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.tfsw.accounting.ui.util.CssStyleClass;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 /**
@@ -72,14 +73,14 @@ public abstract class AbstractFormBasedEditor {
 		Composite client = new Composite(scrollable, SWT.NULL);
 		client.setLayout(new GridLayout());
 		WidgetHelper.grabBoth(client);
-		client.setData("org.eclipse.e4.ui.css.CssClassName", "editorWindow");
+		WidgetHelper.applyStyle(client, CssStyleClass.editorWindow);
 		
 		createHeader(client);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(new Label(client, SWT.SEPARATOR | SWT.HORIZONTAL));
 		
 		Composite content = new Composite(client, SWT.NULL);
 		WidgetHelper.grabBoth(content);
-		content.setData("org.eclipse.e4.ui.css.CssClassName", "editorWindow");
+		WidgetHelper.applyStyle(content, CssStyleClass.editorWindow);
 		createControl(content);
 		
 		scrollable.setContent(client);
@@ -93,14 +94,15 @@ public abstract class AbstractFormBasedEditor {
 	private void createHeader(Composite parent) {
 		Composite header = new Composite(parent, SWT.NONE);
 		header.setLayout(new FormLayout());
-		header.setData("org.eclipse.e4.ui.css.CssClassName", "editorHeader");
+		WidgetHelper.applyStyle(header, CssStyleClass.editorHeader);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 		
 		final int horizontalSpacing = 5;
 		final int verticalSpacing = 5;
 		
 		Label titleImageLabel = new Label(header, SWT.CENTER);
-		titleImageLabel.setImage(WidgetHelper.createImageFromFile("icons/editheader.png"));
+		WidgetHelper.applyStyle(titleImageLabel, CssStyleClass.editorHeader);
+		titleImageLabel.setImage(WidgetHelper.createImageFromFile("icons/logo_50.png"));
 		FormData imageData = new FormData();
 		imageData.top = new FormAttachment(0, 0);
 		imageData.right = new FormAttachment(100, 0);
@@ -108,7 +110,7 @@ public abstract class AbstractFormBasedEditor {
 		
 		Label titleLabel = new Label(header, SWT.LEFT);
 		titleLabel.setText(getEditorHeader());
-		titleLabel.setData("org.eclipse.e4.ui.css.CssClassName", "editorTitle");
+		WidgetHelper.applyStyle(titleLabel, CssStyleClass.editorTitle);
 		FormData titleData = new FormData();
 		titleData.top = new FormAttachment(0, 5);
 		titleData.right = new FormAttachment(titleImageLabel);
@@ -116,37 +118,39 @@ public abstract class AbstractFormBasedEditor {
 		titleLabel.setLayoutData(titleData);
 		
 		Label messageImageLabel = new Label(header, SWT.CENTER);
+		WidgetHelper.applyStyle(messageImageLabel, CssStyleClass.editorDesc);
 		FormData messageImageData = new FormData();
-		messageImageData.top = new FormAttachment(titleLabel, 5);
-		messageImageData.left = new FormAttachment(0, 5);
+		messageImageData.top = new FormAttachment(titleLabel, verticalSpacing);
+		messageImageData.left = new FormAttachment(0, horizontalSpacing);
 		messageImageLabel.setLayoutData(messageImageData);
 		
 		// Message label @ bottom, center
 		Label messageLabel = new Label(header, SWT.NONE);
 		messageLabel.setText("Lorem Ipsum Dolerat Compendianum \n ad infinitum rhabarberis");
-		messageLabel.setData("org.eclipse.e4.ui.css.CssClassName", "editorDesc");
+		WidgetHelper.applyStyle(messageLabel, CssStyleClass.editorDesc);
 		FormData messageLabelData = new FormData();
 		messageLabelData.top = new FormAttachment(titleLabel, verticalSpacing);
 		messageLabelData.right = new FormAttachment(titleImageLabel);
-		messageLabelData.left = new FormAttachment(messageImageLabel,
-				horizontalSpacing);
+		messageLabelData.left = new FormAttachment(messageImageLabel, horizontalSpacing);
 		messageLabelData.height = messageLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 		messageLabel.setLayoutData(messageLabelData);
 		
 		// Filler labels
-		Label leftFillerLabel = new Label(header, SWT.CENTER);
-		Label bottomFillerLabel =new Label(header, SWT.CENTER);
-		FormData fillerData = new FormData();
-		fillerData.left = new FormAttachment(0, horizontalSpacing);
-		fillerData.top = new FormAttachment(messageImageLabel, 0);
-		fillerData.bottom = new FormAttachment(messageLabel, 0, SWT.BOTTOM);
-		bottomFillerLabel.setLayoutData(fillerData);
-		FormData data = new FormData();
-		data.top = new FormAttachment(messageImageLabel, 0, SWT.TOP);
-		data.left = new FormAttachment(0, 0);
-		data.bottom = new FormAttachment(messageImageLabel, 0, SWT.BOTTOM);
-		data.right = new FormAttachment(messageImageLabel, 0);
-		leftFillerLabel.setLayoutData(data);
+//		Label leftFillerLabel = new Label(header, SWT.CENTER);
+//		WidgetHelper.applyStyle(leftFillerLabel, CssStyleClass.editorDesc);
+//		FormData leftFillerData = new FormData();
+//		leftFillerData.top = new FormAttachment(messageImageLabel, 0, SWT.TOP);
+//		leftFillerData.left = new FormAttachment(0, 0);
+//		leftFillerData.bottom = new FormAttachment(messageImageLabel, 0, SWT.BOTTOM);
+//		leftFillerData.right = new FormAttachment(messageImageLabel, 0);
+//		leftFillerLabel.setLayoutData(leftFillerData);
+//		
+//		Label bottomFillerLabel =new Label(header, SWT.CENTER);
+//		FormData bottomFillerData = new FormData();
+//		bottomFillerData.left = new FormAttachment(0, horizontalSpacing);
+//		bottomFillerData.top = new FormAttachment(messageImageLabel, 0);
+//		bottomFillerData.bottom = new FormAttachment(messageLabel, 0, SWT.BOTTOM);
+//		bottomFillerLabel.setLayoutData(bottomFillerData);
 	}
 	
 	@Focus

@@ -9,6 +9,7 @@ package de.tfsw.accounting.ui.util;
  */
 public enum CssStyleClass {
 
+	editorWindow,
 	editorHeader,
 	editorTitle,
 	editorDesc
