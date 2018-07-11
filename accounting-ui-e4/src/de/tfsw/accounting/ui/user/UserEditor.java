@@ -31,7 +31,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -123,7 +122,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	 * @param user
 	 */
 	private void createBasicInfoSection(Composite parent) {
-		final Group group = createGroup(parent, messages.labelBasicInformation);
+		final Composite group = createGroup(parent, messages.labelBasicInformation);
 		createTextWithLabel(group, messages.labelName, currentUser.getName(), currentUser, User.FIELD_NAME);
 		createTextWithLabel(group, messages.labelTaxId, currentUser.getTaxNumber(), currentUser, User.FIELD_TAX_NUMBER);
 				
@@ -134,7 +133,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	}
 	
 	private void createAddressSection(Composite parent, Address address) {
-		final Group group = createGroup(parent, messages.labelAddress);
+		final Composite group = createGroup(parent, messages.labelAddress);
 		createTextWithLabel(group, messages.labelRecipientDetail, address.getRecipientDetail(), address, Address.FIELD_RECIPIENT_DETAIL);
 		createTextWithLabel(group, messages.labelStreet, address.getStreet(), address, Address.FIELD_STREET);
 		createTextWithLabel(group, messages.labelPostalCode, address.getPostalCode(), address, Address.FIELD_POSTAL_CODE);
@@ -146,7 +145,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	}
 	
 	private void createBankAccountSection(Composite parent, BankAccount account) {		
-		final Group group = createGroup(parent, messages.labelBankAccount);
+		final Composite group = createGroup(parent, messages.labelBankAccount);
 		createTextWithLabel(group, messages.labelAccountNumber, account.getAccountNumber(), account, BankAccount.FIELD_ACCOUNT_NUMBER);
 		createTextWithLabel(group, messages.labelBankCode, account.getBankCode(), account, BankAccount.FIELD_BANK_CODE);
 		createTextWithLabel(group, messages.labelBankName, account.getBankName(), account, BankAccount.FIELD_BANK_NAME);
@@ -156,7 +155,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 
 	private void createTaxRateSection(Composite parent) {
 //		taxRateSection.setDescription(messages.userEditorTaxRateDescription);		
-		final Group group = createGroup(parent, messages.userEditorTaxRates);
+		final Composite group = createGroup(parent, messages.userEditorTaxRates);
 		
 		Composite tableComposite = new Composite(group, SWT.NONE);
 		WidgetHelper.grabBoth(tableComposite);

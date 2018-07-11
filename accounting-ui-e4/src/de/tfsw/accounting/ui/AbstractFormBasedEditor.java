@@ -192,12 +192,18 @@ public abstract class AbstractFormBasedEditor {
 	 * @param text
 	 * @return
 	 */
-	protected Group createGroup(Composite parent, String text) {
+	protected Composite createGroup(Composite parent, String text) {
 		final Group group = new Group(parent, SWT.SHADOW_OUT);
-		group.setText(text);
-		group.setLayout(new GridLayout(2, false));
 		WidgetHelper.grabBoth(group);
-		return group;
+		group.setText(text);
+		group.setLayout(new GridLayout());
+		
+		Composite contents = new Composite(group, SWT.NONE);
+		WidgetHelper.grabBoth(contents);
+		contents.setLayout(new GridLayout(2, false));
+		WidgetHelper.applyStyle(contents, CssStyleClass.editorWindow);
+		
+		return contents;
 	}
 	
 	/**
