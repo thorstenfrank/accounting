@@ -7,20 +7,30 @@ import javax.annotation.PreDestroy;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.tfsw.accounting.ui.util.WidgetHelper;
+
 public class OverviewPart {
-
-//	private FormToolkit toolkit;
-//	private ScrolledForm form;
-
+	
 	@PostConstruct
 	public void postConstruct(Composite parent) {
 		parent.setLayout(new GridLayout(2, false));
+		WidgetHelper.grabBoth(parent);
 		
-		Label label = new Label(parent, SWT.NONE);
+		Composite bordered = new Composite(parent, SWT.BORDER | SWT.SHADOW_OUT);
+		bordered.setLayout(new RowLayout());
+		WidgetHelper.grabBoth(bordered);
+		Label label = new Label(bordered, SWT.NONE);
 		label.setText("Wuppdi, oida!");
+		
+		Composite bordered2 = new Composite(parent, SWT.BORDER);
+		bordered2.setLayout(new RowLayout());
+		WidgetHelper.grabBoth(bordered2);
+		Label label2 = new Label(bordered2, SWT.BORDER);
+		label2.setText("Another blabla");
 		
 //		toolkit = new FormToolkit(parent.getDisplay());
 //		

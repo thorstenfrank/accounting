@@ -193,15 +193,23 @@ public abstract class AbstractFormBasedEditor {
 	 * @return
 	 */
 	protected Composite createGroup(Composite parent, String text) {
-		final Group group = new Group(parent, SWT.SHADOW_OUT);
-		WidgetHelper.grabBoth(group);
-		group.setText(text);
-		group.setLayout(new GridLayout());
+//		final Group group = new Group(parent, SWT.SHADOW_OUT);
+//		WidgetHelper.grabBoth(group);
+//		group.setText(text);
+//		group.setLayout(new GridLayout());
 		
-		Composite contents = new Composite(group, SWT.NONE);
+		Composite contents = new Composite(parent, SWT.NONE);
 		WidgetHelper.grabBoth(contents);
 		contents.setLayout(new GridLayout(2, false));
-		WidgetHelper.applyStyle(contents, CssStyleClass.editorWindow);
+		WidgetHelper.applyStyle(contents, CssStyleClass.editorGroup);
+		
+		Label headerLabel = new Label(contents, SWT.NONE);
+		headerLabel.setText(text);
+		WidgetHelper.applyStyle(headerLabel, CssStyleClass.editorGroupTitle);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(headerLabel);
+		
+		Label separatorLabel = new Label(contents, SWT.SEPARATOR | SWT.HORIZONTAL);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(separatorLabel);
 		
 		return contents;
 	}

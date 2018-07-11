@@ -18,14 +18,12 @@
 	background-color: white;
 }
 
-ScrolledComposite Group {
-	font-weight: bold;
-	/*background-color: #e3efff #c1d5ef;*/
-	/*background-color: #F0F4F9;*/
-	background-color: white;
+.editorGroup {
+	background-color: #f9f9f9;
 }
 
-Group Label {
-	font-size: 8;
-	background-color: inherit;
+.editorGroupTitle {
+	font-size: 14;
+	font-weight: bold;
+	background-color: #f9f9f9;
 }
