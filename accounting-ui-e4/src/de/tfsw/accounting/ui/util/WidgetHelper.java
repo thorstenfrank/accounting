@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * UI helper methods.
@@ -117,6 +118,15 @@ public final class WidgetHelper {
 	 */
 	public static void grabBoth(Control control) {
 		GRAB_BOTH.applyTo(control);
+	}
+	
+	/**
+	 * 
+	 * @param widget
+	 * @param style
+	 */
+	public static void applyStyle(final Widget widget, final CssStyleClass style) {
+		widget.setData("org.eclipse.e4.ui.css.CssClassName", style.name());
 	}
 	
 	/** */
