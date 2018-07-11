@@ -10,6 +10,7 @@ package de.tfsw.accounting.ui.user;
 public final class Messages {
 
 	public String userEditorHeader;
+	public String userEditorHeaderDesc;
 	public String userEditorTaxRates;
 	public String userEditorTaxRateDescription;
 	public String userEditorTaxRateAbbreviation;
@@ -22,16 +23,6 @@ public final class Messages {
 	public String labelName;
 	public String labelTaxId;
 	public String labelDescription;
-	
-	public String labelAddress;
-	public String labelRecipientDetail;
-	public String labelStreet;
-	public String labelPostalCode;
-	public String labelCity;
-	public String labelEmail;
-	public String labelPhone;
-	public String labelMobile;
-	public String labelFax;
 	
 	public String labelBankAccount;
 	public String labelAccountNumber;

@@ -15,6 +15,7 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.PojoProperties;
+import org.eclipse.e4.core.services.nls.Translation;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
@@ -29,10 +30,11 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.tfsw.accounting.model.AbstractBaseEntity;
+import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.ui.util.CssStyleClass;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
@@ -55,11 +57,15 @@ public abstract class AbstractFormBasedEditor {
 	@Inject
 	private MDirtyable dirtyable;
 	
+	@Inject
+	@Translation
+	private CommonMessages messages;
+	
 	private ScrolledComposite scrollable;
 	
 	@PostConstruct
 	public void initControl(Composite parent) {
-		log.debug("PostCreate from superclass!");
+		log.trace("init control (base class)");
 		
 		this.bindingContext = new DataBindingContext();
 		
@@ -81,10 +87,12 @@ public abstract class AbstractFormBasedEditor {
 		Composite content = new Composite(client, SWT.NULL);
 		WidgetHelper.grabBoth(content);
 		WidgetHelper.applyStyle(content, CssStyleClass.editorWindow);
-		createControl(content);
+		final boolean dirty = createControl(content);
 		
 		scrollable.setContent(client);
 		scrollable.setMinSize(client.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		setDirty(dirty);
 	}
 	
 	/**
@@ -102,7 +110,7 @@ public abstract class AbstractFormBasedEditor {
 		
 		Label titleImageLabel = new Label(header, SWT.CENTER);
 		WidgetHelper.applyStyle(titleImageLabel, CssStyleClass.editorHeader);
-		titleImageLabel.setImage(WidgetHelper.createImageFromFile("icons/logo_50.png"));
+		titleImageLabel.setImage(WidgetHelper.createImageFromFile("icons/logo_50.png")); // this is just a placeholder image at the moment
 		FormData imageData = new FormData();
 		imageData.top = new FormAttachment(0, 0);
 		imageData.right = new FormAttachment(100, 0);
@@ -126,7 +134,7 @@ public abstract class AbstractFormBasedEditor {
 		
 		// Message label @ bottom, center
 		Label messageLabel = new Label(header, SWT.NONE);
-		messageLabel.setText("Lorem Ipsum Dolerat Compendianum \n ad infinitum rhabarberis");
+		messageLabel.setText(getEditorHeaderDesc());
 		WidgetHelper.applyStyle(messageLabel, CssStyleClass.editorDesc);
 		FormData messageLabelData = new FormData();
 		messageLabelData.top = new FormAttachment(titleLabel, verticalSpacing);
@@ -153,24 +161,50 @@ public abstract class AbstractFormBasedEditor {
 //		bottomFillerLabel.setLayoutData(bottomFillerData);
 	}
 	
+	protected void createAddressSection(Composite parent, Address address) {
+		final Composite group = createGroup(parent, messages.labelAddress);
+		createTextWithLabel(group, messages.labelRecipientDetail, address.getRecipientDetail(), address, Address.FIELD_RECIPIENT_DETAIL);
+		createTextWithLabel(group, messages.labelStreet, address.getStreet(), address, Address.FIELD_STREET);
+		createTextWithLabel(group, messages.labelPostalCode, address.getPostalCode(), address, Address.FIELD_POSTAL_CODE);
+		createTextWithLabel(group, messages.labelCity, address.getCity(), address, Address.FIELD_CITY);
+		createTextWithLabel(group, messages.labelEmail, address.getEmail(), address, Address.FIELD_EMAIL);
+		createTextWithLabel(group, messages.labelPhone, address.getPhoneNumber(), address, Address.FIELD_PHONE_NUMBER);
+		createTextWithLabel(group, messages.labelMobile, address.getMobileNumber(), address, Address.FIELD_MOBILE_NUMBER);
+		createTextWithLabel(group, messages.labelFax, address.getFaxNumber(), address, Address.FIELD_FAX_NUMBER);
+	}
+	
 	@Focus
 	public void onFocus() {
-		log.debug("Focus gained");
+		log.trace("Focus gained");
 		this.scrollable.setFocus();
 	}
 	
 	/**
 	 * Implementations need to create their UI in this method.
 	 * 
+	 * The dirty state return value is necessary because when using data bindings, the modify listener on the widgets
+	 * will immediately mark this editor as dirty. The {@link #initControl(Composite)} method calling this one will
+	 * {@link #setDirty(boolean)} to whatever value this method here returns at the end of building the editor.
+	 * 
 	 * @param parent the equivalent of {@link Form#getBody()}
+	 * 
+	 * @return whether or not this editor will start out dirty or not needing a save
 	 */
-	protected abstract void createControl(Composite parent);
+	protected abstract boolean createControl(Composite parent);
 	
 	/**
 	 * 
 	 * @return
 	 */
 	protected abstract String getEditorHeader();
+	
+	/**
+	 * Default just returns two blank lines, subclasses can use this for small-caption descriptive text in the header.
+	 * @return description text for this editor
+	 */
+	protected String getEditorHeaderDesc() {
+		return " \n "; // the two-lined monster!
+	}
 	
 	/**
 	 * {@link MPart#setLabel(String)}
@@ -184,6 +218,27 @@ public abstract class AbstractFormBasedEditor {
 	 */
 	protected String getPartProperty(final String key) {
 		return part.getProperties().get(key);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected <E extends AbstractBaseEntity> E getPartObject(Class<E> type) {
+		final Object object = part.getObject();
+		if (object != null) {
+			log.debug("Part Object exists: {}", object.toString());
+			if (type.isAssignableFrom(object.getClass())) {
+				log.trace("Assignable!");
+				return type.cast(object);
+			} else {
+				log.debug("NOT assignable! Type: {}", object.getClass().getName());
+			}
+		} else {
+			log.debug("No object found in part!");	
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -319,7 +374,7 @@ public abstract class AbstractFormBasedEditor {
 	 */
 	protected void setDirty(boolean value) {
 		if (value != isDirty()) {
-			log.debug("Dirty status changing to {}", value);
+			log.trace("Dirty status changing to {}", value);
 			dirtyable.setDirty(value);			
 		}
 	}

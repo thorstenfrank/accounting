@@ -67,7 +67,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	@Inject
 	@Translation
 	private Messages messages;
-
+	
 	@Inject
 	private IEclipseContext context;
 	
@@ -76,22 +76,20 @@ public class UserEditor extends AbstractFormBasedEditor {
 	private User currentUser;
 	
 	@Override
-	public void createControl(Composite parent) {
-		LOG.debug("createControl");
-//	    getForm().setText(messages.userEditorHeader);
-		
+	protected boolean createControl(Composite parent) {
 		GridLayout layout = new GridLayout(2, true);
 		parent.setLayout(layout);
 		
-		boolean needsSave = false;
+		boolean dirty = false;
 		
 		currentUser = userService.getCurrentUser();
 		if (currentUser == null) {
+			LOG.debug("Building editor for new user");
 			currentUser = new User();
-			needsSave = true;
+			dirty = true;
 			//MessageDialog.openWarning(parent.getShell(), "You are new!", "Welcome to accounting. Please edit and save your data!");
 		} else {
-			LOG.debug("Building user editor for {}", userService.getCurrentUser().getName());
+			LOG.trace("Building user editor for {}", userService.getCurrentUser().getName());
 			setPartLabel(currentUser.getName());
 		}
 		
@@ -109,12 +107,17 @@ public class UserEditor extends AbstractFormBasedEditor {
 				
 		createTaxRateSection(parent);
 		
-		setDirty(needsSave);
+		return dirty;
 	}
 	
 	@Override
 	protected String getEditorHeader() {
 		return messages.userEditorHeader;
+	}
+	
+	@Override
+	protected String getEditorHeaderDesc() {
+		return messages.userEditorHeaderDesc;
 	}
 	
 	/**
@@ -130,18 +133,6 @@ public class UserEditor extends AbstractFormBasedEditor {
 		final Text description = new Text(group, SWT.MULTI | SWT.BORDER);
 		WidgetHelper.grabBoth(description);
 		createBindings(description, currentUser, User.FIELD_DESCRIPTION);
-	}
-	
-	private void createAddressSection(Composite parent, Address address) {
-		final Composite group = createGroup(parent, messages.labelAddress);
-		createTextWithLabel(group, messages.labelRecipientDetail, address.getRecipientDetail(), address, Address.FIELD_RECIPIENT_DETAIL);
-		createTextWithLabel(group, messages.labelStreet, address.getStreet(), address, Address.FIELD_STREET);
-		createTextWithLabel(group, messages.labelPostalCode, address.getPostalCode(), address, Address.FIELD_POSTAL_CODE);
-		createTextWithLabel(group, messages.labelCity, address.getCity(), address, Address.FIELD_CITY);
-		createTextWithLabel(group, messages.labelEmail, address.getEmail(), address, Address.FIELD_EMAIL);
-		createTextWithLabel(group, messages.labelPhone, address.getPhoneNumber(), address, Address.FIELD_PHONE_NUMBER);
-		createTextWithLabel(group, messages.labelMobile, address.getMobileNumber(), address, Address.FIELD_MOBILE_NUMBER);
-		createTextWithLabel(group, messages.labelFax, address.getFaxNumber(), address, Address.FIELD_FAX_NUMBER);
 	}
 	
 	private void createBankAccountSection(Composite parent, BankAccount account) {		
@@ -222,7 +213,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 				AccountingPreferences.storeContext(accCtx);
 			}
 		} else {
-			LOG.debug("No context here!");
+			LOG.warn("No accounting context available, can't check for user name change!");
 		}
 		
 		setDirty(false);

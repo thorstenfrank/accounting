@@ -1,6 +1,5 @@
 package de.tfsw.accounting.ui.clients;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -34,7 +33,7 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 	public void createComposite(Composite parent) {
 		parent.setLayout(new GridLayout());
 		
-		clientService.getClientNames().forEach(System.out::println);
+		//clientService.getClientNames().forEach(System.out::println);
 		
 		viewer = new TreeViewer(parent);
 		viewer.setContentProvider(new MyContentProvider());
@@ -50,7 +49,8 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 			
 		});
 				
-		viewer.setInput(Arrays.asList(new Client("Ois"), new Client("Zwoi"), new Client("Drei")));
+		//viewer.setInput(Arrays.asList(new Client("Ois"), new Client("Zwoi"), new Client("Drei")));
+		viewer.setInput(clientService.getClients());
 		viewer.addDoubleClickListener(event -> {
 			if (event.getSelection() instanceof TreeSelection) {
 				TreeSelection ts = (TreeSelection) event.getSelection();
@@ -59,7 +59,7 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 				if (element instanceof Client) {
 					String name = ((Client) element).getName();
 					log.debug("Opening client editor for: {}", name);
-					openExistingOrCreateNew(name, ClientEditor.PART_ID);
+					openExistingOrCreateNew(name, ClientEditor.PART_ID, (Client) element);
 				} else {
 					log.debug("Unkown type: {}", element.getClass().getName());
 				}
