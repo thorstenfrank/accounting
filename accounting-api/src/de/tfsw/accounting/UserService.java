@@ -25,10 +25,12 @@ public interface UserService {
 	 * 
 	 * <p>Saving includes the user's configured tax rates, bank account and address.</p>
 	 * 
+	 * <p>When saving is successful, an event is issued (using the OSGi <code>EventAdmin</code>) using 
+	 * {@link EventIds#MODEL_CHANGE_TOPIC_PREFIX}.</p>
+	 * 
 	 * @param user the {@link User} to save
 	 * 
 	 * @return the saved instance - clients should use this for any further work 
 	 */
-	//@ModelChanging
 	User saveCurrentUser(User user);
 }

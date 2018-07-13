@@ -53,6 +53,9 @@ public interface ClientService {
 	 * 
 	 * <p>This method applies to both new and changed existing instances.</p>
 	 * 
+	 * <p>When saving is successful, an event is issued (using the OSGi <code>EventAdmin</code>) using 
+	 * {@link EventIds#MODEL_CHANGE_TOPIC_PREFIX}.</p>
+	 * 
 	 * @param client the {@link Client} to save
 	 * 
 	 * @return the saved instance - clients should use this for any further work
