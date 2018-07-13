@@ -53,25 +53,22 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 			}
 			
 		});
-				
-		//viewer.setInput(Arrays.asList(new Client("Ois"), new Client("Zwoi"), new Client("Drei")));
+		
 		viewer.setInput(clientService.getClients());
 		viewer.addDoubleClickListener(event -> {
 			if (event.getSelection() instanceof TreeSelection) {
 				TreeSelection ts = (TreeSelection) event.getSelection();
-				log.debug("DoubleClick from tree: {}", ts);
+				LOG.trace("DoubleClick from tree: {}", ts);
 				Object element = ts.getFirstElement();
 				if (element instanceof Client) {
-					String name = ((Client) element).getName();
-					log.debug("Opening client editor for: {}", name);
-					openExistingOrCreateNew(name, ClientEditor.PART_ID, (Client) element);
+					final Client client = (Client) element;
+					LOG.trace("Opening client editor for: {}", client.getName());
+					getAppModelHelper().openExistingOrCreateNewEditor(ClientEditor.PART_ID, client.getName(), client);
 				} else {
-					log.debug("Unkown type: {}", element.getClass().getName());
+					LOG.warn("Unkown type: {}", element.getClass().getName());
 				}
-				
-				
 			} else {
-				log.debug("DoubleClick: {}", event.getSelection());
+				LOG.warn("DoubleClick is not a TreeSelection: {}", event.getSelection());
 			}
 		});
 		

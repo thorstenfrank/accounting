@@ -26,8 +26,8 @@ import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.model.PaymentTerms;
 import de.tfsw.accounting.model.PaymentType;
-import de.tfsw.accounting.ui.AbstractEditorOpeningView;
 import de.tfsw.accounting.ui.AbstractFormBasedEditor;
+import de.tfsw.accounting.ui.util.ApplicationModelHelper;
 
 /**
  * @author tfrank1
@@ -51,7 +51,7 @@ public class ClientEditor extends AbstractFormBasedEditor {
 	@Override
 	protected boolean createControl(Composite parent) {
 		final String name = Optional
-				.ofNullable(getPartProperty(AbstractEditorOpeningView.KEY_ELEMENT_ID))
+				.ofNullable(getPartProperty(ApplicationModelHelper.KEY_ELEMENT_ID))
 				.orElse("New Client");
 		
 		LOG.trace("Creating editor for client {}", name);
