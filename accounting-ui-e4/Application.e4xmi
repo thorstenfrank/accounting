@@ -5,7 +5,9 @@
       <children xsi:type="basic:PartSashContainer" xmi:id="_6YeuQH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partsashcontainer.primary-left" containerData="5000" horizontal="true">
         <children xsi:type="basic:PartStack" xmi:id="_83XykH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partstack.clients" containerData="3000">
           <children xsi:type="basic:Part" xmi:id="_wrpnIH6wEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.part.clients" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.clients.ClientsAndProjects" label="Clients and Projects" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group.png">
-            <toolbar xmi:id="_Ba9dEH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.toolbar.0"/>
+            <toolbar xmi:id="_Ba9dEH6xEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.toolbar.0">
+              <children xsi:type="menu:HandledToolItem" xmi:id="_dabeoIXCEeiudYfwIdKRZA" elementId="menu.clients.new" label="%menu.client.new" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group_add.png" tooltip="%menu.client.new.tooltip" command="_eRoB0IXBEeiudYfwIdKRZA"/>
+            </toolbar>
           </children>
         </children>
         <children xsi:type="basic:PartStack" xmi:id="_9VOMMH6vEeiNSeqapqKydg" elementId="de.tfsw.accounting.ui.partstack.editors" containerData="7000">
@@ -41,9 +43,12 @@
       </children>
     </children>
     <mainMenu xmi:id="_6wlLicgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.main.menu">
-      <children xsi:type="menu:Menu" xmi:id="_6wlLisgZEeSyMNYR5xypkQ" elementId="file" label="File">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_l3VVkIUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.handleditem.file.new" label="New" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/page.png" command="_YIdx0IUqEeig0_QMwt1Nog">
-          <parameters xmi:id="_ypL3cIUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.handleditem.file.new.id" name="de.tfsw.accounting.ui.command.newWizard.id" value="wisserd"/>
+      <children xsi:type="menu:Menu" xmi:id="_6wlLisgZEeSyMNYR5xypkQ" elementId="menu.main.file" label="File">
+        <children xsi:type="menu:Menu" xmi:id="_7P6WEIXBEeiudYfwIdKRZA" elementId="menu.main.file.new" label="New">
+          <children xsi:type="menu:HandledMenuItem" xmi:id="_l3VVkIUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.handleditem.file.new" label="New" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/page.png" command="_YIdx0IUqEeig0_QMwt1Nog">
+            <parameters xmi:id="_ypL3cIUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.handleditem.file.new.id" name="de.tfsw.accounting.ui.command.newWizard.id" value="wisserd"/>
+          </children>
+          <children xsi:type="menu:HandledMenuItem" xmi:id="_DpFAcIXCEeiudYfwIdKRZA" elementId="menu.main.file.new.client" label="%menu.client.new" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/group_add.png" tooltip="%menu.client.new.tooltip" command="_eRoB0IXBEeiudYfwIdKRZA"/>
         </children>
         <children xsi:type="menu:MenuSeparator" xmi:id="_mdKmgIUqEeig0_QMwt1Nog" elementId="accounting-ui-e4.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_6wlLi8gZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handleditem.file.open" label="Open" iconURI="platform:/plugin/de.tfsw.accounting.ui/icons/sample.png" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
@@ -68,6 +73,7 @@
   <handlers xmi:id="_6wlLh8gZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.handler.aboutCommand" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.AboutHandler" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
   <handlers xmi:id="_HSUgsIRREeiZHKjZraMHLQ" elementId="de.tfsw.accounting.ui.handler.user.openEditor" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.user.OpenUserEditorHandler" command="_B8LicIRREeiZHKjZraMHLQ"/>
   <handlers xmi:id="_eEx_QIUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.handler.newWizard" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.handlers.NewWizardHandler" command="_YIdx0IUqEeig0_QMwt1Nog"/>
+  <handlers xmi:id="_wZ5OwIXBEeiudYfwIdKRZA" elementId="de.tfsw.accounting.ui.handler.client.new" contributionURI="bundleclass://de.tfsw.accounting.ui/de.tfsw.accounting.ui.clients.NewClientHandler" command="_eRoB0IXBEeiudYfwIdKRZA"/>
   <bindingTables xmi:id="_6wlLfsgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.bindingtable" bindingContext="_6wlLecgZEeSyMNYR5xypkQ">
     <bindings xmi:id="_6wlLf8gZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.keybinding.m1q" keySequence="M1+Q" command="_6wlLfMgZEeSyMNYR5xypkQ"/>
     <bindings xmi:id="_6wlLgsgZEeSyMNYR5xypkQ" elementId="de.tfsw.accounting.ui.keybinding.m1o" keySequence="M1+O" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
@@ -89,6 +95,7 @@
   <commands xmi:id="_YIdx0IUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.command.newWizard" commandName="newWizardCommand">
     <parameters xmi:id="_1YJYEIUqEeig0_QMwt1Nog" elementId="de.tfsw.accounting.ui.command.newWizard.id" name="Wizard ID" optional="false"/>
   </commands>
+  <commands xmi:id="_eRoB0IXBEeiudYfwIdKRZA" elementId="de.tfsw.accounting.ui.command.client.new" commandName="newClientCommand"/>
   <addons xmi:id="_6wlLcsgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_6wlLc8gZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_6wlLdMgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

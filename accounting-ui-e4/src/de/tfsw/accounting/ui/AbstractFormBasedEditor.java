@@ -4,6 +4,7 @@
 package de.tfsw.accounting.ui;
 
 import java.text.Normalizer.Form;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -14,12 +15,19 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.beans.PojoProperties;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.e4.core.services.nls.Translation;
 import org.eclipse.e4.ui.di.Focus;
+import org.eclipse.e4.ui.di.Persist;
 import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
+import org.eclipse.jface.databinding.fieldassist.ControlDecorationUpdater;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -35,6 +43,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.model.AbstractBaseEntity;
 import de.tfsw.accounting.model.Address;
+import de.tfsw.accounting.ui.databinding.NotEmptyValidator;
 import de.tfsw.accounting.ui.util.CssStyleClass;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
@@ -93,6 +102,305 @@ public abstract class AbstractFormBasedEditor {
 		scrollable.setMinSize(client.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 		setDirty(dirty);
+	}
+	
+	/**
+	 * Implementations need to create their UI in this method.
+	 * 
+	 * The dirty state return value is necessary because when using data bindings, the modify listener on the widgets
+	 * will immediately mark this editor as dirty. The {@link #initControl(Composite)} method calling this one will
+	 * {@link #setDirty(boolean)} to whatever value this method here returns at the end of building the editor.
+	 * 
+	 * @param parent the equivalent of {@link Form#getBody()}
+	 * 
+	 * @return whether or not this editor will start out dirty or not needing a save
+	 */
+	protected abstract boolean createControl(Composite parent);
+	
+	/**
+	 * 
+	 * @return header/title for this editor
+	 * @see #getEditorHeaderDesc()
+	 */
+	protected abstract String getEditorHeader();
+	
+	/**
+	 * Called by {@link #checkAndSave()} if all validations have passed.
+	 * 
+	 * @return <code>true</code> if the save was successful - this will reset the dirty flag
+	 */
+	protected abstract boolean doSave();
+
+
+	
+	@Focus
+	public void onFocus() {
+		log.trace("Focus gained");
+		this.scrollable.setFocus();
+	}
+	
+
+	
+	/**
+	 * Default just returns two blank lines, subclasses can use this for small-caption descriptive text in the header.
+	 * @return description text for this editor
+	 */
+	protected String getEditorHeaderDesc() {
+		return " \n "; // the two-lined monster!
+	}
+	
+	/**
+	 * {@link MPart#setLabel(String)}
+	 */
+	protected void setPartLabel(final String label) {
+		this.part.setLabel(label);
+	}
+	
+	/**
+	 * {@link MPart#getProperties()}
+	 */
+	protected String getPartProperty(final String key) {
+		return part.getProperties().get(key);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected <E extends AbstractBaseEntity> E getPartObject(Class<E> type) {
+		final Object object = part.getObject();
+		if (object != null) {
+			log.debug("Part Object exists: {}", object.toString());
+			if (type.isAssignableFrom(object.getClass())) {
+				log.trace("Assignable!");
+				return type.cast(object);
+			} else {
+				log.debug("NOT assignable! Type: {}", object.getClass().getName());
+			}
+		} else {
+			log.debug("No object found in part!");	
+		}
+		
+		return null;
+	}
+	
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param address
+	 */
+	protected void createAddressSection(Composite parent, Address address) {
+		final Composite group = createGroup(parent, messages.labelAddress);
+		createTextWithLabel(group, messages.labelRecipientDetail, address, Address.FIELD_RECIPIENT_DETAIL);
+		createTextWithLabel(group, messages.labelStreet, address, Address.FIELD_STREET);
+		createTextWithLabel(group, messages.labelPostalCode, address, Address.FIELD_POSTAL_CODE);
+		createTextWithLabel(group, messages.labelCity, address, Address.FIELD_CITY);
+		createTextWithLabel(group, messages.labelEmail, address, Address.FIELD_EMAIL);
+		createTextWithLabel(group, messages.labelPhone, address, Address.FIELD_PHONE_NUMBER);
+		createTextWithLabel(group, messages.labelMobile, address, Address.FIELD_MOBILE_NUMBER);
+		createTextWithLabel(group, messages.labelFax, address, Address.FIELD_FAX_NUMBER);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param text
+	 * @return
+	 */
+	protected Composite createGroup(Composite parent, String text) {
+		Composite contents = new Composite(parent, SWT.NONE);
+		WidgetHelper.grabBoth(contents);
+		
+		GridLayout layout = new GridLayout(2, false);
+		layout.horizontalSpacing = 10;
+		//layout.verticalSpacing = 10;
+		contents.setLayout(layout);
+		WidgetHelper.applyStyle(contents, CssStyleClass.editorGroup);
+		
+		Label headerLabel = new Label(contents, SWT.NONE);
+		headerLabel.setText(text);
+		WidgetHelper.applyStyle(headerLabel, CssStyleClass.editorGroupTitle);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(headerLabel);
+		
+		Label separatorLabel = new Label(contents, SWT.SEPARATOR | SWT.HORIZONTAL);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(separatorLabel);
+		
+		return contents;
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param text
+	 * @return
+	 */
+	protected Label createLabel(Composite parent, String text) {
+		final Label label = new Label(parent, SWT.NONE);
+		WidgetHelper.applyStyle(label, CssStyleClass.editorLabel);
+		if (text != null) {
+			label.setText(text);
+		}
+		return label;
+	}
+	
+	/**
+	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}.
+	 * 
+	 * <p>The created text is configured to grab all available horizontal space using 
+	 * {@link WidgetHelper#grabHorizontal(org.eclipse.swt.widgets.Control)}.</p>
+	 * 
+	 * @param parent the containing composite
+	 * @param text the {@link Text#setText(String)}
+	 * @return the {@link Text}
+	 */
+	protected Text createText(Composite parent, String text) {
+		final Text textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		if (text != null) {
+			textField.setText(text);
+		}
+		WidgetHelper.grabHorizontal(textField);
+		return textField;
+	}
+	
+	/**
+	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}. Additionally, a
+	 * data binding is created using the supplied model object and property name via 
+	 * {@link #createBindings(Text, Object, String)}. The created text is configured to grab all available horizontal
+	 * space using {@link WidgetHelper#FILL_GRID_DATA}.
+	 * 
+	 * @param parent the parent composite
+	 * @param text the text for the new text field
+	 * @param modelObject the model object to bind the new text field to
+	 * @param propertyName the property name of the modelObject to bind the new text field to
+	 * @return the newly created and bound {@link Text}
+	 */
+	protected Text createText(Composite parent, Object modelObject, String propertyName) {
+		final Text textField = createText(parent, null);	
+		createBindings(textField, modelObject, propertyName);
+		return textField;
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param label
+	 * @param text
+	 * @param modelObject
+	 * @param propertyName
+	 * @return
+	 */
+	protected Text createTextWithLabel(Composite parent, String label, Object modelObject, String propertyName) {
+		createLabel(parent, label);
+		return createText(parent, modelObject, propertyName);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param label
+	 * @param modelObject
+	 * @param propertyName
+	 * @return
+	 */
+	protected Text createTextWithLabelNotNullable(Composite parent, String label, Object modelObject, String propertyName) {
+		createLabel(parent, label);
+		final Text textField = createText(parent, null);
+		final UpdateValueStrategy toModel = new UpdateValueStrategy();
+		toModel.setBeforeSetValidator(new NotEmptyValidator(label));
+		ControlDecorationSupport.create(
+				createBindings(textField, modelObject, propertyName, toModel, null), 
+				SWT.TOP | SWT.LEFT, 
+				parent, 
+				new ControlDecorationUpdater());
+		return textField;
+	}
+	
+	/**
+	 * Creates JFace bindings for the supplied widget and also adds this instance as a focus and key listener.
+	 * @param text
+	 * @param modelObject
+	 * @param propertyName
+	 * @see #createBindings(Text, Object, String, UpdateValueStrategy, UpdateValueStrategy)
+	 */
+	protected Binding createBindings(Text text, Object modelObject, String propertyName) {
+		return createBindings(text, modelObject, propertyName, null, null);
+	}
+	
+	/**
+	 * 
+	 * @param text
+	 * @param modelObject
+	 * @param propertyName
+	 * @param toModel
+	 * @param fromModel
+	 */
+	@SuppressWarnings("unchecked")
+	protected Binding createBindings(
+			Text text, 
+			Object modelObject, 
+			String propertyName, 
+			UpdateValueStrategy toModel, 
+			UpdateValueStrategy fromModel) {
+		
+		text.addModifyListener(e -> setDirty(true));
+		return bindingContext.bindValue(
+				WidgetProperties.text(SWT.Modify).observe(text), 
+				PojoProperties.value(propertyName).observe(modelObject), 
+				toModel, 
+				fromModel);
+	}
+	
+	/**
+	 * @return
+	 * @see org.eclipse.e4.ui.model.application.ui.MDirtyable#isDirty()
+	 */
+	protected boolean isDirty() {
+		return dirtyable.isDirty();
+	}
+
+	/**
+	 * @param value
+	 * @see org.eclipse.e4.ui.model.application.ui.MDirtyable#setDirty(boolean)
+	 */
+	protected void setDirty(boolean value) {
+		if (value != isDirty()) {
+			log.trace("Dirty status changing to {}", value);
+			dirtyable.setDirty(value);			
+		}
+	}
+
+	@Persist
+	@SuppressWarnings("unchecked")
+	public void checkAndSave() {
+		log.trace("Checking validation status");
+		
+		Optional<IStatus> errorStatus = ((IObservableList<ValidationStatusProvider>) bindingContext.getValidationStatusProviders())
+			.stream()
+			.map(p -> (IStatus) p.getValidationStatus().getValue())
+			.filter(s -> !s.isOK())
+			.findAny();
+		
+		if (errorStatus.isPresent()) {
+			log.debug("Cannot save, validation errors exist!");
+			MessageDialog.openError(
+					scrollable.getShell(), 
+					messages.errorValidationFailedTitle, 
+					messages.errorValidationFailedText);
+		} else {
+			log.trace("No validation errors/warnings, calling doSave now");
+			if (doSave()) {
+				setDirty(false);
+			}
+		}
+	}
+	
+	@PreDestroy
+	public void disposeComposite() {
+		log.trace("PreDestroy!");
+		setDirty(false); // we don't want the application to ask the user to save closed editors...
+		this.scrollable.dispose();
+		this.bindingContext.dispose();
 	}
 	
 	/**
@@ -159,228 +467,5 @@ public abstract class AbstractFormBasedEditor {
 //		bottomFillerData.top = new FormAttachment(messageImageLabel, 0);
 //		bottomFillerData.bottom = new FormAttachment(messageLabel, 0, SWT.BOTTOM);
 //		bottomFillerLabel.setLayoutData(bottomFillerData);
-	}
-	
-	protected void createAddressSection(Composite parent, Address address) {
-		final Composite group = createGroup(parent, messages.labelAddress);
-		createTextWithLabel(group, messages.labelRecipientDetail, address.getRecipientDetail(), address, Address.FIELD_RECIPIENT_DETAIL);
-		createTextWithLabel(group, messages.labelStreet, address.getStreet(), address, Address.FIELD_STREET);
-		createTextWithLabel(group, messages.labelPostalCode, address.getPostalCode(), address, Address.FIELD_POSTAL_CODE);
-		createTextWithLabel(group, messages.labelCity, address.getCity(), address, Address.FIELD_CITY);
-		createTextWithLabel(group, messages.labelEmail, address.getEmail(), address, Address.FIELD_EMAIL);
-		createTextWithLabel(group, messages.labelPhone, address.getPhoneNumber(), address, Address.FIELD_PHONE_NUMBER);
-		createTextWithLabel(group, messages.labelMobile, address.getMobileNumber(), address, Address.FIELD_MOBILE_NUMBER);
-		createTextWithLabel(group, messages.labelFax, address.getFaxNumber(), address, Address.FIELD_FAX_NUMBER);
-	}
-	
-	@Focus
-	public void onFocus() {
-		log.trace("Focus gained");
-		this.scrollable.setFocus();
-	}
-	
-	/**
-	 * Implementations need to create their UI in this method.
-	 * 
-	 * The dirty state return value is necessary because when using data bindings, the modify listener on the widgets
-	 * will immediately mark this editor as dirty. The {@link #initControl(Composite)} method calling this one will
-	 * {@link #setDirty(boolean)} to whatever value this method here returns at the end of building the editor.
-	 * 
-	 * @param parent the equivalent of {@link Form#getBody()}
-	 * 
-	 * @return whether or not this editor will start out dirty or not needing a save
-	 */
-	protected abstract boolean createControl(Composite parent);
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected abstract String getEditorHeader();
-	
-	/**
-	 * Default just returns two blank lines, subclasses can use this for small-caption descriptive text in the header.
-	 * @return description text for this editor
-	 */
-	protected String getEditorHeaderDesc() {
-		return " \n "; // the two-lined monster!
-	}
-	
-	/**
-	 * {@link MPart#setLabel(String)}
-	 */
-	protected void setPartLabel(final String label) {
-		this.part.setLabel(label);
-	}
-	
-	/**
-	 * {@link MPart#getProperties()}
-	 */
-	protected String getPartProperty(final String key) {
-		return part.getProperties().get(key);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected <E extends AbstractBaseEntity> E getPartObject(Class<E> type) {
-		final Object object = part.getObject();
-		if (object != null) {
-			log.debug("Part Object exists: {}", object.toString());
-			if (type.isAssignableFrom(object.getClass())) {
-				log.trace("Assignable!");
-				return type.cast(object);
-			} else {
-				log.debug("NOT assignable! Type: {}", object.getClass().getName());
-			}
-		} else {
-			log.debug("No object found in part!");	
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param parent
-	 * @param text
-	 * @return
-	 */
-	protected Composite createGroup(Composite parent, String text) {
-//		final Group group = new Group(parent, SWT.SHADOW_OUT);
-//		WidgetHelper.grabBoth(group);
-//		group.setText(text);
-//		group.setLayout(new GridLayout());
-		
-		Composite contents = new Composite(parent, SWT.NONE);
-		WidgetHelper.grabBoth(contents);
-		contents.setLayout(new GridLayout(2, false));
-		WidgetHelper.applyStyle(contents, CssStyleClass.editorGroup);
-		
-		Label headerLabel = new Label(contents, SWT.NONE);
-		headerLabel.setText(text);
-		WidgetHelper.applyStyle(headerLabel, CssStyleClass.editorGroupTitle);
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(headerLabel);
-		
-		Label separatorLabel = new Label(contents, SWT.SEPARATOR | SWT.HORIZONTAL);
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(separatorLabel);
-		
-		return contents;
-	}
-	
-	/**
-	 * 
-	 * @param parent
-	 * @param text
-	 * @return
-	 */
-	protected Label createLabel(Composite parent, String text) {
-		final Label label = new Label(parent, SWT.NONE);
-		label.setText(text);
-		return label;
-	}
-	
-	/**
-	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}.
-	 * 
-	 * <p>The created text is configured to grab all available horizontal space using 
-	 * {@link WidgetHelper#FILL_GRID_DATA}.</p>
-	 * 
-	 * @param parent the containing composite
-	 * @param text the {@link Text#setText(String)}
-	 * @return the {@link Text}
-	 */
-	protected Text createText(Composite parent, String text) {
-		final Text textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		WidgetHelper.grabHorizontal(textField);
-		return textField;
-	}
-	
-	/**
-	 * Creates a {@link Text} widget for a form using {@link SWT#SINGLE} and {@link SWT#BORDER}. Additionally, a
-	 * data binding is created using the supplied model object and property name via 
-	 * {@link #createBindings(Text, Object, String)}. The created text is configured to grab all available horizontal
-	 * space using {@link WidgetHelper#FILL_GRID_DATA}.
-	 * 
-	 * @param parent the parent composite
-	 * @param text the text for the new text field
-	 * @param modelObject the model object to bind the new text field to
-	 * @param propertyName the property name of the modelObject to bind the new text field to
-	 * @return the newly created and bound {@link Text}
-	 */
-	protected Text createText(Composite parent, String text, Object modelObject, String propertyName) {
-		final Text textField = createText(parent, text);	
-		createBindings(textField, modelObject, propertyName);
-		return textField;
-	}
-	
-	/**
-	 * 
-	 * @param parent
-	 * @param label
-	 * @param text
-	 * @param modelObject
-	 * @param propertyName
-	 * @return
-	 */
-	protected Text createTextWithLabel(Composite parent, String label, String text, Object modelObject, String propertyName) {
-		createLabel(parent, label);
-		return createText(parent, text, modelObject, propertyName);
-	}
-	
-	/**
-	 * Creates JFace bindings for the supplied widget and also adds this instance as a focus and key listener.
-	 * @param text
-	 * @param modelObject
-	 * @param propertyName
-	 */
-	@SuppressWarnings("unchecked")
-	protected Binding createBindings(Text text, Object modelObject, String propertyName) {
-		text.addModifyListener(e -> setDirty(true));
-		return bindingContext.bindValue(
-				WidgetProperties.text(SWT.Modify).observe(text), 
-				PojoProperties.value(propertyName).observe(modelObject));
-	}
-	
-	/**
-	 * 
-	 * @param text
-	 * @param modelObject
-	 * @param propertyName
-	 * @param toModel
-	 * @param fromModel
-	 */
-	@SuppressWarnings("unchecked")
-	protected Binding createBindings(Text text, Object modelObject, String propertyName, UpdateValueStrategy toModel, UpdateValueStrategy fromModel) {
-		return bindingContext.bindValue(
-				WidgetProperties.text(SWT.Modify).observe(text), 
-				PojoProperties.value(propertyName).observe(modelObject), 
-				toModel, 
-				fromModel);
-	}
-
-	/**
-	 * @return
-	 * @see org.eclipse.e4.ui.model.application.ui.MDirtyable#isDirty()
-	 */
-	protected boolean isDirty() {
-		return dirtyable.isDirty();
-	}
-
-	/**
-	 * @param value
-	 * @see org.eclipse.e4.ui.model.application.ui.MDirtyable#setDirty(boolean)
-	 */
-	protected void setDirty(boolean value) {
-		if (value != isDirty()) {
-			log.trace("Dirty status changing to {}", value);
-			dirtyable.setDirty(value);			
-		}
-	}
-
-	@PreDestroy
-	public void disposeComposite() {
-		this.scrollable.dispose();
 	}
 }

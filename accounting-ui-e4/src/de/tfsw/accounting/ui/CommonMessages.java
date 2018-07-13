@@ -4,6 +4,9 @@ public class CommonMessages {
 
 	public String wuppdi;
 	
+	public String errorValidationFailedTitle;
+	public String errorValidationFailedText;
+	
 	public String labelAddress;
 	public String labelRecipientDetail;
 	public String labelStreet;

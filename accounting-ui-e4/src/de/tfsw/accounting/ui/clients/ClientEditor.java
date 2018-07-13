@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.e4.core.services.nls.Translation;
-import org.eclipse.e4.ui.di.Persist;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -50,7 +50,9 @@ public class ClientEditor extends AbstractFormBasedEditor {
 	
 	@Override
 	protected boolean createControl(Composite parent) {
-		final String name = getPartProperty(AbstractEditorOpeningView.KEY_ELEMENT_ID);
+		final String name = Optional
+				.ofNullable(getPartProperty(AbstractEditorOpeningView.KEY_ELEMENT_ID))
+				.orElse("New Client");
 		
 		LOG.trace("Creating editor for client {}", name);
 		
@@ -77,6 +79,24 @@ public class ClientEditor extends AbstractFormBasedEditor {
 		return dirty;
 	}
 	
+	@Override
+	protected boolean doSave() {
+		clientService.saveClient(client);
+		return true;
+	}
+	
+	@PreDestroy
+	public void dispose() {
+		setDirty(false);
+		client = null;
+		LOG.trace("PreDestroy too");
+	}
+	
+	@Override
+	protected String getEditorHeader() {
+		return messages.clientEditorHeader;
+	}
+	
 	private boolean assignEditedClient() {
 		final Optional<Client> opt = Optional.ofNullable(getPartObject(Client.class));
 		if (opt.isPresent()) {
@@ -88,15 +108,10 @@ public class ClientEditor extends AbstractFormBasedEditor {
 		}
 	}
 	
-	@Override
-	protected String getEditorHeader() {
-		return messages.clientEditorHeader;
-	}
-	
 	private void createBasicInfoSection(Composite parent) {
-		final Composite group = createGroup(parent, messages.labelBasicInformation);		
-		createTextWithLabel(group, messages.labelClientName, client.getName(), client, Client.FIELD_NAME);
-		createTextWithLabel(group, messages.labelClientNumber, client.getClientNumber(), client, Client.FIELD_CLIENT_NUMBER);
+		final Composite group = createGroup(parent, messages.labelBasicInformation);
+		createTextWithLabelNotNullable(group, messages.labelClientName, client, Client.FIELD_NAME);
+		createTextWithLabel(group, messages.labelClientNumber, client, Client.FIELD_CLIENT_NUMBER);
 	}
 	
 	private void createPaymentTermsSection(Composite parent) {
@@ -138,12 +153,5 @@ public class ClientEditor extends AbstractFormBasedEditor {
 			paymentTerms.setFullPaymentTargetInDays(spinner.getSelection());
 			setDirty(true);
 		});
-	}
-	
-	@Persist
-	public void save() {
-		LOG.debug("Saving client: {}", client.getName());
-		clientService.saveClient(client);
-		setDirty(false);
 	}
 }

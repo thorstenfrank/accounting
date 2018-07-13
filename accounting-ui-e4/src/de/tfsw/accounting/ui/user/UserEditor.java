@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.nls.Translation;
-import org.eclipse.e4.ui.di.Persist;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -120,14 +119,41 @@ public class UserEditor extends AbstractFormBasedEditor {
 		return messages.userEditorHeaderDesc;
 	}
 	
+	@Override
+	protected boolean doSave() {
+		LOG.debug("Saving user {}", currentUser.getName());
+		userService.saveCurrentUser(currentUser);
+		
+		AccountingContext accCtx = context.get(AccountingContext.class);
+		if (accCtx != null) {
+			if (!currentUser.getName().equals(accCtx.getUserName())) {
+				LOG.info("Change in user name, from {} to {}. Saving context now", accCtx.getUserName(), currentUser.getName());
+				accCtx = new AccountingContext(currentUser.getName(), accCtx.getDbFileName());
+				context.set(AccountingContext.class, accCtx);
+				AccountingPreferences.storeContext(accCtx);
+			}
+		} else {
+			LOG.warn("No accounting context available, can't check for user name change!");
+		}
+		
+		return true;
+	}
+	
+	@PreDestroy
+	public void cleanup() {
+		this.currentUser = null;
+		this.taxRateViewer.getTable().dispose();
+	}
+	
 	/**
 	 * 
 	 * @param user
 	 */
 	private void createBasicInfoSection(Composite parent) {
 		final Composite group = createGroup(parent, messages.labelBasicInformation);
-		createTextWithLabel(group, messages.labelName, currentUser.getName(), currentUser, User.FIELD_NAME);
-		createTextWithLabel(group, messages.labelTaxId, currentUser.getTaxNumber(), currentUser, User.FIELD_TAX_NUMBER);
+		
+		createTextWithLabelNotNullable(group, messages.labelName, currentUser, User.FIELD_NAME);
+		createTextWithLabel(group, messages.labelTaxId, currentUser, User.FIELD_TAX_NUMBER);
 				
 		createLabel(group, messages.labelDescription);
 		final Text description = new Text(group, SWT.MULTI | SWT.BORDER);
@@ -137,11 +163,11 @@ public class UserEditor extends AbstractFormBasedEditor {
 	
 	private void createBankAccountSection(Composite parent, BankAccount account) {		
 		final Composite group = createGroup(parent, messages.labelBankAccount);
-		createTextWithLabel(group, messages.labelAccountNumber, account.getAccountNumber(), account, BankAccount.FIELD_ACCOUNT_NUMBER);
-		createTextWithLabel(group, messages.labelBankCode, account.getBankCode(), account, BankAccount.FIELD_BANK_CODE);
-		createTextWithLabel(group, messages.labelBankName, account.getBankName(), account, BankAccount.FIELD_BANK_NAME);
-		createTextWithLabel(group, messages.labelBIC, account.getBic(), account, BankAccount.FIELD_BIC);
-		createTextWithLabel(group, messages.labelIBAN, account.getBic(), account, BankAccount.FIELD_IBAN);
+		createTextWithLabel(group, messages.labelAccountNumber, account, BankAccount.FIELD_ACCOUNT_NUMBER);
+		createTextWithLabel(group, messages.labelBankCode, account, BankAccount.FIELD_BANK_CODE);
+		createTextWithLabel(group, messages.labelBankName, account, BankAccount.FIELD_BANK_NAME);
+		createTextWithLabel(group, messages.labelBIC, account, BankAccount.FIELD_BIC);
+		createTextWithLabel(group, messages.labelIBAN, account, BankAccount.FIELD_IBAN);
 	}
 
 	private void createTaxRateSection(Composite parent) {
@@ -197,32 +223,6 @@ public class UserEditor extends AbstractFormBasedEditor {
 		col.getColumn().setText(label);
 		col.getColumn().setAlignment(SWT.CENTER);
 		tableLayout.setColumnData(col.getColumn(), new ColumnWeightData(weight));
-	}
-	
-	@Persist
-	public void save() {
-		LOG.debug("Saving user {}", currentUser.getName());
-		userService.saveCurrentUser(currentUser);
-		
-		AccountingContext accCtx = context.get(AccountingContext.class);
-		if (accCtx != null) {
-			if (!currentUser.getName().equals(accCtx.getUserName())) {
-				LOG.info("Change in user name, from {} to {}. Saving context now", accCtx.getUserName(), currentUser.getName());
-				accCtx = new AccountingContext(currentUser.getName(), accCtx.getDbFileName());
-				context.set(AccountingContext.class, accCtx);
-				AccountingPreferences.storeContext(accCtx);
-			}
-		} else {
-			LOG.warn("No accounting context available, can't check for user name change!");
-		}
-		
-		setDirty(false);
-	}
-	
-	@PreDestroy
-	public void cleanup() {
-		this.currentUser = null;
-		this.taxRateViewer.getTable().dispose();
 	}
 	
 	/**

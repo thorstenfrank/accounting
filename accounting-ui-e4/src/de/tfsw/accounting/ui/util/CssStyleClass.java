@@ -14,5 +14,6 @@ public enum CssStyleClass {
 	editorTitle,
 	editorDesc,
 	editorGroup,
-	editorGroupTitle
+	editorGroupTitle, 
+	editorLabel
 }
