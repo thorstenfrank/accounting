@@ -44,12 +44,13 @@ import de.tfsw.accounting.model.User;
 /**
  * @author thorsten
  *
+ * TODO make me final and use me like the dirty-ass utility class I am
  */
 public abstract class BaseTestFixture {
 
-	protected static final String TEST_USER_NAME = "JUnitTestUser";
+	public static final String TEST_USER_NAME = "JUnitTestUser";
 	
-	protected static final String TEST_DB_FILE = "JUnitTestDbFile";
+	public static final String TEST_DB_FILE = "JUnitTestDbFile";
 	
 	protected static final TaxRate DEFAULT_TAXRATE = new TaxRate("JUT", "JUnitTax", new BigDecimal("0.15"), true);
 	
@@ -64,7 +65,7 @@ public abstract class BaseTestFixture {
 	/**
 	 * @return the testContext
 	 */
-	protected static AccountingContext getTestContext() {
+	public static AccountingContext getTestContext() {
 		if (testContext == null) {
 			testContext = new AccountingContext(TEST_USER_NAME, TEST_DB_FILE);		
 		}
@@ -75,7 +76,7 @@ public abstract class BaseTestFixture {
 	 * 
 	 * @return test user instance
 	 */
-	protected static User getTestUser() {
+	public static User getTestUser() {
 		if (testUser == null) {
 			testUser = new User();
 			testUser.setName(TEST_USER_NAME);
@@ -112,7 +113,7 @@ public abstract class BaseTestFixture {
 	 * 
 	 * @return the test client instance
 	 */
-	protected static Client getTestClient() {
+	public static Client getTestClient() {
 		if (testClient == null) {
 			testClient = new Client();
 			testClient.setName("JUnitTestClientName");
@@ -135,7 +136,7 @@ public abstract class BaseTestFixture {
 	 * @param expected
 	 * @param actual
 	 */
-	protected static void assertAreEqual(BigDecimal expected, BigDecimal actual) {
+	public static void assertAreEqual(BigDecimal expected, BigDecimal actual) {
 		if (expected == null) {
 			assertNull(actual);
 		} else {
@@ -151,7 +152,7 @@ public abstract class BaseTestFixture {
 	 * 
      * @return test revenue
      */
-    protected static Revenue createTestRevenue() {
+    public static Revenue createTestRevenue() {
 		// INVOICE 1
 		InvoicePosition ip1 = new InvoicePosition();
 		ip1.setPricePerUnit(new BigDecimal("50"));
@@ -188,7 +189,7 @@ public abstract class BaseTestFixture {
      * 
      * @param revenue
      */
-    protected static void assertIsTestRevenue(Revenue revenue) {
+    public static void assertIsTestRevenue(Revenue revenue) {
 		assertEquals(0, new BigDecimal("8598.78").compareTo(revenue.getRevenueNet()));
 		assertEquals(0, new BigDecimal("9798.78").compareTo(revenue.getRevenueGross()));
 		assertEquals(0, new BigDecimal("1200").compareTo(revenue.getRevenueTax()));
@@ -198,7 +199,7 @@ public abstract class BaseTestFixture {
      * 
      * @param revenue
      */
-    protected static void assertIsTestRevenue(Price revenue) {
+    public static void assertIsTestRevenue(Price revenue) {
 		assertEquals(0, new BigDecimal("8598.78").compareTo(revenue.getNet()));
 		assertEquals(0, new BigDecimal("9798.78").compareTo(revenue.getGross()));
 		assertEquals(0, new BigDecimal("1200").compareTo(revenue.getTax()));
@@ -213,7 +214,7 @@ public abstract class BaseTestFixture {
      * @param useTax
      * @return
      */
-    protected static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax) {
+    public static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax) {
 		Expense expense = new Expense();
 		expense.setCategory(category);
 		expense.setDescription(description);
@@ -237,7 +238,7 @@ public abstract class BaseTestFixture {
      * @param year
      * @return
      */
-	protected static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax, int day, int month, int year) {
+	public static Expense createExpense(String category, String description, ExpenseType type, String netAmount, boolean useTax, int day, int month, int year) {
 		Expense expense = createExpense(category, description, type, netAmount, useTax);
 		expense.setPaymentDate(LocalDate.of(year, month, day));
 		
@@ -251,7 +252,7 @@ public abstract class BaseTestFixture {
      * 
      * @return
      */
-    protected static Set<Expense> createTestExpenses() {
+    public static Set<Expense> createTestExpenses() {
     	Set<Expense> expenses = new HashSet<Expense>();
     	expenses.add(createExpense("Capex Category", "Capex Description", ExpenseType.CAPEX, "1000", true, 23, 2, 2010)); //$NON-NLS-1$
     	expenses.add(createExpense("Opex Cat One", "Opex Desc One", ExpenseType.OPEX, "100", true, 1, 1, 2010)); //$NON-NLS-1$
@@ -264,7 +265,7 @@ public abstract class BaseTestFixture {
      * 
      * @param ec
      */
-    protected static void assertIsTestExpenses(ExpenseCollection ec) {
+    public static void assertIsTestExpenses(ExpenseCollection ec) {
 		assertIsTestExpenseTotal(ec.getTotalCost());
 		
 		Price operating = ec.getCost(ExpenseType.OPEX);
@@ -308,7 +309,7 @@ public abstract class BaseTestFixture {
      * @param yearExpected
      * @param actual
      */
-    protected static void assertDatesMatch(int dayExpected, int monthExpected, int yearExpected, LocalDate actual) {
+    public static void assertDatesMatch(int dayExpected, int monthExpected, int yearExpected, LocalDate actual) {
     	assertNotNull(actual);
     	assertEquals(LocalDate.of(yearExpected, monthExpected, dayExpected), actual);
     }
@@ -317,7 +318,7 @@ public abstract class BaseTestFixture {
      * 
      * @param total
      */
-    protected static void assertIsTestExpenseTotal(Price total) {
+    public static void assertIsTestExpenseTotal(Price total) {
 		assertAreEqual(new BigDecimal("1300"), total.getNet());
 		assertAreEqual(new BigDecimal("1465"), total.getGross());
 		assertAreEqual(new BigDecimal("165"), total.getTax());    	

@@ -16,7 +16,6 @@
 package de.tfsw.accounting.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,26 +38,15 @@ import org.osgi.service.event.EventAdmin;
 
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
-import com.db4o.config.BigMathSupport;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.db4o.config.ObjectField;
-import com.db4o.config.encoding.StringEncodings;
-import com.db4o.constraints.UniqueFieldValueConstraint;
 import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
-import com.db4o.ext.DatabaseClosedException;
-import com.db4o.ext.DatabaseFileLockedException;
-import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.ext.Db4oException;
-import com.db4o.ext.Db4oIOException;
-import com.db4o.ext.IncompatibleFileFormatException;
 import com.db4o.osgi.Db4oService;
-import com.db4o.query.Predicate;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingContextFactory;
 import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.AccountingService;
+import de.tfsw.accounting.EventIds;
 import de.tfsw.accounting.Messages;
 import de.tfsw.accounting.io.AccountingXmlImportExport;
 import de.tfsw.accounting.io.ExpenseImporter;
@@ -105,9 +93,9 @@ public class AccountingServiceImpl implements AccountingService {
 	private boolean initialised;
 
 	private AccountingContext context;
-	private Db4oService db4oService;
-	private ObjectContainer objectContainer;
-
+	
+	private Persistence persistence;
+	
 	private EventAdmin eventAdmin;
 	
 	private ModelMetaInformationImpl modelMetaInformation;
@@ -124,17 +112,8 @@ public class AccountingServiceImpl implements AccountingService {
 	 * @param db4oService the db4oService to set
 	 */
 	protected synchronized void bindDb4oService(Db4oService db4oService) {
-		if (db4oService != null) {
-			
-			
-			if (this.db4oService != null) {
-				LOG.warn("Db4oService is being replaced!"); //$NON-NLS-1$
-			} else {
-				LOG.info("Db4o service is being bound"); //$NON-NLS-1$
-			}
-			
-			this.db4oService = db4oService;
-			this.initialised = false;
+		if (db4oService != null) {		
+			setPersistence(new Db4oWrapper(db4oService));
 		}
 	}
 	
@@ -143,9 +122,9 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	protected synchronized void unbindDb4oService(Db4oService db4oService) {
 		LOG.info("Db4o service is being unbound");
-		if (this.db4oService == db4oService) {
-			shutDown();
-			this.db4oService = null;
+		if (initialised) {
+			persistence.shutDown();
+			this.initialised = false;
 		} else {
 			LOG.warn("Unkonwn Db4o service instance, will ignore unbind");
 		}
@@ -157,6 +136,12 @@ public class AccountingServiceImpl implements AccountingService {
 		final Map<String, Object> properties = new HashMap<>();
 		properties.put(EVENT_PROPERTY_INIT_SERVICE, this);
 		eventAdmin.postEvent(new Event(EVENT_TOPIC_SERVICE_INIT, properties));
+	}
+	
+	/** Visible for testing purposes. */
+	protected void setPersistence(Persistence persistence) {
+		this.persistence = persistence;
+		initialised = false;
 	}
 	
 	/**
@@ -178,30 +163,7 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.info("service init"); //$NON-NLS-1$
 		this.context = context;
 
-		try {
-			objectContainer = db4oService.openFile(createConfiguration(), context.getDbFileName());
-		} catch (DatabaseFileLockedException e) {
-			LOG.error(String.format(
-					"DB file [%s] is locked by another process - application is probably already running", //$NON-NLS-1$
-					context.getDbFileName()), e); 
-			
-			throw new AccountingException(
-			        Messages.bind(Messages.AccountingService_errorFileLocked, context.getDbFileName()), e);
-		} catch (IncompatibleFileFormatException e) {
-			LOG.error(String.format("File [%s] is not a valid data file format!", context.getDbFileName()), e); //$NON-NLS-1$
-			throw new AccountingException(
-					Messages.bind(Messages.AccountingService_errorIllegalFileFormat, context.getDbFileName()), e);
-		} catch (Exception e) {
-			if (e.getCause() != null && e.getCause() instanceof FileNotFoundException) {
-				LOG.error(String.format("DB file [%s] does not exist!", context.getDbFileName()), e); //$NON-NLS-1$
-				throw new AccountingException(
-						Messages.bind(Messages.AccountingService_errorDbFileNotFound, context.getDbFileName()), 
-						e.getCause());
-			} else {
-				LOG.error("Error setting up DB " + context.getDbFileName(), e); //$NON-NLS-1$
-				throw new AccountingException(Messages.AccountingService_errorServiceInit, e);				
-			}
-		}
+		persistence.init(context.getDbFileName());
 
 		buildModelMetaInfo();
 		
@@ -219,7 +181,7 @@ public class AccountingServiceImpl implements AccountingService {
 	    LOG.info("Building model meta information..."); //$NON-NLS-1$
 		this.modelMetaInformation = new ModelMetaInformationImpl();
 		
-		ObjectSet<Expense> expenses = objectContainer.query(Expense.class);
+		Set<Expense> expenses = persistence.runFindQuery(Expense.class);
 		LOG.debug("Traversing all known expenses, total found: " + expenses.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfExpenses(expenses.size());
 		
@@ -244,7 +206,7 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("Oldest known expense is from: " + oldestExpenseDate.toString()); //$NON-NLS-1$
 		modelMetaInformation.setOldestExpense(oldestExpenseDate);
 		
-		ObjectSet<Invoice> invoices = objectContainer.query(Invoice.class);
+		Set<Invoice> invoices = persistence.runFindQuery(Invoice.class);
 		LOG.debug("Searching for oldest invoice, total found: " + invoices.size()); //$NON-NLS-1$
 		modelMetaInformation.setNumberOfInvoices(invoices.size());
 		LocalDate oldestInvoiceDate = LocalDate.now();
@@ -256,78 +218,6 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("Oldest invoice is from: " + oldestInvoiceDate.toString()); //$NON-NLS-1$
 		modelMetaInformation.setOldestInvoice(oldestInvoiceDate);
     }
-
-	/**
-	 * 
-	 * @return
-	 */
-	private Configuration createConfiguration() {
-		Configuration config = db4oService.newConfiguration();
-		
-		// make sure to use UTF-8
-		config.stringEncoding(StringEncodings.utf8());
-		
-		// must ensure support for big decimal
-		config.add(new BigMathSupport());
-		
-		// allow version upgrades...
-		config.allowVersionUpdates(true);
-
-		// config for User object graph cascade
-		ObjectClass userClass = config.objectClass(User.class);
-		userClass.cascadeOnUpdate(true);
-		userClass.cascadeOnDelete(true);
-		userClass.objectField(User.FIELD_NAME).indexed(true);
-		config.add(new UniqueFieldValueConstraint(User.class, User.FIELD_NAME));
-
-		// config for Client object graph cascade
-		ObjectClass clientClass = config.objectClass(Client.class);
-		clientClass.cascadeOnUpdate(true);
-		clientClass.cascadeOnDelete(true);
-		clientClass.objectField(Client.FIELD_NAME).indexed(true);
-		clientClass.objectField(Client.FIELD_CLIENT_NUMBER).indexed(true);
-		config.add(new UniqueFieldValueConstraint(Client.class, Client.FIELD_NAME));
-		config.add(new UniqueFieldValueConstraint(Client.class, Client.FIELD_CLIENT_NUMBER));
-
-		// config for Invoice object graph
-		ObjectClass invoiceClass = config.objectClass(Invoice.class);
-		ObjectField invoicePositionsField = invoiceClass.objectField(Invoice.FIELD_INVOICE_POSITIONS);
-		invoicePositionsField.cascadeOnDelete(true);
-		invoicePositionsField.cascadeOnUpdate(true);
-		invoiceClass.objectField(Invoice.FIELD_NUMBER).indexed(true);
-		config.add(new UniqueFieldValueConstraint(Invoice.class, Invoice.FIELD_NUMBER));
-
-		ObjectClass cvClass = config.objectClass(CurriculumVitae.class);
-		cvClass.cascadeOnUpdate(true);
-		cvClass.cascadeOnDelete(true);
-		
-		ObjectClass expenseTemplateClass = config.objectClass(ExpenseTemplate.class);
-		expenseTemplateClass.cascadeOnUpdate(true);
-		expenseTemplateClass.cascadeOnDelete(true);
-		
-		return config;
-	}
-
-	/**
-	 * Properly shuts down the service.
-	 */
-	private void shutDown() {
-		LOG.info("shutting down db4o"); //$NON-NLS-1$		
-
-		if (!initialised) {
-			LOG.info("Service not initialised, nothing to do here!"); //$NON-NLS-1$
-			return;
-		}
-
-		try {
-			LOG.info("Closing object container."); //$NON-NLS-1$
-			objectContainer.close();
-		} catch (Db4oIOException e) {
-			LOG.warn("Error closing DB file, will ignore", e); //$NON-NLS-1$
-		} finally {
-			initialised = false;
-		}
-	}
 
 	/**
 	 * 
@@ -346,9 +236,9 @@ public class AccountingServiceImpl implements AccountingService {
 	public User getCurrentUser() {
 		LOG.debug("getCurrentUser"); //$NON-NLS-1$
 		User user = null;
-		ObjectSet<User> userList = runFindQuery(new FindCurrentUserPredicate(context));
+		Set<User> userList = persistence.runFindQuery(new FindCurrentUserPredicate(context));
 		if (userList != null && userList.size() == 1) {
-			user = userList.get(0);
+			user = userList.iterator().next();
 		} else {
 			LOG.warn("No user found for context name: {}", context.getUserName()); //$NON-NLS-1$
 		}
@@ -361,15 +251,15 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<String> getClientNames() {
-		return runFindQuery(Client.class).stream().map(Client::getName).collect(Collectors.toSet());
+		return persistence.runFindQuery(Client.class).stream().map(Client::getName).collect(Collectors.toSet());
 	}
 	
 	@Override
 	public Client getClient(String name) {
-		ObjectSet<Client> clients = runFindQuery(new FindClientByNamePredicate(name));
+		Set<Client> clients = persistence.runFindQuery(new FindClientByNamePredicate(name));
 		
 		if (clients != null && clients.size() == 1) {
-			return clients.get(0);
+			return clients.iterator().next();
 		}
 		
 		return null;
@@ -381,7 +271,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<Client> getClients() {
-		return new HashSet<Client>(runFindQuery(Client.class));
+		return new HashSet<Client>(persistence.runFindQuery(Client.class));
 	}
 
 	/**
@@ -446,7 +336,7 @@ public class AccountingServiceImpl implements AccountingService {
 			// FIXME this is hardcoded and should be configurable...
 			return String.format("RE%d-%02d", currentYear, sequencer.getCurrentSequenceNumber());
 		} finally {
-			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
+			persistence.getDb4o().ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
 		}
 	}
 	
@@ -455,13 +345,13 @@ public class AccountingServiceImpl implements AccountingService {
 	 * @return
 	 */
 	private InvoiceSequencer getInvoiceSequencer() {
-		if (objectContainer.ext().setSemaphore(INVOICE_SEQUENCER_SEMAPHORE, SEMAPHORE_WAIT_TIMEOUT)) {			
-			ObjectSet<InvoiceSequencer> set = runFindQuery(InvoiceSequencer.class);
+		if (persistence.getDb4o().ext().setSemaphore(INVOICE_SEQUENCER_SEMAPHORE, SEMAPHORE_WAIT_TIMEOUT)) {			
+			Set<InvoiceSequencer> set = persistence.runFindQuery(InvoiceSequencer.class);
 			
 			InvoiceSequencer sequencer = null;
 			
 			if (set.size() == 1) {
-				sequencer = set.next();
+				sequencer = set.iterator().next();
 				LOG.debug("Sequencer found: " + sequencer.toString()); //$NON-NLS-1$
 			} else {
 				sequencer = new InvoiceSequencer();
@@ -495,7 +385,7 @@ public class AccountingServiceImpl implements AccountingService {
 				doStoreEntity(sequencer);
 			}			
 		} finally {
-			objectContainer.ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
+			persistence.getDb4o().ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
 		}
 	}
 	
@@ -548,7 +438,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	private void validateInvoiceNumberNotYetUsed(String invoiceNumber) {
 		if (getInvoice(invoiceNumber) != null) {
-			LOG.error("An invoice with this number already exists: " + invoiceNumber); //$NON-NLS-1$
+			LOG.error("An invoice with this number already exists: []", invoiceNumber); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorInvoiceNumberExists);
 		}
 	}
@@ -575,12 +465,12 @@ public class AccountingServiceImpl implements AccountingService {
 		
 		final InvoiceState state = invoice.getState();
 		if (!InvoiceState.UNSAVED.equals(state) && !InvoiceState.CREATED.equals(state)) {
-			LOG.error("Cannot save an invoice that is beyond state CREATED. Was: " + state); //$NON-NLS-1$
+			LOG.error("Cannot save an invoice that is beyond state CREATED. Was: {]", state); //$NON-NLS-1$
 			throw new AccountingException(Messages.AccountingService_errorCannotSaveInvoice);
 		}
 
 		if (invoice.getCreationDate() == null) {
-			LOG.info("Saving invoice for the first time: " + invoice.getNumber()); //$NON-NLS-1$
+			LOG.info("Saving invoice for the first time: {}", invoice.getNumber()); //$NON-NLS-1$
 			validateInvoiceNumberNotYetUsed(invoice.getNumber());
 			invoice.setCreationDate(LocalDate.now());
 			updateInvoiceSequencer(invoice.getNumber());
@@ -733,12 +623,12 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.debug("getInvoice: " + invoiceNumber); //$NON-NLS-1$
 		Invoice invoice = null;
 
-		ObjectSet<Invoice> invoiceList = runFindQuery(new GetInvoicePredicate(invoiceNumber));
+		Set<Invoice> invoiceList = persistence.runFindQuery(new GetInvoicePredicate(invoiceNumber));
 		
 		if (invoiceList == null || invoiceList.size() < 1) {
 			invoice = null;
 		} else if (invoiceList.size() == 1) {
-			invoice = invoiceList.get(0);
+			invoice = invoiceList.iterator().next();
 		} else if (invoiceList.size() > 1) {
 			LOG.warn("Should have found 1 invoice, but found instead: " + invoiceList.size()); //$NON-NLS-1$
 			invoiceList.forEach(i -> LOG.debug("Found invoice: {}", i.getNumber()));
@@ -778,8 +668,6 @@ public class AccountingServiceImpl implements AccountingService {
     }
     
 	/**
-	 * {@inheritDoc}
-	 * 
 	 * @see AccountingService#findInvoices(InvoiceState...)
 	 */
 	@Override
@@ -787,44 +675,31 @@ public class AccountingServiceImpl implements AccountingService {
 		return findInvoices(null, states);
 	}
 
-	
-	
 	/**
-	 * {@inheritDoc}
-	 * @see de.tfsw.accounting.AccountingService#findInvoices(de.tfsw.accounting.util.TimeFrame, de.tfsw.accounting.model.InvoiceState[])
+	 * 
 	 */
 	@Override
 	public Set<Invoice> findInvoices(TimeFrame timeFrame, InvoiceState... states) {
-		return new HashSet<Invoice>(runFindQuery(new FindInvoicesPredicate(context, timeFrame, states)));
+		return new HashSet<Invoice>(persistence.runFindQuery(new FindInvoicesPredicate(context, timeFrame, states)));
 	}
 
 	/**
-     * {@inheritDoc}.
-     * @see de.tfsw.accounting.AccountingService#getRevenue(de.tfsw.accounting.util.TimeFrame)
+	 * 
      */
     @Override
     public Revenue getRevenue(TimeFrame timeFrame) {
     	Revenue revenue = new Revenue();
     	revenue.setTimeFrame(timeFrame);
     	
-    	try {
-    		List<Invoice> invoices = new ArrayList<Invoice>(
-    				objectContainer.query(new FindInvoicesForRevenuePredicate(timeFrame)));
-    		sortInvoicesByPaymentDateAscending(invoices);
-	        revenue.setInvoices(invoices);
-        } catch (Db4oIOException e) {
-        	throwDb4oIoException(e);
-        } catch (DatabaseClosedException e) {
-        	throwDbClosedException(e);
-        }
+		List<Invoice> invoices = new ArrayList<Invoice>(persistence.runFindQuery(new FindInvoicesForRevenuePredicate(timeFrame)));
+		sortInvoicesByPaymentDateAscending(invoices);
+        revenue.setInvoices(invoices);
     	
 	    return revenue;
     }
 
     /**
      * 
-     * {@inheritDoc}.
-     * @see de.tfsw.accounting.AccountingService#getRevenueByYears()
      */
     @Override
     public List<Revenue> getRevenueByYears() {
@@ -879,25 +754,13 @@ public class AccountingServiceImpl implements AccountingService {
     
     /**
      * 
-     * @param invoices
      */
     private void sortInvoicesByPaymentDateAscending(List<Invoice> invoices) {
-		Collections.sort(invoices, new Comparator<Invoice>() {
-			/**
-             * {@inheritDoc}.
-             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-             */
-            @Override
-            public int compare(Invoice o1, Invoice o2) {
-                return o1.getPaymentDate().compareTo(o2.getPaymentDate());
-            }
-        	
-		});    	
+		Collections.sort(invoices, (i1, i2) ->  i1.getPaymentDate().compareTo(i2.getPaymentDate()));    	
     }
     
     /**
-     * {@inheritDoc}.
-     * @see de.tfsw.accounting.AccountingService#saveExpense(de.tfsw.accounting.model.Expense)
+     * 
      */
     @Override
     public Expense saveExpense(Expense expense) {
@@ -907,8 +770,7 @@ public class AccountingServiceImpl implements AccountingService {
     }
         
 	/**
-     * {@inheritDoc}.
-     * @see de.tfsw.accounting.AccountingService#saveExpenses(java.util.Collection)
+	 * 
      */
     @Override
     public Collection<Expense> saveExpenses(Collection<Expense> expenses) {
@@ -921,7 +783,6 @@ public class AccountingServiceImpl implements AccountingService {
 
     /**
      * 
-     * @param expense
      */
     private void checkAndUpdateMetaInfo(Expense expense) {
     	if (expense.getPaymentDate() != null && modelMetaInformation.getOldestKnownExpenseDate().isAfter(expense.getPaymentDate())) {
@@ -965,13 +826,12 @@ public class AccountingServiceImpl implements AccountingService {
 				return result;
 			}
 		});
-		expenses.addAll(runFindQuery(new FindExpensesPredicate(timeFrame, types)));
+		expenses.addAll(persistence.runFindQuery(new FindExpensesPredicate(timeFrame, types)));
     	return expenses;
     }
     
 	/**
-	 * {@inheritDoc}
-	 * @see AccountingService#deleteExpense(Expense)
+	 * 
 	 */
 	@Override
 	public void deleteExpense(Expense expense) {
@@ -979,12 +839,11 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see de.tfsw.accounting.AccountingService#getDepreciationForYear(int)
+	 * 
 	 */
 	@Override
 	public List<AnnualDepreciation> getDepreciationForYear(int year) {
-		ObjectSet<Expense> expenses = objectContainer.query(new FindDepreciationPredicate(year));
+		Set<Expense> expenses = persistence.runFindQuery(new FindDepreciationPredicate(year));
 		
 		List<AnnualDepreciation> returnMe = new ArrayList<AnnualDepreciation>();
 		
@@ -1000,8 +859,7 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	/**
-     * {@inheritDoc}.
-     * @see AccountingService#getIncomeStatement(TimeFrame)
+	 * 
      */
     @Override
     public IncomeStatement getIncomeStatement(TimeFrame timeFrame) {
@@ -1032,8 +890,6 @@ public class AccountingServiceImpl implements AccountingService {
     
     /**
      * 
-     * {@inheritDoc}.
-     * @see AccountingService#importModelFromXml(String, String)
      */
     @Override
     public AccountingContext importModelFromXml(String sourceXmlFile, String dbFileLocation) {
@@ -1085,7 +941,7 @@ public class AccountingServiceImpl implements AccountingService {
     		doStoreEntities(importedTemplates);
     	}
     	
-    	objectContainer.commit();
+    	persistence.getDb4o().commit();
     	
     	LOG.info("Successfully imported data, now building meta information");
     	
@@ -1095,8 +951,7 @@ public class AccountingServiceImpl implements AccountingService {
     }
     
 	/**
-     * {@inheritDoc}.
-     * @see AccountingService#importExpenses(String, ExpenseImportParams)
+	 * 
      */
     @Override
     public ExpenseImportResult importExpenses(String sourceFile, ExpenseImportParams params) {
@@ -1106,8 +961,6 @@ public class AccountingServiceImpl implements AccountingService {
 
     /**
      * 
-     * {@inheritDoc}
-     * @see de.tfsw.accounting.AccountingService#getModelMetaInformation()
      */
     @Override
     public ModelMetaInformation getModelMetaInformation() {
@@ -1115,7 +968,7 @@ public class AccountingServiceImpl implements AccountingService {
     }
     
 	/**
-	 * @see de.tfsw.accounting.AccountingService#saveCurriculumVitae(de.tfsw.accounting.model.CurriculumVitae)
+	 * 
 	 */
 	@Override
 	public CurriculumVitae saveCurriculumVitae(CurriculumVitae cv) {
@@ -1125,16 +978,16 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	/**
-	 * @see de.tfsw.accounting.AccountingService#getCurriculumVitae()
+	 * 
 	 */
 	@Override
 	public CurriculumVitae getCurriculumVitae() {
 		CurriculumVitae cv = null;
 		
-		ObjectSet<CurriculumVitae> cvSet = runFindQuery(CurriculumVitae.class);
+		Set<CurriculumVitae> cvSet = persistence.runFindQuery(CurriculumVitae.class);
 		
 		if (cvSet.size() == 1) {
-			cv = cvSet.get(0);
+			cv = cvSet.iterator().next();
 			cleanupCvEntries(cv);
 //			doDeleteEntities(cv.getReferences(), true);
 //			doDeleteEntity(cv);
@@ -1152,7 +1005,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	private void cleanupCvEntries(CurriculumVitae cv) {
 		Collection<CVEntry> known = cv.getReferences() != null ? cv.getReferences() : new ArrayList<CVEntry>();
-		for (CVEntry entry : runFindQuery(CVEntry.class)) {
+		for (CVEntry entry : persistence.runFindQuery(CVEntry.class)) {
 			if (known.contains(entry)) {
 				LOG.debug("CleanupCVEntries - KNOWN: " + entry.getTitle());
 			} else {
@@ -1167,7 +1020,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<ExpenseTemplate> getExpenseTemplates() {
-		return new HashSet<ExpenseTemplate>(runFindQuery(ExpenseTemplate.class));
+		return new HashSet<ExpenseTemplate>(persistence.runFindQuery(ExpenseTemplate.class));
 	}
 
 	/**
@@ -1175,17 +1028,7 @@ public class AccountingServiceImpl implements AccountingService {
 	 */
 	@Override
 	public Set<ExpenseTemplate> findApplicableExpenseTemplates() {
-		Set<ExpenseTemplate> templates = new HashSet<ExpenseTemplate>();
-		
-		try {
-			templates.addAll(objectContainer.query(new FindExpenseTemplatePredicate(true, true)));
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		}
-		
-		return templates;
+		return new HashSet<ExpenseTemplate>(persistence.runFindQuery(new FindExpenseTemplatePredicate(true, true)));
 	}
 	
 	/**
@@ -1205,96 +1048,25 @@ public class AccountingServiceImpl implements AccountingService {
 		LOG.info(String.format("Deleting expense template [%s / %s]", template.getDescription(), template.getRule().toString()));
 		doDeleteEntity(template);
 	}
-
-	/**
-	 * 
-	 * @param targetType
-	 * @return
-	 */
-	private <T> ObjectSet<T> runFindQuery(Class<T> targetType) {
-		try {
-			return objectContainer.query(targetType);
-		} catch (Db4oIOException | DatabaseClosedException e) {
-			LOG.error("Error accessing DB", e);
-			throw new AccountingException("Error accessing data", e);
-		}
-	}
-	
-	private <T> ObjectSet<T> runFindQuery(Predicate<T> predicate) {
-		try {
-			return objectContainer.query(predicate);
-		} catch (Db4oIOException | DatabaseClosedException e) {
-			LOG.error("Error accessing DB", e);
-			throw new AccountingException("Error accessing data", e);
-		}
-	}
 	
 	/**
 	 * Shortcut for <code>doStoreEntity(entity, true)</code>
 	 * @param entity
 	 */
 	private void doStoreEntity(final AbstractBaseEntity entity) {
-		doStoreEntity(entity, true);
+		persistence.storeEntity(entity);
+		postModelChangeEvent(entity.getClass());
+		BusinessLogger.log(Operation.SAVE, entity);
 	}
 	
-	/**
-	 * 
-	 * @param entity
-	 * @param commit
-	 * @throws AccountingException
-	 * @throws Db4oException
-	 */
-	private void doStoreEntity(final AbstractBaseEntity entity, final boolean commit) {
-		if (entity == null) {
-			LOG.warn("Call to doStoreEntity with param [null]!"); //$NON-NLS-1$
-			return;
-		}
-		
-		try {
-			objectContainer.store(entity);
-			if (commit) {
-				objectContainer.commit();	
-			}
-			BusinessLogger.log(Operation.SAVE, entity);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		} catch (DatabaseReadOnlyException e) {
-			throwDbReadOnlyException(e);
-		} catch(Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (Db4oException e) {
-			LOG.error("Error while trying to store entity: " + entity, e); //$NON-NLS-1$
-			objectContainer.rollback();
-			if (e instanceof UniqueFieldValueConstraintViolationException) {
-				throw e;
-			}
-			throw new AccountingException("Unknown exception: " + e.toString(), e);
-		}
-	}
-
 	/**
 	 * 
 	 * @param entities
 	 */
 	private void doStoreEntities(Collection<? extends AbstractBaseEntity> entities) {
-		try {
-			for (final AbstractBaseEntity entity : entities) {
-				doStoreEntity(entity, false);
-			}
-			objectContainer.commit();
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		} catch (DatabaseReadOnlyException e) {
-			throwDbReadOnlyException(e);
-		} catch(Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (Db4oException e) {
-			LOG.error("Error while trying to store multiple entities", e); //$NON-NLS-1$
-			objectContainer.rollback();
-			if (e instanceof UniqueFieldValueConstraintViolationException) {
-				throw e;
-			}
-			throw new AccountingException("Unknown exception: " + e.toString(), e);
+		if (entities != null && entities.isEmpty() == false) {
+			persistence.storeEntities(entities);
+			postModelChangeEvent(entities.iterator().next().getClass());
 		}
 	}
 	
@@ -1309,49 +1081,14 @@ public class AccountingServiceImpl implements AccountingService {
 			LOG.warn("Call to doDeleteEntity with param [null]!"); //$NON-NLS-1$
 			return;
 		}
-		
-		try {
-			objectContainer.delete(entity);
-			objectContainer.commit();
-			BusinessLogger.log(Operation.DELETE, entity);
-		} catch (Db4oIOException e) {
-			throwDb4oIoException(e);
-		} catch (DatabaseClosedException e) {
-			throwDbClosedException(e);
-		} catch (DatabaseReadOnlyException e) {
-			throwDbReadOnlyException(e);
-		} catch (Db4oException e) {
-			LOG.error("Error while deleting entity: " + entity, e); //$NON-NLS-1$
-			objectContainer.rollback();			
-			throw e;
-		}
+
+		persistence.deleteEntity(entity);
+		BusinessLogger.log(Operation.DELETE, entity);
+		postModelChangeEvent(entity.getClass());
 	}
 	
-	/**
-	 * 
-	 * @param e
-	 * @param rollback
-	 */
-	private void throwDbClosedException(DatabaseClosedException e) {
-		LOG.error("Database is closed!", e); //$NON-NLS-1$
-		throw new AccountingException(Messages.AccountingService_errorDatabaseClosed, e);
-	}
-	
-	/**
-	 * 
-	 * @param e
-	 */
-	private void throwDb4oIoException(Db4oIOException e) {
-		LOG.error("I/O error during DB operation", e); //$NON-NLS-1$		
-		throw new AccountingException(Messages.AccountingService_errorIO, e);
-	}
-	
-	/**
-	 * 
-	 * @param e
-	 */
-	private void throwDbReadOnlyException(DatabaseReadOnlyException e) {
-		LOG.error("Database is read-only!", e);
-		throw new AccountingException(Messages.AccountingService_errorDatabaseReadOnly, e);
+	@SuppressWarnings("unchecked")
+	private void postModelChangeEvent(Class<? extends AbstractBaseEntity> type) {
+		eventAdmin.postEvent(new Event(EventIds.modelChangeTopicFor(type), (Map) null));
 	}
 }
