@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -17,6 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import de.tfsw.accounting.ClientService;
+import de.tfsw.accounting.EventIds;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.ui.AbstractEditorOpeningView;
 
@@ -26,6 +28,9 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 	
 	@Inject
 	private ClientService clientService;
+	
+	@Inject
+	private IEventBroker eventBroker;
 	
 	private TreeViewer viewer;
 	
@@ -68,6 +73,11 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 			} else {
 				log.debug("DoubleClick: {}", event.getSelection());
 			}
+		});
+		
+		eventBroker.subscribe(EventIds.modelChangeTopicFor(Client.class), e -> {
+			viewer.setInput(clientService.getClients());
+			viewer.refresh();
 		});
 	}
 	
