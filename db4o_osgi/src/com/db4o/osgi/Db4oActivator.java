@@ -27,7 +27,7 @@ public class Db4oActivator implements BundleActivator {
 		context.registerService(
 				Db4oService.class.getName(),
 				new Db4oServiceFactory(), 
-				new Hashtable());		
+				new Hashtable<>());		
 	}
 	
 	/**

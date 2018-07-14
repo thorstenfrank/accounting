@@ -16,8 +16,8 @@ public class OSGiLoader implements JdkLoader {
 		_loader = loader;
 	}
 
-	public Class loadClass(String className) {
-		Class clazz = _loader.loadClass(className);
+	public Class<?> loadClass(String className) {
+		Class<?> clazz = _loader.loadClass(className);
 		if (clazz != null) {
 			return clazz;
 		}
