@@ -29,19 +29,20 @@
 		<module>../accounting-logging</module>
 		<module>../accounting-product</module>
 		<module>../accounting-reporting</module>
+		<module>../accounting-target</module>
 		<module>../accounting-test-harness</module>
 		<module>../accounting-ui-e4</module>
 		<module>../db4o_osgi</module>
 		<module>../com.google.gson</module>
 	</modules>
 
-	<repositories>
+	<!-- repositories>
 		<repository>
 			<id>eclipse-repo</id>
 			<url>${eclipse-repo.url}</url>
 			<layout>p2</layout>
 		</repository>
-	</repositories>
+	</repositories-->
 
 	<build>
 		<plugins>
@@ -64,6 +65,15 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho.version}</version>
+				<configuration>
+					<target>
+						<artifact>
+            				<groupId>de.tfsw.accounting</groupId>
+            				<artifactId>de.tfsw.accounting.target</artifactId>
+            				<version>1.0.0-SNAPSHOT</version>
+        				</artifact>
+					</target>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
