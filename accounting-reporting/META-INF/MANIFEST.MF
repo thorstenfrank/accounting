@@ -17,3 +17,4 @@ Bundle-ClassPath: lib/commons-collections-3.2.1.jar,
  .
 Export-Package: de.tfsw.accounting.reporting
 Service-Component: OSGI-INF/component.xml
+Automatic-Module-Name: de.tfsw.accounting.reporting

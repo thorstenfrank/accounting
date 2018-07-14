@@ -8,3 +8,4 @@ Fragment-Host: de.tfsw.accounting.elster.core;bundle-version="1.1.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: de.tfsw.accounting.test-harness;bundle-version="1.0.0",
  org.junit;bundle-version="4.11.0"
+Automatic-Module-Name: de.tfsw.accounting.elster.core.test

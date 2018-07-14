@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/component.xml
+Automatic-Module-Name: de.tfsw.accounting.elster.ui

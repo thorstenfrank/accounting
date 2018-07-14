@@ -4,3 +4,4 @@ Bundle-Name: accounting-help
 Bundle-SymbolicName: de.tfsw.accounting.help;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: tfsw.de
+Automatic-Module-Name: de.tfsw.accounting.help

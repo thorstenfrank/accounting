@@ -18,3 +18,4 @@ Export-Package: com.google.gson,
  com.google.gson.internal.bind.util,
  com.google.gson.reflect,
  com.google.gson.stream
+Automatic-Module-Name: com.google.gson

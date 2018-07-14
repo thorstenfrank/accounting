@@ -29,3 +29,4 @@ Bundle-ClassPath: lib/commons-beanutils-1.8.3.jar,
  lib/commons-logging-1.1.jar,
  .
 Service-Component: OSGI-INF/accountingServiceComponent.xml
+Automatic-Module-Name: de.tfsw.accounting.core

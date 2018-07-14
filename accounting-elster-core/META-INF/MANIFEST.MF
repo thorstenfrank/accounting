@@ -14,3 +14,4 @@ Require-Bundle: de.tfsw.accounting.core;bundle-version="1.6.0",
 Export-Package: de.tfsw.accounting.elster
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/component.xml
+Automatic-Module-Name: de.tfsw.accounting.elster.core

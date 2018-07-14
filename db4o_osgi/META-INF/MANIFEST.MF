@@ -99,4 +99,5 @@ Export-Package: EDU.purdue.cs.bloat.benchmark,EDU.purdue.cs.bloat.cfg,
  db4o.enhance; version="8.0.249.16098",com.db4o.osgi; version="8.0.249
  .16098"
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: db4o_osgi
 

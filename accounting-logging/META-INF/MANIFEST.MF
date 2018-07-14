@@ -14,3 +14,4 @@ Export-Package: org.apache.logging.log4j,
  org.apache.logging.log4j.status,
  org.apache.logging.log4j.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: de.tfsw.accounting.logging
