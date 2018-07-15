@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Accounting derby service
+Bundle-SymbolicName: de.tfsw.accounting.service.derby
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: tfsw.de
+Automatic-Module-Name: de.tfsw.accounting.service.derby
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: javax.persistence;bundle-version="2.2.0",
+ org.eclipse.persistence.jpa;bundle-version="2.7.2",
+ derby;bundle-version="10.14.2000000";visibility:=reexport,
+ de.tfsw.accounting.api;bundle-version="1.0.0",
+ de.tfsw.accounting.logging;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.13.0"
+Import-Package: org.osgi.service.component.annotations;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/de.tfsw.accounting.service.derby.AccountingDerbyService.xml
+Bundle-ClassPath: lib/flyway-core-5.1.4.jar,
+ db/,
+ .
