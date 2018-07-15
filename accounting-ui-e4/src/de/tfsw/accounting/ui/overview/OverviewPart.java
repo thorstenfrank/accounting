@@ -3,7 +3,10 @@ package de.tfsw.accounting.ui.overview;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -11,12 +14,19 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.tfsw.accounting.DummyService;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 public class OverviewPart {
 	
+	private static final Logger LOG = LogManager.getLogger(OverviewPart.class);
+	
+	@Inject
+	private DummyService dummyService;
+	
 	@PostConstruct
 	public void postConstruct(Composite parent) {
+		LOG.debug("Building overview");
 		parent.setLayout(new GridLayout(2, false));
 		WidgetHelper.grabBoth(parent);
 		
