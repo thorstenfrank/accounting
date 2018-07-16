@@ -6,7 +6,6 @@ package de.tfsw.accounting.service;
 import java.util.Collection;
 import java.util.Set;
 
-import com.db4o.ObjectContainer;
 import com.db4o.query.Predicate;
 
 import de.tfsw.accounting.model.AbstractBaseEntity;
@@ -16,8 +15,6 @@ import de.tfsw.accounting.model.AbstractBaseEntity;
  *
  */
 public interface Persistence {
-
-	ObjectContainer getDb4o();
 
 	<T> Set<T> runFindQuery(Predicate<T> predicate);
 

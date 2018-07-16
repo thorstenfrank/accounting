@@ -36,8 +36,6 @@ import org.apache.logging.log4j.Logger;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
 import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
 import com.db4o.ext.Db4oException;
 import com.db4o.osgi.Db4oService;
@@ -86,9 +84,6 @@ public class AccountingServiceImpl implements AccountingService {
 
 	/** Logger. */
 	private static final Logger LOG = LogManager.getLogger(AccountingServiceImpl.class);
-	
-	private static final String INVOICE_SEQUENCER_SEMAPHORE = "INVOICE_SEQUENCER_SEMAPHORE";
-	private static final int SEMAPHORE_WAIT_TIMEOUT = 1000;
 	
 	private boolean initialised;
 
@@ -330,38 +325,30 @@ public class AccountingServiceImpl implements AccountingService {
 			sequencer.setCurrentSequenceNumber(sequencer.getCurrentSequenceNumber() + 1);
 		}
 		
-		try {
-			doStoreEntity(sequencer);
-			LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
-			// FIXME this is hardcoded and should be configurable...
-			return String.format("RE%d-%02d", currentYear, sequencer.getCurrentSequenceNumber());
-		} finally {
-			persistence.getDb4o().ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
-		}
+		doStoreEntity(sequencer);
+		LOG.info("Invoice sequencer was updated: " + sequencer.toString()); //$NON-NLS-1$
+		// FIXME this is hardcoded and should be configurable...
+		return String.format("RE%d-%02d", currentYear, sequencer.getCurrentSequenceNumber());
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	private InvoiceSequencer getInvoiceSequencer() {
-		if (persistence.getDb4o().ext().setSemaphore(INVOICE_SEQUENCER_SEMAPHORE, SEMAPHORE_WAIT_TIMEOUT)) {			
-			Set<InvoiceSequencer> set = persistence.runFindQuery(InvoiceSequencer.class);
-			
-			InvoiceSequencer sequencer = null;
-			
-			if (set.size() == 1) {
-				sequencer = set.iterator().next();
-				LOG.debug("Sequencer found: " + sequencer.toString()); //$NON-NLS-1$
-			} else {
-				sequencer = new InvoiceSequencer();
-				LOG.info("No sequencer found in storage, creating new"); //$NON-NLS-1$
-			}
-				
-			return sequencer;
+	private InvoiceSequencer getInvoiceSequencer() {			
+		Set<InvoiceSequencer> set = persistence.runFindQuery(InvoiceSequencer.class);
+		
+		InvoiceSequencer sequencer = null;
+		
+		if (set.size() == 1) {
+			sequencer = set.iterator().next();
+			LOG.debug("Sequencer found: " + sequencer.toString()); //$NON-NLS-1$
 		} else {
-			throw new AccountingException("Busy!");
+			sequencer = new InvoiceSequencer();
+			LOG.info("No sequencer found in storage, creating new"); //$NON-NLS-1$
 		}
+			
+		return sequencer;
 	}
 		
 	/**
@@ -375,17 +362,13 @@ public class AccountingServiceImpl implements AccountingService {
 		InvoiceSequencer sequencer = getInvoiceSequencer();
 		LOG.debug("Current sequencer: " + sequencer.toString()); //$NON-NLS-1$
 		
-		try {
-			if (year == sequencer.getYear() && number == sequencer.getCurrentSequenceNumber()) {
-				LOG.debug("Nothing to change, sequencer is up to date!"); //$NON-NLS-1$
-			} else {
-				sequencer.setYear(year);
-				sequencer.setCurrentSequenceNumber(number);
-				LOG.info("Updating sequencer: "+sequencer.toString()); //$NON-NLS-1$
-				doStoreEntity(sequencer);
-			}			
-		} finally {
-			persistence.getDb4o().ext().releaseSemaphore(INVOICE_SEQUENCER_SEMAPHORE);
+		if (year == sequencer.getYear() && number == sequencer.getCurrentSequenceNumber()) {
+			LOG.debug("Nothing to change, sequencer is up to date!"); //$NON-NLS-1$
+		} else {
+			sequencer.setYear(year);
+			sequencer.setCurrentSequenceNumber(number);
+			LOG.info("Updating sequencer: "+sequencer.toString()); //$NON-NLS-1$
+			doStoreEntity(sequencer);
 		}
 	}
 	
@@ -940,8 +923,6 @@ public class AccountingServiceImpl implements AccountingService {
     		LOG.info("Now saving imported ExpenseTEmplates: " + importedTemplates.size()); //$NON-NLS-1$
     		doStoreEntities(importedTemplates);
     	}
-    	
-    	persistence.getDb4o().commit();
     	
     	LOG.info("Successfully imported data, now building meta information");
     	

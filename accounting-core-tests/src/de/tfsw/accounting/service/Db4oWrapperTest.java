@@ -1,6 +1,5 @@
 package de.tfsw.accounting.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -53,7 +52,6 @@ public class Db4oWrapperTest {
 	@Test
 	public void testInitSuccessFul() {
 		setUpInitMocks(null);
-		assertEquals(ocMock, wrapper.getDb4o());
 		verifyInitMocks();
 	}
 	

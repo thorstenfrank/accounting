@@ -56,12 +56,6 @@ final class Db4oWrapper implements Persistence {
 		super();
 		this.db4oService = db4oService;
 	}
-
-	/** Intermediate, just for refactoring out the container from the service. Will be deleted afterwards!*/
-	@Override
-	public ObjectContainer getDb4o() {
-		return db4o;
-	}
 	
 	/**
 	 * 
