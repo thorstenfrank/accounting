@@ -3,7 +3,6 @@
  */
 package de.tfsw.accounting.service.derby;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.derby.jdbc.EmbeddedDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
@@ -34,46 +34,24 @@ public class AccountingDerbyService implements DummyService {
 
 	private static final Logger LOG = LogManager.getLogger(AccountingDerbyService.class);
 	
+	private static final String DRIVER_NAME = EmbeddedDriver.class.getName();
+	
 	private EntityManagerFactory entityManagerFactory;
 	private EntityManager entityManager;
 	
 	@Activate
 	protected void activate() {
-		LOG.info(">>> Firing up derby db <<<");
+		LOG.info("Firing up derby database");
 		
-		String dbLoc = Platform.getInstanceLocation().getURL().toString();
-		dbLoc = dbLoc.substring(5);
-		dbLoc = "jdbc:derby:" + dbLoc + "derbydb;create=true";
-		LOG.info("Using [{}] as DB location", dbLoc);
+		final String dbLoc = buildDbUrl();
 		
-		Properties properties = new Properties();
-		properties.put("flyway.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-		properties.put("flyway.url", dbLoc);
-		//properties.put("flyway.user", "accounting");
-		Flyway flyway = new Flyway(getClass().getClassLoader());
-		flyway.configure(properties);
-		
-		//flyway.setLocations("/db/migration");
-		flyway.migrate();
-		
-		LOG.debug("Flyway target version: {}", flyway.info().current().getVersion());
-		
-		Map map = new HashMap<>();
-		map.put(PersistenceUnitProperties.CLASSLOADER, getClass().getClassLoader());
-		map.put(PersistenceUnitProperties.JDBC_URL, dbLoc);
-		
-		PersistenceProvider persistenceProvider = new PersistenceProvider();
-		entityManagerFactory = persistenceProvider.createEntityManagerFactory("derby-eclipselink", map);
-		entityManager = entityManagerFactory.createEntityManager();
-		
-		getDummies().forEach(dummy -> {
-			LOG.trace("Dummy found (id / name): {} / {}", dummy.getId(), dummy.getName());
-		});
+		setupDatabase(dbLoc);
+		initPersistence(dbLoc);
 	}
-	
+		
 	@Deactivate
 	protected void deactivate() {
-		LOG.info(">>> Shutting down derby db <<<");
+		LOG.info("Shutting down derby db");
 		entityManager.close();
 		entityManagerFactory.close();
 		this.entityManager = null;
@@ -90,4 +68,54 @@ public class AccountingDerbyService implements DummyService {
 		
 	}
 
+	private void initPersistence(String dbLoc) {
+		final Map<String, Object> map = new HashMap<>();
+		map.put(PersistenceUnitProperties.JDBC_DRIVER, DRIVER_NAME);
+		map.put(PersistenceUnitProperties.CLASSLOADER, getClass().getClassLoader());
+		map.put(PersistenceUnitProperties.JDBC_URL, dbLoc);
+		
+		PersistenceProvider persistenceProvider = new PersistenceProvider();
+		entityManagerFactory = persistenceProvider.createEntityManagerFactory("derby-eclipselink", map);
+		entityManager = entityManagerFactory.createEntityManager();
+	}
+	
+	private void setupDatabase(String dbLoc) {
+		Properties properties = new Properties();
+		properties.put("flyway.driver", DRIVER_NAME);
+		properties.put("flyway.url", dbLoc);
+		//properties.put("flyway.user", "accounting");
+		
+		Flyway flyway = new Flyway(getClass().getClassLoader());
+		flyway.configure(properties);
+		flyway.migrate();
+		
+		LOG.debug("Flyway schema version: {}", flyway.info().current().getVersion());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private String buildDbUrl() {
+		StringBuilder sb = new  StringBuilder("jdbc:derby:");
+		
+		// On Windows, we need to strip away the leading slash, otherwise derby
+		// cannot work with the connection URL
+		String path = Platform.getInstanceLocation().getURL().getFile();
+		if (isWindows() && path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		
+		sb.append(path);
+		sb.append("data;create=true");
+		
+		final String url = sb.toString();
+		LOG.trace("Using db location: {}", url);
+		
+		return url;
+	}
+
+	private boolean isWindows() {
+		return System.getProperty("os.name").toLowerCase().startsWith("win");
+	}
 }

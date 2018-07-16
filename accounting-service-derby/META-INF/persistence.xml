@@ -7,14 +7,14 @@
     <persistence-unit name="derby-eclipselink" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
-        <class>de.tfsw.accounting.model.Dummy</class>
+        <!-- class>de.tfsw.accounting.model.Dummy</class-->
         
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <!-- property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" / -->
             <!-- property name="javax.persistence.jdbc.url" value="jdbc:derby:/Users/thorsten/Documents/temp/simpleDb;create=true" /-->
-            <!-- property name="javax.persistence.jdbc.user" value="accounting" /-->
-            <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
-            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            <!-- property name="javax.persistence.jdbc.user" value="accounting" / -->
+            <!-- property name="eclipselink.ddl-generation" value="create-or-extend-tables" / -->
+            <!-- property name="eclipselink.ddl-generation.output-mode" value="database" / -->
             <property name="eclipselink.logging.level" value="FINE" />
         </properties>
     </persistence-unit>
