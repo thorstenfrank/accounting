@@ -8,7 +8,7 @@ Automatic-Module-Name: de.tfsw.accounting.service.derby
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: javax.persistence;bundle-version="2.2.0",
  org.eclipse.persistence.jpa;bundle-version="2.7.2",
- derby;bundle-version="10.14.2000000";visibility:=reexport,
+ derby;bundle-version="10.14.2000000",
  de.tfsw.accounting.api;bundle-version="1.0.0",
  de.tfsw.accounting.logging;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.13.0"
