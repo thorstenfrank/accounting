@@ -24,13 +24,14 @@ import org.osgi.service.component.annotations.Deactivate;
 
 import de.tfsw.accounting.DummyService;
 import de.tfsw.accounting.model.Dummy;
+import de.tfsw.accounting.service.spi.PersistenceStatusProvider;
 
 /**
  * @author thorsten
  *
  */
-@Component(service = DummyService.class, enabled = true, immediate = true)
-public class AccountingDerbyService implements DummyService {
+@Component(service = {DummyService.class, PersistenceStatusProvider.class}, enabled = true, immediate = true)
+public class AccountingDerbyService implements DummyService, PersistenceStatusProvider {
 
 	private static final Logger LOG = LogManager.getLogger(AccountingDerbyService.class);
 	
@@ -58,6 +59,11 @@ public class AccountingDerbyService implements DummyService {
 		this.entityManagerFactory = null;
 	}
 	
+	@Override
+	public String getStatus() {
+		return "I think we're up...";
+	}
+
 	@Override
 	public List<Dummy> getDummies() {
 		return entityManager.createQuery("SELECT d FROM Dummy d", Dummy.class).getResultList();

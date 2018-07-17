@@ -14,7 +14,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.tfsw.accounting.DummyService;
+import de.tfsw.accounting.AccountingInitService;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 public class OverviewPart {
@@ -22,7 +22,7 @@ public class OverviewPart {
 	private static final Logger LOG = LogManager.getLogger(OverviewPart.class);
 	
 	@Inject
-	private DummyService dummyService;
+	private AccountingInitService initService;
 	
 	@PostConstruct
 	public void postConstruct(Composite parent) {

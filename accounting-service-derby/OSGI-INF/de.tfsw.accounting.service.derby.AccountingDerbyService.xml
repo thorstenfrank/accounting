@@ -2,6 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" enabled="true" immediate="true" name="de.tfsw.accounting.service.derby.AccountingDerbyService">
    <service>
       <provide interface="de.tfsw.accounting.DummyService"/>
+      <provide interface="de.tfsw.accounting.service.spi.PersistenceStatusProvider"/>
    </service>
    <implementation class="de.tfsw.accounting.service.derby.AccountingDerbyService"/>
 </scr:component>
