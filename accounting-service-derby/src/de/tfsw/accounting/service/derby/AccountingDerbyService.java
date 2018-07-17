@@ -29,7 +29,7 @@ import de.tfsw.accounting.model.Dummy;
  * @author thorsten
  *
  */
-@Component(service = DummyService.class)
+@Component(service = DummyService.class, enabled = true, immediate = true)
 public class AccountingDerbyService implements DummyService {
 
 	private static final Logger LOG = LogManager.getLogger(AccountingDerbyService.class);

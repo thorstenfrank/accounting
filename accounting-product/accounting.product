@@ -224,14 +224,14 @@
    </plugins>
 
    <features>
-      <feature id="de.tfsw.accounting.feature" version="1.5.0.qualifier"/>
+      <feature id="de.tfsw.accounting.feature" version="2.0.0.qualifier"/>
       <feature id="org.eclipse.e4.rcp" version="1.6.3.v20180329-0507"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.persistence.jpa" version="2.7.2.v20180622-f627448"/>
    </features>
 
    <configurations>
-      <plugin id="de.tfsw.accounting.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
