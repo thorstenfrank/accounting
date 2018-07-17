@@ -15,6 +15,10 @@
  */
 package de.tfsw.accounting.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Information about a bank account to which payments are made.
@@ -22,6 +26,7 @@ package de.tfsw.accounting.model;
  * @author Thorsten Frank
  * @since  1.0
  */
+@Entity
 public class BankAccount extends AbstractBaseEntity {
 
 	/**
@@ -35,11 +40,28 @@ public class BankAccount extends AbstractBaseEntity {
 	public static final String FIELD_IBAN = "iban";
 	public static final String FIELD_BIC = "bic";
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	private String bankName;
 	private String bankCode;
 	private String accountNumber;
 	private String iban;
 	private String bic;
+	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	/**
 	 * Describes a code that uniquely defines the credit institution, such as a Bankleitzahl in Germany, routing transit
