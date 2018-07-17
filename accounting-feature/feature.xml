@@ -18,20 +18,6 @@
    </license>
 
    <plugin
-         id="de.tfsw.accounting.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="db4o_osgi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.google.gson"
          download-size="0"
          install-size="0"
@@ -58,13 +44,6 @@
          unpack="false"/>
 
    <plugin
-         id="de.tfsw.accounting.service.derby"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="derby"
          download-size="0"
          install-size="0"
@@ -72,7 +51,7 @@
          unpack="false"/>
 
    <plugin
-         id="javax.activation"
+         id="de.tfsw.accounting.service.derby"
          download-size="0"
          install-size="0"
          version="0.0.0"

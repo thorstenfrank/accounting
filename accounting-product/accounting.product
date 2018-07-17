@@ -228,7 +228,6 @@
       <feature id="org.eclipse.e4.rcp" version="1.6.3.v20180329-0507"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
-      <feature id="org.eclipse.persistence.jpa" version="2.7.2.v20180622-f627448"/>
    </features>
 
    <configurations>

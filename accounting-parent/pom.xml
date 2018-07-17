@@ -10,29 +10,58 @@
 	<properties>
 		<tycho.version>1.2.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<eclipse-repo.url>http://download.eclipse.org/releases/oxygen</eclipse-repo.url>
 	</properties>
 
 	<modules>
 		<module>../accounting-api</module>
 		<module>../accounting-api-tests</module>
+		
+		<!-- 2.0.0: Deprecated, replaced by service modules -->
+		<!-- 
 		<module>../accounting-core</module>
 		<module>../accounting-core-tests</module>
+		<module>../db4o_osgi</module> 
+		-->
+		
+		<!-- 2.0.0: Disabled Temporarily -->
+		<!-- 
 		<module>../accounting-elster-core</module>
 		<module>../accounting-elster-core-test</module>
 		<module>../accounting-elster-adapters</module>
 		<module>../accounting-elster-adapters-test</module>
 		<module>../accounting-elster-feature</module>
 		<module>../accounting-elster-ui</module>
+		 -->
+		 
 		<module>../accounting-feature</module>
+
+		<!-- 2.0.0: Disabled Temporarily -->
+		<!--		
 		<module>../accounting-help</module>
+		-->
+		
 		<module>../accounting-logging</module>
 		<module>../accounting-product</module>
+		
+		<!-- 2.0.0: Disabled Temporarily -->
+		<!--
 		<module>../accounting-reporting</module>
+		-->
+		
+		<!-- Apache Derby-based service implementation -->
+		<module>../accounting-service-derby</module>
+		<module>../derby</module>
+		
+		<!-- Target Definition -->
 		<module>../accounting-target</module>
+		
+		<!-- Test module dependencies / mock providers etc. -->
 		<module>../accounting-test-harness</module>
+		
+		<!-- 2.0.0: E4 UI -->
 		<module>../accounting-ui-e4</module>
-		<module>../db4o_osgi</module>
+		
+		<!-- External Dependencies -->
 		<module>../com.google.gson</module>
 	</modules>
 
@@ -52,6 +81,7 @@
 				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
@@ -61,6 +91,7 @@
 						-Daccounting.log.path=${project.build.directory}</argLine>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -75,10 +106,11 @@
 					</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
-				<version>1.2.0</version>
+				<version>${tycho.version}</version>
 			</plugin>
 		</plugins>
 	</build>
