@@ -1,14 +1,4 @@
 -- INTENDED FOR APACHE DERBY 10.14
-CREATE TABLE BankAccount (
-  id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  accountNumber VARCHAR(100),
-  bankName VARCHAR(100),
-  bankCode VARCHAR(100),
-  iban VARCHAR(100),
-  bic VARCHAR(100),
-  PRIMARY KEY(id)
-);
-
 CREATE TABLE Address (
   id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   recipientDetail VARCHAR(100),
@@ -30,16 +20,23 @@ CREATE TABLE TaxRate (
   PRIMARY KEY(id)
 );
 
+CREATE TABLE BankAccount (
+  id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  accountNumber VARCHAR(100),
+  bankName VARCHAR(100),
+  bankCode VARCHAR(100),
+  iban VARCHAR(100),
+  bic VARCHAR(100),
+  PRIMARY KEY(id)
+);
+
 CREATE TABLE Organisation (
   name VARCHAR(50) NOT NULL,
   description VARCHAR(1000),
   primaryAddress INTEGER REFERENCES Address(id),
+  taxId VARCHAR(100),
+  bankAccount INTEGER REFERENCES BankAccount(id),
+  orgType VARCHAR(10) NOT NULL,
   PRIMARY KEY(name)
 );
 
-CREATE TABLE UserProfile (
-  name VARCHAR(50) NOT NULL REFERENCES Organisation(name),
-  bankAccount INTEGER REFERENCES BankAccount(id),
-  taxId VARCHAR(100),
-  PRIMARY KEY(name)
-);

@@ -47,7 +47,7 @@ public class Address extends AbstractBaseEntity {
 	public static final String FIELD_EMAIL = "email";
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String recipientDetail;
 	private String street;
