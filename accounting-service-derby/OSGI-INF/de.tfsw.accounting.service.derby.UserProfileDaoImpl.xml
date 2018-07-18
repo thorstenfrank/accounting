@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" enabled="true" immediate="true" name="de.tfsw.accounting.service.derby.UserProfileDaoImpl">
+   <service>
+      <provide interface="de.tfsw.accounting.service.spi.UserProfileDao"/>
+   </service>
+   <implementation class="de.tfsw.accounting.service.derby.UserProfileDaoImpl"/>
+</scr:component>

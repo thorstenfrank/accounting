@@ -7,7 +7,10 @@
     <persistence-unit name="derby-eclipselink" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
-        <!-- class>de.tfsw.accounting.model.Dummy</class-->
+        <class>de.tfsw.accounting.model.Address</class>
+        <class>de.tfsw.accounting.model.BankAccount</class>
+        <class>de.tfsw.accounting.model.Organisation</class>
+        <class>de.tfsw.accounting.model.UserProfile</class>
         
         <properties>
             <!-- property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" / -->

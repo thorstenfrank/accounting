@@ -50,6 +50,7 @@
 		
 		<!-- Apache Derby-based service implementation -->
 		<module>../accounting-service-core</module>
+		<module>../accounting-service-core-tests</module>
 		<module>../accounting-service-derby</module>
 		<module>../derby</module>
 		

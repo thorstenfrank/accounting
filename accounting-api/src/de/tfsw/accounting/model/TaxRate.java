@@ -17,6 +17,11 @@ package de.tfsw.accounting.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import de.tfsw.accounting.util.FormatUtil;
 
 /**
@@ -26,6 +31,7 @@ import de.tfsw.accounting.util.FormatUtil;
  * @since  1.0
  *
  */
+@Entity
 public class TaxRate extends AbstractBaseEntity {
 
 	/**
@@ -37,6 +43,10 @@ public class TaxRate extends AbstractBaseEntity {
 	public static final String FIELD_LONG_NAME = "longName";
 	public static final String FIELD_RATE = "rate";
 	public static final String FIELD_IS_VAT = "isVAT";
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	
 	/** Short name for this tax rate. */
 	private String shortName;
@@ -72,6 +82,14 @@ public class TaxRate extends AbstractBaseEntity {
 		this.isVAT = isVAT;
 	}
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	/**
 	 * @return the shortName
 	 */

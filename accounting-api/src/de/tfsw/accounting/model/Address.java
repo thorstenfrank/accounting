@@ -15,6 +15,10 @@
  */
 package de.tfsw.accounting.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Basic representation of a contact's address.
@@ -24,6 +28,7 @@ package de.tfsw.accounting.model;
  * @author thorsten frank
  * @since  1.0
  */
+@Entity
 public class Address extends AbstractBaseEntity {
 
 	/**
@@ -41,15 +46,27 @@ public class Address extends AbstractBaseEntity {
 	public static final String FIELD_FAX_NUMBER = "faxNumber";
 	public static final String FIELD_EMAIL = "email";
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	private String recipientDetail;
 	private String street;
 	private String postalCode;
 	private String city;
 	private String phoneNumber;
 	private String mobileNumber;
+	@Deprecated
 	private String faxNumber;
 	private String email;
-	    
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	/**
      * @return the recipientDetail
      */
@@ -118,6 +135,7 @@ public class Address extends AbstractBaseEntity {
 	 * 
 	 * @return the fax number in arbitrary format
 	 */
+	@Deprecated
 	public String getFaxNumber() {
 		return faxNumber;
 	}
@@ -126,6 +144,7 @@ public class Address extends AbstractBaseEntity {
 	 * 
 	 * @param faxNumber the fax number in arbitrary format
 	 */
+	@Deprecated
 	public void setFaxNumber(String faxNumber) {
 		this.faxNumber = faxNumber;
 	}

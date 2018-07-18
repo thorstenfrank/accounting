@@ -1,9 +1,45 @@
+-- INTENDED FOR APACHE DERBY 10.14
 CREATE TABLE BankAccount (
   id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  accountNumber varchar(100),
-  bankName varchar(100),
-  bankCode varchar(100),
-  iban varchar(100),
-  bic varchar(100),
+  accountNumber VARCHAR(100),
+  bankName VARCHAR(100),
+  bankCode VARCHAR(100),
+  iban VARCHAR(100),
+  bic VARCHAR(100),
   PRIMARY KEY(id)
+);
+
+CREATE TABLE Address (
+  id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  recipientDetail VARCHAR(100),
+  street VARCHAR(100),
+  postalCode VARCHAR(100),
+  city VARCHAR(100),
+  phoneNumber VARCHAR(100),
+  mobileNumber VARCHAR(100),
+  email VARCHAR(100),
+  PRIMARY KEY(id)
+);
+
+CREATE TABLE TaxRate (
+  id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  shortName VARCHAR(50) NOT NULL,
+  longName VARCHAR(100) NOT NULL,
+  rate DECIMAL NOT NULL,
+  isVAT BOOLEAN NOT NULL,
+  PRIMARY KEY(id)
+);
+
+CREATE TABLE Organisation (
+  name VARCHAR(50) NOT NULL,
+  description VARCHAR(1000),
+  primaryAddress INTEGER REFERENCES Address(id),
+  PRIMARY KEY(name)
+);
+
+CREATE TABLE UserProfile (
+  name VARCHAR(50) NOT NULL REFERENCES Organisation(name),
+  bankAccount INTEGER REFERENCES BankAccount(id),
+  taxId VARCHAR(100),
+  PRIMARY KEY(name)
 );
