@@ -36,11 +36,13 @@ import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.Constants;
+import de.tfsw.accounting.UserProfileService;
 import de.tfsw.accounting.UserService;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.User;
+import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.ui.AbstractFormBasedEditor;
 import de.tfsw.accounting.ui.util.AccountingPreferences;
 import de.tfsw.accounting.ui.util.WidgetHelper;
@@ -61,7 +63,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	private static final int COLUMN_TAX_RATE = 2;
 	
 	@Inject
-	private UserService userService;
+	private UserProfileService userService;
 	
 	@Inject
 	@Translation
@@ -72,7 +74,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	
 	private TableViewer taxRateViewer;
 	
-	private User currentUser;
+	private UserProfile currentUser;
 	
 	@Override
 	protected boolean createControl(Composite parent) {
@@ -81,23 +83,23 @@ public class UserEditor extends AbstractFormBasedEditor {
 		
 		boolean dirty = false;
 		
-		currentUser = userService.getCurrentUser();
+		currentUser = userService.getCurrentUserProfile();
 		if (currentUser == null) {
 			LOG.debug("Building editor for new user");
-			currentUser = new User();
+			currentUser = new UserProfile();
 			dirty = true;
 			//MessageDialog.openWarning(parent.getShell(), "You are new!", "Welcome to accounting. Please edit and save your data!");
 		} else {
-			LOG.trace("Building user editor for {}", userService.getCurrentUser().getName());
+			LOG.trace("Building user editor for {}", currentUser.getName());
 			setPartLabel(currentUser.getName());
 		}
 		
 		createBasicInfoSection(parent);
 		
-		if (currentUser.getAddress() == null) {
-			currentUser.setAddress(new Address());
+		if (currentUser.getPrimaryAddress() == null) {
+			currentUser.setPrimaryAddress(new Address());
 		}
-		createAddressSection(parent, currentUser.getAddress());
+		createAddressSection(parent, currentUser.getPrimaryAddress());
 		
 		if (currentUser.getBankAccount() == null) {
 			currentUser.setBankAccount(new BankAccount());
@@ -122,7 +124,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 	@Override
 	protected boolean doSave() {
 		LOG.debug("Saving user {}", currentUser.getName());
-		userService.saveCurrentUser(currentUser);
+		userService.saveUserProfile(currentUser);
 		
 		AccountingContext accCtx = context.get(AccountingContext.class);
 		if (accCtx != null) {
@@ -188,11 +190,12 @@ public class UserEditor extends AbstractFormBasedEditor {
 		createColumn(COLUMN_TAX_RATE_NAME, messages.userEditorTaxRateName, tableLayout, 50);
 		createColumn(COLUMN_TAX_RATE, messages.userEditorTaxRate, tableLayout, 20);
 
-		Set<TaxRate> taxRates = currentUser.getTaxRates();
-		if (taxRates == null) {
-			taxRates = new HashSet<>();
-			currentUser.setTaxRates(taxRates);
-		}
+		final Set<TaxRate> taxRates = new HashSet<>();
+//		Set<TaxRate> taxRates = currentUser.getTaxRates();
+//		if (taxRates == null) {
+//			taxRates = new HashSet<>();
+//			currentUser.setTaxRates(taxRates);
+//		}
 
 		taxRateViewer.setLabelProvider(new TaxRateCellLabelProvider());
 		taxRateViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -210,7 +213,8 @@ public class UserEditor extends AbstractFormBasedEditor {
 			final WizardDialog dialog = new WizardDialog(shell, wizard);
 			if (WizardDialog.OK == dialog.open()) {
 				taxRateViewer.getTable().setRedraw(false);
-				currentUser.addTaxRate(wizard.getNewTaxRate());
+				//currentUser.addTaxRate(wizard.getNewTaxRate());
+				taxRates.add(wizard.getNewTaxRate());
 				taxRateViewer.refresh();
 				taxRateViewer.getTable().setRedraw(true);
 				setDirty(true);

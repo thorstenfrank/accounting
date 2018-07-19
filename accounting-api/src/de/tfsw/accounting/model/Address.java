@@ -43,7 +43,6 @@ public class Address extends AbstractBaseEntity {
 	public static final String FIELD_CITY = "city";
 	public static final String FIELD_PHONE_NUMBER = "phoneNumber";
 	public static final String FIELD_MOBILE_NUMBER = "mobileNumber";
-	public static final String FIELD_FAX_NUMBER = "faxNumber";
 	public static final String FIELD_EMAIL = "email";
 	
 	@Id
@@ -55,8 +54,6 @@ public class Address extends AbstractBaseEntity {
 	private String city;
 	private String phoneNumber;
 	private String mobileNumber;
-	@Deprecated
-	private String faxNumber;
 	private String email;
 	
 	public Long getId() {
@@ -129,24 +126,6 @@ public class Address extends AbstractBaseEntity {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
-	/**
-	 * 
-	 * @return the fax number in arbitrary format
-	 */
-	@Deprecated
-	public String getFaxNumber() {
-		return faxNumber;
-	}
-
-	/**
-	 * 
-	 * @param faxNumber the fax number in arbitrary format
-	 */
-	@Deprecated
-	public void setFaxNumber(String faxNumber) {
-		this.faxNumber = faxNumber;
 	}
 	
 	/**

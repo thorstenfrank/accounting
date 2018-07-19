@@ -28,6 +28,7 @@ final class ServiceLocator {
 		} else {
 			System.out.println("NO BUNDLE FOUND!");
 		}
+		
 		return service;
 	}
 	

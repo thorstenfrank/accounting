@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.tfsw.accounting.AccountingException;
+import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.service.spi.UserProfileDao;
@@ -28,6 +29,8 @@ public class UserProfileDaoTest {
 		if (dao == null) {
 			dao = ServiceLocator.getService(UserProfileDao.class);
 		}
+		
+		assertNotNull("No UserProfileDao instance found, cannot run test", dao);
 	}
 	
 	@Test
@@ -44,6 +47,8 @@ public class UserProfileDaoTest {
 		ba.setBankCode("AB346/jkdfi-seventyfour");
 		ba.setBankName("Moneygone Bank Inc.");
 		profile.setBankAccount(ba);
+		
+		profile.setPrimaryAddress(new Address());
 		
 		dao.save(profile);
 		

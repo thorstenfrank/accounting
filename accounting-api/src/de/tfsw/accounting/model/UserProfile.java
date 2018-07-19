@@ -26,7 +26,7 @@ public class UserProfile extends AbstractBaseEntity {
 	
 	private String description;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "primaryAddress")
 	private Address primaryAddress;
 	

@@ -15,5 +15,4 @@ public class CommonMessages {
 	public String labelEmail;
 	public String labelPhone;
 	public String labelMobile;
-	public String labelFax;
 }

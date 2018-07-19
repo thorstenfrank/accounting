@@ -3,7 +3,6 @@ package de.tfsw.accounting.ui.overview;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,15 +13,14 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.tfsw.accounting.AccountingInitService;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 
 public class OverviewPart {
 	
 	private static final Logger LOG = LogManager.getLogger(OverviewPart.class);
 	
-	@Inject
-	private AccountingInitService initService;
+//	@Inject
+//	private AccountingInitService initService;
 	
 	@PostConstruct
 	public void postConstruct(Composite parent) {

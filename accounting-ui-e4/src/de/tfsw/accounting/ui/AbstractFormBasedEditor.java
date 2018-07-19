@@ -199,7 +199,6 @@ public abstract class AbstractFormBasedEditor {
 		createTextWithLabel(group, messages.labelEmail, address, Address.FIELD_EMAIL);
 		createTextWithLabel(group, messages.labelPhone, address, Address.FIELD_PHONE_NUMBER);
 		createTextWithLabel(group, messages.labelMobile, address, Address.FIELD_MOBILE_NUMBER);
-		createTextWithLabel(group, messages.labelFax, address, Address.FIELD_FAX_NUMBER);
 	}
 	
 	/**
