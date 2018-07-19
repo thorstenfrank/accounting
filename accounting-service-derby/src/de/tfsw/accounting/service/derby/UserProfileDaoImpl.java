@@ -17,7 +17,7 @@ import de.tfsw.accounting.service.spi.UserProfileDao;
  * @author tfrank1
  *
  */
-@Component(service = UserProfileDao.class, enabled = true, immediate = true)
+@Component(service = UserProfileDao.class, enabled = true)
 public class UserProfileDaoImpl implements UserProfileDao {
 
 	private static final Logger LOG = LogManager.getLogger(UserProfileDaoImpl.class);
