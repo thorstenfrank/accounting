@@ -18,7 +18,7 @@ import de.tfsw.accounting.service.spi.UserProfileDao;
  * @author tfrank1
  *
  */
-public class UserDaoTest {
+public class UserProfileDaoTest {
 
 	private UserProfileDao dao;
 	
@@ -30,7 +30,7 @@ public class UserDaoTest {
 	}
 	
 	@Test
-	public void test() {
+	public void testCreateAndUpdate() {
 		final String name = "JUnit UserProfile Name";
 		assertNull("Should not have found user profile in DB", dao.get(name));
 		
@@ -51,5 +51,11 @@ public class UserDaoTest {
 		assertEquals(name, fromDB.getName());
 		assertEquals(profile.getDescription(), fromDB.getDescription());
 		assertEquals(profile.getBankAccount().getAccountNumber(), fromDB.getBankAccount().getAccountNumber());
+		
+		// update
+		profile.setDescription("Some updated description");
+		dao.save(profile);
+		
+		assertEquals(profile.getDescription(), dao.get(name).getDescription());
 	}
 }

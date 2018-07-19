@@ -14,7 +14,6 @@ public interface UserProfileDao {
 	/**
 	 * 
 	 * @param profile
-	 * @return
 	 */
-	UserProfile save(UserProfile profile);
+	void save(UserProfile profile);
 }
