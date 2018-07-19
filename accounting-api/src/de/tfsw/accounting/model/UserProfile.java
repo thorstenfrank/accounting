@@ -4,8 +4,8 @@
 package de.tfsw.accounting.model;
 
 import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
@@ -14,13 +14,21 @@ import javax.persistence.OneToOne;
  *
  */
 @Entity
-@DiscriminatorValue("profile")
-public class UserProfile extends Organisation {
+public class UserProfile extends AbstractBaseEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+	private String name;
+	
+	private String description;
+	
+	@OneToOne
+	@JoinColumn(name = "primaryAddress")
+	private Address primaryAddress;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "bankAccount")
@@ -28,6 +36,24 @@ public class UserProfile extends Organisation {
 	
 	private String taxId;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Address getPrimaryAddress() {
+		return primaryAddress;
+	}
+	public void setPrimaryAddress(Address primaryAddress) {
+		this.primaryAddress = primaryAddress;
+	}
 	public BankAccount getBankAccount() {
 		return bankAccount;
 	}
