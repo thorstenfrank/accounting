@@ -3,15 +3,20 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Accounting Logging
 Bundle-SymbolicName: de.tfsw.accounting.logging;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-ClassPath: log4j-api-2.5.jar,
- log4j-core-2.5.jar,
+Bundle-ClassPath: lib/log4j-api-2.11.0.jar,
+ lib/log4j-core-2.11.0.jar,
+ lib/log4j-jcl-2.11.0.jar,
+ lib/log4j-jul-2.11.0.jar,
+ lib/log4j-slf4j-impl-2.11.0.jar,
+ lib/slf4j-api-1.7.25.jar,
  .
 Bundle-Vendor: tfsw.de
-Export-Package: org.apache.logging.log4j,
- org.apache.logging.log4j.message,
- org.apache.logging.log4j.simple,
- org.apache.logging.log4j.spi,
- org.apache.logging.log4j.status,
- org.apache.logging.log4j.util
+Export-Package: org.apache.logging.log4j;
+  uses:="org.apache.logging.log4j.spi,
+   new org.apache.logging.log4j,
+   org.apache.logging.log4j.util,
+   org.apache.logging.log4j.message",
+ org.slf4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: de.tfsw.accounting.logging
+Bundle-ActivationPolicy: lazy
