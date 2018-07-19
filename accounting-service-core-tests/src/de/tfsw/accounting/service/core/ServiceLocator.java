@@ -11,9 +11,9 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author tfrank1
  *
  */
-public final class ServiceLocator {
+final class ServiceLocator {
 
-	public static <T> T getService(Class<T> clazz) {
+	static <T> T getService(Class<T> clazz) {
 		T service = null;
 		
 		Bundle bundle = FrameworkUtil.getBundle(ServiceLocator.class);
