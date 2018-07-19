@@ -9,5 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: de.tfsw.accounting,
  de.tfsw.accounting.model,
- de.tfsw.accounting.util
+ de.tfsw.accounting.util,
+ lombok
 Require-Bundle: javax.persistence;bundle-version="2.2.0"
+Bundle-ClassPath: lib/lombok.jar,
+ .
