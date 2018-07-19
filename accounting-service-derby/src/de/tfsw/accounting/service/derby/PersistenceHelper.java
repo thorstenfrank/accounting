@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 
 import org.apache.derby.jdbc.EmbeddedDriver;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +16,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.jpa.PersistenceProvider;
 import org.flywaydb.core.Flyway;
+
+import de.tfsw.accounting.AccountingException;
+import de.tfsw.accounting.model.AbstractBaseEntity;
 
 /**
  * 
@@ -37,6 +42,26 @@ final class PersistenceHelper {
 	static EntityManager init() {
 		INSTANCE.initIfNecessary();
 		return INSTANCE.entityManager;
+	}
+	
+	/**
+	 * 
+	 * @param entity
+	 */
+	static <E extends AbstractBaseEntity> void save(E entity) {
+		EntityTransaction tx = INSTANCE.entityManager.getTransaction();
+		tx.begin();
+		
+		try {
+			INSTANCE.entityManager.persist(entity);
+			tx.commit();
+		} catch (PersistenceException e) {
+			LOG.error("Error saving entity: " + entity.toString(), e);
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			throw new AccountingException("Error saving entity", e);
+		}
 	}
 	
 	private void initIfNecessary() {

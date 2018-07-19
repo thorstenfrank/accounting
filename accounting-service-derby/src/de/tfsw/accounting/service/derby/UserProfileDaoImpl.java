@@ -4,7 +4,6 @@
 package de.tfsw.accounting.service.derby;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,9 +38,6 @@ public class UserProfileDaoImpl implements UserProfileDao {
 	@Override
 	public void save(UserProfile profile) {
 		LOG.debug("Saving user profile: {}", profile.getName());
-		EntityTransaction tx = entityManager.getTransaction();
-		tx.begin();
-		entityManager.persist(profile);
-		tx.commit();
+		PersistenceHelper.save(profile);
 	}
 }

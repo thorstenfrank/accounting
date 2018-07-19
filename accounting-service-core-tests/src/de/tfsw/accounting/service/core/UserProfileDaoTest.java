@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.tfsw.accounting.AccountingException;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.service.spi.UserProfileDao;
@@ -57,5 +58,10 @@ public class UserProfileDaoTest {
 		dao.save(profile);
 		
 		assertEquals(profile.getDescription(), dao.get(name).getDescription());
+	}
+	
+	@Test(expected = AccountingException.class)
+	public void testNullInsert() {
+		dao.save(new UserProfile());
 	}
 }
