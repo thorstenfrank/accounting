@@ -21,9 +21,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 	private UserProfileDao dao;
 
 	@Override
-	public UserProfile getCurrentUserProfile() {
-		dao.get(null);
-		return null;
+	public UserProfile getUserProfile(String name) {
+		return dao.get(name);
 	}
 	
 	@Override

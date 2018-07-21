@@ -11,7 +11,7 @@ import de.tfsw.accounting.model.UserProfile;
  */
 public interface UserProfileService {
 
-	UserProfile getCurrentUserProfile();
+	UserProfile getUserProfile(String name);
 	
 	void saveUserProfile(UserProfile profile);
 }

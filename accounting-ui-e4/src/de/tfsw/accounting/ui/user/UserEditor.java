@@ -81,10 +81,12 @@ public class UserEditor extends AbstractFormBasedEditor {
 		
 		boolean dirty = false;
 		
-		currentUser = userService.getCurrentUserProfile();
+		final String userName = context.get(AccountingContext.class).getUserName();
+		currentUser = userService.getUserProfile(userName);
 		if (currentUser == null) {
-			LOG.debug("Building editor for new user");
+			LOG.debug("Building editor for new user: {}", userName);
 			currentUser = new UserProfile();
+			currentUser.setName(userName);
 			dirty = true;
 			//MessageDialog.openWarning(parent.getShell(), "You are new!", "Welcome to accounting. Please edit and save your data!");
 		} else {
