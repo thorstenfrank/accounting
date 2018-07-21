@@ -15,9 +15,6 @@
  */
 package de.tfsw.accounting.ui.setup;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -167,19 +164,6 @@ public final class ApplicationInit {
         shell.setLocation(x, y);
         return shell;
     }
-    
-	static String buildDefaultDbFileLocation() {
-		String result = System.getProperty("user.home"); // the fallback
-		final String osgiInstanceArea = System.getProperty("osgi.instance.area");
-		try {
-			final File instanceArea = new File(new URI(osgiInstanceArea));
-			final File dbLoc = new File(instanceArea, "data");
-			result = dbLoc.getAbsolutePath();
-		} catch (URISyntaxException e) {
-			LOG.warn("Error converting to URI: " + osgiInstanceArea, e);
-		}
-		return result;
-	}
 	
 	private static AccountingInitService getInitService(IEclipseContext eclipseContext) {
 		AccountingInitService initService = eclipseContext.get(AccountingInitService.class);

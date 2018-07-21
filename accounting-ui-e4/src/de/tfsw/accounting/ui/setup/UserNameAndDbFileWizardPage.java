@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.ui.util.WidgetHelper;
+import de.tfsw.accounting.util.FileUtil;
 
 /**
  * Wizard page for basic information (name and DB file location).
@@ -87,7 +88,7 @@ class UserNameAndDbFileWizardPage extends WizardPage {
 		
 		dbFile = WidgetHelper.createSingleBorderText(
 				composite, 
-				newFile ? ApplicationInit.buildDefaultDbFileLocation() : null);
+				FileUtil.defaultDataPath());
 		dbFile.setEditable(false);
 		dbFile.addKeyListener(listener);
 		
@@ -97,7 +98,7 @@ class UserNameAndDbFileWizardPage extends WizardPage {
 			DirectoryDialog dd = new DirectoryDialog(composite.getShell(), newFile ? SWT.SAVE : SWT.OPEN);
 			dd.setText(messages.setupWizards_dataFileSelectText);
 			dd.setMessage(messages.setupWizards_dataFileSelectText);
-			dd.setFilterPath(ApplicationInit.buildDefaultDbFileLocation());
+			dd.setFilterPath(dbFile.getText());
 			String selected = dd.open();
 			
 //			FileDialog fd = new FileDialog(composite.getShell(), newFile ? SWT.SAVE : SWT.OPEN);

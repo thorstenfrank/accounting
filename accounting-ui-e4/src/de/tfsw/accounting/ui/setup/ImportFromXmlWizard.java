@@ -32,6 +32,7 @@ import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingInitService;
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.ui.util.WidgetHelper;
+import de.tfsw.accounting.util.FileUtil;
 
 /**
  * A wizard for initialising the application with data exported from a previous installation/version.
@@ -129,7 +130,7 @@ final class ImportFromXmlWizard extends AbstractSetupWizard {
     		WidgetHelper.createLabel(composite, messages.setupWizards_dataFileLabelNew);
     		final Text dbFileText = WidgetHelper.createSingleBorderText(
     				composite,
-    				ApplicationInit.buildDefaultDbFileLocation());
+    				FileUtil.defaultDataPath());
     		dbFileText.setEditable(false);
     		dbFile = dbFileText.getText();
     		dbFileText.addKeyListener(KeyListener.keyReleasedAdapter(event -> {

@@ -131,10 +131,6 @@ public class DerbyPersistence implements AccountingInitService, PersistenceAcces
 		StringBuilder sb = new  StringBuilder("jdbc:derby:");
 		sb.append(dbLocation);
 		sb.append(";create=true");
-		
-		final String url = sb.toString();
-		LOG.trace("Using db location: {}", url);
-		
-		return url;
+		return sb.toString();
 	}
 }
