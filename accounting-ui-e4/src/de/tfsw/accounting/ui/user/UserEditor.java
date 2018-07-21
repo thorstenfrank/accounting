@@ -40,7 +40,6 @@ import de.tfsw.accounting.UserProfileService;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.TaxRate;
-import de.tfsw.accounting.model.User;
 import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.ui.AbstractFormBasedEditor;
 import de.tfsw.accounting.ui.util.AccountingPreferences;
@@ -153,13 +152,13 @@ public class UserEditor extends AbstractFormBasedEditor {
 	private void createBasicInfoSection(Composite parent) {
 		final Composite group = createGroup(parent, messages.labelBasicInformation);
 		
-		createTextWithLabelNotNullable(group, messages.labelName, currentUser, User.FIELD_NAME);
-		createTextWithLabel(group, messages.labelTaxId, currentUser, User.FIELD_TAX_NUMBER);
+		createTextWithLabelNotNullable(group, messages.labelName, currentUser, "name");
+		createTextWithLabel(group, messages.labelTaxId, currentUser, "taxId");
 				
 		createLabel(group, messages.labelDescription);
 		final Text description = new Text(group, SWT.MULTI | SWT.BORDER);
 		WidgetHelper.grabBoth(description);
-		createBindings(description, currentUser, User.FIELD_DESCRIPTION);
+		createBindings(description, currentUser, "description");
 	}
 	
 	private void createBankAccountSection(Composite parent, BankAccount account) {		

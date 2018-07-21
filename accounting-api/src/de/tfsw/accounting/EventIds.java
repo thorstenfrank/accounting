@@ -10,7 +10,8 @@ import de.tfsw.accounting.model.AbstractBaseEntity;
  */
 public final class EventIds {
 
-	public static final String MODEL_CHANGE_TOPIC_PREFIX = "de/tfsw/accounting/service/change/";
+	/** Topic root for all (persistent) model changes. */
+	public static final String MODEL_CHANGE_TOPIC_PREFIX = "de/tfsw/accounting/model/change/";
 	
 	/**
 	 * 

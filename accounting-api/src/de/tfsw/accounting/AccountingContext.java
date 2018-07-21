@@ -20,16 +20,12 @@ import java.io.Serializable;
 /**
  * Serves as a general configuration container for the accounting application.
  * 
- * <p>Implementations of this interface ensure that {@link #equals(Object)} will always return <code>true</code>
- * if two instances' user name and DB file name are equal. {@link #hashCode()} should always return the same value in
- * this instance.</p>
- * 
- * <p>This interface is not intended to be implemented by clients.</p>
+ * <p>Instances of this class is immutable.</p>
  * 
  * @author thorsten frank
  * 
  */
-public class AccountingContext implements Serializable {
+public final class AccountingContext implements Serializable {
 	
 	/**
 	 * 
@@ -81,6 +77,11 @@ public class AccountingContext implements Serializable {
 		return dbLocation;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("AccountingContext{user: %s, data location: %s}", userName, dbLocation);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

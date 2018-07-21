@@ -9,6 +9,7 @@ import org.eclipse.e4.ui.workbench.lifecycle.ProcessAdditions;
 import org.eclipse.e4.ui.workbench.lifecycle.ProcessRemovals;
 import org.eclipse.equinox.app.IApplicationContext;
 
+import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.ui.setup.ApplicationInit;
 
 /**
@@ -36,6 +37,8 @@ public class AccountingE4UILifeCycle {
 	@PreSave
 	void preSave(IEclipseContext workbenchContext) {
 		LOG.debug("PreSave");
+		AccountingContext ctx = workbenchContext.get(AccountingContext.class);
+		LOG.debug("Context from context: {}", ctx);
 	}
 
 	@ProcessAdditions

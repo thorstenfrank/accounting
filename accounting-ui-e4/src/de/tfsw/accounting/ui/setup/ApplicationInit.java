@@ -74,6 +74,7 @@ public final class ApplicationInit {
 				.apply(getInitService(eclipseContext));
 		
 		AccountingPreferences.storeContext(accountingContext);
+		eclipseContext.set(AccountingContext.class, accountingContext);
 	}
 	
 	/**

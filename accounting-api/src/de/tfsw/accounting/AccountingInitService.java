@@ -23,10 +23,6 @@ package de.tfsw.accounting;
  */
 public interface AccountingInitService {
 	
-	static final String EVENT_TOPIC_SERVICE_INIT = "de/tfsw/accounting/core/service/init";
-	
-	static final String EVENT_PROPERTY_INIT_SERVICE = "accounting.service";
-	
 	/**
 	 * 
 	 * @return implementation info for logging and informational purposes
