@@ -16,7 +16,7 @@
 package de.tfsw.accounting.ui.setup;
 
 import java.io.File;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 
+import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingInitService;
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.ui.util.WidgetHelper;
@@ -70,10 +71,8 @@ final class ImportFromXmlWizard extends AbstractSetupWizard {
 	}
 
 	@Override
-	Consumer<AccountingInitService> buildFunctionForWhenServiceComesOnline() {
-		return service -> {
-			service.importModelFromXml(xmlFile, dbFile);
-		};
+	Function<AccountingInitService, AccountingContext> buildFunctionForWhenServiceComesOnline() {
+		return service -> service.importModelFromXml(xmlFile, dbFile);
 	}
 	
 	/**

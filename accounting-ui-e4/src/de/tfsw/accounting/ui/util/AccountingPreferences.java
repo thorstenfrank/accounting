@@ -35,10 +35,10 @@ public final class AccountingPreferences {
 	private static final String PREFERENCE_NODE = "de.tfsw.accounting.ui";
 	
 	/** */
-	private static final String ACCOUNTING_USER_NAME = "accounting.user.name"; //$NON-NLS-1$
+	private static final String ACCOUNTING_USER_NAME = "context.user.name"; //$NON-NLS-1$
 	
 	/** */
-	private static final String ACCOUNTING_DB_FILE = "accounting.db.file"; //$NON-NLS-1$
+	private static final String ACCOUNTING_DB_FILE = "context.db.location"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -59,7 +59,7 @@ public final class AccountingPreferences {
 		LOG.debug("Saving context to preferences");
 		final IEclipsePreferences prefs = getPreferenceNode();
 		prefs.put(ACCOUNTING_USER_NAME, context.getUserName());
-		prefs.put(ACCOUNTING_DB_FILE, context.getDbFileName());
+		prefs.put(ACCOUNTING_DB_FILE, context.getDbLocation());
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {

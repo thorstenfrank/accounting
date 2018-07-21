@@ -28,6 +28,12 @@ public interface AccountingInitService {
 	static final String EVENT_PROPERTY_INIT_SERVICE = "accounting.service";
 	
 	/**
+	 * 
+	 * @return implementation info for logging and informational purposes
+	 */
+	String getDescription();
+	
+	/**
 	 * Initialises this service with the supplied context, which contains the necessary minimal information needed to
 	 * use this service.
 	 * 

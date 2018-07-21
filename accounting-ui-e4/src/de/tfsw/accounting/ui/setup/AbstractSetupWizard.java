@@ -15,7 +15,7 @@
  */
 package de.tfsw.accounting.ui.setup;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.eclipse.jface.wizard.Wizard;
 
@@ -41,9 +41,10 @@ abstract class AbstractSetupWizard extends Wizard {
 		getContainer().updateButtons();
 	}
 	
-	Consumer<AccountingInitService> buildFunctionForWhenServiceComesOnline() {
+	Function<AccountingInitService, AccountingContext> buildFunctionForWhenServiceComesOnline() {
 		return service -> {
 			service.init(context);
+			return context;
 		};
 	}
 	

@@ -37,27 +37,27 @@ public class AccountingContext implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String userName;
-	private String dbFileName;
+	private String dbLocation;
 	
 	/**
 	 * Creates a new context.
 	 * 
 	 * @param userName {@link #getUserName()}, must not be empty
-	 * @param dbFileName {@link #getDbFileName()}, must not be empty
+	 * @param dbLocation {@link #getDbFileName()}, must not be empty
 	 * @throws AccountingException if a parameter is <code>null</code> or empty
 	 */
-	public AccountingContext(String userName, String dbFileName) {
+	public AccountingContext(String userName, String dbLocation) {
 		if (userName == null || userName.isEmpty()) {
 			throw new AccountingException("User name must not be empty");
 		}
 		
 		// TODO add a check if the value actually is a valid file path
-		if (dbFileName == null || dbFileName.isEmpty()) {
+		if (dbLocation == null || dbLocation.isEmpty()) {
 			throw new AccountingException("DB file name must not be empty");
 		}
 		
 		this.userName = userName;
-		this.dbFileName = dbFileName;
+		this.dbLocation = dbLocation;
 	}
 
 	/**
@@ -71,14 +71,14 @@ public class AccountingContext implements Serializable {
 	}
 	
 	/**
-	 * Full path to the db file.
+	 * Full path to the DB.
 	 * 
 	 * <p>Note that the syntax of this value depends on the platform and the actual persistence implementation.</p>
 	 * 
-	 * @return full path to the db file
+	 * @return full path to the DB
 	 */
-	public String getDbFileName() {
-		return dbFileName;
+	public String getDbLocation() {
+		return dbLocation;
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class AccountingContext implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((dbFileName == null) ? 0 : dbFileName.hashCode());
+				+ ((dbLocation == null) ? 0 : dbLocation.hashCode());
 		result = prime * result
 				+ ((userName == null) ? 0 : userName.hashCode());
 		return result;
@@ -102,11 +102,11 @@ public class AccountingContext implements Serializable {
 			return false;
 		AccountingContext other = (AccountingContext) obj;
 
-		if (dbFileName == null) {
-			if (other.getDbFileName() != null) {
+		if (dbLocation == null) {
+			if (other.getDbLocation() != null) {
 				return false;
 			}
-		} else if (!dbFileName.equals(other.getDbFileName())) {
+		} else if (!dbLocation.equals(other.getDbLocation())) {
 			return false;
 		}
 		

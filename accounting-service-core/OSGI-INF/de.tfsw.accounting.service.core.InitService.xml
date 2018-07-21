@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" enabled="true" immediate="true" name="de.tfsw.accounting.service.core.InitService">
-   <service>
-      <provide interface="de.tfsw.accounting.AccountingInitService"/>
-   </service>
-   <reference cardinality="1..1" field="persistenceStatusProvider" interface="de.tfsw.accounting.service.spi.PersistenceStatusProvider" name="persistenceStatusProvider"/>
-   <implementation class="de.tfsw.accounting.service.core.InitService"/>
-</scr:component>

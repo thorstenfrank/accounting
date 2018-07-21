@@ -29,7 +29,7 @@ public class AccountingContextTest {
 	public void testHappyPath() {
 		AccountingContext context = new AccountingContext("some name", "/foo/bar/baz.xyz");
 		assertEquals("some name", context.getUserName());
-		assertEquals("/foo/bar/baz.xyz", context.getDbFileName());
+		assertEquals("/foo/bar/baz.xyz", context.getDbLocation());
 	}
 	
 	@Test(expected = AccountingException.class)

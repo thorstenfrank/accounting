@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" deactivate="shutdownDB" name="de.tfsw.accounting.service.derby.DerbyPersistence">
+   <service>
+      <provide interface="de.tfsw.accounting.AccountingInitService"/>
+      <provide interface="de.tfsw.accounting.service.derby.PersistenceAccess"/>
+   </service>
+   <implementation class="de.tfsw.accounting.service.derby.DerbyPersistence"/>
+</scr:component>

@@ -24,7 +24,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Text;
 
 import de.tfsw.accounting.AccountingContext;
@@ -94,10 +94,16 @@ class UserNameAndDbFileWizardPage extends WizardPage {
 		Button browseButton = new Button(composite, SWT.PUSH);
 		browseButton.setText("..."); //$NON-NLS-1$
 		browseButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
-			FileDialog fd = new FileDialog(composite.getShell(), newFile ? SWT.SAVE : SWT.OPEN);
-			fd.setText(messages.setupWizards_dataFileSelectText);
-			fd.setFileName(dbFile.getText());
-			String selected = fd.open();
+			DirectoryDialog dd = new DirectoryDialog(composite.getShell(), newFile ? SWT.SAVE : SWT.OPEN);
+			dd.setText(messages.setupWizards_dataFileSelectText);
+			dd.setMessage(messages.setupWizards_dataFileSelectText);
+			dd.setFilterPath(ApplicationInit.buildDefaultDbFileLocation());
+			String selected = dd.open();
+			
+//			FileDialog fd = new FileDialog(composite.getShell(), newFile ? SWT.SAVE : SWT.OPEN);
+//			fd.setText(messages.setupWizards_dataFileSelectText);
+//			fd.setFileName(dbFile.getText());
+//			String selected = fd.open();
 			if (selected != null) {
 				dbFile.setText(selected);
 			}

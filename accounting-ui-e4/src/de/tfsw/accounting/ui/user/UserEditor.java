@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Text;
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.Constants;
 import de.tfsw.accounting.UserProfileService;
-import de.tfsw.accounting.UserService;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.TaxRate;
@@ -130,7 +129,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 		if (accCtx != null) {
 			if (!currentUser.getName().equals(accCtx.getUserName())) {
 				LOG.info("Change in user name, from {} to {}. Saving context now", accCtx.getUserName(), currentUser.getName());
-				accCtx = new AccountingContext(currentUser.getName(), accCtx.getDbFileName());
+				accCtx = new AccountingContext(currentUser.getName(), accCtx.getDbLocation());
 				context.set(AccountingContext.class, accCtx);
 				AccountingPreferences.storeContext(accCtx);
 			}

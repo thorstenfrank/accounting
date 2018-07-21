@@ -16,8 +16,10 @@
 package de.tfsw.accounting.ui.setup;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Locale;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +33,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.util.tracker.ServiceTracker;
 
 import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingException;
@@ -62,10 +67,13 @@ public final class ApplicationInit {
 	/**
 	 * 
 	 * @param eclipseContext
-	 * @return
 	 */
-	public static Consumer<AccountingInitService> runApplicationSetup(final IEclipseContext eclipseContext) {
-		return new ApplicationInit().initContext(eclipseContext);
+	public static void runApplicationSetup(final IEclipseContext eclipseContext) {
+		final AccountingContext accountingContext = new ApplicationInit()
+				.initContext(eclipseContext)
+				.apply(getInitService(eclipseContext));
+		
+		AccountingPreferences.storeContext(accountingContext);
 	}
 	
 	/**
@@ -73,12 +81,12 @@ public final class ApplicationInit {
 	 * @param eclipseContext
 	 * @return
 	 */
-	private Consumer<AccountingInitService> initContext(final IEclipseContext eclipseContext) {
-		Consumer<AccountingInitService> consumer = initFromPreferences();
-		if (consumer == null) {
-			consumer = initFromUserInput(eclipseContext.get(Display.class), getMessageInstance(eclipseContext));
+	private Function<AccountingInitService, AccountingContext> initContext(final IEclipseContext eclipseContext) {
+		Function<AccountingInitService, AccountingContext> initFunction = initFromPreferences();
+		if (initFunction == null) {
+			initFunction = initFromUserInput(eclipseContext.get(Display.class), getMessageInstance(eclipseContext));
 		}
-		return consumer;
+		return initFunction;
 	}
 	
 	private Messages getMessageInstance(final IEclipseContext eclipseContext) {
@@ -101,13 +109,14 @@ public final class ApplicationInit {
 	 * 
 	 * @return
 	 */
-	private Consumer<AccountingInitService> initFromPreferences() {
-		Consumer<AccountingInitService> result = null;
+	private Function<AccountingInitService, AccountingContext> initFromPreferences() {
+		Function<AccountingInitService, AccountingContext> result = null;
 		
 		try {
 			final AccountingContext accountingContext = AccountingPreferences.readContext();
 			result = (service) -> {
 				service.init(accountingContext);
+				return accountingContext;
 			};
 		} catch (AccountingException e) {
 			LOG.warn("Couldn't instantiate context from preferences, assuming none exist");
@@ -121,12 +130,12 @@ public final class ApplicationInit {
 	 * @param display
 	 * @return
 	 */
-	private Consumer<AccountingInitService> initFromUserInput(final Display display, final Messages messages) {
+	private Function<AccountingInitService, AccountingContext> initFromUserInput(final Display display, final Messages messages) {
 		LOG.debug("Creating setup wizard");
 		
 		final Shell shell = createShell(display);
 		final WelcomeDialog welcomeDialog = new WelcomeDialog(shell, messages);
-		Consumer<AccountingInitService> result = null;
+		Function<AccountingInitService, AccountingContext> result = null;
 		if (welcomeDialog.open() == WelcomeDialog.OK) {
 			try {
 				final AbstractSetupWizard setupWizard = welcomeDialog.getSelectedWizardType().newInstance();
@@ -159,10 +168,45 @@ public final class ApplicationInit {
     }
     
 	static String buildDefaultDbFileLocation() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(System.getProperty("user.home")); //$NON-NLS-1$
-		sb.append(File.separatorChar);
-		sb.append("accounting.data"); //$NON-NLS-1$
-		return sb.toString();
+		String result = System.getProperty("user.home"); // the fallback
+		final String osgiInstanceArea = System.getProperty("osgi.instance.area");
+		try {
+			final File instanceArea = new File(new URI(osgiInstanceArea));
+			final File dbLoc = new File(instanceArea, "data");
+			result = dbLoc.getAbsolutePath();
+		} catch (URISyntaxException e) {
+			LOG.warn("Error converting to URI: " + osgiInstanceArea, e);
+		}
+		return result;
+	}
+	
+	private static AccountingInitService getInitService(IEclipseContext eclipseContext) {
+		AccountingInitService initService = eclipseContext.get(AccountingInitService.class);
+		if (initService == null) {
+			LOG.debug("No UserProfileService found, now checking service tracker");
+			Bundle bundle = FrameworkUtil.getBundle(ApplicationInit.class);
+			if (bundle != null) {
+				ServiceTracker<AccountingInitService, AccountingInitService> tracker = 
+						new ServiceTracker<>(bundle.getBundleContext(), AccountingInitService.class, null);
+				tracker.open();
+				try {
+					LOG.debug("Waiting for service to come online...");
+					initService = tracker.waitForService(1000);
+				} catch (InterruptedException e) {
+					LOG.error("Immer der gleiche Dreck!", e);
+				}
+			} else {
+				LOG.warn("No bundle found, dafuq is going on?");
+			}
+		} else {
+			LOG.debug("Init service was available directly from context");
+		}
+		
+		if (initService == null) {
+			throw new AccountingException("No service implementation found!");
+		}
+		
+		LOG.info("Service implementation: {}", initService.getDescription());
+		return initService;
 	}
 }
