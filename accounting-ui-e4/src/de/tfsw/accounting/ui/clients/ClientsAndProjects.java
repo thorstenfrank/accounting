@@ -38,8 +38,6 @@ public class ClientsAndProjects extends AbstractEditorOpeningView {
 	public void createComposite(Composite parent) {
 		parent.setLayout(new GridLayout());
 		
-		//clientService.getClientNames().forEach(System.out::println);
-		
 		viewer = new TreeViewer(parent);
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));

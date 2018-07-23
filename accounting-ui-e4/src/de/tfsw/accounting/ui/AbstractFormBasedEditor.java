@@ -153,7 +153,7 @@ public abstract class AbstractFormBasedEditor {
 	 * {@link MPart#setLabel(String)}
 	 */
 	protected void setPartLabel(final String label) {
-		this.part.setLabel(label);
+		part.setLabel(label);
 	}
 	
 	/**

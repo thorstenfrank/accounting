@@ -55,12 +55,6 @@ public class ClientEditor extends AbstractFormBasedEditor {
 		
 		createBasicInfoSection(parent);
 		
-//		if (client.getDefaultPaymentTerms() == null) {
-//			client.setDefaultPaymentTerms(PaymentTerms.getDefault());
-//			dirty = true;
-//		}
-//		createPaymentTermsSection(parent);
-		
 		if (client.getPrimaryAddress() == null) {
 			client.setPrimaryAddress(new Address());
 			// should we set the editor to dirty here too?
@@ -73,6 +67,7 @@ public class ClientEditor extends AbstractFormBasedEditor {
 	@Override
 	protected boolean doSave() {
 		clientService.saveClient(client);
+		this.setPartLabel(client.getName()); // update the part label (tab label) just in case
 		return true;
 	}
 	
@@ -104,45 +99,4 @@ public class ClientEditor extends AbstractFormBasedEditor {
 		createTextWithLabelNotNullable(group, messages.labelClientName, client, Client.FIELD_NAME);
 		createTextWithLabel(group, messages.labelClientNumber, client, Client.FIELD_CLIENT_NUMBER);
 	}
-	
-//	private void createPaymentTermsSection(Composite parent) {
-//		final PaymentTerms paymentTerms = client.getDefaultPaymentTerms();
-//		
-//		final Composite group = createGroup(parent, messages.labelPaymentTerms);		
-//		createLabel(group, messages.labelPaymentType);
-//		
-//		final Combo paymentTypes = new Combo(group, SWT.READ_ONLY);
-//		GridDataFactory.fillDefaults().grab(true, false).applyTo(paymentTypes);
-//		final List<PaymentType> paymentTypeList = new ArrayList<PaymentType>();
-//		int index = 0;
-//		for (PaymentType element : PaymentType.values()) {
-//			paymentTypes.add(element.getTranslatedString());
-//			paymentTypeList.add(index, element);
-//			if (element.name().equals(paymentTerms.getPaymentType().name())) {
-//				paymentTypes.select(index);
-//			} else {
-//				index++;
-//			}
-//		}
-//		
-//		paymentTypes.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
-//        	final Combo combo = (Combo) e.getSource();
-//        	PaymentType newType = paymentTypeList.get(combo.getSelectionIndex());
-//        	if ( ! newType.name().equals(paymentTerms.getPaymentType().name())) {
-//            	paymentTerms.setPaymentType(newType);
-//            	setDirty(true);            		
-//        	}			
-//		}));
-//		
-//		createLabel(group, messages.labelPaymentTarget);
-//		final Spinner spinner = new Spinner(group, SWT.BORDER);
-//		spinner.setIncrement(1);
-//		spinner.setMinimum(0);
-//		spinner.setSelection(paymentTerms.getFullPaymentTargetInDays());
-//		
-//		spinner.addModifyListener(e -> {
-//			paymentTerms.setFullPaymentTargetInDays(spinner.getSelection());
-//			setDirty(true);
-//		});
-//	}
 }

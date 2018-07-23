@@ -5,6 +5,8 @@ package de.tfsw.accounting.ui.util;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
@@ -22,6 +24,8 @@ import de.tfsw.accounting.model.AbstractBaseEntity;
  */
 public final class ApplicationModelHelper {
 
+	private static final Logger LOG = LogManager.getLogger(ApplicationModelHelper.class);
+	
 	public static final String EDITOR_PARTSTACK_ID = "de.tfsw.accounting.ui.partstack.editors";
 	
 	public static final String KEY_ELEMENT_ID = "editedElementId";
@@ -54,26 +58,30 @@ public final class ApplicationModelHelper {
 		final MPart part = partService.getParts().stream()
 				.filter(p -> isExistingPart(p, targetEditorId, elementId))
 				.findFirst()
-				.orElseGet(() -> createEditor(targetEditorId, elementId, editedElement));
+				.orElseGet(() -> createEditor(targetEditorId, elementId));
 		
+		part.setObject(editedElement);
 		partService.showPart(part, PartState.ACTIVATE);
 	}
 	
-	private boolean isExistingPart(final MPart part, String targetEditorId, final String elementId) {
+	private boolean isExistingPart(final MPart part, final String targetEditorId, final String elementId) {
 		boolean result = false;
 		
 		if (targetEditorId.equals(part.getElementId())) {
 			result = elementId.equals(part.getProperties().get(KEY_ELEMENT_ID));
 		}
 		
+		if (result) {
+			LOG.trace("Re-using existing editor part [{}] for element id [{}]", targetEditorId, elementId);
+		}
+		
 		return result;
 	}
 	
-	private <E extends AbstractBaseEntity> MPart createEditor(
-			final String targetEditorId, final String elementId, final E editedElement) {
+	private <E extends AbstractBaseEntity> MPart createEditor(final String targetEditorId, final String elementId) {
+		LOG.trace("Creating new editor part with id [{}] for element id [{}]", targetEditorId, elementId);
 		final MPart part = createEditor(targetEditorId);
 		part.getProperties().put(KEY_ELEMENT_ID, elementId);
-		part.setObject(editedElement);
 		return part;
 	}
 	
