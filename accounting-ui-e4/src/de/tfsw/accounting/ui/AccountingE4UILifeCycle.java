@@ -31,7 +31,10 @@ public class AccountingE4UILifeCycle {
 		// make sure the splash screen comes down		
 		eclipseContext.get(IApplicationContext.class).applicationRunning();
 		
-		ApplicationInit.runApplicationSetup(eclipseContext);
+		if (!ApplicationInit.runApplicationSetup(eclipseContext)) {
+			LOG.error("Forced exit, application setup/init not possible");
+			System.exit(-1);
+		}
 	}
 	
 	@PreSave

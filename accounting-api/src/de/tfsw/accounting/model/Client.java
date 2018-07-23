@@ -15,6 +15,7 @@
  */
 package de.tfsw.accounting.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -46,9 +47,11 @@ public class Client extends AbstractBaseEntity {
 	 */
 	@Id
 	private String name;
+	
 	@Column(unique = true)
 	private String clientNumber;
-	@OneToOne
+	
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "primaryAddress")
 	private Address primaryAddress;
 	

@@ -11,7 +11,7 @@ import org.osgi.service.component.annotations.Reference;
 import de.tfsw.accounting.model.Client;
 import de.tfsw.accounting.service.spi.ClientDao;
 
-@Component(service = ClientDaoImpl.class, enabled = true)
+@Component(service = ClientDao.class, enabled = true)
 public class ClientDaoImpl implements ClientDao {
 
 	private static final Logger LOG = LogManager.getLogger(ClientDaoImpl.class);
@@ -30,4 +30,14 @@ public class ClientDaoImpl implements ClientDao {
 		return persistence.findAll(Client.class);
 	}
 
+	@Override
+	public Client getClient(String name) {
+		return persistence.findById(Client.class, name);
+	}
+	
+	@Override
+	public void save(Client client) {
+		LOG.trace("Saving client {} / {}", client.getName(), client.getClientNumber());
+		persistence.save(client);
+	}
 }

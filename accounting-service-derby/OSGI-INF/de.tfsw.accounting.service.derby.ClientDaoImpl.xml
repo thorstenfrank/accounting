@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" enabled="true" name="de.tfsw.accounting.service.derby.ClientDaoImpl">
    <service>
-      <provide interface="de.tfsw.accounting.service.derby.ClientDaoImpl"/>
+      <provide interface="de.tfsw.accounting.service.spi.ClientDao"/>
    </service>
    <reference cardinality="1..1" field="persistence" interface="de.tfsw.accounting.service.derby.PersistenceAccess" name="persistence"/>
    <implementation class="de.tfsw.accounting.service.derby.ClientDaoImpl"/>

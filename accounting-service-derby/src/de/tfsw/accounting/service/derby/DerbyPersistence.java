@@ -3,7 +3,6 @@
  */
 package de.tfsw.accounting.service.derby;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -92,9 +91,8 @@ public class DerbyPersistence implements AccountingInitService, PersistenceAcces
 
 	@Override
 	public <E extends AbstractBaseEntity> Set<E> findAll(Class<E> entityType) {
-		return new HashSet<>(
-				entityManager.createQuery(
-						MessageFormat.format("SELEECT e FROM %s e", entityType.getSimpleName()))
+		return new HashSet<>(entityManager
+				.createQuery(String.format("SELECT e FROM %s e", entityType.getSimpleName()), entityType)
 				.getResultList());
 	}
 	

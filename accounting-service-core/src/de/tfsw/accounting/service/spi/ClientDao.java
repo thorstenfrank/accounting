@@ -14,4 +14,8 @@ import de.tfsw.accounting.model.Client;
 public interface ClientDao {
 
 	Set<Client> getClients();
+	
+	Client getClient(String name);
+	
+	void save(Client client);
 }

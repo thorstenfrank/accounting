@@ -372,8 +372,6 @@ public abstract class AbstractFormBasedEditor {
 	@Persist
 	@SuppressWarnings("unchecked")
 	public void checkAndSave() {
-		log.trace("Checking validation status");
-		
 		Optional<IStatus> errorStatus = ((IObservableList<ValidationStatusProvider>) bindingContext.getValidationStatusProviders())
 			.stream()
 			.map(p -> (IStatus) p.getValidationStatus().getValue())
@@ -381,15 +379,18 @@ public abstract class AbstractFormBasedEditor {
 			.findAny();
 		
 		if (errorStatus.isPresent()) {
-			log.debug("Cannot save, validation errors exist!");
+			log.trace("Cannot save, validation errors exist!");
 			MessageDialog.openError(
 					scrollable.getShell(), 
 					messages.errorValidationFailedTitle, 
 					messages.errorValidationFailedText);
 		} else {
 			log.trace("No validation errors/warnings, calling doSave now");
-			if (doSave()) {
-				setDirty(false);
+			try {
+				setDirty(!doSave());
+			} catch (Throwable t) {
+				log.error("Error saving editor " + getClass().getSimpleName(), t);
+				MessageDialog.openError(scrollable.getShell(), "Error saving", t.getMessage());
 			}
 		}
 	}

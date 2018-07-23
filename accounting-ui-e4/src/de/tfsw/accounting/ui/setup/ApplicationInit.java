@@ -65,13 +65,22 @@ public final class ApplicationInit {
 	 * 
 	 * @param eclipseContext
 	 */
-	public static void runApplicationSetup(final IEclipseContext eclipseContext) {
-		final AccountingContext accountingContext = new ApplicationInit()
-				.initContext(eclipseContext)
-				.apply(getInitService(eclipseContext));
+	public static boolean runApplicationSetup(final IEclipseContext eclipseContext) {
+		final Function<AccountingInitService, AccountingContext> initFunction = 
+				new ApplicationInit().initContext(eclipseContext);
 		
-		AccountingPreferences.storeContext(accountingContext);
-		eclipseContext.set(AccountingContext.class, accountingContext);
+		boolean result = false;
+		
+		if (initFunction != null) {
+			final AccountingContext accountingContext = initFunction.apply(getInitService(eclipseContext));
+			AccountingPreferences.storeContext(accountingContext);
+			eclipseContext.set(AccountingContext.class, accountingContext);
+			result = true;
+		} else {
+			LOG.warn("No way to initialise application; neither stored preferences nor user input available."); 
+		}
+		
+		return result;
 	}
 	
 	/**

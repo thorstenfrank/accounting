@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.tfsw.accounting.service.core;
+package de.tfsw.accounting.service.spi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -67,5 +67,15 @@ public class UserProfileDaoTest extends AbstractDaoTest {
 	@Test(expected = AccountingException.class)
 	public void testNullInsert() {
 		dao.save(new UserProfile());
+	}
+	
+	@Test(expected = AccountingException.class)
+	public void testNameUpdate() {
+		UserProfile up = new UserProfile();
+		up.setName("testNameUpdate");
+		dao.save(up);
+		
+		up.setName("testNameUpdate_update");
+		dao.save(up);
 	}
 }

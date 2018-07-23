@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.tfsw.accounting.service.core;
+package de.tfsw.accounting.service.spi;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;

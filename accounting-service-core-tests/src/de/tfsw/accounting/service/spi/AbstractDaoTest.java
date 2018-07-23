@@ -1,4 +1,4 @@
-package de.tfsw.accounting.service.core;
+package de.tfsw.accounting.service.spi;
 
 import org.junit.BeforeClass;
 

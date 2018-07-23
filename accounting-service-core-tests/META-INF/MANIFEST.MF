@@ -9,4 +9,5 @@ Automatic-Module-Name: de.tfsw.accounting.service.core.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.12.0",
  org.eclipse.osgi;bundle-version="3.12.100",
- de.tfsw.accounting.service.derby;bundle-version="1.0.0"
+ de.tfsw.accounting.service.derby;bundle-version="1.0.0",
+ de.tfsw.accounting.test-harness;bundle-version="1.0.0"
