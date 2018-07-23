@@ -26,17 +26,15 @@ import de.tfsw.accounting.model.Client;
 public interface ClientService {
 	
 	/**
-	 * Returns the unique names of all known {@link Client} entities.
 	 * 
-	 * @return {@link Client#getName()}
+	 * @return
 	 */
-	Set<String> getClientNames();
+	Client newClient();
 	
 	/**
 	 * Returns all {@link Client} instances.
 	 * 
 	 * @return all clients known to the system
-	 * @deprecated use {@link #getClientNames()} instead
 	 */
 	Set<Client> getClients();
 	
@@ -57,10 +55,8 @@ public interface ClientService {
 	 * {@link EventIds#MODEL_CHANGE_TOPIC_PREFIX}.</p>
 	 * 
 	 * @param client the {@link Client} to save
-	 * 
-	 * @return the saved instance - clients should use this for any further work
 	 */
-	Client saveClient(Client client);
+	void saveClient(Client client);
 	
 	/**
 	 * Removes the supplied client permanently from persistence.

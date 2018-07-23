@@ -3,9 +3,12 @@
  */
 package de.tfsw.accounting.service.derby;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -59,13 +62,18 @@ public class DerbyPersistence implements AccountingInitService, PersistenceAcces
 	
 	@Override
 	public void init(AccountingContext context) {
-		LOG.debug("Init DB service for context {}", context);
-		
-		final String dbURL = buildDbUrl(context.getDbLocation());
-		LOG.debug("Using db location: {}", dbURL);
-		
-		setupDatabase(dbURL);
-		initPersistence(dbURL);
+		if (entityManager == null) {
+			LOG.debug("Init DB service for context {}", context);
+			
+			final String dbURL = buildDbUrl(context.getDbLocation());
+			LOG.debug("Using db location: {}", dbURL);
+			
+			setupDatabase(dbURL);
+			initPersistence(dbURL);			
+		} else {
+			LOG.trace("Ignoring init call, DB is already up and running");
+		}
+
 	}
 	
 	@Override
@@ -82,6 +90,14 @@ public class DerbyPersistence implements AccountingInitService, PersistenceAcces
 		return entityManager.find(entityClass, id);
 	}
 
+	@Override
+	public <E extends AbstractBaseEntity> Set<E> findAll(Class<E> entityType) {
+		return new HashSet<>(
+				entityManager.createQuery(
+						MessageFormat.format("SELEECT e FROM %s e", entityType.getSimpleName()))
+				.getResultList());
+	}
+	
 	/**
 	 * 
 	 */

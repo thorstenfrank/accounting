@@ -1,5 +1,7 @@
 package de.tfsw.accounting.service.derby;
 
+import java.util.Set;
+
 import de.tfsw.accounting.model.AbstractBaseEntity;
 
 /**
@@ -16,6 +18,13 @@ public interface PersistenceAccess {
 	 * @return
 	 */
 	<E extends AbstractBaseEntity> E findById(Class<E> entityClass, Object id);
+	
+	/**
+	 * 
+	 * @param entityType
+	 * @return
+	 */
+	<E extends AbstractBaseEntity> Set<E> findAll(Class<E> entityType);
 	
 	/**
 	 * 

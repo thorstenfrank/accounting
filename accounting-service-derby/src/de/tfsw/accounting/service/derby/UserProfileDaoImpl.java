@@ -5,6 +5,7 @@ package de.tfsw.accounting.service.derby;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -22,6 +23,11 @@ public class UserProfileDaoImpl implements UserProfileDao {
 	
 	@Reference
 	private PersistenceAccess persistence;
+	
+	@Activate
+	protected void activate() {
+		LOG.trace("DAO activated");
+	}
 	
 	@Override
 	public UserProfile get(String name) {

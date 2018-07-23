@@ -8,34 +8,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.tfsw.accounting.AccountingContext;
 import de.tfsw.accounting.AccountingException;
-import de.tfsw.accounting.AccountingInitService;
 import de.tfsw.accounting.model.Address;
 import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.service.spi.UserProfileDao;
-import de.tfsw.accounting.util.FileUtil;
 
 /**
  * @author tfrank1
  *
  */
-public class UserProfileDaoTest {
-
-	static final String TEST_USER_NAME = "JUnit User";
-	static final String TEST_DB_PATH = FileUtil.defaultDataPath();
+public class UserProfileDaoTest extends AbstractDaoTest {
 	
 	private UserProfileDao dao;
-	
-	@BeforeClass
-	public static void initPersistence() {
-		ServiceLocator.getService(AccountingInitService.class)
-			.init(new AccountingContext(TEST_USER_NAME, TEST_DB_PATH));
-	}
 	
 	@Before
 	public void setUp() {
