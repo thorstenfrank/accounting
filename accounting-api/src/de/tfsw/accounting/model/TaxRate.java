@@ -17,6 +17,7 @@ package de.tfsw.accounting.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,21 +46,25 @@ public class TaxRate extends AbstractBaseEntity {
 	public static final String FIELD_IS_VAT = "isVAT";
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	/** Short name for this tax rate. */
+	@Column
 	private String shortName;
 	
 	/** Long name for this tax rate. */
+	@Column
 	private String longName;
 	
 	/** The actual tax rate. */
+	@Column(precision = 6, scale = 3)
 	private BigDecimal rate;
 	
 	/** Whether this tax rate is a VAT/GST or similar type of tax.
 	 *  Defaults to <code>true</code>.
 	 */
+	@Column
 	private boolean isVAT = true;
 	
 	/**

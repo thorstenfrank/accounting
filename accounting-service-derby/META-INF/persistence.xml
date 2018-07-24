@@ -10,6 +10,7 @@
         <class>de.tfsw.accounting.model.Address</class>
         <class>de.tfsw.accounting.model.BankAccount</class>
         <class>de.tfsw.accounting.model.UserProfile</class>
+        <class>de.tfsw.accounting.model.TaxRate</class>
         <class>de.tfsw.accounting.model.Client</class>
         
         <properties>

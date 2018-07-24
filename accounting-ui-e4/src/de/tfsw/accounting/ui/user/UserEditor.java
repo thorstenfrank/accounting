@@ -3,7 +3,6 @@
  */
 package de.tfsw.accounting.ui.user;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PreDestroy;
@@ -42,7 +41,6 @@ import de.tfsw.accounting.model.BankAccount;
 import de.tfsw.accounting.model.TaxRate;
 import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.ui.AbstractFormBasedEditor;
-import de.tfsw.accounting.ui.util.AccountingPreferences;
 import de.tfsw.accounting.ui.util.WidgetHelper;
 import de.tfsw.accounting.util.FormatUtil;
 
@@ -73,6 +71,8 @@ public class UserEditor extends AbstractFormBasedEditor {
 	private TableViewer taxRateViewer;
 	
 	private UserProfile currentUser;
+	
+	private Set<TaxRate> taxRates;
 	
 	@Override
 	protected boolean createControl(Composite parent) {
@@ -126,17 +126,9 @@ public class UserEditor extends AbstractFormBasedEditor {
 		LOG.debug("Saving user {}", currentUser.getName());
 		userService.saveUserProfile(currentUser);
 		
-		AccountingContext accCtx = context.get(AccountingContext.class);
-		if (accCtx != null) {
-			if (!currentUser.getName().equals(accCtx.getUserName())) {
-				LOG.info("Change in user name, from {} to {}. Saving context now", accCtx.getUserName(), currentUser.getName());
-				accCtx = new AccountingContext(currentUser.getName(), accCtx.getDbLocation());
-				context.set(AccountingContext.class, accCtx);
-				AccountingPreferences.storeContext(accCtx);
-			}
-		} else {
-			LOG.warn("No accounting context available, can't check for user name change!");
-		}
+		taxRates.stream()
+			.filter(rate -> rate.getId() == null)
+			.forEach(rate -> userService.saveTaxRate(rate));
 		
 		return true;
 	}
@@ -190,12 +182,7 @@ public class UserEditor extends AbstractFormBasedEditor {
 		createColumn(COLUMN_TAX_RATE_NAME, messages.userEditorTaxRateName, tableLayout, 50);
 		createColumn(COLUMN_TAX_RATE, messages.userEditorTaxRate, tableLayout, 20);
 
-		final Set<TaxRate> taxRates = new HashSet<>();
-//		Set<TaxRate> taxRates = currentUser.getTaxRates();
-//		if (taxRates == null) {
-//			taxRates = new HashSet<>();
-//			currentUser.setTaxRates(taxRates);
-//		}
+		taxRates = userService.getTaxRates();
 
 		taxRateViewer.setLabelProvider(new TaxRateCellLabelProvider());
 		taxRateViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -213,7 +200,6 @@ public class UserEditor extends AbstractFormBasedEditor {
 			final WizardDialog dialog = new WizardDialog(shell, wizard);
 			if (WizardDialog.OK == dialog.open()) {
 				taxRateViewer.getTable().setRedraw(false);
-				//currentUser.addTaxRate(wizard.getNewTaxRate());
 				taxRates.add(wizard.getNewTaxRate());
 				taxRateViewer.refresh();
 				taxRateViewer.getTable().setRedraw(true);
