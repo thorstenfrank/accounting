@@ -229,6 +229,7 @@
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.persistence.jpa" version="2.7.2.v20180622-f627448"/>
+      <feature id="de.tfsw.accounting.reporting.feature" version="2.0.0.qualifier"/>
    </features>
 
    <configurations>

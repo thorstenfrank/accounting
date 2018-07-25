@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="accounting" sequenceNumber="5">
+<?pde version="3.8"?><target name="accounting" sequenceNumber="8">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.13.4.v20180322-2228"/>
-<unit id="org.eclipse.sdk.ide" version="4.7.3.M20180330-0640"/>
-<repository location="http://download.eclipse.org/releases/oxygen"/>
-</location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.persistence.jpa.feature.group" version="2.7.2.v20180622-f627448"/>
 <repository location="http://download.eclipse.org/rt/eclipselink/updates/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.birt.osgi.runtime.sdk.feature.group" version="4.7.0.v201706222054"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.13.4.v20180322-2228"/>
+<unit id="org.eclipse.sdk.ide" version="4.7.3.M20180330-0640"/>
+<repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 </locations>
 </target>
