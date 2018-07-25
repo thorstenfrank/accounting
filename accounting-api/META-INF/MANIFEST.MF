@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: de.tfsw.accounting,
  de.tfsw.accounting.model,
+ de.tfsw.accounting.service.spi,
  de.tfsw.accounting.util
 Require-Bundle: javax.persistence;bundle-version="2.2.0"
 Bundle-ClassPath: .
