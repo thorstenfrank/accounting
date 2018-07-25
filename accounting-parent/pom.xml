@@ -48,6 +48,9 @@
 		<module>../accounting-reporting</module>
 		-->
 		
+		<module>../reporting-service</module>
+		<module>../reporting-feature</module>
+		
 		<!-- Apache Derby-based service implementation -->
 		<module>../accounting-service-core</module>
 		<module>../accounting-service-core-tests</module>
