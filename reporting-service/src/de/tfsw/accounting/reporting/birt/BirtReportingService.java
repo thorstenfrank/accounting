@@ -1,6 +1,5 @@
 package de.tfsw.accounting.reporting.birt;
 
-import java.io.File;
 import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,11 +11,11 @@ import org.eclipse.birt.report.engine.api.IReportEngineFactory;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.birt.report.engine.api.PDFRenderOption;
-import org.eclipse.core.runtime.FileLocator;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import de.tfsw.accounting.ReportingService;
+import de.tfsw.accounting.util.FileUtil;
 
 @Component(service = ReportingService.class, enabled = true, immediate = true)
 public class BirtReportingService implements ReportingService {
@@ -34,7 +33,7 @@ public class BirtReportingService implements ReportingService {
 		
 		try {
 			EngineConfig config = new EngineConfig();
-			//config.setBIRTHome("C:/temp/birt");
+			config.setBIRTHome(FileUtil.absoluteInstanceAreaPath("reporting"));
 			
 			Platform.startup(config);
 			
@@ -45,18 +44,14 @@ public class BirtReportingService implements ReportingService {
 			
 			LOG.info("BIRT home: {}", config.getBIRTHome());
 			
-			
 			PDFRenderOption pdfOptions = new PDFRenderOption();
-			pdfOptions.setOutputFileName("C:\\temp\\output.pdf");
+			pdfOptions.setOutputFileName(FileUtil.absoluteInstanceAreaPath("outputtsen.pdf"));
 			pdfOptions.setOutputFormat("pdf");
 			
-			URL designUrl = FileLocator.resolve(
-					new URL("platform:/plugin/de.tfsw.accounting.reporting.service/se_report.rptdesign"));
+			URL designUrl = new URL("platform:/plugin/de.tfsw.accounting.reporting.service/se_report.rptdesign");
 			LOG.debug("Raw report source URL: {}", designUrl.toString());
-			File f = new File(designUrl.toURI());
-			LOG.debug("Report source: {} exists? {}", designUrl.toString(), f.exists());
 			
-			IReportRunnable runnable = engine.openReportDesign(f.toString());
+			IReportRunnable runnable = engine.openReportDesign(designUrl.openStream());
 			IRunAndRenderTask task = engine.createRunAndRenderTask(runnable);
 			task.setRenderOption(pdfOptions);
 			task.run();
