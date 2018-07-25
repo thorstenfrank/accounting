@@ -2,5 +2,5 @@ package de.tfsw.accounting;
 
 public interface ReportingService {
 
-	void test();
+	void test(String targetLocation);
 }

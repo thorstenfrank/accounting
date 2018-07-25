@@ -9,9 +9,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 
 import de.tfsw.accounting.ReportingService;
@@ -28,8 +31,6 @@ public class OverviewPart {
 	public void postConstruct(Composite parent) {
 		LOG.debug("Building overview");
 		
-		reportingService.test();
-		
 		parent.setLayout(new GridLayout(2, false));
 		WidgetHelper.grabBoth(parent);
 		
@@ -38,6 +39,19 @@ public class OverviewPart {
 		WidgetHelper.grabBoth(bordered);
 		Label label = new Label(bordered, SWT.NONE);
 		label.setText("Wuppdi, oida!");
+		
+		Button exportButton = new Button(bordered, SWT.PUSH);
+		exportButton.setText("Export...");
+		exportButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+			FileDialog fd = new FileDialog(parent.getShell(), SWT.SAVE);
+			fd.setText("Save report to...");
+			fd.setFileName("outputtsen.pdf");
+			final String target = fd.open();
+			if (target != null) {
+				LOG.debug("Saving exported report to {}", target);
+				reportingService.test(target);
+			}
+		}));
 		
 		Composite bordered2 = new Composite(parent, SWT.BORDER);
 		bordered2.setLayout(new RowLayout());

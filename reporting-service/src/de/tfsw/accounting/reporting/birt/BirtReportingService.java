@@ -28,7 +28,7 @@ public class BirtReportingService implements ReportingService {
 	}
 	
 	@Override
-	public void test() {
+	public void test(String targetLocation) {
 		LOG.info("I will report something now...");
 		
 		try {
@@ -42,15 +42,14 @@ public class BirtReportingService implements ReportingService {
 			
 			IReportEngine engine = factory.createReportEngine(config);
 			
-			LOG.info("BIRT home: {}", config.getBIRTHome());
-			
 			PDFRenderOption pdfOptions = new PDFRenderOption();
-			pdfOptions.setOutputFileName(FileUtil.absoluteInstanceAreaPath("outputtsen.pdf"));
+			pdfOptions.setOutputFileName(targetLocation);
 			pdfOptions.setOutputFormat("pdf");
 			
 			URL designUrl = new URL("platform:/plugin/de.tfsw.accounting.reporting.service/se_report.rptdesign");
 			LOG.debug("Raw report source URL: {}", designUrl.toString());
 			
+			LOG.info("Generating report to {}", targetLocation);
 			IReportRunnable runnable = engine.openReportDesign(designUrl.openStream());
 			IRunAndRenderTask task = engine.createRunAndRenderTask(runnable);
 			task.setRenderOption(pdfOptions);
