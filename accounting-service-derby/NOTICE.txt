@@ -1,0 +1,8 @@
+Uses eclipselink
+The Eclipse Foundation (http://www.eclipse.org/).
+
+Uses Apache Derby
+Copyright 2004-2018 The Apache Software Foundation
+
+Includes Flyway
+Copyright (C) 2010-2018 Boxfuse GmbH

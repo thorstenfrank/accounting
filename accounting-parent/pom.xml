@@ -49,9 +49,8 @@
 		-->
 		
 		<!-- Apache Derby-based service implementation -->
-		<module>../accounting-service-core</module>
-		<module>../accounting-service-core-tests</module>
 		<module>../accounting-service-derby</module>
+		<module>../accounting-service-derby-tests</module>
 		<module>../derby</module>
 		
 		<!-- Target Definition -->
@@ -62,9 +61,6 @@
 		
 		<!-- 2.0.0: E4 UI -->
 		<module>../accounting-ui-e4</module>
-		
-		<!-- External Dependencies -->
-		<module>../com.google.gson</module>
 	</modules>
 
 	<!-- repositories>

@@ -18,12 +18,6 @@
    </license>
 
    <plugin
-         id="com.google.gson"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="de.tfsw.accounting.logging"
          download-size="0"
          install-size="0"
@@ -59,13 +53,6 @@
 
    <plugin
          id="javax.activation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.tfsw.accounting.service.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
