@@ -16,13 +16,6 @@
 		<module>../accounting-api</module>
 		<module>../accounting-api-tests</module>
 		
-		<!-- 2.0.0: Deprecated, replaced by service modules -->
-		<!-- 
-		<module>../accounting-core</module>
-		<module>../accounting-core-tests</module>
-		<module>../db4o_osgi</module> 
-		-->
-		
 		<!-- 2.0.0: Disabled Temporarily -->
 		<!-- 
 		<module>../accounting-elster-core</module>
