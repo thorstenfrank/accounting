@@ -1,6 +1,8 @@
 package de.tfsw.accounting.reporting.birt;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,10 +51,14 @@ public class BirtReportingService implements ReportingService {
 			URL designUrl = new URL("platform:/plugin/de.tfsw.accounting.reporting.service/se_report.rptdesign");
 			LOG.debug("Raw report source URL: {}", designUrl.toString());
 			
+			Map<String, Object> params = new HashMap<>();
+			params.put("userProfileName", "Test Output User Profile Name");
+			
 			LOG.info("Generating report to {}", targetLocation);
-			IReportRunnable runnable = engine.openReportDesign(designUrl.openStream());
-			IRunAndRenderTask task = engine.createRunAndRenderTask(runnable);
+			IReportRunnable report = engine.openReportDesign(designUrl.openStream());
+			IRunAndRenderTask task = engine.createRunAndRenderTask(report);
 			task.setRenderOption(pdfOptions);
+			task.setParameterValues(params);
 			task.run();
 			task.close();
 			engine.destroy();

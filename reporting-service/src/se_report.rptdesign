@@ -5,6 +5,49 @@
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">120</property>
+    <parameters>
+        <scalar-parameter name="userProfileName" id="7">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <script-data-source name="Data Source" id="4"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="dataSetUserProfile" id="5">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">userProfileName</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">userProfileName</property>
+                    <text-property name="displayName">User Profile Name</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">userProfileName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+        </script-data-set>
+    </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <page-footer>
@@ -15,4 +58,13 @@
             </page-footer>
         </simple-master-page>
     </page-setup>
+    <body>
+        <label id="6">
+            <text-property name="text">User Profile:</text-property>
+        </label>
+        <text-data id="8">
+            <expression name="valueExpr">params["userProfileName"].value</expression>
+            <property name="contentType">html</property>
+        </text-data>
+    </body>
 </report>
