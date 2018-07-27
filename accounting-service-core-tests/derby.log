@@ -1,0 +1,72 @@
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.replication.master in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.resultSetStatisticsFactory in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.NoneAuthentication in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.lockManagerJ6 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.log.readonly in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.jdbcJ8 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.resourceAdapterJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.validation in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.lcf in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.optimizer in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.XPLAINFactory in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.javaCompiler in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.tcf in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.dataDictionary in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.cacheManagerJ6 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.ef in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.dvfJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.dvfJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.daemon in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.cacheManagerJ6 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.data.genericJ4 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.timerJ1 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.rawStore.data.genericJ4 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.data.genericJ1 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.basicAuthentication in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.rawStore.data.genericJ1 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.classes.JNDIAuthentication in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.database in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.transaction in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.streams in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.classes.dvfJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.mgmt.jmx in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.nativeAuthentication in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.cryptographyJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.access.sort in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.classes.jdbcJ8 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.classes.cryptographyJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.classes.rawStore.data.genericJ4 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.jdbcJ8 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.lockManagerJ6 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.cryptographyJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.specificAuthentication in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.mgmt.jmx in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.netServer.autoStart in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.access.uniquewithduplicatenullssort in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.classManagerJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.JNDIAuthentication in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.log in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.access.heap in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.database.slave in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.jdk.resourceAdapterJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.mgmt.null in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.env.classes.resourceAdapterJ2 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.access in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.replication.slave in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.lf in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.uuidJ1 in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.access.btree in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+Mon Jul 23 15:03:14 CEST 2018 Thread[main,5,main] Ignored duplicate property derby.module.rawStore in bundleresource://11.fwk237351678:1/org/apache/derby/modules.properties
+----------------------------------------------------------------
+Mon Jul 23 15:03:14 CEST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0164-c73c-97cf-000015f36008 
+on database directory C:\Users\tfrank1\Documents\accounting\junit-workspace\data with class loader org.eclipse.osgi.internal.loader.EquinoxClassLoader@55dfcc6[derby:10.14.2000000.1828579(id=11)] 
+Loaded from file:/C:/Users/tfrank1/Documents/accounting/accounting/derby/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_66-b18
+user.dir=C:\Users\tfrank1\Documents\accounting\accounting\accounting-service-core-tests
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

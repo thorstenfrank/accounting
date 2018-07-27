@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" enabled="true" name="de.tfsw.accounting.service.core.UserProfileServiceImpl">
-   <service>
-      <provide interface="de.tfsw.accounting.UserProfileService"/>
-   </service>
-   <reference cardinality="1..1" field="dao" interface="de.tfsw.accounting.service.spi.UserProfileDao" name="dao"/>
-   <implementation class="de.tfsw.accounting.service.core.UserProfileServiceImpl"/>
-</scr:component>

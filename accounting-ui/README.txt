@@ -1,4 +1,4 @@
-**DEPRECATED**
+# DEPRECATED - this bundle is only available as reference during refactoring/migration and will be deleted!
 
 This is the old eclipse 3-based UI and is no longer used. It is only kept in the codebase until the migration to e4
 is complete. See accounting-ui-e4 for details!
