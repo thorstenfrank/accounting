@@ -1,8 +1,6 @@
 package de.tfsw.accounting.reporting.birt;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +54,7 @@ public class BirtReportingService implements ReportingService {
 			
 			UserProfile up = new UserProfile();
 			up.setName("Hannes Haumichblau");
+			up.setDescription("Awesomeness Consultant\nand\nmulti-line commenter");
 			
 			LOG.info("Generating report to {}", targetLocation);
 			IReportRunnable report = engine.openReportDesign(designUrl.openStream());

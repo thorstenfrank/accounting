@@ -12,14 +12,22 @@
         <script-data-set name="userProfileDataSet" id="10">
             <list-property name="resultSetHints">
                 <structure>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                     <property name="name">profileName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">profileDescription</property>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">profileName</property>
+                </structure>
+                <structure>
+                    <property name="columnName">profileDescription</property>
                 </structure>
             </list-property>
             <list-property name="parameters"/>
@@ -30,6 +38,11 @@
                         <property name="name">profileName</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">profileDescription</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">scriptedDataSource</property>
@@ -38,31 +51,60 @@
 count = 0;
 
 userProfileObject = reportContext.getAppContext().get("userProfile.input");]]></method>
-            <method name="fetch"><![CDATA[if (count != 1) {
-	count = 1;
-	row["profileName"] = "User Profile Name: " + userProfileObject.getName();
-	return true;
-}
-
-return false;
+            <method name="fetch"><![CDATA[vars["someSampleVariable"] = "User Profile Name: " + userProfileObject.getName();
+vars["userProfile"] = userProfileObject;
+row["profileName"] = "User Profile Name: " + userProfileObject.getName();
+row["profileDescription"] = userProfileObject.getDescription();
+return true;
 ]]></method>
             <method name="close"><![CDATA[reportContext.getAppContext().put("from.report", "Just saying hi");]]></method>
         </script-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="overflow">visible</property>
+            <property name="headerHeight">5cm</property>
             <page-header>
-                <data id="17">
+                <grid id="18">
+                    <property name="height">1.0555555555555556in</property>
                     <property name="dataSet">userProfileDataSet</property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">profileName</property>
                             <expression name="expression" type="javascript">dataSetRow["profileName"]</expression>
                             <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">profileDescription</property>
+                            <expression name="expression" type="javascript">dataSetRow[“profileDescription”]</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
                         </structure>
                     </list-property>
-                    <property name="resultSetColumn">profileName</property>
-                </data>
+                    <column id="19"/>
+                    <row id="20">
+                        <property name="height">0.5in</property>
+                        <cell id="21">
+                            <text-data id="27">
+                                <property name="textAlign">right</property>
+                                <expression name="valueExpr">vars["someSampleVariable"]</expression>
+                                <property name="contentType">auto</property>
+                            </text-data>
+                        </cell>
+                    </row>
+                    <row id="22">
+                        <property name="height">0.5in</property>
+                        <cell id="23">
+                            <text-data id="28">
+                                <property name="textAlign">right</property>
+                                <expression name="valueExpr">vars["userProfile"].getDescription()</expression>
+                                <property name="contentType">auto</property>
+                            </text-data>
+                        </cell>
+                    </row>
+                </grid>
             </page-header>
             <page-footer>
                 <text id="3">
@@ -77,4 +119,13 @@ return false;
             <text-property name="text">I am the main body!</text-property>
         </label>
     </body>
+    <property name="pageVariables">
+        <variable-element name="someSampleVariable">
+            <expression name="value" type="javascript">notsetyet</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="userProfile">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>
