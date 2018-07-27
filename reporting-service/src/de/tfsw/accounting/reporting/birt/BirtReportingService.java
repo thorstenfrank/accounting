@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.birt.core.framework.Platform;
 import org.eclipse.birt.report.engine.api.EngineConfig;
+import org.eclipse.birt.report.engine.api.EngineConstants;
 import org.eclipse.birt.report.engine.api.IReportEngine;
 import org.eclipse.birt.report.engine.api.IReportEngineFactory;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
@@ -17,6 +18,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import de.tfsw.accounting.ReportingService;
+import de.tfsw.accounting.model.UserProfile;
 import de.tfsw.accounting.util.FileUtil;
 
 @Component(service = ReportingService.class, enabled = true, immediate = true)
@@ -29,6 +31,7 @@ public class BirtReportingService implements ReportingService {
 		LOG.info("<<< BIRT REPORTING IS ONLINE >>>");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void test(String targetLocation) {
 		LOG.info("I will report something now...");
@@ -51,15 +54,21 @@ public class BirtReportingService implements ReportingService {
 			URL designUrl = new URL("platform:/plugin/de.tfsw.accounting.reporting.service/se_report.rptdesign");
 			LOG.debug("Raw report source URL: {}", designUrl.toString());
 			
-			Map<String, Object> params = new HashMap<>();
-			params.put("userProfileName", "Test Output User Profile Name");
+			UserProfile up = new UserProfile();
+			up.setName("Hannes Haumichblau");
 			
 			LOG.info("Generating report to {}", targetLocation);
 			IReportRunnable report = engine.openReportDesign(designUrl.openStream());
 			IRunAndRenderTask task = engine.createRunAndRenderTask(report);
+			
+			task.getAppContext().put(EngineConstants.APPCONTEXT_CLASSLOADER_KEY, this.getClass().getClassLoader());
+			task.getAppContext().put("userProfile.input", up);
+			
 			task.setRenderOption(pdfOptions);
-			task.setParameterValues(params);
 			task.run();
+			
+			LOG.debug("From report: {}", task.getAppContext().get("from.report")); 
+			
 			task.close();
 			engine.destroy();
 		} catch (Exception e) {

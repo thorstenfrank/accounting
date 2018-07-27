@@ -5,51 +5,65 @@
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">120</property>
-    <parameters>
-        <scalar-parameter name="userProfileName" id="7">
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-    </parameters>
     <data-sources>
-        <script-data-source name="Data Source" id="4"/>
+        <script-data-source name="scriptedDataSource" id="9"/>
     </data-sources>
     <data-sets>
-        <script-data-set name="dataSetUserProfile" id="5">
+        <script-data-set name="userProfileDataSet" id="10">
             <list-property name="resultSetHints">
                 <structure>
-                    <property name="position">1</property>
-                    <property name="name">userProfileName</property>
+                    <property name="position">0</property>
+                    <property name="name">profileName</property>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">userProfileName</property>
-                    <text-property name="displayName">User Profile Name</text-property>
+                    <property name="columnName">profileName</property>
                 </structure>
             </list-property>
+            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">userProfileName</property>
+                        <property name="name">profileName</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">Data Source</property>
+            <property name="dataSource">scriptedDataSource</property>
+            <method name="open"><![CDATA[importPackage(Packages.de.tfsw.accounting.model.UserProfile);
+
+count = 0;
+
+userProfileObject = reportContext.getAppContext().get("userProfile.input");]]></method>
+            <method name="fetch"><![CDATA[if (count != 1) {
+	count = 1;
+	row["profileName"] = "User Profile Name: " + userProfileObject.getName();
+	return true;
+}
+
+return false;
+]]></method>
+            <method name="close"><![CDATA[reportContext.getAppContext().put("from.report", "Just saying hi");]]></method>
         </script-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
+            <page-header>
+                <data id="17">
+                    <property name="dataSet">userProfileDataSet</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">profileName</property>
+                            <expression name="expression" type="javascript">dataSetRow["profileName"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
+                    <property name="resultSetColumn">profileName</property>
+                </data>
+            </page-header>
             <page-footer>
                 <text id="3">
                     <property name="contentType">html</property>
@@ -59,12 +73,8 @@
         </simple-master-page>
     </page-setup>
     <body>
-        <label id="6">
-            <text-property name="text">User Profile:</text-property>
+        <label id="16">
+            <text-property name="text">I am the main body!</text-property>
         </label>
-        <text-data id="8">
-            <expression name="valueExpr">params["userProfileName"].value</expression>
-            <property name="contentType">html</property>
-        </text-data>
     </body>
 </report>
