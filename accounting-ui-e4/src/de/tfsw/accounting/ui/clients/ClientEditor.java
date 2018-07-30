@@ -96,7 +96,13 @@ public class ClientEditor extends AbstractFormBasedEditor {
 	
 	private void createBasicInfoSection(Composite parent) {
 		final Composite group = createGroup(parent, messages.labelBasicInformation);
-		createTextWithLabelNotNullable(group, messages.labelClientName, client, Client.FIELD_NAME);
+		
+		if (client.getName() == null) {
+			createTextWithLabelNotNullable(group, messages.labelClientName, client, Client.FIELD_NAME);
+		} else {
+			createTextWithLabel(group, messages.labelClientName, client, Client.FIELD_NAME).setEditable(false);
+		}
+		
 		createTextWithLabel(group, messages.labelClientNumber, client, Client.FIELD_CLIENT_NUMBER);
 	}
 }

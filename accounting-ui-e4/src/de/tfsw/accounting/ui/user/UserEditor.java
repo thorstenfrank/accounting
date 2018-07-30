@@ -74,6 +74,8 @@ public class UserEditor extends AbstractFormBasedEditor {
 	
 	private Set<TaxRate> taxRates;
 	
+	private boolean existingEntity;
+	
 	@Override
 	protected boolean createControl(Composite parent) {
 		GridLayout layout = new GridLayout(2, true);
@@ -85,12 +87,14 @@ public class UserEditor extends AbstractFormBasedEditor {
 		currentUser = userService.getUserProfile(userName);
 		if (currentUser == null) {
 			LOG.debug("Building editor for new user: {}", userName);
+			existingEntity = false;
 			currentUser = new UserProfile();
 			currentUser.setName(userName);
 			dirty = true;
 			//MessageDialog.openWarning(parent.getShell(), "You are new!", "Welcome to accounting. Please edit and save your data!");
 		} else {
 			LOG.trace("Building user editor for {}", currentUser.getName());
+			existingEntity = true;
 			setPartLabel(currentUser.getName());
 		}
 		
@@ -146,7 +150,12 @@ public class UserEditor extends AbstractFormBasedEditor {
 	private void createBasicInfoSection(Composite parent) {
 		final Composite group = createGroup(parent, messages.labelBasicInformation);
 		
-		createTextWithLabelNotNullable(group, messages.labelName, currentUser, "name");
+		if (existingEntity) {
+			createTextWithLabel(group, messages.labelName, currentUser, "name").setEditable(false);
+		} else {
+			createTextWithLabelNotNullable(group, messages.labelName, currentUser, "name");
+		}
+		
 		createTextWithLabel(group, messages.labelTaxId, currentUser, "taxId");
 				
 		createLabel(group, messages.labelDescription);
