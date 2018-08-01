@@ -178,11 +178,7 @@ public class ModelWrapper {
 	        return (String) Messages.class.getField(key).get(new String());
         } catch (NoSuchFieldException e) {
 	        LOG.error(String.format("Message key [%s] doesn't exist", key), e); //$NON-NLS-1$
-        } catch (SecurityException e) {
-        	LOG.error("Error accessing message key " + key, e); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-        	LOG.error("Error accessing message key " + key, e); //$NON-NLS-1$
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
         	LOG.error("Error accessing message key " + key, e); //$NON-NLS-1$
         }
     	
